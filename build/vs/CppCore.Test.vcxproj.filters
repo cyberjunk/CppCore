@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{3e642784-4b8a-4d5b-a16f-32b38b91047b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hash">
+      <UniqueIdentifier>{28bfb7fc-9e38-4f73-b3da-3f074d747217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{fba19fa6-3396-4822-8de7-ac7920237c96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{5efa60c5-641e-4dda-b013-0622fc77c862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Crypto">
+      <UniqueIdentifier>{26debfe0-f92c-4c0c-b865-1e2d85e00775}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\CppCore.Test\Precompiled.cpp" />
+    <ClCompile Include="..\..\src\CppCore.Test\Test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\CppCore.Test\Precompiled.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Math\Util.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Root.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Math\BigInt.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Hash\CRC32.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Hash\MD5.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Hash\Murmur3.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Containers\Array.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Containers\Queue.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Containers\HashTable.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Uuid.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Memory.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Network\Socket.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Math\V2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Math\V3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\String.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Encoding.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Buffer.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Random.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Crypto\AES.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Hash\SHA2.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Crypto\HMAC.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Crypto\PBKDF2.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\Math\Primes.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore.Test\BitOps.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\src\CppCore.Test\Resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\src\CppCore.Test\app.ico" />
+  </ItemGroup>
+</Project>

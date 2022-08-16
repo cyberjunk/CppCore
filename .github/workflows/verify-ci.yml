@@ -1,0 +1,57 @@
+# Checks a few things in the Github Actions CI environment
+# Like Make and CLANG versions and the executing CPU
+
+name: Verify CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-18.04
+            type: linux
+          - os: ubuntu-20.04
+            type: linux
+          - os: ubuntu-22.04
+            type: linux
+          - os: macos-10.15
+            type: osx
+          - os: macos-11
+            type: osx
+          - os: macos-12
+            type: osx
+          - os: windows-2019
+            type: win
+          - os: windows-2022
+            type: win
+    steps:
+    - name: Version (make)
+      run: make --version
+      
+    - name: Version (clang)
+      run: clang++ --version
+
+    - name: Version (gcc)
+      if: matrix.type == 'linux'
+      run: gcc -v
+
+    - name: Version (g++)
+      if: matrix.type == 'linux'
+      run: g++ -v
+
+    - name: CPU-Info (OSX)
+      if: matrix.type == 'osx'
+      run: sysctl -a | grep machdep.cpu.
+
+    - name: CPU-Info (Linux)
+      if: matrix.type == 'linux'
+      run: cat /proc/cpuinfo
+
+    - name: CPU-Info (Windows)
+      if: matrix.type == 'win'
+      run: wmic cpu get name

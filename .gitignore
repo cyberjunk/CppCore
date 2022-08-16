@@ -1,0 +1,14 @@
+/build/vs/bin
+/build/vs/lib
+/build/vs/obj
+
+/build/make/bin
+/build/make/lib
+/build/make/obj
+
+**/.vs
+**/.DS_Store
+**/*.log
+**/*.aps
+
+TrueCert.pfx

@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\CppCore\Application.h" />
+    <ClInclude Include="..\..\include\CppCore\BitOps.h" />
+    <ClInclude Include="..\..\include\CppCore\Block.h" />
+    <ClInclude Include="..\..\include\CppCore\Buffer.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Array.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\BinTree.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Cache.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\HashTable.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\LinkedList.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\MinHeap.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Observable.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Pool.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\PooledArray.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\PooledQueue.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Queue.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Util\BinarySearch.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Util\Comparer.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Util\Hasher.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Util\QuickSort.h" />
+    <ClInclude Include="..\..\include\CppCore\Crypto\AES.h" />
+    <ClInclude Include="..\..\include\CppCore\Crypto\HMAC.h" />
+    <ClInclude Include="..\..\include\CppCore\Crypto\PBKDF2.h" />
+    <ClInclude Include="..\..\include\CppCore\Encoding.h" />
+    <ClInclude Include="..\..\include\CppCore\Example\Application.h" />
+    <ClInclude Include="..\..\include\CppCore\Example\Model.h" />
+    <ClInclude Include="..\..\include\CppCore\Example\Network.h" />
+    <ClInclude Include="..\..\include\CppCore\Flags.h" />
+    <ClInclude Include="..\..\include\CppCore\FlexInt.h" />
+    <ClInclude Include="..\..\include\CppCore\Hash\CRC32.h" />
+    <ClInclude Include="..\..\include\CppCore\Hash\Hash.h" />
+    <ClInclude Include="..\..\include\CppCore\Hash\MD5.h" />
+    <ClInclude Include="..\..\include\CppCore\Hash\Murmur3.h" />
+    <ClInclude Include="..\..\include\CppCore\Hash\SHA2.h" />
+    <ClInclude Include="..\..\include\CppCore\Input.h" />
+    <ClInclude Include="..\..\include\CppCore\IO\File.h" />
+    <ClInclude Include="..\..\include\CppCore\Iterator.h" />
+    <ClInclude Include="..\..\include\CppCore\Logger.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\BBox.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\BBox2.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\BBox3.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\BigInt.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\Line.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\Primes.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\Util.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\V2.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\V3.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\V4.h" />
+    <ClInclude Include="..\..\include\CppCore\Memory.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\Essential.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\Message.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\NetClient.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\NetLink.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\NetServer.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\NetSession.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\TcpClient.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\TcpLink.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\Socket.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\TcpServer.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\TcpSession.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\TcpSocket.h" />
+    <ClInclude Include="..\..\include\CppCore\PreprocessorLoop.h" />
+    <ClInclude Include="..\..\include\CppCore\Random.h" />
+    <ClInclude Include="..\..\include\CppCore\Root.h" />
+    <ClInclude Include="..\..\include\CppCore\Stopwatch.h" />
+    <ClInclude Include="..\..\include\CppCore\String.h" />
+    <ClInclude Include="..\..\include\CppCore\System.h" />
+    <ClInclude Include="..\..\include\CppCore\Threading\Factory.h" />
+    <ClInclude Include="..\..\include\CppCore\Threading\Handler.h" />
+    <ClInclude Include="..\..\include\CppCore\Threading\Looper.h" />
+    <ClInclude Include="..\..\include\CppCore\Threading\Runnable.h" />
+    <ClInclude Include="..\..\include\CppCore\Threading\Schedule.h" />
+    <ClInclude Include="..\..\include\CppCore\Threading\Thread.h" />
+    <ClInclude Include="..\..\include\CppCore\Ticker.h" />
+    <ClInclude Include="..\..\include\CppCore\UI\Window.h" />
+    <ClInclude Include="..\..\include\CppCore\Uuid.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\include\CppCore\UI\Window.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4E2A74EF-4332-4540-8010-A5218487ADB9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Meridian59</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>lib\x86\</OutDir>
+    <IntDir>obj\x86\$(TargetName)_d\</IntDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>obj\x86\$(TargetName)\</IntDir>
+    <OutDir>lib\x86\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>obj\x64\$(TargetName)_d\</IntDir>
+    <OutDir>lib\x64\</OutDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>obj\x64\$(TargetName)\</IntDir>
+    <OutDir>lib\x64\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <PrecompiledHeaderFile>Meridian59/Precompiled.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../../include/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile>Meridian59/Precompiled.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../../include/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile>Meridian59/Precompiled.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../../include/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile>Meridian59/Precompiled.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../../include/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,86 @@
+name: Build Windows
+on:
+  workflow_dispatch:
+  workflow_call:
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      MODE: release
+      TARGET_OS: win
+      JOBS: 4
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019,windows-2022]
+    steps:
+
+    # Checkout
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Build X64
+    - name: MSVC Developer Console (X64)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: amd64
+    - name: Build (X64)
+      run: make TARGET_ARCH=x64 -j${{ env.JOBS }}
+
+    # Build X86
+    - name: MSVC Developer Console (X86)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: amd64_x86
+    - name: Build (X86)
+      run: make TARGET_ARCH=x86 -j${{ env.JOBS }}
+
+    # Build ARM64
+    - name: MSVC Developer Console (ARM64)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: amd64_arm64
+    - name: Build (ARM64)
+      run: make TARGET_ARCH=arm64 -j${{ env.JOBS }}
+
+    # Switch back MSVC console (X64)
+    - name: MSVC Developer Console (X64)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: amd64
+
+    # Test (X64)
+    - name: Test (X64)
+      run: .\build\make\bin\win-x64\CppCore.Test.exe
+      
+    # Test (X86)
+    - name: Test (X86)
+      run: .\build\make\bin\win-x86\CppCore.Test.exe
+
+    # Load Code Signing Certificate
+    - name: Load Code Signing Certificate
+      shell: pwsh
+      env:
+        PFX_BASE64: ${{ secrets.SIGN_PFX_FILE }}
+      run: |
+        echo $env:PFX_BASE64 > ./TrueCert.pfx.base64
+        certutil -decode ./TrueCert.pfx.base64 ./TrueCert.pfx
+
+    # Pack
+    - name: Make (dist)
+      env:
+        SIGN_PFX_FILE: ../../TrueCert.pfx
+        SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
+        PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
+      run: |
+        make dist -j${{ env.JOBS }}
+
+    # Upload
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: Packages (${{ matrix.os }})
+        path: |
+          ./dist/win-10/**/
+          ./dist/win-10/*.msixbundle

@@ -1,0 +1,10 @@
+Package: CppCore.Test
+Version: 1.0.0-1
+Section: base
+Priority: optional
+Architecture: {ARCH}
+Depends: libc6:{ARCH} (>= 2.35)
+Maintainer: Clint Banzhaf <clint@banzhaf.pro>
+Description: CppCore Test
+  Test of CppCore.
+

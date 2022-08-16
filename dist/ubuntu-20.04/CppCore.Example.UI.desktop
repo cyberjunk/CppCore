@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=CppCore.Example.UI
+Comment=Example UI of CppCore
+Exec=/usr/bin/CppCore.Example.UI
+Icon=/usr/share/pixmaps/CppCore.Example.UI.png
+Terminal=true
+Type=Application
+Categories=Development;
+StartupNotify=true
+NoDisplay=false

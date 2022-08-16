@@ -1,0 +1,75 @@
+name: Build Linux
+on:
+  workflow_dispatch:
+  workflow_call:
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      MODE: release
+      TARGET_OS: linux
+      ARCH: ${{ matrix.arch }}
+      JOBS: 4
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04]
+        arch: [amd64, i386, arm64, armhf]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Cross-Compile Support
+      uses: cyberjunk/gha-ubuntu-cross@v1
+      if: matrix.arch != 'amd64'
+      with:
+        arch: ${{ matrix.arch }}
+
+    - name: Ubuntu Packages
+      run: sudo apt-get install llvm libx11-dev:$ARCH
+    
+    - name: QEMU (ARM64/ARMHF)
+      if: matrix.arch == 'arm64' || matrix.arch == 'armhf' || matrix.arch == 'armel' 
+      run: sudo apt-get install qemu-user qemu-user-static
+
+    - name: Set Environment Vars
+      run: |
+        if [ $ARCH == amd64 ]; then \
+          echo "TARGET_ARCH=x64" >> $GITHUB_ENV; \
+          echo "TARGET=x86_64-linux-gnu" >> $GITHUB_ENV; \
+        fi
+        if [ $ARCH == i386 ]; then \
+          echo "TARGET_ARCH=x86" >> $GITHUB_ENV; \
+          echo "TARGET=i686-linux-gnu" >> $GITHUB_ENV; \
+        fi
+        if [ $ARCH == arm64 ]; then \
+          echo "TARGET_ARCH=arm64" >> $GITHUB_ENV; \
+          echo "TARGET=aarch64-linux-gnu" >> $GITHUB_ENV; \
+        fi
+        if [ $ARCH == armhf ]; then \
+          echo "TARGET_ARCH=arm" >> $GITHUB_ENV; \
+          echo "TARGET=arm-linux-gnueabihf" >> $GITHUB_ENV; \
+        fi
+      
+    - name: Build
+      run: |
+        echo MODE: $MODE
+        echo ARCH: $ARCH
+        echo TARGET: $TARGET
+        echo TARGET_ARCH: $TARGET_ARCH
+        clang++ --target=$TARGET -v
+        make -v
+        make -j${{ env.JOBS }}
+        
+    - name: Test
+      run: ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Test
+
+    - name: Make (dist)
+      run: make dist -j${{ env.JOBS }}
+      
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: Packages (${{ matrix.os }}-${{ matrix.arch }})
+        path: ./dist/${{ matrix.os }}/*.deb

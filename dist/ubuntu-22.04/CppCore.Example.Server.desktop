@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=CppCore.Example.Server
+Comment=Example Server of CppCore
+Exec=/usr/bin/CppCore.Example.Server
+Icon=/usr/share/pixmaps/CppCore.Example.Server.png
+Terminal=true
+Type=Application
+Categories=Development;
+StartupNotify=true
+NoDisplay=false

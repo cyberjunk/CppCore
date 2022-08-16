@@ -1,0 +1,248 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CppCore.Example.Server (x64)",
+            "program": "",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "cwd": "${workspaceFolder}/build/make/bin/linux-x64/",
+                "program": "${workspaceFolder}/build/make/bin/linux-x64/CppCore.Example.Server_d"
+            },
+            "osx": {
+                "type": "cppdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/osx-x64/",
+                "program": "${workspaceFolder}/build/make/bin/osx-x64/CppCore.Example.Server_d"
+
+            },
+            "windows": {
+                "type": "cppvsdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/win-x64/",
+                "program": "${workspaceFolder}/build/make/bin/win-x64/CppCore.Example.Server_d.exe"
+            }
+        },
+        {
+            "name": "CppCore.Example.Server (arm64)",
+            "program": "",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "cwd": "${workspaceFolder}/build/make/bin/linux-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/linux-arm64/CppCore.Example.Server_d"
+            },
+            "osx": {
+                "type": "cppdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/osx-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/osx-arm64/CppCore.Example.Server_d"
+
+            },
+            "windows": {
+                "type": "cppvsdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/win-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/win-arm64/CppCore.Example.Server_d.exe"
+            }
+        },
+        {
+            "name": "CppCore.Example.Client (x64)",
+            "program": "",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "cwd": "${workspaceFolder}/build/make/bin/linux-x64/",
+                "program": "${workspaceFolder}/build/make/bin/linux-x64/CppCore.Example.Client_d"
+            },
+            "osx": {
+                "type": "cppdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/osx-x64/",
+                "program": "${workspaceFolder}/build/make/bin/osx-x64/CppCore.Example.Client_d"
+
+            },
+            "windows": {
+                "type": "cppvsdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/win-x64/",
+                "program": "${workspaceFolder}/build/make/bin/win-x64/CppCore.Example.Client_d.exe"
+            }
+        },
+        {
+            "name": "CppCore.Example.Client (arm64)",
+            "program": "",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "cwd": "${workspaceFolder}/build/make/bin/linux-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/linux-arm64/CppCore.Example.Client_d"
+            },
+            "osx": {
+                "type": "cppdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/osx-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/osx-arm64/CppCore.Example.Client_d"
+
+            },
+            "windows": {
+                "type": "cppvsdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/win-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/win-arm64/CppCore.Example.Client_d.exe"
+            }
+        },
+{
+            "name": "CppCore.Example.UI (x64)",
+            "program": "",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "cwd": "${workspaceFolder}/build/make/bin/linux-x64/",
+                "program": "${workspaceFolder}/build/make/bin/linux-x64/CppCore.Example.UI_d"
+            },
+            "osx": {
+                "type": "cppdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/osx-x64/",
+                "program": "${workspaceFolder}/build/make/bin/osx-x64/CppCore.Example.UI_d"
+
+            },
+            "windows": {
+                "type": "cppvsdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/win-x64/",
+                "program": "${workspaceFolder}/build/make/bin/win-x64/CppCore.Example.UI_d.exe"
+            }
+        },
+        {
+            "name": "CppCore.Example.UI (arm64)",
+            "program": "",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "cwd": "${workspaceFolder}/build/make/bin/linux-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/linux-arm64/CppCore.Example.UI_d"
+            },
+            "osx": {
+                "type": "cppdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/osx-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/osx-arm64/CppCore.Example.UI_d"
+
+            },
+            "windows": {
+                "type": "cppvsdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/win-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/win-arm64/CppCore.Example.UI_d.exe"
+            }
+        },
+        {
+            "name": "CppCore.Test (x64)",
+            "program": "",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "cwd": "${workspaceFolder}/build/make/bin/linux-x64/",
+                "program": "${workspaceFolder}/build/make/bin/linux-x64/CppCore.Test_d"
+            },
+            "osx": {
+                "type": "cppdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/osx-x64/",
+                "program": "${workspaceFolder}/build/make/bin/osx-x64/CppCore.Test_d"
+
+            },
+            "windows": {
+                "type": "cppvsdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/win-x64/",
+                "program": "${workspaceFolder}/build/make/bin/win-x64/CppCore.Test_d.exe"
+            }
+        },
+        {
+            "name": "CppCore.Test (arm64)",
+            "program": "",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "cwd": "${workspaceFolder}/build/make/bin/linux-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/linux-arm64/CppCore.Test_d"
+            },
+            "osx": {
+                "type": "cppdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/osx-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/osx-arm64/CppCore.Test_d"
+
+            },
+            "windows": {
+                "type": "cppvsdbg",
+                "MIMode": "lldb",
+                "cwd": "${workspaceFolder}/build/make/bin/win-arm64/",
+                "program": "${workspaceFolder}/build/make/bin/win-arm64/CppCore.Test_d.exe"
+            }
+        }
+    ]
+}

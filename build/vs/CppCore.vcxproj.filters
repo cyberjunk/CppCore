@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\include\CppCore\Flags.h" />
+    <ClInclude Include="..\..\include\CppCore\Root.h" />
+    <ClInclude Include="..\..\include\CppCore\Stopwatch.h" />
+    <ClInclude Include="..\..\include\CppCore\Threading\Looper.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Threading\Thread.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\Pool.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Buffer.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\LinkedList.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\Util\BinarySearch.h">
+      <Filter>Containers\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\Util\Comparer.h">
+      <Filter>Containers\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\Util\QuickSort.h">
+      <Filter>Containers\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\Array.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\MinHeap.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\BinTree.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Threading\Runnable.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Math\V2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Math\V3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Math\V4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Math\Line.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Threading\Schedule.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Application.h" />
+    <ClInclude Include="..\..\include\CppCore\Threading\Handler.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\Socket.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\Message.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\NetServer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\Essential.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Logger.h" />
+    <ClInclude Include="..\..\include\CppCore\Hash\Murmur3.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Hash\MD5.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Hash\CRC32.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\HashTable.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\Util\Hasher.h">
+      <Filter>Containers\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Example\Model.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\Queue.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\TcpLink.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\NetClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Example\Application.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Example\Network.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\IO\File.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\FlexInt.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\PooledArray.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\PooledQueue.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Threading\Factory.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Ticker.h" />
+    <ClInclude Include="..\..\include\CppCore\Containers\Observable.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Uuid.h" />
+    <ClInclude Include="..\..\include\CppCore\Random.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\Util.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Containers\Cache.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Math\BBox.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Math\BBox2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Math\BBox3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\System.h" />
+    <ClInclude Include="..\..\include\CppCore\Math\BigInt.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Memory.h" />
+    <ClInclude Include="..\..\include\CppCore\Input.h" />
+    <ClInclude Include="..\..\include\CppCore\String.h" />
+    <ClInclude Include="..\..\include\CppCore\Encoding.h" />
+    <ClInclude Include="..\..\include\CppCore\Iterator.h" />
+    <ClInclude Include="..\..\include\CppCore\PreprocessorLoop.h" />
+    <ClInclude Include="..\..\include\CppCore\UI\Window.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\TcpSocket.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\NetLink.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\TcpSession.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\NetSession.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Network\TcpServer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Crypto\AES.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Hash\SHA2.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Block.h" />
+    <ClInclude Include="..\..\include\CppCore\Hash\Hash.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Crypto\HMAC.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Crypto\PBKDF2.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Math\Primes.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\BitOps.h" />
+    <ClInclude Include="..\..\include\CppCore\Network\TcpClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Threading">
+      <UniqueIdentifier>{25b18a1f-7f6f-4853-807a-a49e496b2d4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{976819f1-53ac-46a0-91ac-5b399eac2291}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Containers\Util">
+      <UniqueIdentifier>{52d33fe6-684e-41db-a46c-b8e5960dd375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{f1939ed2-c9d7-4440-89b9-42a32549a85a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{459e2f40-a02a-43cb-82d2-ad385b5ffcaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hash">
+      <UniqueIdentifier>{4b086f4a-8ac8-4c7f-8087-7966d1cd0e48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example">
+      <UniqueIdentifier>{4b572eae-dcdd-445b-9bb7-55468e58205f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{c52fb799-5fda-4c22-a7ce-d569b9035832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{58fd1ea4-af56-481a-bb15-ce05c4ac8f66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Crypto">
+      <UniqueIdentifier>{3f8b8f12-66fa-4e56-bc9d-1e126f2208cc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\include\CppCore\UI\Window.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

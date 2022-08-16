@@ -1,0 +1,53 @@
+# For testing custom commands in the Github Actions CI
+
+name: Debug
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        include:
+          - os: windows-2022
+    steps:
+
+     - name: Checkout
+       uses: actions/checkout@v3
+
+     - name: test
+       shell: cmd
+       run: |
+        echo 1 > test
+        dir
+        copy /Y test test2
+        make -B test
+     
+#     - name: test
+#       shell: pwsh
+#       run: |
+#        echo 1 > test
+#        dir
+#        copy /Y test test2
+     
+#    - uses: ilammy/msvc-dev-cmd@v1
+#    - name: MakeAppx
+#      run: MakeAppx.exe
+
+#    - name: Install MSIXPackagingTool
+#      shell: pwsh
+#      run: |
+#        Invoke-WebRequest https://download.microsoft.com/download/b/8/d/b8d117f8-95cc-4210-be09-d197331c134d/MSIXPackagingTool_1.2022.330.0.msixbundle -OutFile ./MSIXPackagingTool.msixbundle
+#        Invoke-WebRequest https://download.microsoft.com/download/b/8/d/b8d117f8-95cc-4210-be09-d197331c134d/MSIXPackagingTool_1.2022.330.0_License.xml -OutFile ./License.xml
+#        Add-AppxProvisionedPackage -Path ./ -PackagePath ./MSIXPackagingTool.msixbundle -LicensePath ./License.xml
+
+#    - name: MsixPackagingTool
+#      run: MsixPackagingTool.exe --version
+
+
+
+#        Import-Module Appx
+#        Add-AppxPackage -path MSIXPackagingTool.msixbundle

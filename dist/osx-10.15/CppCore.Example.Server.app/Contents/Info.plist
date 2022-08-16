@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleName</key>
+	<string>CppCore.Example.Server</string>
+	<key>CFBundleIdentifier</key>
+	<string>pro.banzhaf.CppCore.Example.Server</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleVersion</key>
+	<string>Version 1.0.0</string>
+	<key>CFBundleExecutable</key>
+	<string>CppCore.Example.Server</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Copyright 2022 Clint Banzhaf</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleIconFile</key>
+	<string>Icon</string>
+	<key>CFBundleSignature</key>
+	<string>CppCore.Example.Server</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.15.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+</dict>
+</plist>
