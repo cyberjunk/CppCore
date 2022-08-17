@@ -57,13 +57,15 @@ CppCore is my personal [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) framewor
 
 ### Containers
 
+Different `O(k)` are used to outline some differences between operations with constant complexity on different containers.
+
 | Header | Operation | Complexity | Notes |
-|--------|-----------|------------|-------|
-| [Array.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Array.h)        | `operator[]`</br>`pushFront()`</br>`pushBack()`</br>`popFront()`</br>`popBack()`</br>`insertAt()` | `O(1)`</br>`O(n)`</br>`O(1)`</br>`O(n)`</br>`O(1)`</br>`O(n)` | Simple Array |
-| [BinTree.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BinTree.h)    | |
-| [Queue.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Queue.h)        | `operator[]`</br>`pushFront()`</br>`pushBack()`</br>`popFront()`</br>`popBack()`</br>`insertAt()` | `O(1)`</br>`O(1)`</br>`O(1)`</br>`O(1)`</br>`O(1)`</br>`O(n)` | FIFO Queue |
-| [MinHeap.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/MinHeap.h)     | |
-| [HashTable.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/HashTable.h) |
+|--------|-----------|------------|-------------------|
+| [Array.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Array.h)        | `operator[]`</br>`pushFront()`</br>`pushBack()`</br>`popFront()`</br>`popBack()`</br>`insertAt()`</br>`removeAt()` | `O(1)`</br>`O(n)`</br>`O(1)`</br>`O(n)`</br>`O(1)`</br>`O(n)`</br>`O(n)` | <ul><li>Simple Array</li><li>Sorted or Unsorted</li><li>Fastest `operator[]` `pushBack()` `popBack()`</li></ul>
+| [BinTree.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BinTree.h)    |
+| [Queue.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Queue.h)        | `operator[]`</br>`pushFront()`</br>`pushBack()`</br>`popFront()`</br>`popBack()`</br>`insertAt()`</br>`removeAt()` | `O(10)`</br>`O(10)`</br>`O(10)`</br>`O(10)`</br>`O(10)`</br>`O(n)`</br>`O(n)` | <ul><li>Simple Queue</li><li>Sorted or Unsorted</li><li>Constant `O(k)` for `pushFront()` `popFront()` </li><li>Example: Message Queue</li></ul> | |
+| [MinHeap.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/MinHeap.h)     | `operator[]`</br>`push()`</br>`pop()`</br>`removeAt()` | `O(1)`</br>`O(log(n))`</br>`O(log(n))`</br>`O(log(n))` | <ul><li>[Binary Min Heap](https://en.wikipedia.org/wiki/Binary_heap)</li><li>Always Sorted</li><li>Finds minimum at root in `O(1)`</li><li>Example: Timer Schedule</li><li>Example: A* Open-List</li></ul>
+| [HashTable.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/HashTable.h) | `insert()`</br>`remove()`</br>`find()` | `O(1000)`</br>`O(1000)`</br>`O(1000)` | <ul><li>Example: Large Lookup Dictionary</li><li>Example: Database Table</li></ul> |
 | ... | | | |
 
 ### Threading 
@@ -87,3 +89,9 @@ Low-Latency Multi-Threading Model
 |--------------------------------------------------------------------------------------------|----------------------|
 | [Input.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Input.h)        | Keyboard/Mouse Input from Window-Events on Win/Linux/OSX |
 | [Window.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/UI/Window.h)   | Windows Wrapper for Windows/Linux/OSX |
+
+### Misc
+
+| Header                                                                                     | Notes                |
+|--------------------------------------------------------------------------------------------|----------------------|
+| [Random.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Random.h)      | PRNG |
