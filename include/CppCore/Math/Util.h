@@ -1751,8 +1751,8 @@ namespace CppCore
       assert((bh | bl) != 0);
       uint8_t c;
 
-      const bool B0 = (bh == 0);
-      const bool B1 = (bh - ah == 0);
+      const bool b0 = (bh == 0);
+      const bool b1 = (bh - ah == 0);
 
       // 64/64 only
       if ((ah | bh) == 0)
@@ -1774,7 +1774,7 @@ namespace CppCore
       }
 
       // divisor larger dividend (q=0,r=dividend)
-      if (((bh > ah) | (B1 & (bl > al))) != 0)
+      if (((bh > ah) | (b1 & (bl > al))) != 0)
       {
          qh = ql = 0;
          rh = ah;
@@ -1809,7 +1809,7 @@ namespace CppCore
       }
 
       // x/x=1
-      if ((B1 & (al-bl == 0)) != 0)
+      if ((b1 & (al-bl == 0)) != 0)
       {
          qh = rh = rl = 0;
          ql = 1;
@@ -1817,7 +1817,7 @@ namespace CppCore
       }
 
       // 128/64
-      if (B0)
+      if (b0)
       {
          // 128/64=64
          if (ah < bl)
