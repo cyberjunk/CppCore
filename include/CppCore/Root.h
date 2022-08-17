@@ -215,6 +215,7 @@
 #include <ios>
 #include <iostream>
 #include <iomanip>
+#include <memory>
 #include <mutex>
 #include <queue>
 #include <random>
@@ -444,6 +445,10 @@ namespace CppCore
 
    // numeric_limits
    using ::std::numeric_limits;
+
+   // allocator
+   using ::std::allocator;
+   using ::std::allocator_traits;
 
    // filesystem
    using ::std::experimental::filesystem::path;

@@ -1,8 +1,7 @@
 #pragma once
 
-// if overwritten you must also adjust fixed size constructor
-#ifndef CPPCORE_THREADPOOLSIZE
-#define CPPCORE_THREADPOOLSIZE 8
+#ifndef CPPCORE_DEFAULT_THREADPOOL_SIZE
+#define CPPCORE_DEFAULT_THREADPOOL_SIZE 8
 #endif
 
 #include <CppCore/Root.h>
@@ -158,15 +157,16 @@ namespace CppCore
       class Pool : public Handler
       {
       protected:
-         using Allocator = ::std::allocator<THREAD>;
+         using Allocator       = allocator<THREAD>;
+         using AllocatorTraits = allocator_traits<Allocator>;
 
       protected:
          Schedule<>   mSchedule;
          Allocator    mAllocator;
          atomic<bool> mIsRunning;
          mutex        mMutexStartStop;
-         THREAD*      mThreads;
          const size_t mNumThreads;
+         THREAD*      mThreads;
 
          /// <summary>
          ///
@@ -178,14 +178,18 @@ namespace CppCore
          /// Constructor
          /// </summary>
          INLINE Pool(
-            const size_t numthreads = CPPCORE_THREADPOOLSIZE, 
+            const size_t numthreads = CPPCORE_DEFAULT_THREADPOOL_SIZE,
             const bool   autoStart  = true) : 
+            mSchedule(),
+            mAllocator(),
+            mIsRunning(false),
+            mMutexStartStop(),
             mNumThreads(numthreads),
-            mThreads(mAllocator.allocate(numthreads))
+            mThreads(AllocatorTraits::allocate(mAllocator, numthreads))
          {
             // construct threads
             for (size_t i = 0; i < mNumThreads; i++)
-               mAllocator.construct(&mThreads[i], mSchedule);
+               AllocatorTraits::construct(mAllocator, &mThreads[i], mSchedule);
 
             // start if autostart
             if (autoStart)
@@ -198,7 +202,7 @@ namespace CppCore
          INLINE ~Pool()
          {
             // free memory
-            mAllocator.deallocate(mThreads, mNumThreads);
+            AllocatorTraits::deallocate(mAllocator, mThreads, mNumThreads);
          }
 
          /// <summary>
