@@ -159,6 +159,107 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Standard C++ Includes
+#define _USE_MATH_DEFINES
+#include <algorithm>
+#include <atomic>
+#include <cassert>
+#include <cfenv>
+#include <cinttypes>
+#include <cmath>
+#include <condition_variable>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <fstream>
+#include <functional>
+#include <ios>
+#include <iostream>
+#include <iomanip>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <random>
+#include <regex>
+#include <set>
+#include <shared_mutex>
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <thread>
+
+// silence experimental filesystem deprecated warnings for clang
+#ifndef _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
+#define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
+#endif
+
+// silence experimental filesystem deprecated warnings for msvc
+#ifndef _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#endif
+
+#include <experimental/filesystem>
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Standard C Includes
+#include <signal.h>
+#include <errno.h>
+#include <sys/types.h>
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Intrinsics Includes
+#if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_MSVC)
+#include <intrin.h>
+#elif defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
+#include <x86intrin.h>
+#elif defined(CPPCORE_CPU_ARMORARM64) && defined(CPPCORE_COMPILER_CLANG)
+#include <arm_neon.h>
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Platform POSIX Socket
+#if defined(CPPCORE_OS_WINDOWS)
+#define NOMINMAX
+#include <WinSock2.h>
+#include <ws2ipdef.h>
+#include <Ws2tcpip.h>
+#include <mstcpip.h>
+#undef NOMINMAX
+#define socklen_t int
+#pragma comment(lib, "Ws2_32.lib")
+#else
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <poll.h>
+#include <netdb.h>
+#define SOCKET int
+#define INVALID_SOCKET  (SOCKET)(~0)
+#define SOCKET_ERROR    -1
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Platform Specific Headers
+#if defined(CPPCORE_OS_WINDOWS)
+#define NOMINMAX
+#include <windowsx.h>
+#undef NOMINMAX
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #if defined(CPPCORE_COMPILER_MSVC)
 // Memory Alignments
 #define CPPCORE_ALIGN8  __declspec(align(8))
@@ -193,63 +294,6 @@
 #else
 #define CPPCORE_ALIGNED_ALLOC(S, A) ::aligned_alloc(A, S)
 #define CPPCORE_ALIGNED_FREE(A)     ::free(A)
-#endif
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Standard C++ Includes
-#define _USE_MATH_DEFINES
-#include <algorithm>
-#include <atomic>
-#include <cassert>
-#include <cfenv>
-#include <cinttypes>
-#include <cmath>
-#include <condition_variable>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <fstream>
-#include <functional>
-#include <ios>
-#include <iostream>
-#include <iomanip>
-#include <memory>
-#include <mutex>
-#include <queue>
-#include <random>
-#include <regex>
-#include <set>
-#include <shared_mutex>
-#include <sstream>
-#include <string>
-#include <string_view>
-#include <thread>
-
-// Signal Header
-#include <signal.h>
-
-// silence experimental filesystem deprecated warnings for clang
-#ifndef _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
-#define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
-#endif
-// silence experimental filesystem deprecated warnings for msvc
-#ifndef _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#endif
-#include <experimental/filesystem>
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Intrinsics Includes
-#if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_MSVC)
-#include <intrin.h>
-#elif defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
-#include <x86intrin.h>
-#elif defined(CPPCORE_CPU_ARMORARM64) && defined(CPPCORE_COMPILER_CLANG)
-#include <arm_neon.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,10 +388,6 @@ static_assert(sizeof(double) == 8U);
 
 // Native Mutex
 #if defined(CPPCORE_OS_WINDOWS)
-#define NOMINMAX
-#include <Winsock2.h>
-#undef NOMINMAX
-#include <windowsx.h>
 #define CPPCORE_MUTEX_TYPE       CRITICAL_SECTION
 #define CPPCORE_MUTEX_INIT(m)    InitializeCriticalSection(&m)
 #define CPPCORE_MUTEX_DELETE(m)  DeleteCriticalSection(&m)
@@ -367,10 +407,7 @@ static_assert(sizeof(double) == 8U);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Helper to retrieve size of compile time arrays
-
-#ifndef CPPCORE_COUNT_OF
 #define CPPCORE_COUNT_OF(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
-#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

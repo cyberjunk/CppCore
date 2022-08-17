@@ -2,32 +2,6 @@
 
 #include <CppCore/Root.h>
 
-// Platform POSIX Socket
-#if defined(CPPCORE_OS_WINDOWS)
-#define NOMINMAX
-#include <WinSock2.h>
-#include <ws2ipdef.h>
-#include <Ws2tcpip.h>
-#include <mstcpip.h>
-#undef NOMINMAX
-#define socklen_t int
-#pragma comment(lib, "Ws2_32.lib")
-#else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <errno.h>
-#include <poll.h>
-#include <netdb.h>
-#define SOCKET int
-#define INVALID_SOCKET  (SOCKET)(~0)
-#define SOCKET_ERROR    -1
-#endif
-
 namespace CppCore
 {
    /// <summary>
