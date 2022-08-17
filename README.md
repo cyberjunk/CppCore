@@ -30,35 +30,47 @@ CppCore is my personal [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) framewor
 
 ### Hashing
 
-| Name                                                                                       | Notes         |
-|--------------------------------------------------------------------------------------------|---------------|
-| [CRC32](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/CRC32.h)     | |
-| [CRC32C](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/CRC32.h)    | Supports CRC32 CPU Instructions |
-| [MD5](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/MD5.h)         | |
-| [Murmur3](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/Murmur3.h) | |
-| [SHA2-256](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/SHA2.h)   | |
-| [SHA2-512](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/SHA2.h)   | |
+| Header                                                                                       | Bits | Reference | Notes                       |
+|----------------------------------------------------------------------------------------------|------|-----------|-----------------------------|
+| [CRC32.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/CRC32.h)     |  32  |           | CRC32/CRC32C (CPU)          |
+| [Murmur3.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/Murmur3.h) |  32  |           | Popular for hash tables     |
+| [MD5.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/MD5.h)         | 128  | [Wikipedia](https://en.wikipedia.org/wiki/MD5) |
+| [SHA2.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Hash/SHA2.h)       | 256/512  | [Wikipedia](https://en.wikipedia.org/wiki/SHA-2) |
 
 ### Crypto
 
-* AES
-* HMAC
-* PBKDF2
+| Header                                                                                       | Reference | Notes         |
+|----------------------------------------------------------------------------------------------|-----------|---------------|
+| [AES.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Crypto/AES.h)       | [Wikipedia](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) | 128/192/256 Bit \| ECB/CBC/CTR \| [AES-NI](https://en.wikipedia.org/wiki/AES_instruction_set) |
+| [HMAC.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Crypto/HMAC.h)     | [Wikipedia](https://en.wikipedia.org/wiki/HMAC) | MD5 \| SHA2-256 \| SHA2-512
+| [PBKDF2.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Crypto/PBKDF2.h) | [Wikipedia](https://en.wikipedia.org/wiki/PBKDF2) | HMAC-SHA2-256 \| HMAC-SHA2-512
   
 ### Math
- 
-* [BigInt](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BigInt.h)
-* [Primes](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Primes.h)
-* Vectors: [2D](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V2.h), 3D, 4D
+
+| Header                                                                                     | Notes         |
+|--------------------------------------------------------------------------------------------|---------------|
+| [BigInt.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BigInt.h)   |
+| [Primes.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Primes.h)   |
+| Vectors: [2D](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V2.h), 3D, 4D
 
 ### Containers
-Array, Queue, MinHeap, HashTable, ...
+
+| Header                                                                                     | Notes         |
+|--------------------------------------------------------------------------------------------|---------------|
+| [Array.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Array.h)   |
+| [Queue.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Queue.h)   |
+| [MinHeap.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/MinHeap.h)   |
+| [HashTable.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/HashTable.h)   |
+| [BinTree.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BinTree.h)   |
 
 ### Threading 
 Low-Latency Multi-Threading Model
 
 ### Network
-TCP, Custom-Binary-Protocol, ...
+
+| Header                                                                                         | Notes                |
+|------------------------------------------------------------------------------------------------|----------------------|
+| [Socket.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/Socket.h)  | POSIX Socket Wrapper |
 
 ### UI
 Cross-Platform Window/Input Wrapper
