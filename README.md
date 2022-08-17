@@ -47,30 +47,39 @@ CppCore is my personal [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) framewor
   
 ### Math
 
-| Header                                                                                     | Notes         |
-|--------------------------------------------------------------------------------------------|---------------|
-| [BigInt.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BigInt.h)   |
-| [Primes.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Primes.h)   |
-| Vectors: [2D](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V2.h), 3D, 4D
+| Header                                                                                     | Notes                                       |
+|--------------------------------------------------------------------------------------------|---------------------------------------------|
+| [BigInt.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BigInt.h) | Large unsigned integers from ```uint128_t``` up to ```uint2048_t``` |
+| [Primes.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Primes.h) | Prime Tests (Miller-Rabin/Lucas-Lehmer/...) |
+| [V2.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V2.h) | 
+| [V3.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V3.h) | 
+| [V4.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V4.h) | 
 
 ### Containers
 
-| Header                                                                                     | Notes         |
-|--------------------------------------------------------------------------------------------|---------------|
-| [Array.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Array.h)   |
-| [Queue.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Queue.h)   |
-| [MinHeap.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/MinHeap.h)   |
-| [HashTable.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/HashTable.h)   |
-| [BinTree.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BinTree.h)   |
+| Header | Operation | Complexity | Notes |
+|--------|-----------|------------|-------|
+| [Array.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Array.h)        | `operator[]`</br>`pushFront()`</br>`pushBack()`</br>`popFront()`</br>`popBack()`</br>`insertAt()` | `O(1)`</br>`O(n)`</br>`O(1)`</br>`O(n)`</br>`O(1)`</br>`O(n)` | Simple Array |
+| [BinTree.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BinTree.h)    | |
+| [Queue.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Queue.h)        | `operator[]`</br>`pushFront()`</br>`pushBack()`</br>`popFront()`</br>`popBack()`</br>`insertAt()` | `O(1)`</br>`O(1)`</br>`O(1)`</br>`O(1)`</br>`O(1)`</br>`O(n)` | FIFO Queue |
+| [MinHeap.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/MinHeap.h)     | |
+| [HashTable.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/HashTable.h) |
+| ... | | | |
 
 ### Threading 
 Low-Latency Multi-Threading Model
 
 ### Network
 
-| Header                                                                                         | Notes                |
-|------------------------------------------------------------------------------------------------|----------------------|
-| [Socket.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/Socket.h)  | POSIX Socket Wrapper |
+| Header                                                                                               | Notes                |
+|------------------------------------------------------------------------------------------------------|----------------------|
+| [Socket.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/Socket.h)        | POSIX Socket Wrapper |
+| [TcpSocket.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/TcpSocket.h)  | TCP IPv6 Dual-Stack Socket for server and client with convenient ```connect()```, ```listen()``` and ```accept()``` methods |
+| ... | |
 
 ### UI
-Cross-Platform Window/Input Wrapper
+
+| Header                                                                                     | Notes                |
+|--------------------------------------------------------------------------------------------|----------------------|
+| [Input.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Input.h)        | Keyboard/Mouse Input from Window-Events on Win/Linux/OSX |
+| [Window.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/UI/Window.h)   | Windows Wrapper for Windows/Linux/OSX |
