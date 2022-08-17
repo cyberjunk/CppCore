@@ -73,8 +73,12 @@ Low-Latency Multi-Threading Model
 
 | Header                                                                                               | Notes                |
 |------------------------------------------------------------------------------------------------------|----------------------|
-| [Socket.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/Socket.h)        | POSIX Socket Wrapper |
-| [TcpSocket.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/TcpSocket.h)  | TCP IPv6 Dual-Stack Socket for server and client with convenient ```connect()```, ```listen()``` and ```accept()``` methods |
+| [Socket.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/Socket.h)        | <ul><li>Basic [POSIX Socket](https://en.wikipedia.org/wiki/Berkeley_sockets) Wrapper Class</li><li>Works around remaining differences on platforms</li></ul> |
+| [TcpSocket.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/TcpSocket.h)  | <ul><li>Builds upon `Socket.h`</li><li>TCP IPv6 Dual-Stack Socket</li><li>For Server and Client</li><li>Advanced ```connect()```, ```listen()``` and ```accept()``` methods</li></ul> |
+| [TcpLink.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/TcpLink.h)  | <ul><li>Builds upon `TcpSocket.h`</li><li>Implements a raw TCP connection</li><li>For Server and Client</li></ul> |
+| [TcpClient.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/TcpClient.h)  | <ul><li>Builds upon `TcpLink.h`</li><li>For Client</li></ul> |
+| [TcpSession.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/TcpSession.h)  | <ul><li>Builds upon `TcpLink.h`</li><li>For Server</li></ul> |
+| [TcpServer.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Network/TcpServer.h)  | <ul><li>Builds upon `TcpSession.h`</li><li>For Server</li></ul> |
 | ... | |
 
 ### UI
