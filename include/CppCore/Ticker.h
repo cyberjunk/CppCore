@@ -30,7 +30,7 @@ namespace CppCore
       /// </summary>
       INLINE static double getClockTick() 
       {
-         return (double)StdClock::now().time_since_epoch().count() / (double)DIVISOR;
+         return (double)ClockHR::now().time_since_epoch().count() / (double)DIVISOR;
       }
 
       /// <summary>

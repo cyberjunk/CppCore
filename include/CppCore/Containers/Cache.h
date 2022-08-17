@@ -19,10 +19,10 @@ namespace CppCore
       struct Entry
       {
       public:
-         T            Data;
-         uint32_t     Refs;
-         StdTimePoint Tick;
-         size_t       Size;
+         T           Data;
+         uint32_t    Refs;
+         TimePointHR Tick;
+         size_t      Size;
 
          /// <summary>
          /// Entry Comparers
@@ -93,9 +93,16 @@ namespace CppCore
       };
 
       /// <summary>
-      ///
+      /// Cache for Single Thread
       /// </summary>
-      template<typename T, size_t SIZE, size_t MAXENTRIES, size_t SIZEPRUNE, typename KEY = T, typename HASHER = Hasher::Murmur3::Generic<KEY>, typename COMPARER = Comparer<T, KEY>>
+      template<
+         typename T, 
+         size_t   SIZE, 
+         size_t   MAXENTRIES, 
+         size_t   SIZEPRUNE, 
+         typename KEY      = T, 
+         typename HASHER   = Hasher::Murmur3::Generic<KEY>, 
+         typename COMPARER = Comparer<T, KEY>>
       class ST
       {
       public:
@@ -103,8 +110,8 @@ namespace CppCore
          typedef Array::Fix::ST<Entry<T>*, SIZEPRUNE>                             ArrayEntry;
 
       protected:
-         HT           mHT;
-         ArrayEntry   mPruneList;
+         HT         mHT;
+         ArrayEntry mPruneList;
          size_t     mMemoryUsage;
          size_t     mMemoryLimit;
 
@@ -112,9 +119,8 @@ namespace CppCore
          INLINE size_t        length()         const { return mHT.length(); }
          INLINE size_t        getMemoryUsage() const { return mMemoryUsage; }
          INLINE size_t        getMemoryLimit() const { return mMemoryLimit; }
-
-         INLINE HT&           getHT()          { return mHT; }
-         INLINE ArrayEntry&   getPruneList()   { return mPruneList; }
+         INLINE HT&           getHT()                { return mHT; }
+         INLINE ArrayEntry&   getPruneList()         { return mPruneList; }
 
          INLINE void setMemoryLimit(size_t v) { mMemoryLimit = v; }
 
@@ -153,7 +159,7 @@ namespace CppCore
          {
             if (Entry<T>* o = mHT.find(key))
             {
-               o->Tick = StdClock::now();
+               o->Tick = ClockHR::now();
                o->Refs++;
 
                return o;
@@ -170,7 +176,7 @@ namespace CppCore
          {
             if (entry)
             {
-               entry->Data.Tick = StdClock::now();
+               entry->Data.Tick = ClockHR::now();
                entry->Data.Refs = 1;
                entry->Data.Size = size;
 
@@ -219,14 +225,14 @@ namespace CppCore
          /// elements afterwards which can be removed by calling remove().
          /// </summary>
          INLINE bool prune(
-            const StdDuration& minage = StdSeconds(60), 
-            const size_t       maxnum = 16)
+            const DurationHR& minage = seconds(60), 
+            const size_t      maxnum = 16)
          {
             // true if exceeded soft limit
             const bool URGENT = mMemoryLimit > 0 && mMemoryUsage > mMemoryLimit;
 
             // get current tick
-            auto now = StdClock::now();
+            auto now = ClockHR::now();
 
             // clear old prune list
             mPruneList.clear();
