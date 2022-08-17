@@ -70,8 +70,8 @@ namespace CppCore
       };
 
    protected:
-      TQUEUEUDPIN  mMessagesUdpToRead;
-      StdTimePoint mLastReceiveUdp;
+      TQUEUEUDPIN mMessagesUdpToRead;
+      TimePointHR mLastReceiveUdp;
 
    public:
       /// <summary>
@@ -89,7 +89,7 @@ namespace CppCore
             handlerMain, handlerThreadPool, 
             handlerMessage, logger, callBack, sharedData),
          mMessagesUdpToRead(),
-         mLastReceiveUdp(StdSeconds(0)) { }
+         mLastReceiveUdp(seconds(0)) { }
 
       /// <summary>
       /// Destructor
@@ -142,7 +142,7 @@ namespace CppCore
       /// <summary>
       /// Returns last time a valid UDP datagram was receveid for this session
       /// </summary>
-      INLINE const StdTimePoint& getLastReceiveUdp() const { return mLastReceiveUdp; }
+      INLINE const TimePointHR& getLastReceiveUdp() const { return mLastReceiveUdp; }
 
       /// <summary>
       /// Receives a potential UDP datagram into this session.
@@ -185,7 +185,7 @@ namespace CppCore
          // all good, enqueue it for processing
          if (mMessagesUdpToRead.pushBack(&msg))
          {
-            mLastReceiveUdp = StdClock::now();
+            mLastReceiveUdp = ClockHR::now();
             CPPCORE_MUTEX_UNLOCK(this->mMutexClearRead);
             this->onRecvNewMessage();
             return true;

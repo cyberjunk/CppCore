@@ -61,7 +61,7 @@ namespace CppCore
          private:
             INLINE String() { }
          public:
-            INLINE static bool hash(const StdString& a, uint32_t& b)
+            INLINE static bool hash(const string& a, uint32_t& b)
             {
                b = 0;
                return CppCore::Murmur3::hashMem(a.data(), (uint32_t)a.length(), b);

@@ -21,7 +21,7 @@ namespace CppCore { namespace Example
       /// <summary>
       /// Epoch Length
       /// </summary>
-      static constexpr std::chrono::seconds EPOCHLENGTH = std::chrono::seconds(10);
+      static constexpr seconds EPOCHLENGTH = seconds(10);
 
    protected:
       NetServer mNetServer;
@@ -80,7 +80,7 @@ namespace CppCore { namespace Example
          mNetServer(port, *this, mThreadPool, mThreadPool, mLogger, *this),
          mEpochTimer([this]() { runEpochTimer(); }, true, EPOCHLENGTH)
       {
-         schedule(mEpochTimer, StdClock::now() + mEpochTimer.getInterval());
+         schedule(mEpochTimer, ClockHR::now() + mEpochTimer.getInterval());
       }
    };
 }}

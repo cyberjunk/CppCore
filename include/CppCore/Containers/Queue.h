@@ -43,9 +43,9 @@ namespace CppCore
             ST&    mQueue;
          public:
             INLINE Iterator(size_t idx, ST& queue) : mIdx(idx), mQueue(queue) { }
-            INLINE T&        operator*()                           { return mQueue[mIdx];                 }
-            INLINE Iterator& operator++()                          { mIdx--; return *this;                }
-            INLINE bool      operator!=(const Iterator& end) const { return mIdx != StdLimitSizeT::max(); }
+            INLINE T&        operator*()                           { return mQueue[mIdx];  }
+            INLINE Iterator& operator++()                          { mIdx--; return *this; }
+            INLINE bool      operator!=(const Iterator& end) const { return mIdx != numeric_limits<size_t>::max(); }
          };
 
       public:
@@ -427,7 +427,7 @@ namespace CppCore
 
             // backwards for removal!
             const size_t beg = mLength - 1;
-            const size_t end = StdLimitSizeT::max();
+            const size_t end = numeric_limits<size_t>::max();
 
             for (size_t i = beg; i != end; i--)
             {

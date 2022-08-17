@@ -23,7 +23,7 @@ namespace CppCore
       /// Loads a file completely to memory
       /// </summary>
       template<typename BUFFER>
-      INLINE static bool loadToMemory(const StdString& file, BUFFER& buf)
+      INLINE static bool loadToMemory(const string& file, BUFFER& buf)
       {
       #ifdef CPPCORE_OS_WINDOWS
          DWORD read;
@@ -56,7 +56,7 @@ namespace CppCore
             return false;
          }
       #else
-         StdIfStream s(file, StdIfStream::binary | StdIfStream::in | StdIfStream::ate);
+         ifstream s(file, ifstream::binary | ifstream::in | ifstream::ate);
          s.rdbuf()->pubsetbuf(0, 0);
 
          if (!s.is_open())

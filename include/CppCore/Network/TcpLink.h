@@ -198,7 +198,7 @@ namespace CppCore
       /// <summary>
       /// Elapsed time since successfully connected (client) or accepted (server).
       /// </summary>
-      INLINE const Duration& getDuration() const { return Clock::now() - mStartTime; }
+      INLINE const Duration getDuration() const { return Clock::now() - mStartTime; }
 
       /// <summary>
       /// Last time when data was succesfully read from the socket.
@@ -208,7 +208,7 @@ namespace CppCore
       /// <summary>
       /// Elapsed time since some data was successfully read from the socket.
       /// </summary>
-      INLINE const DurationHR& getLastReceiveDuration() const { return ClockHR::now() - mLastReceive; }
+      INLINE const DurationHR getLastReceiveDuration() const { return ClockHR::now() - mLastReceive; }
 
       /// <summary>
       /// Last time when data was sucessfully written to the socket.
@@ -218,7 +218,7 @@ namespace CppCore
       /// <summary>
       /// Elapsed time since some data was successfully written to the socket.
       /// </summary>
-      INLINE const DurationHR& getLastSendDuration() const { return ClockHR::now() - mLastSend; }
+      INLINE const DurationHR getLastSendDuration() const { return ClockHR::now() - mLastSend; }
 
       /// <summary>
       /// True if shutdown() has been called, but not yet reset().

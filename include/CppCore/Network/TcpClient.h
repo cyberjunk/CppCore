@@ -97,7 +97,7 @@ namespace CppCore
       Runnable           mRunnableDisconnect;
       Runnable           mRunnableSend;
       Runnable           mRunnableRecv;
-      StdString          mHost;
+      string             mHost;
       uint16_t           mPort;
 
    public:
@@ -126,7 +126,7 @@ namespace CppCore
          mRunnableConnect([this]() { runConnect(); }),
          mRunnableDisconnect([this]() { runDisconnect(); }),
          mRunnableSend([this]() { runSend(); }),
-         mRunnableRecv([this]() { runReceive(); }, true, StdMilliSeconds(0)),
+         mRunnableRecv([this]() { runReceive(); }, true, milliseconds(0)),
          mHost(""),
          mPort(0)
       {
@@ -497,7 +497,7 @@ namespace CppCore
       /// Initiates a new connection with specified endpoint, but only if currently disconnected.
       /// Switches ConnectionState from 'Disconnected' to 'Connecting'.
       /// </summary>
-      INLINE bool connect(const StdString& host, const uint16_t port, const uint32_t timeoutms = 3000)
+      INLINE bool connect(const string& host, const uint16_t port, const uint32_t timeoutms = 3000)
       {
          CPPCORE_MUTEX_LOCK(mMutexConnecting); // lock con
 

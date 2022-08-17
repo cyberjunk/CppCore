@@ -42,15 +42,15 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE Application(
-         const bool       logToConsole = true, 
-         const bool       logToFile    = true, 
-         const StdString& logFile      = "app.log") :
+         const bool    logToConsole = true, 
+         const bool    logToFile    = true, 
+         const string& logFile      = "app.log") :
          Looper(mSchedule),
          mThreadPool(),
          mLogger(mThreadPool, logToConsole, logToFile, logFile)
       {
          // log thread count and ids
-         StdStringStream s;
+         stringstream s;
          s << "ThreadPool started with " << mThreadPool.getSize() << " threads: ";
          for (size_t i = 0; i < mThreadPool.getSize(); i++)
             s << mThreadPool.getId(i) << ' ';
@@ -64,13 +64,13 @@ namespace CppCore
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      INLINE void log(const StdString& message, const Logger::Type logType = Logger::Type::Info)
+      INLINE void log(const string& message, const Logger::Type logType = Logger::Type::Info)
       {
          mLogger.log(message, Logger::Channel::App, logType);
       }
-      INLINE void logError(const StdString& message) { this->log(message, Logger::Type::Error);   }
-      INLINE void logWarn(const StdString& message)  { this->log(message, Logger::Type::Warning); }
-      INLINE void logDebug(const StdString& message) { this->log(message, Logger::Type::Debug);   }
+      INLINE void logError(const string& message) { this->log(message, Logger::Type::Error);   }
+      INLINE void logWarn(const string& message)  { this->log(message, Logger::Type::Warning); }
+      INLINE void logDebug(const string& message) { this->log(message, Logger::Type::Debug);   }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,7 +107,7 @@ namespace CppCore
       /// <summary>
       /// Tries to schedule a Runnable for execution in the mainthread.
       /// </summary>
-      INLINE bool schedule(Runnable& runnable, StdTimePoint executeAt = StdTimePoint(StdNanoSeconds(0))) override
+      INLINE bool schedule(Runnable& runnable, TimePointHR executeAt = TimePointHR(nanoseconds(0))) override
       {
          return mSchedule.schedule(runnable, executeAt);
       }

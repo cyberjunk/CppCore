@@ -77,7 +77,7 @@ namespace CppCore { namespace Example
          mWindow.setCustomCursor(true);
          mWindow.create();
 
-         this->schedule(mRunUpdate, StdClock::now());
+         this->schedule(mRunUpdate, ClockHR::now());
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////

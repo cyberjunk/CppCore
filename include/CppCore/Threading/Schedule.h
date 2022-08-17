@@ -43,10 +43,10 @@ namespace CppCore
    protected:
       CPPCORE_ALIGN64 RunnablePriorityQueue  mTimers;
       CPPCORE_ALIGN64 RunnableQueue          mTimersInstant;
-      StdMutex               mMutexTimers;
-      StdConditionVariable   mCondSleep;
-      const DurationHR       mDefaultSleep;
-      const DurationHR       mSleepThreshold;
+      mutex              mMutexTimers;
+      condition_variable mCondSleep;
+      const DurationHR   mDefaultSleep;
+      const DurationHR   mSleepThreshold;
 
    public:
       /// <summary>
@@ -81,7 +81,7 @@ namespace CppCore
       {
          bool ok = false;                    // default return
          runnable.lock();                    // first lock runnable (lower scope)
-         StdUniqueLockMutex l(mMutexTimers); // then lock schedule (greater scope)
+         unique_lock<mutex> l(mMutexTimers); // then lock schedule (greater scope)
 
          // get runnable state
          const Runnable::State STATE = runnable.getState();
@@ -127,7 +127,7 @@ namespace CppCore
       {
          bool ok = false;                    // default return
          runnable.lock();                    // first lock runnable (lower scope)
-         StdUniqueLockMutex l(mMutexTimers); // then lock schedule (greater scope)
+         unique_lock<mutex> l(mMutexTimers); // then lock schedule (greater scope)
 
          // must be scheduled to cancel
          if (runnable.isScheduled())
@@ -167,7 +167,7 @@ namespace CppCore
          // (1) Get a Runnable to execute (locked)
 
          // lock schedule
-         StdUniqueLockMutex l(mMutexTimers);
+         unique_lock<mutex> l(mMutexTimers);
 
          // try to get an instant runnable first, otherwise try to get a normal runnable
          bool ok = mTimersInstant.popFront(runnable) ||
@@ -196,7 +196,7 @@ namespace CppCore
             if (runnable->isRepeat())
             {
                // preferred next execution
-               const StdTimePoint nextRun =
+               const TimePointHR nextRun =
                   runnable->getExecutionTime() +
                   runnable->getInterval();
 
@@ -235,7 +235,7 @@ namespace CppCore
             if (timeLeft > mSleepThreshold)
             {
                looper.setExecuting(false);
-               StdCvStatus cvstat = mCondSleep.wait_until(l, runnable->getExecutionTime());
+               cv_status cvstat = mCondSleep.wait_until(l, runnable->getExecutionTime());
                looper.setExecuting(true);
             }
 
@@ -256,7 +256,7 @@ namespace CppCore
          else
          {
             looper.setExecuting(false);
-            StdCvStatus cvstat = mCondSleep.wait_for(l, mDefaultSleep);
+            cv_status cvstat = mCondSleep.wait_for(l, mDefaultSleep);
             looper.setExecuting(true);
          }
 

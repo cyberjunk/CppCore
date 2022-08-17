@@ -24,12 +24,12 @@ namespace CppCore
    class Thread : public Looper, public Handler
    {
    protected:
-      Schedule<>&          mSchedule;
-      StdThread            mThread;
-      StdMutex             mMutexStartStop;
-      StdMutex             mMutexWait;
-      StdConditionVariable mWait;
-      StdThread::id        mId;
+      Schedule<>&        mSchedule;
+      thread             mThread;
+      mutex              mMutexStartStop;
+      mutex              mMutexWait;
+      condition_variable mWait;
+      thread::id         mId;
 
       virtual void init() { }
       virtual void shutdown() { }
@@ -50,7 +50,7 @@ namespace CppCore
       /// <summary>
       /// Returns the internal Id of the thread
       /// </summary>
-      INLINE const StdThread::id& getId() const { return mId; }
+      INLINE const thread::id& getId() const { return mId; }
 
       /// <summary>
       /// Start the thread
@@ -68,7 +68,7 @@ namespace CppCore
 
             // lock startup wait
             // forces started thread to wait until we're in 'mWait.wait'
-            StdUniqueLockMutex l(mMutexWait);
+            unique_lock<mutex> l(mMutexWait);
 
             // start thread
             mThread = ::std::thread(&Thread::threadProc, this);
@@ -109,7 +109,7 @@ namespace CppCore
       /// <summary>
       /// Tries to schedule a Runnable for execution in the Schedule used by this Thread.
       /// </summary>
-      INLINE bool schedule(Runnable& runnable, StdTimePoint executeAt = StdTimePoint(StdNanoSeconds(0))) override
+      INLINE bool schedule(Runnable& runnable, TimePointHR executeAt = TimePointHR(nanoseconds(0))) override
       {
          return mSchedule.schedule(runnable, executeAt);;
       }
@@ -130,7 +130,7 @@ namespace CppCore
 
          // lock / wait until 'mWait.wait()' is called
          // and starter is ready for our notification
-         StdUniqueLockMutex l(mMutexWait);
+         unique_lock<mutex> l(mMutexWait);
 
          // now notify starter that we're running
          l.unlock();
@@ -161,12 +161,12 @@ namespace CppCore
          using Allocator = ::std::allocator<THREAD>;
 
       protected:
-         Schedule<>    mSchedule;
-         Allocator     mAllocator;
-         StdAtomicBool mIsRunning;
-         StdMutex      mMutexStartStop;
-         THREAD*       mThreads;
-         const size_t  mNumThreads;
+         Schedule<>   mSchedule;
+         Allocator    mAllocator;
+         atomic<bool> mIsRunning;
+         mutex        mMutexStartStop;
+         THREAD*      mThreads;
+         const size_t mNumThreads;
 
          /// <summary>
          ///
@@ -214,7 +214,7 @@ namespace CppCore
          /// <summary>
          /// Returns the internal Id of the thread
          /// </summary>
-         INLINE const StdThread::id& getId(size_t idx) const { return mThreads[idx].getId(); }
+         INLINE const thread::id& getId(size_t idx) const { return mThreads[idx].getId(); }
 
          /// <summary>
          /// Returns true if the threadpool is runnning
@@ -259,7 +259,7 @@ namespace CppCore
          /// <summary>
          /// Tries to schedule a Runnable for execution in the Runnable used by this Pool.
          /// </summary>
-         INLINE bool schedule(Runnable& runnable, const StdTimePoint executeAt = StdTimePoint(StdNanoSeconds(0))) override
+         INLINE bool schedule(Runnable& runnable, const TimePointHR executeAt = TimePointHR(nanoseconds(0))) override
          {
             return mSchedule.schedule(runnable, executeAt);;
          }

@@ -401,93 +401,54 @@ namespace CppCore
    using ::std::chrono::microseconds;
    using ::std::chrono::nanoseconds;
    
-   // for timestamps/dates
+   // for timestamps/dates (precision: seconds)
    using Clock     = system_clock;
    using TimePoint = Clock::time_point;
    using Duration  = Clock::duration;
 
-   // for measuring intervals
+   // for measuring intervals (precision: nanoseconds)
    using ClockHR     = high_resolution_clock;
    using TimePointHR = ClockHR::time_point;
    using DurationHR  = ClockHR::duration;
 
-   // deprecated old for chrono
-   typedef ::std::chrono::high_resolution_clock           StdClock;
-   typedef ::std::chrono::time_point<StdClock>            StdTimePoint;
-   typedef ::std::chrono::high_resolution_clock::duration StdDuration;
-   typedef ::std::chrono::seconds                         StdSeconds;
-   typedef ::std::chrono::milliseconds                    StdMilliSeconds;
-   typedef ::std::chrono::microseconds                    StdMicroSeconds;
-   typedef ::std::chrono::nanoseconds                     StdNanoSeconds;
+   // thread
+   using ::std::thread;
 
-   // Standard C++ TypeDefs
-   typedef ::std::thread                        StdThread;
-   typedef ::std::atomic<bool>                  StdAtomicBool;
-   typedef ::std::mutex                         StdMutex;
-   typedef ::std::recursive_mutex               StdRecursiveMutex;
-   typedef ::std::shared_mutex                  StdSharedMutex;
-   typedef ::std::condition_variable_any        StdConditionVariableAny;
-   typedef ::std::condition_variable            StdConditionVariable;
-   typedef ::std::milli                         StdMilli;
-   typedef ::std::micro                         StdMicro;
-   typedef ::std::nano                          StdNano;
-   typedef ::std::unique_lock<StdMutex>                   StdUniqueLockMutex;
-   typedef ::std::shared_lock<StdSharedMutex>             StdSharedLockMutex;
-   typedef ::std::cv_status                               StdCvStatus;
+   // mutexes
+   using ::std::mutex;
+   using ::std::shared_mutex;
+   using ::std::recursive_mutex;
 
-   typedef ::std::atomic<uint64_t> StdAtomicUInt64;
-   typedef ::std::atomic<uint32_t> StdAtomicUInt32;
+   // locks
+   using ::std::unique_lock;
+   using ::std::shared_lock;
 
-   typedef ::std::ostream StdOStream;
-   typedef ::std::istream StdIStream;
-   typedef ::std::ifstream StdIfStream;
-   typedef ::std::ofstream StdOfStream;
+   // condition variable
+   using ::std::condition_variable_any;
+   using ::std::condition_variable;
+   using ::std::cv_status;
 
+   // atomic
+   using ::std::atomic;
 
-   typedef ::std::string       StdString;
-   typedef ::std::stringstream StdStringStream;
-   typedef ::std::numeric_limits<size_t> StdLimitSizeT;
+   // streams
+   using ::std::ostream;
+   using ::std::ofstream;
+   using ::std::istream;
+   using ::std::ifstream;
 
-   // C++17
-   typedef ::std::string_view StdStringView;
-   typedef ::std::experimental::filesystem::directory_iterator  StdFileSystemDirectoryIterator;
-   typedef ::std::experimental::filesystem::path                StdFileSystemPath;
+   // strings
+   using ::std::string;
+   using ::std::stringstream;
+   using ::std::string_view;
 
-   /// <summary>
-   /// Checks if 'str' starts with 'match'.
-   /// </summary>
-   template<bool CASESENSITIVE = false>
-   INLINE bool startsWith(const StdString& str, const StdString& match)
-   {
-      // get lengths
-      const size_t LENS = str.length();
-      const size_t LENM = match.length();
+   // numeric_limits
+   using ::std::numeric_limits;
 
-      // match must be smaller or equal to str
-      if (LENM <= LENS)
-      {
-         // compare characters
-         for (size_t i = 0; i < LENM; i++)
-         {
-            if (CASESENSITIVE)
-            {
-               if (str[i] != match[i])
-                  return false;
-            }
-            else
-            {
-               if (::tolower(str[i]) != ::tolower(match[i]))
-                  return false;
-            }
-         }
+   // filesystem
+   using ::std::experimental::filesystem::path;
+   using ::std::experimental::filesystem::directory_iterator;
 
-         // match
-         return true;
-      }
-
-      // match is larger than str
-      // hence str can not start with match
-      else
-         return false;
-   }
+   // deprecated: to be removed
+   typedef ::std::string StdString;
 }

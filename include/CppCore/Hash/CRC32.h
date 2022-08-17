@@ -138,12 +138,12 @@ namespace CppCore
          return Hash::hashMem<CRC32>(data, len, digest);
       }
 
-      INLINE static bool hashStream(StdIStream& s, const uint64_t len, void* digest)
+      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
       {
          return Hash::hashStream<CRC32>(s, len, digest);
       }
 
-      INLINE static bool hashFile(const StdString& file, void* digest)
+      INLINE static bool hashFile(const string& file, void* digest)
       {
          return Hash::hashFile<CRC32>(file, digest);
       }
@@ -275,12 +275,12 @@ namespace CppCore
          return Hash::hashMem<CRC32Cg>(data, len, digest);
       }
 
-      INLINE static bool hashStream(StdIStream& s, const uint64_t len, void* digest)
+      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
       {
          return Hash::hashStream<CRC32Cg>(s, len, digest);
       }
 
-      INLINE static bool hashFile(const StdString& file, void* digest)
+      INLINE static bool hashFile(const string& file, void* digest)
       {
          return Hash::hashFile<CRC32Cg>(file, digest);
       }
@@ -406,12 +406,12 @@ namespace CppCore
          return Hash::hashMem<CRC32Cs>(data, len, digest);
       }
 
-      INLINE static bool hashStream(StdIStream& s, const uint64_t len, void* digest)
+      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
       {
          return Hash::hashStream<CRC32Cs>(s, len, digest);
       }
 
-      INLINE static bool hashFile(const StdString& file, void* digest)
+      INLINE static bool hashFile(const string& file, void* digest)
       {
          return Hash::hashFile<CRC32Cs>(file, digest);
       }

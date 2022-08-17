@@ -96,7 +96,7 @@ namespace CppCore
       /// Calculates SHA hash of an input stream of known length.
       /// Hash is returned in digest, default SHA seeds are used.
       /// </summary>
-      INLINE static bool hashStream(StdIStream& s, const uint64_t len, void* digest)
+      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
       {
          return Hash::hashStream<TSHA>(s, len, digest);
       }
@@ -105,7 +105,7 @@ namespace CppCore
       /// Calculates SHA hash of a file.
       /// Hash is returned in digest, default SHA seeds are used.
       /// </summary>
-      INLINE static bool hashFile(const StdString& file, void* digest)
+      INLINE static bool hashFile(const string& file, void* digest)
       {
          return Hash::hashFile<TSHA>(file, digest);
       }

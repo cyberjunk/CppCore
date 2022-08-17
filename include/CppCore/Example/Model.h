@@ -13,20 +13,20 @@ namespace CppCore
    class Model
    {
    protected:
-      uint32_t  mId;
-      StdString mName;
+      uint32_t mId;
+      string   mName;
 
    public:
-      INLINE Model(uint32_t id = 0, const StdString& name = "") : mId(id), mName(name) { }
+      INLINE Model(uint32_t id = 0, const string& name = "") : mId(id), mName(name) { }
 
-      INLINE uint32_t         getId()   const { return mId;   }
-      INLINE const StdString& getName() const { return mName; }
+      INLINE uint32_t      getId()   const { return mId;   }
+      INLINE const string& getName() const { return mName; }
 
-      INLINE uint32_t&  refId()   { return mId;   }
-      INLINE StdString& refName() { return mName; }
+      INLINE uint32_t& refId()   { return mId;   }
+      INLINE string&   refName() { return mName; }
 
-      INLINE void setId(const uint32_t id)       { mId = id;     }
-      INLINE void setName(const StdString& name) { mName = name; }
+      INLINE void setId(const uint32_t id)    { mId = id;     }
+      INLINE void setName(const string& name) { mName = name; }
 
       INLINE bool  operator == (const Model& m) const { return getId() == m.getId() && getName() == m.getName(); }
       INLINE bool  operator != (const Model& m) const { return !(*this == m); }
@@ -39,7 +39,7 @@ namespace CppCore
       /// <summary>
       /// Example Model Name Comparer
       /// </summary>
-      typedef Comparer<Model, const StdString&>::Name ComparerName;
+      typedef Comparer<Model, const string&>::Name ComparerName;
 
       /// <summary>
       /// Example Model Arrays
@@ -83,15 +83,15 @@ namespace CppCore
                      uint32_t, ComparerId::OP2K>(id, idx);
                }
                ////////////////////////////////////////////////////////////////////////////////////
-               INLINE bool findIdxUnsortedByName(const StdString& name, size_t& idx)
+               INLINE bool findIdxUnsortedByName(const string& name, size_t& idx)
                {
                   return ::CppCore::Array::Dyn::ST<T, CONSTRUCT>::template findIdxUnsorted<
-                     StdString, ComparerName::OP2K>(name, idx);
+                     string, ComparerName::OP2K>(name, idx);
                }
-               INLINE bool findIdxSortedByName(const StdString& name, size_t& idx)
+               INLINE bool findIdxSortedByName(const string& name, size_t& idx)
                {
                   return ::CppCore::Array::Dyn::ST<T, CONSTRUCT>::template findIdxSorted<
-                     StdString, ComparerName::OP2K>(name, idx);
+                     string, ComparerName::OP2K>(name, idx);
                }
                ////////////////////////////////////////////////////////////////////////////////////
                INLINE bool removeOneUnsortedById(const uint32_t id, T& item, size_t& idx)
@@ -105,15 +105,15 @@ namespace CppCore
                      uint32_t, ComparerId::OP2K>(id, item, idx);
                }
                ////////////////////////////////////////////////////////////////////////////////////
-               INLINE bool removeOneUnsortedByName(const StdString& name, T& item, size_t& idx)
+               INLINE bool removeOneUnsortedByName(const string& name, T& item, size_t& idx)
                {
                   return ::CppCore::Array::Dyn::ST<T, CONSTRUCT>::template removeOneUnsorted<
-                     StdString, ComparerName::OP2K>(name, item, idx);
+                     string, ComparerName::OP2K>(name, item, idx);
                }
-               INLINE bool removeOneSortedByName(const StdString& name, T& item, size_t& idx)
+               INLINE bool removeOneSortedByName(const string& name, T& item, size_t& idx)
                {
                   return ::CppCore::Array::Dyn::ST<T, CONSTRUCT>::template removeOneSorted<
-                     StdString, ComparerName::OP2K>(name, item, idx);
+                     string, ComparerName::OP2K>(name, item, idx);
                }
                ////////////////////////////////////////////////////////////////////////////////////
                INLINE size_t removeAllById(uint32_t id)
@@ -121,10 +121,10 @@ namespace CppCore
                   return ::CppCore::Array::Dyn::ST<T, CONSTRUCT>::template removeAll<
                      uint32_t, ComparerId::OP2K>(id);
                }
-               INLINE size_t removeAllByName(const StdString& name)
+               INLINE size_t removeAllByName(const string& name)
                {
                   return ::CppCore::Array::Dyn::ST<T, CONSTRUCT>::template removeAll<
-                     StdString, ComparerName::OP2K>(name);
+                     string, ComparerName::OP2K>(name);
                }
                ////////////////////////////////////////////////////////////////////////////////////
             };
@@ -163,15 +163,15 @@ namespace CppCore
                      uint32_t, ComparerId::OP2K>(id, idx);
                }
                ////////////////////////////////////////////////////////////////////////////////////
-               INLINE bool findIdxUnsortedByName(const StdString& name, size_t& idx)
+               INLINE bool findIdxUnsortedByName(const string& name, size_t& idx)
                {
                   return ::CppCore::Array::Fix::ST<T, SIZE>::template findIdxUnsorted<
-                     StdString, ComparerName::OP2K>(name, idx);
+                     string, ComparerName::OP2K>(name, idx);
                }
-               INLINE bool findIdxSortedByName(const StdString& name, size_t& idx)
+               INLINE bool findIdxSortedByName(const string& name, size_t& idx)
                {
                   return ::CppCore::Array::Fix::ST<T, SIZE>::template findIdxSorted<
-                     StdString, ComparerName::OP2K>(name, idx);
+                     string, ComparerName::OP2K>(name, idx);
                }
                ////////////////////////////////////////////////////////////////////////////////////
                INLINE bool removeOneUnsortedById(const uint32_t id, T& item, size_t& idx)
@@ -185,15 +185,15 @@ namespace CppCore
                      uint32_t, ComparerId::OP2K>(id, item, idx);
                }
                ////////////////////////////////////////////////////////////////////////////////////
-               INLINE bool removeOneUnsortedByName(const StdString& name, T& item, size_t& idx)
+               INLINE bool removeOneUnsortedByName(const string& name, T& item, size_t& idx)
                {
                   return ::CppCore::Array::Fix::ST<T, SIZE>::template removeOneUnsorted<
-                     StdString, ComparerName::OP2K>(name, item, idx);
+                     string, ComparerName::OP2K>(name, item, idx);
                }
-               INLINE bool removeOneSortedByName(const StdString& name, T& item, size_t& idx)
+               INLINE bool removeOneSortedByName(const string& name, T& item, size_t& idx)
                {
                   return ::CppCore::Array::Fix::ST<T, SIZE>::template removeOneSorted<
-                     StdString, ComparerName::OP2K>(name, item, idx);
+                     string, ComparerName::OP2K>(name, item, idx);
                }
                ////////////////////////////////////////////////////////////////////////////////////
                INLINE size_t removeAllById(uint32_t id)
@@ -201,10 +201,10 @@ namespace CppCore
                   return ::CppCore::Array::Fix::ST<T, SIZE>::template removeAll<
                      uint32_t, ComparerId::OP2K>(id);
                }
-               INLINE size_t removeAllByName(const StdString& name)
+               INLINE size_t removeAllByName(const string& name)
                {
                   return ::CppCore::Array::Fix::ST<T, SIZE>::template removeAll<
-                     StdString, ComparerName::OP2K>(name);
+                     string, ComparerName::OP2K>(name);
                }
                ////////////////////////////////////////////////////////////////////////////////////
             };
@@ -230,7 +230,7 @@ namespace CppCore
          INLINE HashTableName() { }
       public:
          template<size_t SIZE, size_t MAXENTRIES, typename T = Model*>
-         class ST : public HashTable::ST<T, SIZE, MAXENTRIES, StdString, Hasher::Murmur3::String, Model::ComparerName::OP2K>
+         class ST : public HashTable::ST<T, SIZE, MAXENTRIES, string, Hasher::Murmur3::String, Model::ComparerName::OP2K>
          {
          };
       };

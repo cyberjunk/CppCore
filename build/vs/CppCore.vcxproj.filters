@@ -188,6 +188,7 @@
     <ClInclude Include="..\..\include\CppCore\Network\TcpClient.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\StringUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Threading">

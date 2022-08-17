@@ -113,7 +113,7 @@ namespace CppCore
       /// <summary>
       /// Checks if a string includes a valid UUID. Does not verify embedded version or variant.
       /// </summary>
-      INLINE static bool isUuidString(const StdString& s)
+      INLINE static bool isUuidString(const string& s)
       {
          // validate length
          if (s.length() != SIZE_STRING)
@@ -226,7 +226,7 @@ namespace CppCore
       /// Parses the UUID from string. Does not guarantee Version 4.
       /// TODO: Optimize this
       /// </summary>
-      INLINE bool fromUuidString(const StdString& s)
+      INLINE bool fromUuidString(const string& s)
       {
          if (isUuidString(s))
          {
@@ -271,7 +271,7 @@ namespace CppCore
       /// <summary>
       /// Creates a new UUIDv4 from given string.
       /// </summary>
-      INLINE static Uuid createFromUuidString(const StdString& s)
+      INLINE static Uuid createFromUuidString(const string& s)
       {
          Uuid id;
          id.fromUuidString(s);

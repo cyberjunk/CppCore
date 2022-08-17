@@ -81,14 +81,14 @@ namespace CppCore { namespace Example
       class Base : public CppCore::Message<THEADER, TSIZE>
       {
       public:
-         INLINE bool writeString(const StdString& str)
+         INLINE bool writeString(const string& str)
          {
             const uint16_t LEN = (uint16_t)str.length();
             return 
                this->write(LEN) &&
                this->writeData(str.c_str(), LEN);
          }
-         INLINE bool readString(StdString& str)
+         INLINE bool readString(string& str)
          {
             uint16_t len; 
             if (this->read(len) && this->mLengthRead + len <= TSIZE)
@@ -159,7 +159,7 @@ namespace CppCore { namespace Example
             this->setType(Type::SESSIONID);
             this->write(sessionId);
          }
-         INLINE void createPayload(const uint8_t val1, const uint16_t val2, const uint32_t val3, const StdString& val4, const Model* val5, const uint16_t val5len)
+         INLINE void createPayload(const uint8_t val1, const uint16_t val2, const uint32_t val3, const string& val4, const Model* val5, const uint16_t val5len)
          {
             this->prepareWrite();
             this->setType(Type::PAYLOAD);

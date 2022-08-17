@@ -219,8 +219,8 @@ namespace CppCore { namespace Example
          uint8_t  val1;
          uint16_t val2;
          uint32_t val3;
-         StdString val4;
-         Model val5[16];
+         string   val4;
+         Model    val5[16];
          uint16_t len;
 
          msg.prepareRead();

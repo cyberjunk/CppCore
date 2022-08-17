@@ -165,7 +165,7 @@ namespace CppCore
       CPPCORE_ALIGN16 Callback&    mCallback;
       CPPCORE_ALIGN16 uint16_t     mPort;
       CPPCORE_ALIGN16 TcpSocket    mSocketTcp;
-      CPPCORE_ALIGN16 StdDuration  mTimeoutReceive;
+      CPPCORE_ALIGN16 DurationHR   mTimeoutReceive;
       CPPCORE_ALIGN16 Runnable     mRunnablePollAccept;
       CPPCORE_ALIGN16 Runnable     mRunnablePollTcp;
       CPPCORE_ALIGN16 pollfd       mPollTcp[CPPCORE_NETSERVER_MAXCLIENTS];
@@ -218,7 +218,7 @@ namespace CppCore
          mPollSessions.clear();
 
          // current timestamp
-         const StdTimePoint now = StdClock::now();
+         const TimePointHR now = ClockHR::now();
 
          // build poll data of connected clients
          for (int i = 0; i < CPPCORE_NETSERVER_MAXCLIENTS; i++)
@@ -256,15 +256,18 @@ namespace CppCore
          // how many we're going to observe
          const size_t LEN = mPollSessions.length();
 
+         // and how long we will poll them
+         constexpr int POLLMS = 16;
+
          // if no client is connected, we have to do the same sleep manual
          // because poll won't sleep and hence we would eat a lot of cpu
          if (LEN == 0)
-            ::std::this_thread::sleep_for(StdMilliSeconds(16));
+            ::std::this_thread::sleep_for(milliseconds(POLLMS));
 
          else
          {
             // poll them now
-            const int r = Socket::Op::poll(mPollTcp, (int)LEN, 16);
+            const int r = Socket::Op::poll(mPollTcp, (int)LEN, POLLMS);
 
             // < 0 error || = 0 timeout || > 0 new tcp data or write recover for this many sockets
             if (r <= 0)
@@ -315,19 +318,19 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE TcpServer(
-         uint16_t port,
+         uint16_t  port,
          Handler&  handler,
          Handler&  threadPool,
          Handler&  messageHandler,
          Logger&   logger,
          Callback& callBack,
-         const StdDuration& timeoutReceive = StdSeconds(5)) :
+         const DurationHR& timeoutReceive = seconds(5)) :
          Logger::Producer<Logger, Logger::Channel::Network>(logger),
          mPort(port),
          mSocketTcp(),
          mTimeoutReceive(timeoutReceive),
-         mRunnablePollAccept([this]() { runPollAccept(); }, true, StdMilliSeconds(0)),
-         mRunnablePollTcp([this]() { runPollTcp(); }, true, StdMilliSeconds(0)),
+         mRunnablePollAccept([this]() { runPollAccept(); }, true, milliseconds(0)),
+         mRunnablePollTcp([this]() { runPollTcp(); }, true, milliseconds(0)),
          mHandler(handler),
          mThreadPool(threadPool),
          mMessageHandler(messageHandler),

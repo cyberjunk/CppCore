@@ -147,16 +147,16 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE NetServer(
-         uint16_t port,
+         uint16_t  port,
          Handler&  handler,
          Handler&  threadPool,
          Handler&  messageHandler,
          Logger&   logger,
          Callback& callBack,
-         const StdDuration& timeoutReceive = StdSeconds(5)) :
+         const DurationHR& timeoutReceive = seconds(5)) :
          Base(port, handler, threadPool, messageHandler, logger, callBack, timeoutReceive),
          mSocketUdp(),
-         mRunnablePollUdp([this]() { runPollUdp(); }, true, StdMilliSeconds(0))
+         mRunnablePollUdp([this]() { runPollUdp(); }, true, milliseconds(0))
       {
          // create udp socket
          this->log("Creating UDP socket and binding to port " + std::to_string(this->mPort));

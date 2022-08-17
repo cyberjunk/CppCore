@@ -18,7 +18,7 @@ int main()
       x.genprime(gen, mem, 512);
       watch.stop();
       s = x.toString();
-      printf("%lli  %s\n\n", watch.getDuration().count() / 1000000, s.c_str());
+      printf("%lli  %s\n\n", watch.getDuration().count() / 1000000ULL, s.c_str());
    }
    
    return 0;

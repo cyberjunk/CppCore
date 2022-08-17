@@ -135,7 +135,7 @@ namespace CppCore
       /// Calculates 32-Bit Hash of an input stream.
       /// 'seed' must be initially set with 32-Bit seed and then returns 32-Bit hash.
       /// </summary>
-      INLINE static bool hashStream(StdIStream& s, const uint64_t len, void* digest)
+      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
       {
          // stream with zero size
          if (len == 0)
@@ -197,7 +197,7 @@ namespace CppCore
       /// <summary>
       /// 
       /// </summary>
-      INLINE static bool hashFile(const StdString& file, void* digest)
+      INLINE static bool hashFile(const string& file, void* digest)
       {
          return Hash::hashFile<Murmur3>(file, digest);
       }

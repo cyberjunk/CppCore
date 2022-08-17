@@ -49,7 +49,7 @@ namespace CppCore
             INLINE Iterator(size_t idx, ST& heap) : mIdx(idx), mHeap(heap) { }
             INLINE T&        operator*()  { return mHeap[mIdx]; }
             INLINE Iterator& operator++() { mIdx--; return *this; }
-            INLINE bool      operator!=(const Iterator& end) const { return mIdx != StdLimitSizeT::max(); }
+            INLINE bool      operator!=(const Iterator& end) const { return mIdx != numeric_limits<size_t>::max(); }
          };
 
          /// <summary>

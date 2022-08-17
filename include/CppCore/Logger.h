@@ -26,11 +26,11 @@ namespace CppCore
       struct LogEntry
       {
       public:
-         size_t        Channel;
-         Type          Type;
-         time_t        Time;
-         StdThread::id ThreadId;
-         StdString     Message;
+         size_t     Channel;
+         Type       Type;
+         time_t     Time;
+         thread::id ThreadId;
+         string     Message;
          INLINE size_t memOnHeap() { return Message.capacity() + 1; }
       };
 
@@ -44,13 +44,13 @@ namespace CppCore
          TLOGGER& mLogger;
       public:
          INLINE Producer(TLOGGER& logger) : mLogger(logger) { }
-         INLINE void log(const StdString& message, const Logger::Type logType = Logger::Type::Info)
+         INLINE void log(const string& message, const Logger::Type logType = Logger::Type::Info)
          {
             mLogger.log(message, CHANNEL, logType);
          }
-         INLINE void logError(const StdString& message) { this->log(message, Logger::Type::Error);   }
-         INLINE void logWarn(const StdString& message)  { this->log(message, Logger::Type::Warning); }
-         INLINE void logDebug(const StdString& message) { this->log(message, Logger::Type::Debug);   }
+         INLINE void logError(const string& message) { this->log(message, Logger::Type::Error);   }
+         INLINE void logWarn(const string& message)  { this->log(message, Logger::Type::Warning); }
+         INLINE void logDebug(const string& message) { this->log(message, Logger::Type::Debug);   }
       };
 
       typedef Queue::MT<LogEntry*, CPPCORE_LOGSIZE>    LogQueue;
@@ -61,7 +61,7 @@ namespace CppCore
       Runnable    mRunnableLog;
       LogQueue    mQueue;
       LogPool     mPool;
-      StdOfStream mStream;
+      ofstream    mStream;
       std::locale mLocale;
       bool        mLogToConsole;
       bool        mLogToFile;
@@ -129,7 +129,7 @@ namespace CppCore
          // convert timestamp to utc time
          const ::std::tm* gm = ::std::gmtime(&entry.Time);
 
-         StdStringStream ss;
+         stringstream ss;
 
          // workaround? (fixes comma in thread id ints but maintains ßöä in message)
          ss.imbue(mLocale);
@@ -157,7 +157,12 @@ namespace CppCore
       /// <summary>
       /// Constructor
       /// </summary>
-      INLINE Logger(Handler& threadPool, bool logToConsole = true, bool logToFile = true, const StdString& logFile = "app.log", const StdDuration logInterval = StdMilliSeconds(100)) :
+      INLINE Logger(
+         Handler& threadPool, 
+         bool     logToConsole           = true, 
+         bool     logToFile              = true, 
+         const    string& logFile        = "app.log",
+         const    DurationHR logInterval = milliseconds(100)) :
          mThreadPool(threadPool),
          mLogToConsole(logToConsole),
          mLogToFile(logToFile),
@@ -166,10 +171,10 @@ namespace CppCore
       {
          // init logfile stream
          if (logToFile)
-            mStream = StdOfStream(logFile, StdOfStream::out);
+            mStream = ofstream(logFile, ofstream::out);
 
          // schedule the log timer
-         threadPool.schedule(mRunnableLog, StdClock::now() + logInterval);
+         threadPool.schedule(mRunnableLog, ClockHR::now() + logInterval);
 
          // log startup
          log("Created Logger", Channel::Log, Type::Info);
@@ -190,7 +195,7 @@ namespace CppCore
       /// <summary>
       /// Create a log entry
       /// </summary>
-      INLINE bool log(const StdString& message, const size_t channel = 0, const Type type = Type::Info)
+      INLINE bool log(const string& message, const size_t channel = 0, const Type type = Type::Info)
       {
          // logging fully disabled
          if (!mLogToFile && !mLogToConsole)

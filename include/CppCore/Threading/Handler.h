@@ -19,7 +19,7 @@ namespace CppCore
       /// <summary>
       /// Tries to schedule a Runnable for execution in this Handler.
       /// </summary>
-      INLINE virtual bool schedule(Runnable& runnable, const StdTimePoint executeAt = StdTimePoint(StdNanoSeconds(0)))
+      INLINE virtual bool schedule(Runnable& runnable, const TimePointHR executeAt = TimePointHR(DurationHR::zero()))
       {
          return false;
       }

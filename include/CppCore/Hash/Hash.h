@@ -48,7 +48,7 @@ namespace CppCore
       /// Hash is returned in digest, default seeds are used.
       /// </summary>
       template<typename HASHER>
-      INLINE static bool hashStream(StdIStream& s, const uint64_t len, void* digest)
+      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
       {
          // stream with zero size or null digest
          if (len == 0 || digest == 0) CPPCORE_UNLIKELY
@@ -82,10 +82,10 @@ namespace CppCore
       /// Hash is returned in digest, default seeds are used.
       /// </summary>
       template<typename HASHER>
-      INLINE static bool hashFile(const StdString& file, void* digest)
+      INLINE static bool hashFile(const string& file, void* digest)
       {
          // try open file (at the end)
-         StdIfStream stream(file, StdIfStream::binary | StdIfStream::in | StdIfStream::ate);
+         ifstream stream(file, ifstream::binary | ifstream::in | ifstream::ate);
 
          // failed to open file
          if (!stream.is_open()) CPPCORE_UNLIKELY

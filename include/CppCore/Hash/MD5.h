@@ -295,7 +295,7 @@ namespace CppCore
       /// Calculates MD5 hash of an input stream of known length.
       /// Hash is returned in digest, default MD5 seeds are used.
       /// </summary>
-      INLINE static bool hashStream(StdIStream& s, const uint64_t len, void* digest)
+      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
       {
          return Hash::hashStream<MD5>(s, len, digest);
       }
@@ -304,7 +304,7 @@ namespace CppCore
       /// Calculates MD5 hash of a file.
       /// Hash is returned in digest, default MD5 seeds are used.
       /// </summary>
-      INLINE static bool hashFile(const StdString& file, void* digest)
+      INLINE static bool hashFile(const string& file, void* digest)
       {
          return Hash::hashFile<MD5>(file, digest);
       }

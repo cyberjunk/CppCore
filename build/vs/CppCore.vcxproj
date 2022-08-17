@@ -84,6 +84,7 @@
     <ClInclude Include="..\..\include\CppCore\Root.h" />
     <ClInclude Include="..\..\include\CppCore\Stopwatch.h" />
     <ClInclude Include="..\..\include\CppCore\String.h" />
+    <ClInclude Include="..\..\include\CppCore\StringUtil.h" />
     <ClInclude Include="..\..\include\CppCore\System.h" />
     <ClInclude Include="..\..\include\CppCore\Threading\Factory.h" />
     <ClInclude Include="..\..\include\CppCore\Threading\Handler.h" />

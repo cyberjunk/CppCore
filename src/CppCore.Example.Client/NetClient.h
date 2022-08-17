@@ -20,16 +20,15 @@ namespace CppCore { namespace Example
       /// <summary>
       /// Ping Timer Interval
       /// </summary>
-      static constexpr std::chrono::milliseconds PINGINTERVAL = 
-         std::chrono::milliseconds(1000);
+      static constexpr milliseconds PINGINTERVAL = milliseconds(1000);
 
    protected:
       uint32_t     mSessionId;    // custom session id sent by server
       uint32_t     mSeqNumUdp;    // raised by one for each sent udp
       uint8_t      mEpoch;        // epoch sent by server
-      StdTimePoint mPingSentTcp;  // last time we sent a tcp ping
-      StdTimePoint mPingSentUdp;  // last time we sent a udp ping
-      StdDuration  mRTT;          // last measures ping rtt
+      TimePointHR  mPingSentTcp;  // last time we sent a tcp ping
+      TimePointHR  mPingSentUdp;  // last time we sent a udp ping
+      DurationHR   mRTT;          // last measures ping rtt
       Runnable     mRunnablePing; // ping timer
 
       ////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +61,7 @@ namespace CppCore { namespace Example
          // start ping timer
          this->mHandlerWorkload.schedule(
             mRunnablePing, 
-            StdClock::now() + mRunnablePing.getInterval());
+            ClockHR::now() + mRunnablePing.getInterval());
       }
 
       /// <summary>
@@ -166,7 +165,7 @@ namespace CppCore { namespace Example
       /// </summary>
       INLINE bool handlePongTcp(Message::Tcp& msg)
       {
-         mRTT = StdClock::now() - mPingSentTcp;
+         mRTT = ClockHR::now() - mPingSentTcp;
          this->logDebug("Received PONG_TCP from server: " + 
             ::std::to_string(mRTT.count()) + "ns");
          return true;
@@ -220,9 +219,9 @@ namespace CppCore { namespace Example
          mSessionId(0),
          mSeqNumUdp(0),
          mEpoch(0),
-         mPingSentTcp(StdClock::now()),
-         mPingSentUdp(StdClock::now()),
-         mRTT(StdNanoSeconds(0)),
+         mPingSentTcp(nanoseconds(0)),
+         mPingSentUdp(nanoseconds(0)),
+         mRTT(nanoseconds(0)),
          mRunnablePing([this]() { runPing(); }, true, PINGINTERVAL)
       {
       }
@@ -236,7 +235,7 @@ namespace CppCore { namespace Example
          {
             msg->createPingTcp();
             this->logDebug("Sending PING_TCP to server...");
-            mPingSentTcp = StdClock::now();
+            mPingSentTcp = ClockHR::now();
             this->sendTcp(msg);
          }
 
@@ -254,7 +253,7 @@ namespace CppCore { namespace Example
             msg->createPingUdp();
             this->logDebug("Sending PING_UDP to server... seq:" + 
                std::to_string(mSeqNumUdp));
-            mPingSentUdp = StdClock::now();
+            mPingSentUdp = ClockHR::now();
             this->sendUdp(msg);
          }
       }
@@ -270,7 +269,7 @@ namespace CppCore { namespace Example
          {
             // testing real payload
             msg->createPayload(53, 5832, 35721324, 
-               StdString("hello"), &model[0], 2);
+               string("hello"), &model[0], 2);
             
             // testing broken payload
             //msg->createPayloadBroken();

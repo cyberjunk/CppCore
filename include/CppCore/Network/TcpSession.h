@@ -412,9 +412,9 @@ namespace CppCore
       /// <summary>
       /// Helper function to create a session related log entry
       /// </summary>
-      INLINE void log(const StdString& msg, const Logger::Type type = Logger::Type::Info)
+      INLINE void log(const string& msg, const Logger::Type type = Logger::Type::Info)
       {
-         StdStringStream s;
+         stringstream s;
          s <<
             "SSN:" << ::std::setw(3) << ::std::setfill('0') << ::std::to_string(this->getId()) <<
             "|SOCK:" << ::std::setw(4) << ::std::setfill('0') << ::std::to_string(mTcpLink.getSocketOS()) <<
@@ -426,17 +426,17 @@ namespace CppCore
       /// <summary>
       /// Create error log for this session
       /// </summary>
-      INLINE void logError(const StdString& message) { this->log(message, Logger::Type::Error); }
+      INLINE void logError(const string& message) { this->log(message, Logger::Type::Error); }
 
       /// <summary>
       /// Create warning log for this session
       /// </summary>
-      INLINE void logWarn(const StdString& message)  { this->log(message, Logger::Type::Warning); }
+      INLINE void logWarn(const string& message)  { this->log(message, Logger::Type::Warning); }
 
       /// <summary>
       /// Create debug log for this session
       /// </summary>
-      INLINE void logDebug(const StdString& message) { this->log(message, Logger::Type::Debug); }
+      INLINE void logDebug(const string& message) { this->log(message, Logger::Type::Debug); }
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
