@@ -403,46 +403,104 @@ namespace CppCore
       {
          char*       mem = (char*)m;
          const char* end = mem + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512)
+      #if defined(CPPCORE_CPUFEAT_AVX512)
          const __m512i z512 = _mm512_setzero_si512();
-         while (mem + 64U <= end)
-         {
-            _mm512_storeu_si512((__m512i*)mem, z512);
-            mem += 64U;
-         }
       #endif
-      #if false && defined(CPPCORE_CPUFEAT_AVX)
+      #if defined(CPPCORE_CPUFEAT_AVX)
          const __m256i z256 = _mm256_setzero_si256();
-         while (mem + 32U <= end)
-         {
-            _mm256_storeu_si256((__m256i*)mem, z256);
-            mem += 32U;
-         }
       #endif
       #if defined(CPPCORE_CPUFEAT_SSE2)
          const __m128i z128 = _mm_setzero_si128();
-         while (mem + 16U <= end)
+      #endif
+         while (mem + 64U <= end)
          {
-            _mm_storeu_si128((__m128i*)mem, z128);
-            mem += 16U;
+         #if defined(CPPCORE_CPUFEAT_AVX512)
+            _mm512_storeu_si512((__m512i*)mem, z512); mem += 64U;
+         #elif defined(CPPCORE_CPUFEAT_AVX)
+            _mm256_storeu_si256((__m256i*)mem, z256); mem += 32U;
+            _mm256_storeu_si256((__m256i*)mem, z256); mem += 32U;
+         #elif defined(CPPCORE_CPUFEAT_SSE2)
+            _mm_storeu_si128((__m128i*)mem, z128); mem += 16U;
+            _mm_storeu_si128((__m128i*)mem, z128); mem += 16U;
+            _mm_storeu_si128((__m128i*)mem, z128); mem += 16U;
+            _mm_storeu_si128((__m128i*)mem, z128); mem += 16U;
+         #elif defined(CPPCORE_CPU_64BIT)
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+         #else
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+         #endif
          }
-      #endif
-      #if defined(CPPCORE_CPU_64BIT)
-      #if defined(CPPCORE_CPUFEAT_SSE2)
-         if (mem + 8U <= end)
-      #else
-         while (mem + 8U <= end)
-      #endif
+         if (mem + 32U <= end)
          {
-            *((uint64_t*)mem) = 0ULL;
-            mem += 8U;
+         #if defined(CPPCORE_CPUFEAT_AVX)
+            _mm256_storeu_si256((__m256i*)mem, z256); mem += 32U;
+         #elif defined(CPPCORE_CPUFEAT_SSE2)
+            _mm_storeu_si128((__m128i*)mem, z128); mem += 16U;
+            _mm_storeu_si128((__m128i*)mem, z128); mem += 16U;
+         #elif defined(CPPCORE_CPU_64BIT)
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+         #else
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+         #endif
+         }
+         if (mem + 16U <= end)
+         {
+         #if defined(CPPCORE_CPUFEAT_SSE2)
+            _mm_storeu_si128((__m128i*)mem, z128); mem += 16U;
+         #elif defined(CPPCORE_CPU_64BIT)
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+         #else
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+         #endif
+         }
+         if (mem + 8U <= end)
+         {
+         #if defined(CPPCORE_CPU_64BIT)
+            *((uint64_t*)mem) = 0ULL; mem += 8U;
+         #else
+            *((uint32_t*)mem) = 0U; mem += 4U;
+            *((uint32_t*)mem) = 0U; mem += 4U;
+         #endif
          }
          if (mem + 4U <= end)
-      #else
-         while (mem + 4U <= end)
-      #endif
          {
-            *((uint32_t*)mem) = 0U;
+            *((uint32_t*)mem) = (uint32_t)0U;
             mem += 4U;
          }
          if (mem + 2U <= end)
