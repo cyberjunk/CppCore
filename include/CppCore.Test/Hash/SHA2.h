@@ -13,7 +13,7 @@ namespace CppCore { namespace Test { namespace Hash
       template<typename SHA>
       INLINE static bool sha256()
       {
-         uint8_t digest[32];
+         typename SHA::Digest digest;
          uint8_t expect[32] = { 
             0xa9,0xe8,0x91,0x3b,0x13,0x86,0x40,0x96,
             0xb9,0xea,0x59,0x2f,0x95,0x48,0xc8,0x76,
@@ -24,11 +24,11 @@ namespace CppCore { namespace Test { namespace Hash
          SHA sha;
          sha.step(SHA::PADDING, sizeof(SHA::PADDING));
          sha.finish(digest);
-         if (memcmp(digest, expect, sizeof(expect)) != 0)
+         if (memcmp(&digest, expect, sizeof(expect)) != 0)
             return false;
 
          SHA::hashMem(SHA::PADDING, sizeof(SHA::PADDING), digest);
-         if (memcmp(digest, expect, sizeof(expect)) != 0)
+         if (memcmp(&digest, expect, sizeof(expect)) != 0)
             return false;
 
          return true;
@@ -37,7 +37,7 @@ namespace CppCore { namespace Test { namespace Hash
       template<typename SHA>
       INLINE static bool sha512()
       {
-         uint8_t digest[64];
+         typename SHA::Digest digest;
          uint8_t expect[64] = { 
             0x0c,0x3b,0x48,0x09,0x6d,0x8f,0x5e,0x8c,
             0x52,0xe4,0x23,0xb8,0x3f,0x11,0x9e,0x5b,
@@ -52,11 +52,11 @@ namespace CppCore { namespace Test { namespace Hash
          SHA sha;
          sha.step(SHA::PADDING, sizeof(SHA::PADDING));
          sha.finish(digest);
-         if (memcmp(digest, expect, sizeof(expect)) != 0)
+         if (memcmp(&digest, expect, sizeof(expect)) != 0)
             return false;
 
          SHA::hashMem(SHA::PADDING, sizeof(SHA::PADDING), digest);
-         if (memcmp(digest, expect, sizeof(expect)) != 0)
+         if (memcmp(&digest, expect, sizeof(expect)) != 0)
             return false;
 
          return true;

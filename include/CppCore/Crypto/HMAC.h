@@ -37,7 +37,7 @@ namespace CppCore
          if (len > sizeof(pad))
          {
             hsh.step(key, len);
-            hsh.finish(&b);
+            hsh.finish(b);
             hsh.reset();
             key = &b;
             len = sizeof(b);
@@ -46,7 +46,7 @@ namespace CppCore
          // step on in padding^key
          pad.set(inpad);
          pad.xor_(key, len);
-         hsh.step(&pad, sizeof(pad));
+         hsh.step(pad);
 
          // prepare out padding^key
          pad.set(outpad);
@@ -62,14 +62,23 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Calculate type T into HMAC.
+      /// </summary>
+      template<typename T>
+      INLINE void step(T& data)
+      {
+         hsh.step(data);
+      }
+
+      /// <summary>
       /// Finish HMAC calculation into digest.
       /// </summary>
-      INLINE void finish(void* digest)
+      INLINE void finish(typename THASH::Digest& digest)
       {
          hsh.finish(digest);
          hsh.reset();
-         hsh.step(&pad, sizeof(pad));
-         hsh.step(digest, THASH::DIGESTSIZE);
+         hsh.step(pad);
+         hsh.step(digest);
          hsh.finish(digest);
       }
    };

@@ -65,7 +65,7 @@ namespace CppCore { namespace Example
       {
          // calculate crc
          uint32_t crc32;
-         CRC32::hashMem(msg.getPtrBody(), (uint32_t)msg.getLengthBody(), &crc32);
+         CRC32C::hashMem(msg.getPtrBody(), msg.getLengthBody(), crc32);
 
          // check crc
          if (msg.getHeader().crc != (uint16_t)crc32)
@@ -129,7 +129,7 @@ namespace CppCore { namespace Example
 
          // calculate crc
          uint32_t crc32;
-         CRC32::hashMem(msg.getPtrBody(), BLEN, &crc32);
+         CRC32C::hashMem(msg.getPtrBody(), BLEN, crc32);
 
          // get reference to header
          Message::Header::Tcp& header = msg.getHeader();
@@ -149,7 +149,7 @@ namespace CppCore { namespace Example
       {
          // calculate crc
          uint32_t crc32;
-         CRC32::hashMem(msg.getPtrBody(), (uint32_t)msg.getLengthBody(), &crc32);
+         CRC32C::hashMem(msg.getPtrBody(), (uint32_t)msg.getLengthBody(), crc32);
 
          // check crc
          if (msg.getHeader().crc != (uint16_t)crc32)

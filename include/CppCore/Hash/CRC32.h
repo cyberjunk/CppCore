@@ -9,7 +9,7 @@ namespace CppCore
    /// CRC32 Base Class
    /// </summary>
    template<typename T>
-   class CRC32b : public Hash<T>
+   class CRC32b : public Hash<T, uint32_t>
    {
    protected:
       uint32_t mState;
@@ -23,13 +23,9 @@ namespace CppCore
       {
          mState = init;
       }
-      INLINE uint32_t finish(const uint32_t xorout) 
+      INLINE void finish(uint32_t& digest, const uint32_t xorout)
       {
-         return mState ^ xorout;
-      }
-      INLINE void finish(void* digest, const uint32_t xorout)
-      {
-         *(uint32_t*)digest = finish(xorout);
+         digest = mState ^ xorout;;
       }
    };
 
@@ -122,11 +118,7 @@ namespace CppCore
       {
          CRC32b::reset(init);
       }
-      INLINE uint32_t finish(const uint32_t xorout = XOROUT) 
-      {
-         return CRC32b::finish(xorout);
-      }
-      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      INLINE void finish(Digest& digest, const uint32_t xorout = XOROUT)
       {
          CRC32b::finish(digest, xorout);
       }
@@ -229,11 +221,7 @@ namespace CppCore
       {
          CRC32b::reset(init);
       }
-      INLINE uint32_t finish(const uint32_t xorout = XOROUT) 
-      {
-         return CRC32b::finish(xorout);
-      }
-      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      INLINE void finish(Digest& digest, const uint32_t xorout = XOROUT)
       {
          CRC32b::finish(digest, xorout);
       }
@@ -285,11 +273,7 @@ namespace CppCore
       {
          CRC32b::reset(init);
       }
-      INLINE uint32_t finish(const uint32_t xorout = XOROUT)
-      {
-         return CRC32b::finish(xorout);
-      }
-      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      INLINE void finish(Digest& digest, const uint32_t xorout = XOROUT)
       {
          CRC32b::finish(digest, xorout);
       }

@@ -16,46 +16,46 @@ namespace CppCore { namespace Test { namespace Hash
 
       INLINE static bool crc32test1()
       {
-         uint32_t hash;
-         bool ok = CppCore::CRC32::hashMem(STR1, ::strlen(STR1), &hash);
+         CppCore::CRC32::Digest hash;
+         bool ok = CppCore::CRC32::hashMem(STR1, ::strlen(STR1), hash);
          if (!ok || hash != 0x0972D361U) return false;
          return true;
       }
       INLINE static bool crc32test2()
       {
-         uint32_t hash;
-         bool ok = CppCore::CRC32::hashMem(STR2, ::strlen(STR2), &hash);
+         CppCore::CRC32::Digest hash;
+         bool ok = CppCore::CRC32::hashMem(STR2, ::strlen(STR2), hash);
          if (!ok || hash != 0x7FCB7808U) return false;
          return true;
       }
       INLINE static bool crc32test3()
       {
-         uint32_t hash;
-         bool ok = CppCore::CRC32::hashMem(STR3, ::strlen(STR3), &hash);
+         CppCore::CRC32::Digest hash;
+         bool ok = CppCore::CRC32::hashMem(STR3, ::strlen(STR3), hash);
          if (!ok || hash != 0xB7B2364BU) return false;
          return true;
       }
       template<typename TCRC>
       INLINE static bool crc32ctest1()
       {
-         uint32_t hash;
-         bool ok = TCRC::hashMem(STR1, ::strlen(STR1), &hash);
+         CppCore::CRC32::Digest hash;
+         bool ok = TCRC::hashMem(STR1, ::strlen(STR1), hash);
          if (!ok || hash != 0x41357186U) return false;
          return true;
       }
       template<typename TCRC>
       INLINE static bool crc32ctest2()
       {
-         uint32_t hash;
-         bool ok = TCRC::hashMem(STR2, ::strlen(STR2), &hash);
+         CppCore::CRC32::Digest hash;
+         bool ok = TCRC::hashMem(STR2, ::strlen(STR2), hash);
          if (!ok || hash != 0xc4a71611) return false;
          return true;
       }
       template<typename TCRC>
       INLINE static bool crc32ctest3()
       {
-         uint32_t hash;
-         bool ok = TCRC::hashMem(STR3, ::strlen(STR3), &hash);
+         CppCore::CRC32::Digest hash;
+         bool ok = TCRC::hashMem(STR3, ::strlen(STR3), hash);
          if (!ok || hash != 0x8981D14D) return false;
          return true;
       }

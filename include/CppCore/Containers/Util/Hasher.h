@@ -53,7 +53,7 @@ namespace CppCore
             INLINE static bool hash(const uint64_t& a, uint32_t& b)
             {
                b = 0;
-               return CppCore::Murmur3::hashMem(&a, sizeof(uint64_t), &b);
+               return CppCore::Murmur3::hashMem(&a, sizeof(uint64_t), b);
             }
          };
          class String
@@ -64,7 +64,7 @@ namespace CppCore
             INLINE static bool hash(const string& a, uint32_t& b)
             {
                b = 0;
-               return CppCore::Murmur3::hashMem(a.data(), (uint32_t)a.length(), &b);
+               return CppCore::Murmur3::hashMem(a.data(), (uint32_t)a.length(), b);
             }
          };
       };

@@ -37,15 +37,15 @@ namespace CppCore
             hmac.reset(pw, lenpw);
             hmac.step(salt, lensalt);
             hmac.step(&ctrbe, 4);
-            hmac.finish(&md1);
+            hmac.finish(md1);
 
             mdx = md1;
 
             for (size_t i = 1; i < iterations; i++)
             {
                hmac.reset(pw, lenpw);
-               hmac.step(&md1, sizeof(md1));
-               hmac.finish(&md1);
+               hmac.step(md1);
+               hmac.finish(md1);
                mdx ^= md1;
             }
 

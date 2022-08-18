@@ -8,14 +8,14 @@ namespace CppCore
    /// <summary>
    /// Base Class for SHA2
    /// </summary>
-   template<typename TSHA>
-   class SHA2 : public Hash<TSHA>
+   template<typename TSHA, typename DIGEST>
+   class SHA2 : public Hash<TSHA, DIGEST>
    {
    protected:
       INLINE SHA2() { }
    public:
-      using Hash<TSHA>::step;
-      using Hash<TSHA>::hash;
+      using Hash<TSHA, DIGEST>::step;
+      using Hash<TSHA, DIGEST>::hash;
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,11 +26,13 @@ namespace CppCore
    /// SHA2 Generic
    /// </summary>
    template<typename TSTATE, typename TBLOCK, typename TSHA>
-   class SHA2g : public SHA2<TSHA>
+   class SHA2g : public SHA2<TSHA, TSTATE>
    {
    public:
       using Block = TBLOCK;
       using State = TSTATE;
+      using SHA2<TSHA, TSTATE>::step;
+      using SHA2<TSHA, TSTATE>::hash;
 
    protected:
       CPPCORE_ALIGN16 State    state;     // current state/hash
@@ -244,7 +246,7 @@ namespace CppCore
       /// Finish hash calculations.
       /// Digest must be 32 Bytes!
       /// </summary>
-      INLINE void finish(void* digest)
+      INLINE void finish(Digest& digest)
       {
          // length of the original message (before padding)
          const uint64_t totalSize = this->totalSize * 8ULL;
@@ -268,7 +270,7 @@ namespace CppCore
          flipEndianState();
 
          // copy the final digest
-         Memory::copy(digest, &state, sizeof(state));
+         CppCore::clone(digest, state);
       }
    };
 
@@ -435,7 +437,7 @@ namespace CppCore
       /// Finish hash calculations.
       /// Digest must be 64 Bytes!
       /// </summary>
-      INLINE void finish(void* digest)
+      INLINE void finish(Digest& digest)
       {
          // length of the original message (before padding)
          const uint64_t totalSize = this->totalSize * 8ULL;
@@ -460,7 +462,7 @@ namespace CppCore
          flipEndianState();
 
          // copy the final digest
-         Memory::copy(digest, &state, sizeof(state));
+         CppCore::clone(digest, state);
       }
    };
 

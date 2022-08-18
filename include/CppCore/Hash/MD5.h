@@ -8,7 +8,7 @@ namespace CppCore
    /// <summary>
    /// MD5 Hash
    /// </summary>
-   class MD5 : public Hash<MD5>
+   class MD5 : public Hash<MD5, Block128>
    {
    public:
       static constexpr const uint8_t PADDING[64] = {
@@ -246,7 +246,7 @@ namespace CppCore
       /// Finish hash calculations.
       /// Digest must be 16 Bytes!
       /// </summary>
-      INLINE void finish(void* digest)
+      INLINE void finish(Digest& digest)
       {
          // length of the original message (before padding)
          const uint64_t totalSize = this->totalSize * 8ULL;
@@ -267,7 +267,7 @@ namespace CppCore
          transform();
 
          // copy the final digest
-         Memory::copy(digest, &mState, 16);
+         CppCore::clone(digest, mState);
       }
    };
 }

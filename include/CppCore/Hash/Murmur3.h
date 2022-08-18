@@ -8,7 +8,7 @@ namespace CppCore
    /// <summary>
    /// Murmur3 Hash (32-Bit)
    /// </summary>
-   class Murmur3 : public Hash<Murmur3>
+   class Murmur3 : public Hash<Murmur3, uint32_t>
    {
    protected:
       uint32_t mLen;
@@ -103,7 +103,7 @@ namespace CppCore
       /// <summary>
       /// Finish hash computation
       /// </summary>
-      INLINE uint32_t finish()
+      INLINE Digest finish()
       {
          return mix32(mHash ^ mLen);
       }
@@ -111,25 +111,25 @@ namespace CppCore
       /// <summary>
       /// Finish hash computation
       /// </summary>
-      INLINE void finish(void* digest)
+      INLINE void finish(Digest& digest)
       {
-         *(uint32_t*)digest = finish();
+         digest = finish();
       }
 
       /// <summary>
       /// Hash of uint32_t
       /// </summary>
-      INLINE void hash(uint32_t data, void* digest, uint32_t seed = 0)
+      INLINE void hash(uint32_t data, Digest& digest, uint32_t seed = 0)
       {
-         *(uint32_t*)digest = mix32(step32_full(seed, data) ^ 4);
+         digest = mix32(step32_full(seed, data) ^ 4);
       }
 
       /// <summary>
       /// Hash of uint64_t
       /// </summary>
-      INLINE void hash(uint64_t data, void* digest, uint32_t seed = 0)
+      INLINE void hash(uint64_t data, Digest& digest, uint32_t seed = 0)
       {
-         *(uint32_t*)digest = mix32(step32_full(
+         digest = mix32(step32_full(
             step32_full(seed, (uint32_t)data),
             (uint32_t)(data >> 32)) ^ 4);
       }
