@@ -116,6 +116,24 @@ namespace CppCore
          *(uint32_t*)digest = finish();
       }
 
+      /// <summary>
+      /// Hash of uint32_t
+      /// </summary>
+      INLINE void hash(uint32_t data, void* digest, uint32_t seed = 0)
+      {
+         *(uint32_t*)digest = mix32(step32_full(seed, data) ^ 4);
+      }
+
+      /// <summary>
+      /// Hash of uint64_t
+      /// </summary>
+      INLINE void hash(uint64_t data, void* digest, uint32_t seed = 0)
+      {
+         *(uint32_t*)digest = mix32(step32_full(
+            step32_full(seed, (uint32_t)data),
+            (uint32_t)(data >> 32)) ^ 4);
+      }
+
       ///////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
@@ -126,105 +144,6 @@ namespace CppCore
       {
          seed = step32_full(seed, value);
          seed = mix32(seed ^ 4);
-      }
-
-      /// <summary>
-      /// Calculates hash of arbitrary memory.
-      /// 'seed' must be initially set with seed and then returns hash.
-      /// </summary>
-      INLINE static bool hashMem(const void* buf, const uint32_t len, uint32_t& seed)
-      {
-         // check ptrs
-         if (buf == 0 || len == 0)
-            return false;
-
-         uint8_t* mem = (uint8_t*)buf;
-         uint8_t* end = mem + len;
-
-         // full 32 bit steps
-         while(mem + 4U <= end)
-         {
-            seed = step32_full(seed, *(uint32_t*)mem);
-            mem += 4U;
-         }
-
-         // step on 0-3 remaining bytes
-         const uint32_t tail = len & 3;
-         if (tail)
-         {
-            uint32_t v = *(uint32_t*)mem;
-            v &= (1U << ((tail << 3U) + 1U)) - 1U;
-            seed = step32_part(seed, v);
-         }
-
-         // finish
-         seed = mix32(seed ^ len);
-
-         // success
-         return true;
-      }
-
-      /// <summary>
-      /// Calculates 32-Bit Hash of an input stream.
-      /// 'seed' must be initially set with 32-Bit seed and then returns 32-Bit hash.
-      /// </summary>
-      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
-      {
-         // stream with zero size
-         if (len == 0)
-            return false;
-
-         // first seed then hash
-         uint32_t& seed = *(uint32_t*)digest;
-
-         // chunk buffer
-         CPPCORE_ALIGN16 uint8_t buf[8192];
-
-         uint32_t* end;
-         uint32_t* ptr;
-         uint64_t  n64;
-         uint32_t  n32;
-
-         // read n64 * 8192 byte chunks
-         n64 = len >> 13;
-         end = (uint32_t*)(&buf[0] + 8192);
-         for (uint64_t i = 0; i < n64; i++)
-         {
-            s.read((char*)buf, 8192);
-            ptr = (uint32_t*)buf;
-            while (ptr < end)
-               seed = step32_full(seed, *ptr++);
-         }
-
-         // read remaining 0-8191 bytes
-         n32 = (uint32_t)len & 0x1FFFU;
-         s.read((char*)buf, n32);
-         ptr = (uint32_t*)&buf[0];
-
-         // 4 byte chunks
-         n32 >>= 2;
-         for (uint32_t i = 0; i < n32; i++)
-            seed = step32_full(seed, *ptr++);
-
-         // 0-3 byte tail
-         n32 = len & 0x03;
-         if (n32)
-         {
-            uint32_t v = *(uint32_t*)ptr;
-
-            // keep only bytes of tail
-            // tail=1: v &= 0x000000FF
-            // tail=2: v &= 0x0000FFFF
-            // tail=3: v &= 0x00FFFFFF
-            v &= (1U << ((n32 << 3U) + 1U)) - 1U;
-            seed = step32_part(seed, v);
-         }
-
-         // finish
-         seed = mix32(seed ^ (uint32_t)len);
-
-         // success
-         return true;
       }
    };
 }

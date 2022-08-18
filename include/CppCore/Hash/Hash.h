@@ -49,6 +49,22 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Specialization: Step on wstring
+      /// </summary>
+      template<> INLINE void step<wstring>(wstring& data)
+      {
+         thiss().step(data.c_str(), data.size() * sizeof(wchar_t));
+      }
+
+      /// <summary>
+      /// Specialization: Step on wstring_view
+      /// </summary>
+      template<> INLINE void step<wstring_view>(wstring_view& data)
+      {
+         thiss().step(data.data(), data.size() * sizeof(wchar_t));
+      }
+
+      /// <summary>
       /// Specialization: Step on istream
       /// </summary>
       template<> INLINE void step<istream>(istream& stream)
@@ -113,6 +129,22 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Specialization: Hash of wstring
+      /// </summary>
+      template<> INLINE void hash<wstring>(wstring& data, void* digest)
+      {
+         thiss().hash(data.c_str(), data.size() * sizeof(wchar_t), digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of string_view
+      /// </summary>
+      template<> INLINE void hash<wstring_view>(wstring_view& data, void* digest)
+      {
+         thiss().hash(data.data(), data.size() * sizeof(wchar_t), digest);
+      }
+
+      /// <summary>
       /// Specialization: Hash of istream
       /// </summary>
       template<> INLINE void hash<istream>(istream& stream, void* digest)
@@ -145,19 +177,25 @@ namespace CppCore
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
       /// Calculates hash of arbitrary sized memory.
       /// Hash is returned in digest, default seeds are used.
       /// </summary>
+      template<bool REPLACEZEROS = false>
       INLINE static bool hashMem(const void* data, const size_t len, void* digest)
       {
          if (!data || !len || !digest) CPPCORE_UNLIKELY
             return false;
 
-         HASHER hasher;
-         hasher.step(data, len);
-         hasher.finish(digest);
+         HASHER hsh;
+         hsh.step(data, len);
+         hsh.finish(digest);
+
+         // replaces all 0x00 by 0x01
+         if (REPLACEZEROS)
+            replaceByte((uint8_t*)digest, 16, 0x00, 0x01);
 
          return true;
       }
@@ -170,10 +208,10 @@ namespace CppCore
          if (!digest) CPPCORE_UNLIKELY
             return false;
 
-         // calculate hash
          HASHER hsh;
          hsh.step(s);
          hsh.finish(digest);
+
          return true;
       }
 
@@ -182,23 +220,17 @@ namespace CppCore
       /// </summary>
       INLINE static bool hashFile(const string& file, void* digest)
       {
-         // no digest
          if (!digest) CPPCORE_UNLIKELY
             return false;
 
-         // try open file
          ifstream stream(file, ifstream::binary | ifstream::in);
-
-         // open failed
          if (!stream.is_open()) CPPCORE_UNLIKELY
             return false;
 
-         // calculate hash
          HASHER hsh;
          hsh.step(stream);
          hsh.finish(digest);
 
-         // close stream
          stream.close();
          return true;
       }

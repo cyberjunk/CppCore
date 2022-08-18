@@ -269,28 +269,5 @@ namespace CppCore
          // copy the final digest
          Memory::copy(digest, &mState, 16);
       }
-
-      ///////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Calculates MD5 hash of arbitrary sized memory.
-      /// Return true on success and MD5 hash in digest.
-      /// </summary>
-      template<bool REPLACEZEROS = false>
-      INLINE static bool hashMem(const void* data, const size_t len, void* digest)
-      {
-         if (data == 0 || len == 0 || digest == 0)
-            return false;
-
-         MD5 md5;
-         md5.step(data, len);
-         md5.finish(digest);
-
-         // replaces all 0x00 by 0x01
-         if (REPLACEZEROS)
-            Hash::replaceByte((uint8_t*)digest, 16, 0x00, 0x01);
-
-         return true;
-      }
    };
 }

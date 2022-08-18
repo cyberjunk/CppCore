@@ -475,10 +475,15 @@ namespace CppCore
    using ::std::istream;
    using ::std::ifstream;
 
-   // strings
+   // string
    using ::std::string;
    using ::std::stringstream;
    using ::std::string_view;
+
+   // wstring
+   using ::std::wstring;
+   using ::std::wstringstream;
+   using ::std::wstring_view;
 
    // numeric_limits
    using ::std::numeric_limits;
