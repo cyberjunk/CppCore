@@ -259,15 +259,13 @@ namespace CppCore { namespace Test
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
          {
             __m128i r = rnd.next(0ULL, 16ULL);
+            uint64_t v[2]{ rnd1.next(0ULL, 16ULL), rnd2.next(0ULL, 16ULL) };
 
-            uint64_t v1 = rnd1.next(0ULL, 16ULL);
-            uint64_t v2 = rnd2.next(0ULL, 16ULL);
+            if (0 != memcmp(&r, &v, 16))
+               return false;
 
-            if (r.m128i_u64[0] != v1 || r.m128i_u64[1] != v2)
-                return false;
-
-            if (r.m128i_u64[0] > 16ULL || 
-                r.m128i_u64[1] > 16ULL)
+            if (v[0] > 16ULL || 
+                v[1] > 16ULL)
                 return false;
          }
 
@@ -275,15 +273,13 @@ namespace CppCore { namespace Test
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
          {
             __m128i r = rnd.next(-10LL, 10LL);
+            int64_t v[2]{ rnd1.next(-10LL, 10LL), rnd2.next(-10LL, 10LL) };
 
-            int64_t v1 = rnd1.next(-10LL, 10LL);
-            int64_t v2 = rnd2.next(-10LL, 10LL);
+            if (0 != memcmp(&r, &v, 16))
+               return false;
 
-            if (r.m128i_i64[0] != v1 || r.m128i_i64[1] != v2)
-                return false;
-
-            if (r.m128i_i64[0] < -10LL || r.m128i_i64[0] > 10LL ||
-                r.m128i_i64[1] < -10LL || r.m128i_i64[1] > 10LL)
+            if (v[0] < -10LL || v[0] > 10LL ||
+                v[1] < -10LL || v[1] > 10LL)
                return false;
          }
 
@@ -291,15 +287,13 @@ namespace CppCore { namespace Test
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
          {
             __m128d r = rnd.next(-10.0, 10.0);
+            double v[2]{ rnd1.next(-10.0, 10.0), rnd2.next(-10.0, 10.0) };
 
-            double v1 = rnd1.next(-10.0, 10.0);
-            double v2 = rnd2.next(-10.0, 10.0);
+            if (0 != memcmp(&r, &v, 16))
+               return false;
 
-            if (r.m128d_f64[0] != v1 || r.m128d_f64[1] != v2)
-                return false;
-
-            if (r.m128d_f64[0] < -10.0 || r.m128d_f64[0] > 10.0 ||
-                r.m128d_f64[1] < -10.0 || r.m128d_f64[1] > 10.0)
+            if (v[0] < -10.0 || v[0] > 10.0 ||
+                v[1] < -10.0 || v[1] > 10.0)
                return false;
          }
 
@@ -317,22 +311,34 @@ namespace CppCore { namespace Test
          // unsigned
          rnd.fill(m_uint64, CPPCORE_TEST_RANDOM_ITERATIONS, 0ULL, 16ULL);
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
-            if (m_uint64[i].m128i_u64[0] > 16ULL || m_uint64[i].m128i_u64[1] > 16ULL)
-                return false;
+         {
+            uint64_t v[2];
+            _mm_storeu_epi64(v, m_uint64[i]);
+            if (v[0] > 16ULL || v[1] > 16ULL)
+               return false;
+         }
 
          // signed
          rnd.fill(m_int64, CPPCORE_TEST_RANDOM_ITERATIONS, -10LL, 10LL);
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
-            if (m_int64[i].m128i_i64[0] < -10LL || m_int64[i].m128i_i64[0] > 10LL ||
-                m_int64[i].m128i_i64[1] < -10LL || m_int64[i].m128i_i64[1] > 10LL)
+         {
+            int64_t v[2];
+            _mm_storeu_epi64(v, m_int64[i]);
+            if (v[0] < -10LL || v[0] > 10LL ||
+                v[1] < -10LL || v[1] > 10LL)
                 return false;
+         }
 
-         // float
+         // double
          rnd.fill(m_double, CPPCORE_TEST_RANDOM_ITERATIONS, -10.0, 10.0);
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
-            if (m_double[i].m128d_f64[0] < -10.0 || m_double[i].m128d_f64[0] > 10.0 ||
-                m_double[i].m128d_f64[1] < -10.0 || m_double[i].m128d_f64[1] > 10.0)
+         {
+            double v[2];
+            _mm_storeu_pd(v, m_double[i]);
+            if (v[0] < -10.0 || v[0] > 10.0 ||
+                v[1] < -10.0 || v[1] > 10.0)
                 return false;
+         }
 
          //todo: test for equal with non-packed versions
 
