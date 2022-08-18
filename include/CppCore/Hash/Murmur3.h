@@ -8,7 +8,7 @@ namespace CppCore
    /// <summary>
    /// Murmur3 Hash (32-Bit)
    /// </summary>
-   class Murmur3 : public Hash
+   class Murmur3 : public Hash<Murmur3>
    {
    protected:
       uint32_t mLen;
@@ -40,10 +40,13 @@ namespace CppCore
       }
 
    public:
+      using Hash::step;
+      using Hash::hash;
+
+   public:
       /// <summary>
       /// Constructor
       /// </summary>
-      /// <param name="seed">A previously hash to continue</param>
       INLINE Murmur3(uint32_t seed = 0)
       {
          reset(seed);
@@ -52,7 +55,6 @@ namespace CppCore
       /// <summary>
       /// Resets the hash to the given seed
       /// </summary>
-      /// <param name="seed"></param>
       INLINE void reset(uint32_t seed = 0)
       {
          mHash = seed;
@@ -62,20 +64,56 @@ namespace CppCore
       /// <summary>
       /// Compute another value into hash
       /// </summary>
-      /// <param name="value"></param>
-      INLINE void step(uint32_t value)
+      INLINE void step(const uint32_t& value)
       {
          mHash = step32_full(mHash, value);
          mLen += sizeof(uint32_t);
       }
 
       /// <summary>
+      /// Compute memory into hash.
+      /// Due to tail handling in Murmur3, chunk sizes matter.
+      /// Chunks should be multiples of 4 bytes except for the last one.
+      /// </summary>
+      INLINE void step(const void* data, size_t length)
+      {
+         uint8_t* mem = (uint8_t*)data;
+         uint8_t* end = mem + length;
+         uint32_t hsh = mHash;
+
+         // full 32 bit steps
+         while(mem + 4U <= end)
+         {
+            hsh = step32_full(hsh, *(uint32_t*)mem);
+            mem += 4U;
+         }
+
+         // step on 0-3 remaining bytes
+         if (const uint32_t tail = length & 3)
+         {
+            uint32_t v = *(uint32_t*)mem;
+            v &= (1U << ((tail << 3U) + 1U)) - 1U;
+            hsh = step32_part(hsh, v);
+         }
+
+         mHash = hsh;
+         mLen += (uint32_t)length;
+      }
+
+      /// <summary>
       /// Finish hash computation
       /// </summary>
-      /// <returns>Hash value</returns>
       INLINE uint32_t finish()
       {
          return mix32(mHash ^ mLen);
+      }
+
+      /// <summary>
+      /// Finish hash computation
+      /// </summary>
+      INLINE void finish(void* digest)
+      {
+         *(uint32_t*)digest = finish();
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////
@@ -115,11 +153,6 @@ namespace CppCore
          if (tail)
          {
             uint32_t v = *(uint32_t*)mem;
-
-            // keep only bytes of tail
-            // tail=1: v &= 0x000000FF
-            // tail=2: v &= 0x0000FFFF
-            // tail=3: v &= 0x00FFFFFF
             v &= (1U << ((tail << 3U) + 1U)) - 1U;
             seed = step32_part(seed, v);
          }
@@ -192,14 +225,6 @@ namespace CppCore
 
          // success
          return true;
-      }
-
-      /// <summary>
-      /// 
-      /// </summary>
-      INLINE static bool hashFile(const string& file, void* digest)
-      {
-         return Hash::hashFile<Murmur3>(file, digest);
       }
    };
 }

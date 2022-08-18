@@ -8,34 +8,39 @@ namespace CppCore
    /// <summary>
    /// CRC32 Base Class
    /// </summary>
-   class CRC32b : public Hash
+   template<typename T>
+   class CRC32b : public Hash<T>
    {
    protected:
       uint32_t mState;
 
+   protected:
       INLINE CRC32b(const uint32_t init) 
       {
          reset(init);
       }
-
       INLINE void reset(const uint32_t init)
       {
          mState = init;
       }
-
+      INLINE uint32_t finish(const uint32_t xorout) 
+      {
+         return mState ^ xorout;
+      }
       INLINE void finish(void* digest, const uint32_t xorout)
       {
-         *(uint32_t*)digest = mState ^ xorout;
+         *(uint32_t*)digest = finish(xorout);
       }
    };
+
+   //////////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
    /// CRC32
    /// </summary>
-   class CRC32 : public CRC32b
+   class CRC32 : public CRC32b<CRC32>
    {
-   protected:
-
    public:
       static constexpr const uint32_t INIT    = 0xFFFFFFFF;
       static constexpr const uint32_t XOROUT  = 0xFFFFFFFF;
@@ -106,17 +111,25 @@ namespace CppCore
          0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94,
          0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d,
       };
-   
-   public:
-      INLINE CRC32(const uint32_t init = INIT) : CRC32b(init) 
-      { 
-      }
 
+   public:
+      using Hash::step;
+      using Hash::hash;
+
+   public:
+      INLINE CRC32(const uint32_t init = INIT) : CRC32b(init) { }
       INLINE void reset(const uint32_t init = INIT)
       {
          CRC32b::reset(init);
       }
-
+      INLINE uint32_t finish(const uint32_t xorout = XOROUT) 
+      {
+         return CRC32b::finish(xorout);
+      }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      {
+         CRC32b::finish(digest, xorout);
+      }
       INLINE void step(const void* data, size_t len)
       {
          uint8_t* mem = (uint8_t*)data;
@@ -125,36 +138,15 @@ namespace CppCore
             t32 = (t32 >> 8) ^ TABLE[(t32 ^ *mem++) & 0xFF];
          mState = t32;
       }
-
-      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
-      {
-         CRC32b::finish(digest, xorout);
-      }
-
-      //
-
-      INLINE static bool hashMem(const void* data, const size_t len, void* digest)
-      {
-         return Hash::hashMem<CRC32>(data, len, digest);
-      }
-
-      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
-      {
-         return Hash::hashStream<CRC32>(s, len, digest);
-      }
-
-      INLINE static bool hashFile(const string& file, void* digest)
-      {
-         return Hash::hashFile<CRC32>(file, digest);
-      }
    };
 
+   //////////////////////////////////////////////////////////////////////////////////////////
    //////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
    /// CRC32C Generic
    /// </summary>
-   class CRC32Cg : public CRC32b
+   class CRC32Cg : public CRC32b<CRC32Cg>
    {
    public:
       static constexpr const uint32_t INIT   = 0xFFFFFFFF;
@@ -227,15 +219,24 @@ namespace CppCore
          0xBE2DA0A5L, 0x4C4623A6L, 0x5F16D052L, 0xAD7D5351L
       };
 
-      INLINE CRC32Cg(const uint32_t init = INIT) : CRC32b(init)
-      {
-      }
+   public:
+      using Hash::step;
+      using Hash::hash;
 
+   public:
+      INLINE CRC32Cg(const uint32_t init = INIT) : CRC32b(init) { }
       INLINE void reset(const uint32_t init = INIT)
       {
          CRC32b::reset(init);
       }
-
+      INLINE uint32_t finish(const uint32_t xorout = XOROUT) 
+      {
+         return CRC32b::finish(xorout);
+      }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      {
+         CRC32b::finish(digest, xorout);
+      }
       INLINE void step(const void* data, size_t len)
       {
          uint8_t* mem = (uint8_t*)data;
@@ -244,67 +245,54 @@ namespace CppCore
             t32 = (t32 >> 8) ^ TABLE[(t32 ^ *mem++) & 0xFF];
          mState = t32;
       }
-
       INLINE void step32(const void* data, size_t len)
       {
          assert(len % 4 == 0);
          step(data, len);
       }
-
       INLINE void step64(const void* data, size_t len)
       {
          assert(len % 8 == 0);
          step(data, len);
       }
-
       INLINE void step128(const void* data, size_t len)
       {
          assert(len % 16 == 0);
          step(data, len);
       }
-
-      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
-      {
-         CRC32b::finish(digest, xorout);
-      }
-
-      //
-
-      INLINE static bool hashMem(const void* data, const size_t len, void* digest)
-      {
-         return Hash::hashMem<CRC32Cg>(data, len, digest);
-      }
-
-      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
-      {
-         return Hash::hashStream<CRC32Cg>(s, len, digest);
-      }
-
-      INLINE static bool hashFile(const string& file, void* digest)
-      {
-         return Hash::hashFile<CRC32Cg>(file, digest);
-      }
    };
+
+   //////////////////////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////////////////////
 
 #if defined(CPPCORE_CPUFEAT_SSE42)
    /// <summary>
    /// CRC32C Optimized
    /// </summary>
-   class CRC32Cs : public CRC32b
+   class CRC32Cs : public CRC32b<CRC32Cs>
    {
    public:
       static constexpr const uint32_t INIT   = 0xFFFFFFFF;
       static constexpr const uint32_t XOROUT = 0xFFFFFFFF;
 
-      INLINE CRC32Cs(const uint32_t init = INIT) : CRC32b(init)
-      {
-      }
+   public:
+      using Hash::step;
+      using Hash::hash;
 
+   public:
+      INLINE CRC32Cs(const uint32_t init = INIT) : CRC32b(init) { }
       INLINE void reset(const uint32_t init = INIT)
       {
          CRC32b::reset(init);
       }
-
+      INLINE uint32_t finish(const uint32_t xorout = XOROUT)
+      {
+         return CRC32b::finish(xorout);
+      }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      {
+         CRC32b::finish(digest, xorout);
+      }
       INLINE void step(const void* data, size_t len)
       {
          uint8_t* mem = (uint8_t*)data;
@@ -336,7 +324,6 @@ namespace CppCore
             t32 = _mm_crc32_u8(t32, *mem);
          mState = t32;
       }
-
       INLINE void step32(const void* data, size_t len)
       {
          assert(len % 4 == 0);
@@ -346,7 +333,6 @@ namespace CppCore
             t32 = _mm_crc32_u32(t32, *mem++);
          mState = t32;
       }
-
       INLINE void step64(const void* data, size_t len)
       {
          assert(len % 8 == 0);
@@ -367,7 +353,6 @@ namespace CppCore
          mState = t32;
       #endif
       }
-
       INLINE void step128(const void* data, size_t len)
       {
          assert(len % 16 == 0);
@@ -392,28 +377,6 @@ namespace CppCore
          }
          mState = t32;
       #endif
-      }
-
-      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
-      {
-         CRC32b::finish(digest, xorout);
-      }
-      
-      //
-
-      INLINE static bool hashMem(const void* data, const size_t len, void* digest)
-      {
-         return Hash::hashMem<CRC32Cs>(data, len, digest);
-      }
-
-      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
-      {
-         return Hash::hashStream<CRC32Cs>(s, len, digest);
-      }
-
-      INLINE static bool hashFile(const string& file, void* digest)
-      {
-         return Hash::hashFile<CRC32Cs>(file, digest);
       }
    };
 

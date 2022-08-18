@@ -8,11 +8,131 @@
 namespace CppCore
 {
    /// <summary>
-   /// Base Class for Hash Classes
+   /// Base Class for Hashes
    /// </summary>
+   template<typename HASHER>
    class Hash
    {
+   protected:
+      INLINE Hash() { }
+      INLINE HASHER& thiss() { return *(HASHER*)this; }
    public:
+      INLINE void reset()                               { assert(false); }
+      INLINE void step(const void* data, size_t length) { assert(false); }
+      INLINE void finish(void* digest)                  { assert(false); }
+
+      //////////////////////////////////////////////////////////////////////
+
+      /// <summary>
+      /// Step on memory of any type T
+      /// </summary>
+      template<typename T> 
+      INLINE void step(T& data)
+      {
+         thiss().step(&data, sizeof(T));
+      }
+
+      /// <summary>
+      /// Specialization: Step on string
+      /// </summary>
+      template<> INLINE void step<string>(string& data)
+      {
+         thiss().step(data.c_str(), data.length());
+      }
+
+      /// <summary>
+      /// Specialization: Step on string_view
+      /// </summary>
+      template<> INLINE void step<string_view>(string_view& data)
+      {
+         thiss().step(data.data(), data.length());
+      }
+
+      /// <summary>
+      /// Specialization: Step on istream
+      /// </summary>
+      template<> INLINE void step<istream>(istream& stream)
+      {
+         CPPCORE_ALIGN64 char buf[8192];
+         stream.clear();
+         stream.seekg(0, stream.beg);
+         while (stream.good())
+         {
+            stream.read(buf, sizeof(buf));
+            const std::streamsize read = stream.gcount();
+            if (read)
+               thiss().step(buf, read);
+         }
+      }
+
+      /// <summary>
+      /// Specialization: Step on ifstream
+      /// </summary>
+      template<> INLINE void step<ifstream>(ifstream& stream)
+      {
+         thiss().template step<istream>(stream);
+      }
+
+      //////////////////////////////////////////////////////////////////////
+
+      /// <summary>
+      /// Calculates hash of memory with given length.
+      /// Shortcut for calling reset(), step() and finish().
+      /// </summary>
+      INLINE void hash(const void* data, size_t length, void* digest)
+      {
+         thiss().reset();
+         thiss().step(data, length);
+         thiss().finish(digest);
+      }
+
+      /// <summary>
+      /// Calculates hash of memory of any type.
+      /// Shortcut for calling reset(), step() and finish().
+      /// </summary>
+      template<typename T>
+      INLINE void hash(T& data, void* digest)
+      {
+         thiss().hash(&data, sizeof(T), digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of string
+      /// </summary>
+      template<> INLINE void hash<string>(string& data, void* digest)
+      {
+         thiss().hash(data.c_str(), data.length(), digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of string_view
+      /// </summary>
+      template<> INLINE void hash<string_view>(string_view& data, void* digest)
+      {
+         thiss().hash(data.data(), data.length(), digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of istream
+      /// </summary>
+      template<> INLINE void hash<istream>(istream& stream, void* digest)
+      {
+         thiss().reset();
+         thiss().step(stream);
+         thiss().finish(digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of ifstream
+      /// </summary>
+      template<> INLINE void hash<ifstream>(ifstream& stream, void* digest)
+      {
+         thiss().template hash<istream>(stream, digest);
+      }
+
+      ///////////////////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////////////////////
+
       /// <summary>
       /// Smaller helper
       /// </summary>
@@ -30,13 +150,12 @@ namespace CppCore
       /// Calculates hash of arbitrary sized memory.
       /// Hash is returned in digest, default seeds are used.
       /// </summary>
-      template<typename HASHER>
       INLINE static bool hashMem(const void* data, const size_t len, void* digest)
       {
-         if (data == 0 || len == 0 || digest == 0) CPPCORE_UNLIKELY
+         if (!data || !len || !digest) CPPCORE_UNLIKELY
             return false;
 
-         CPPCORE_ALIGN16 HASHER hasher;
+         HASHER hasher;
          hasher.step(data, len);
          hasher.finish(digest);
 
@@ -44,65 +163,44 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Calculates hash of an input stream of known length.
-      /// Hash is returned in digest, default seeds are used.
+      /// Calculates hash of an input stream into digest.
       /// </summary>
-      template<typename HASHER>
-      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
+      INLINE static bool hashStream(istream& s, void* digest)
       {
-         // stream with zero size or null digest
-         if (len == 0 || digest == 0) CPPCORE_UNLIKELY
+         if (!digest) CPPCORE_UNLIKELY
             return false;
 
-         CPPCORE_ALIGN16 HASHER  hasher;
-         CPPCORE_ALIGN16 uint8_t buf[8192];
-
-         // full buffers and rest
-         const uint64_t full = len >> 13;    // div 8192
-         const uint32_t rest = len & 0x1FFF; // mod 8192
-
-         // 8192 byte chunks
-         for (uint64_t i = 0; i < full; i++)
-         {
-            s.read((char*)buf, 8192);
-            hasher.step(buf, 8192);
-         }
-
-         // 0-8191 byte tail
-         s.read((char*)buf, rest);
-         hasher.step(buf, rest);
-
-         // finish
-         hasher.finish(digest);
+         // calculate hash
+         HASHER hsh;
+         hsh.step(s);
+         hsh.finish(digest);
          return true;
       }
 
       /// <summary>
-      /// Calculates hash of a file using HASHER class.
-      /// Hash is returned in digest, default seeds are used.
+      /// Calculates hash of a file into digest.
       /// </summary>
-      template<typename HASHER>
       INLINE static bool hashFile(const string& file, void* digest)
       {
-         // try open file (at the end)
-         ifstream stream(file, ifstream::binary | ifstream::in | ifstream::ate);
+         // no digest
+         if (!digest) CPPCORE_UNLIKELY
+            return false;
 
-         // failed to open file
+         // try open file
+         ifstream stream(file, ifstream::binary | ifstream::in);
+
+         // open failed
          if (!stream.is_open()) CPPCORE_UNLIKELY
             return false;
 
-         // get stream length
-         const uint64_t len = stream.tellg();
+         // calculate hash
+         HASHER hsh;
+         hsh.step(stream);
+         hsh.finish(digest);
 
-         // set position back to begin
-         stream.seekg(0, stream.beg);
-
-         // call stream variant with filestream
-         const bool ok = HASHER::hashStream(stream, len, digest);
-
-         // close file
+         // close stream
          stream.close();
-         return ok;
+         return true;
       }
    };
 }

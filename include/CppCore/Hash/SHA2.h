@@ -8,11 +8,14 @@ namespace CppCore
    /// <summary>
    /// Base Class for SHA2
    /// </summary>
-   class SHA2 : public Hash
+   template<typename TSHA>
+   class SHA2 : public Hash<TSHA>
    {
    protected:
       INLINE SHA2() { }
    public:
+      using Hash<TSHA>::step;
+      using Hash<TSHA>::hash;
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,7 +26,7 @@ namespace CppCore
    /// SHA2 Generic
    /// </summary>
    template<typename TSTATE, typename TBLOCK, typename TSHA>
-   class SHA2g : public SHA2
+   class SHA2g : public SHA2<TSHA>
    {
    public:
       using Block = TBLOCK;
@@ -79,35 +82,6 @@ namespace CppCore
                blockSize = 0;
             }
          }
-      }
-
-      ///////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Calculates SHA hash of arbitrary sized memory.
-      /// Return true on success and SHA hash in digest.
-      /// </summary>
-      INLINE static bool hashMem(const void* data, const size_t len, void* digest)
-      {
-         return Hash::hashMem<TSHA>(data, len, digest);
-      }
-
-      /// <summary>
-      /// Calculates SHA hash of an input stream of known length.
-      /// Hash is returned in digest, default SHA seeds are used.
-      /// </summary>
-      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
-      {
-         return Hash::hashStream<TSHA>(s, len, digest);
-      }
-
-      /// <summary>
-      /// Calculates SHA hash of a file.
-      /// Hash is returned in digest, default SHA seeds are used.
-      /// </summary>
-      INLINE static bool hashFile(const string& file, void* digest)
-      {
-         return Hash::hashFile<TSHA>(file, digest);
       }
    };
 

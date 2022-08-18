@@ -8,7 +8,7 @@ namespace CppCore
    /// <summary>
    /// MD5 Hash
    /// </summary>
-   class MD5 : public Hash
+   class MD5 : public Hash<MD5>
    {
    public:
       static constexpr const uint8_t PADDING[64] = {
@@ -29,6 +29,8 @@ namespace CppCore
    public:
       using Block = Block512;
       using State = Block128;
+      using Hash::step;
+      using Hash::hash;
 
    protected:
       INLINE static uint32_t MD5_F(const uint32_t x, const uint32_t y, const uint32_t z) {
@@ -289,24 +291,6 @@ namespace CppCore
             Hash::replaceByte((uint8_t*)digest, 16, 0x00, 0x01);
 
          return true;
-      }
-
-      /// <summary>
-      /// Calculates MD5 hash of an input stream of known length.
-      /// Hash is returned in digest, default MD5 seeds are used.
-      /// </summary>
-      INLINE static bool hashStream(istream& s, const uint64_t len, void* digest)
-      {
-         return Hash::hashStream<MD5>(s, len, digest);
-      }
-
-      /// <summary>
-      /// Calculates MD5 hash of a file.
-      /// Hash is returned in digest, default MD5 seeds are used.
-      /// </summary>
-      INLINE static bool hashFile(const string& file, void* digest)
-      {
-         return Hash::hashFile<MD5>(file, digest);
       }
    };
 }
