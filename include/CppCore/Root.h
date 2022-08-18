@@ -217,6 +217,7 @@
 #elif defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
 #include <x86intrin.h>
 #elif defined(CPPCORE_CPU_ARMORARM64) && defined(CPPCORE_COMPILER_CLANG)
+#include <arm_acle.h>
 #include <arm_neon.h>
 #endif
 
@@ -416,7 +417,7 @@ static_assert(sizeof(double) == 8U);
 
 #if defined(CPPCORE_CPUFEAT_SSE2)
 #define CPPCORE_NANOSLEEP() _mm_pause()
-#elif false && defined(CPPCORE_CPU_ARM64)
+#elif defined(CPPCORE_CPU_ARM64)
 #define CPPCORE_NANOSLEEP()  __yield()
 #else
 #define CPPCORE_NANOSLEEP()
