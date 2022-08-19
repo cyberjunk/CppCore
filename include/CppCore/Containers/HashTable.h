@@ -2,8 +2,8 @@
 
 #include <CppCore/Root.h>
 #include <CppCore/Containers/Util/Comparer.h>
-#include <CppCore/Containers/Util/Hasher.h>
 #include <CppCore/Containers/Pool.h>
+#include <CppCore/Hash/Murmur3.h>
 
 namespace CppCore
 {
@@ -28,15 +28,27 @@ namespace CppCore
       /// <summary>
       /// HashTable for Single Threaded Access
       /// </summary>
-      template<typename T, size_t SIZE, size_t MAXENTRIES, typename KEY=T, typename HASHER=Hasher::Murmur3::Generic<KEY>, typename COMPARER=Comparer<T, KEY>>
+      template<
+         typename T, 
+         typename KEY,
+         size_t   POOLSIZE,
+         typename COMPARER,
+         size_t   TABLESIZE = (size_t)ngptwo64(POOLSIZE * 2),
+         typename HASHER    = Murmur3>
       class ST
       {
-         typedef Pool::Fix::ST<Entry<T>, MAXENTRIES> EntryPool;
+      private:
+         static_assert(POOLSIZE <= TABLESIZE);
+         static_assert(popcnt64_generic(TABLESIZE) == 1U);
+
+      public:
+         using EntryPool = Pool::Fix::ST<Entry<T>, POOLSIZE>;
 
       protected:
-         EntryPool mPool;
-         Entry<T>* mTable[SIZE];
-         size_t    mLength;
+         CPPCORE_ALIGN16 Entry<T>* mTable[TABLESIZE];
+         CPPCORE_ALIGN16 size_t    mLength;
+         CPPCORE_ALIGN16 HASHER    mHasher;
+         CPPCORE_ALIGN16 EntryPool mPool;
 
          /// <summary>
          /// C++ Iterator
@@ -51,11 +63,11 @@ namespace CppCore
             INLINE Iterator(size_t idx, ST& ht) : mIdx(idx), mHT(ht)
             {
                // find first used slot
-               while (idx < SIZE && !mHT.mTable[idx])
+               while (idx < TABLESIZE && !mHT.mTable[idx])
                   idx++;
 
                // found
-               if (idx < SIZE)
+               if (idx < TABLESIZE)
                {
                   mIdx = idx;
                   mEntry = mHT.mTable[idx];
@@ -80,11 +92,11 @@ namespace CppCore
                   mIdx++;
 
                   // find next used slot
-                  while (mIdx < SIZE && !mHT.mTable[mIdx])
+                  while (mIdx < TABLESIZE && !mHT.mTable[mIdx])
                      mIdx++;
 
                   // found
-                  if (mIdx < SIZE)
+                  if (mIdx < TABLESIZE)
                      mEntry = mHT.mTable[mIdx];
 
                   // end
@@ -104,19 +116,25 @@ namespace CppCore
          /// <summary>
          /// Constructor
          /// </summary>
-         INLINE ST()
+         INLINE ST() : mLength(0), mHasher(), mPool()
          {
-            mLength = 0;
-            memset(mTable, 0, sizeof(mTable));
+            CppCore::clear(mTable);
          }
 
+         /// <summary>
+         /// Iterator begin()
+         /// </summary>
          INLINE Iterator begin() { return Iterator(0, *this); }
+
+         /// <summary>
+         /// Iterator end()
+         /// </summary>
          INLINE Iterator end() { return Iterator(mLength - 1, *this); }
 
          /// <summary>
          /// Complexity: O(1)
          /// </summary>
-         INLINE size_t size() const { return SIZE; }
+         INLINE size_t size() const { return TABLESIZE; }
 
          /// <summary>
          /// Complexity: O(1)
@@ -124,12 +142,13 @@ namespace CppCore
          INLINE size_t length() const { return mLength; }
 
          /// <summary>
-         /// Includes memory zeroing
+         /// Clears the hashtable and 
+         /// pushes back all used entries to the pool.
          /// </summary>
          INLINE void clear()
          {
             // push used entries back to pool
-            for (size_t i = 0; i < SIZE; i++)
+            for (size_t i = 0; i < TABLESIZE; i++)
             {
                Entry<T>* entry = mTable[i];
                while (entry)
@@ -139,8 +158,8 @@ namespace CppCore
                }
             }
 
+            CppCore::clear(mTable);
             mLength = 0;
-            memset(mTable, 0, sizeof(mTable));
          }
 
          /// <summary>
@@ -169,15 +188,15 @@ namespace CppCore
          /// </summary>
          INLINE T* find(const KEY& key)
          {
-            // first seed, then hash, then index
-            uint32_t idx = 0;
+            // hashed key
+            typename HASHER::Digest hash;
 
-            // calc hash from key and seed
-            if (!HASHER::hash(key, idx))
-               return nullptr;
+            // calc hash from key
+            mHasher.hash(key, hash);
 
             // get index from hash
-            idx %= SIZE;
+            const uint32_t idx = 
+               hash % TABLESIZE;
 
             // entry at idx
             Entry<T>* entry = mTable[idx];
@@ -218,15 +237,15 @@ namespace CppCore
          /// </summary>
          INLINE bool insert(const KEY& key, Entry<T>* entry)
          {
-            // first seed, then hash, then index
-            uint32_t idx = 0;
+            // hashed key
+            typename HASHER::Digest hash;
 
-            // calc hash from key and seed
-            if (!HASHER::hash(key, idx))
-               return false;
+            // calc hash from key
+            mHasher.hash(key, hash);
 
             // get index from hash
-            idx %= SIZE;
+            const uint32_t idx = 
+               hash % TABLESIZE;
 
             // slot is empty
             if (!mTable[idx])
@@ -248,6 +267,7 @@ namespace CppCore
          }
 
          /// <summary>
+         /// Uses assignment operator to copy item to entry data.
          /// Complexity: O(1) - O(n)
          /// </summary>
          INLINE bool insert(const KEY& key, const T& item)
@@ -272,15 +292,15 @@ namespace CppCore
          /// </summary>
          INLINE Entry<T>* remove(const KEY& key)
          {
-            // first seed, then hash, then index
-            uint32_t idx = 0;
+            // hashed key
+            typename HASHER::Digest hash;
 
-            // calc hash from key and seed
-            if (!HASHER::hash(key, idx))
-               return nullptr;
+            // calc hash from key
+            mHasher.hash(key, hash);
 
             // get index from hash
-            idx %= SIZE;
+            const uint32_t idx = 
+               hash % TABLESIZE;
 
             // entry at idx
             Entry<T>* entry = mTable[idx];
@@ -337,7 +357,7 @@ namespace CppCore
             collisions = 0;
             worst = 0;
 
-            for (size_t i = 0; i < SIZE; i++)
+            for (size_t i = 0; i < TABLESIZE; i++)
             {
                if (Entry<T>* entry = mTable[i])
                {
@@ -360,39 +380,47 @@ namespace CppCore
       /// <summary>
       /// HashTable for Multi Threaded Access
       /// </summary>
-      template<typename T, size_t SIZE, size_t MAXENTRIES, typename KEY = T, typename HASHER = Hasher::Murmur3::Generic<KEY>, typename COMPARER = Comparer<T, KEY>>
-      class MT : ST<T, SIZE, MAXENTRIES, KEY, HASHER, COMPARER>
+      template<
+         typename T, 
+         typename KEY,
+         size_t   POOLSIZE,
+         typename COMPARER,
+         size_t   TABLESIZE = (size_t)ngptwo64(POOLSIZE * 2),
+         typename HASHER    = Murmur3>
+      class MT : ST<T, KEY, POOLSIZE, COMPARER, TABLESIZE, HASHER>
       {
+      public:
+         using Base = ST<T, KEY, POOLSIZE, COMPARER, TABLESIZE, HASHER>;
       protected:
          CPPCORE_MUTEX_TYPE mLock;
       public:
-         INLINE MT() : ST<T, SIZE, MAXENTRIES, KEY, HASHER, COMPARER>() { CPPCORE_MUTEX_INIT(mLock); }
+         INLINE MT() : Base() { CPPCORE_MUTEX_INIT(mLock); }
          INLINE ~MT() { CPPCORE_MUTEX_DELETE(mLock); }
-         INLINE size_t size() const { return SIZE; }
+         INLINE size_t size() const { return TABLESIZE; }
          INLINE void clear()
          {
             CPPCORE_MUTEX_LOCK(mLock);
-            ST<T, SIZE, MAXENTRIES, KEY, HASHER, COMPARER>::clear();
+            Base::clear();
             CPPCORE_MUTEX_UNLOCK(mLock);
          }
          INLINE bool find(const KEY& key, T& item)
          {
             CPPCORE_MUTEX_LOCK(mLock);
-            bool ret = ST<T, SIZE, MAXENTRIES, KEY, HASHER, COMPARER>::find(key, item);
+            bool ret = Base::find(key, item);
             CPPCORE_MUTEX_UNLOCK(mLock);
             return ret;
          }
          INLINE bool insert(const KEY& key, const T& item)
          {
             CPPCORE_MUTEX_LOCK(mLock);
-            bool ret = ST<T, SIZE, MAXENTRIES, KEY, HASHER, COMPARER>::insert(key, item);
+            bool ret = Base::insert(key, item);
             CPPCORE_MUTEX_UNLOCK(mLock);
             return ret;
          }
          INLINE bool remove(const KEY& key, T& item)
          {
             CPPCORE_MUTEX_LOCK(mLock);
-            bool ret = ST<T, SIZE, MAXENTRIES, KEY, HASHER, COMPARER>::remove(key, item);
+            bool ret = Base::remove(key, item);
             CPPCORE_MUTEX_UNLOCK(mLock);
             return ret;
          }

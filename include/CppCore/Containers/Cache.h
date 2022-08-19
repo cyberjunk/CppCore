@@ -97,17 +97,15 @@ namespace CppCore
       /// </summary>
       template<
          typename T, 
-         size_t   SIZE, 
-         size_t   MAXENTRIES, 
-         size_t   SIZEPRUNE, 
-         typename KEY      = T, 
-         typename HASHER   = Hasher::Murmur3::Generic<KEY>, 
-         typename COMPARER = Comparer<T, KEY>>
+         typename KEY,
+         size_t   SIZE,
+         typename COMPARER,
+         size_t   SIZEPRUNE>
       class ST
       {
       public:
-         typedef HashTable::ST<Entry<T>, SIZE, MAXENTRIES, KEY, HASHER, COMPARER> HT;
-         typedef Array::Fix::ST<Entry<T>*, SIZEPRUNE>                             ArrayEntry;
+         using HT         = HashTable::ST<Entry<T>, KEY, SIZE, COMPARER>;
+         using ArrayEntry = Array::Fix::ST<Entry<T>*, SIZEPRUNE>;
 
       protected:
          HT         mHT;

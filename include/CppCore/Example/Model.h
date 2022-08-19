@@ -229,8 +229,11 @@ namespace CppCore
       private:
          INLINE HashTableName() { }
       public:
-         template<size_t SIZE, size_t MAXENTRIES, typename T = Model*>
-         class ST : public HashTable::ST<T, SIZE, MAXENTRIES, string, Hasher::Murmur3::String, Model::ComparerName::OP2K>
+         template<
+            size_t   POOLSIZE, 
+            typename TMODEL   = Model*, 
+            typename COMPARER = Model::ComparerName::OP2K>
+         class ST : public HashTable::ST<TMODEL, string, POOLSIZE, COMPARER>
          {
          };
       };
@@ -243,8 +246,11 @@ namespace CppCore
       private:
          INLINE HashTableId() { }
       public:
-         template<size_t SIZE, size_t MAXENTRIES, typename T = Model*>
-         class ST : public HashTable::ST<T, SIZE, MAXENTRIES, uint32_t, Hasher::Murmur3::UInt32, Model::ComparerId::OP2K>
+         template<
+            size_t   POOLSIZE, 
+            typename TMODEL   = Model*,
+            typename COMPARER = Model::ComparerId::OP2K>
+         class ST : public HashTable::ST<TMODEL, uint32_t, POOLSIZE, COMPARER>
          {
          };
       };

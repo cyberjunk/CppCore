@@ -2137,6 +2137,28 @@ namespace CppCore
 
    /// <summary>
    /// Counts the number of bits set to 1 in 32-bit integer.
+   /// Slow version with native uint32_t operations only, but constexpr.
+   /// </summary>
+   constexpr static INLINE uint32_t popcnt32_generic(uint32_t v)
+   {
+      v -= ((v >> 1) & 0x55555555U);
+      v  = (v & 0x33333333U) + ((v >> 2) & 0x33333333U);
+      return ((v + (v >> 4) & 0xF0F0F0FU) * 0x1010101U) >> 24;
+   }
+
+   /// <summary>
+   /// Counts the number of bits set to 1 in 64-bit integer.
+   /// Slow version with native uint64_t operations only, but constexpr.
+   /// </summary>
+   constexpr static INLINE uint32_t popcnt64_generic(uint64_t v)
+   {
+      v -= ((v >> 1) & 0x5555555555555555ULL);
+      v  = (v & 0x3333333333333333ULL) + ((v >> 2) & 0x3333333333333333ULL);
+      return ((v + (v >> 4) & 0xF0F0F0F0F0F0F0FULL) * 0x101010101010101ULL) >> 56;
+   }
+
+   /// <summary>
+   /// Counts the number of bits set to 1 in 32-bit integer.
    /// </summary>
    static INLINE uint32_t popcnt32(uint32_t v)
    {
@@ -2147,9 +2169,7 @@ namespace CppCore
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_popcountl)
       return __builtin_popcountl(v);
    #else
-      v -= ((v >> 1) & 0x55555555U);
-      v  = (v & 0x33333333U) + ((v >> 2) & 0x33333333U);
-      return ((v + (v >> 4) & 0xF0F0F0FU) * 0x1010101U) >> 24;
+      return popcnt32_generic(v);
    #endif
    }
 
@@ -2165,9 +2185,7 @@ namespace CppCore
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_popcountll)
       return __builtin_popcountll(v);
    #else
-      v -= ((v >> 1) & 0x5555555555555555ULL);
-      v  = (v & 0x3333333333333333ULL) + ((v >> 2) & 0x3333333333333333ULL);
-      return ((v + (v >> 4) & 0xF0F0F0F0F0F0F0FULL) * 0x101010101010101ULL) >> 56;
+      return popcnt64_generic(v);
    #endif
    }
 

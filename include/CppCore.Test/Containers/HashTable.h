@@ -12,7 +12,7 @@ namespace CppCore { namespace Test { namespace Containers
    public:
       INLINE static bool modelid()
       {
-         Model::HashTableId::ST<MAXMODELS, MAXMODELS> ht;
+         Model::HashTableId::ST<MAXMODELS> ht;
          Model* model;
 
          resetModels();
@@ -44,7 +44,7 @@ namespace CppCore { namespace Test { namespace Containers
       }
       INLINE static bool modelname()
       {
-         Model::HashTableName::ST<MAXMODELS, MAXMODELS> ht;
+         Model::HashTableName::ST<MAXMODELS> ht;
          Model* model;
 
          resetModels();

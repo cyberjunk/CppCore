@@ -338,7 +338,7 @@ namespace CppCore
    /// <summary>
    /// Rounds v to the next lower multiple of m with m being a power of 2
    /// </summary>
-   static INLINE uint32_t rdownptwo32(uint32_t v, uint32_t m)
+   constexpr static INLINE uint32_t rdownptwo32(uint32_t v, uint32_t m)
    {
       // From Hacker's Delight
       return v & -(int32_t)m;
@@ -347,7 +347,7 @@ namespace CppCore
    /// <summary>
    /// Rounds v to the next lower multiple of m with m being a power of 2
    /// </summary>
-   static INLINE uint64_t rdownptwo64(uint64_t v, uint64_t m)
+   constexpr static INLINE uint64_t rdownptwo64(uint64_t v, uint64_t m)
    {
       // From Hacker's Delight
       return v & -(int64_t)m;
@@ -356,7 +356,7 @@ namespace CppCore
    /// <summary>
    /// Rounds v to the next higher multiple of m with m being a power of 2
    /// </summary>
-   static INLINE uint32_t rupptwo32(uint32_t v, uint32_t m)
+   constexpr static INLINE uint32_t rupptwo32(uint32_t v, uint32_t m)
    {
       // From Hacker's Delight
       return rdownptwo32(v+(m-1), m);
@@ -365,7 +365,7 @@ namespace CppCore
    /// <summary>
    /// Rounds v to the next higher multiple of m with m being a power of 2
    /// </summary>
-   static INLINE uint64_t rupptwo64(uint64_t v, uint64_t m)
+   constexpr static INLINE uint64_t rupptwo64(uint64_t v, uint64_t m)
    {
       // From Hacker's Delight
       return rdownptwo64(v+(m-1), m);
@@ -375,7 +375,7 @@ namespace CppCore
    /// Rounds v to the next higher multiple of m with m being a power of 2
    /// </summary>
    template<typename T>
-   static INLINE T rupptwo(T v, T m)
+   constexpr static INLINE T rupptwo(T v, T m)
    {
       assert(sizeof(T) == 4U || sizeof(T) == 8U);
       return sizeof(T) == 4U ?
@@ -391,7 +391,7 @@ namespace CppCore
    /// Rounds v to the next lower multiple of m.
    /// If m is a multiple of pow2, use faster rdownptwo32() instead.
    /// </summary>
-   static INLINE uint32_t rdown32(uint32_t v, uint32_t m)
+   constexpr static INLINE uint32_t rdown32(uint32_t v, uint32_t m)
    {
       return (v / m) * m;
    }
@@ -400,7 +400,7 @@ namespace CppCore
    /// Rounds v to the next lower multiple of m.
    /// If m is a multiple of pow2, use faster rdownptwo64() instead.
    /// </summary>
-   static INLINE uint64_t rdown64(uint64_t v, uint64_t m)
+   constexpr static INLINE uint64_t rdown64(uint64_t v, uint64_t m)
    {
       return (v / m) * m;
    }
@@ -409,7 +409,7 @@ namespace CppCore
    /// Rounds v to the next greater multiple of m.
    /// If m is a multiple of pow2, use faster rupptwo32() instead.
    /// </summary>
-   static INLINE uint32_t rup32(uint32_t v, uint32_t m)
+   constexpr static INLINE uint32_t rup32(uint32_t v, uint32_t m)
    {
       uint32_t r = rdown32(v, m);
       return r != v ? r + m : r;
@@ -419,7 +419,7 @@ namespace CppCore
    /// Rounds v to the next greater multiple of m.
    /// If m is a multiple of pow2, use faster rupptwo64() instead.
    /// </summary>
-   static INLINE uint64_t rup64(uint64_t v, uint64_t m)
+   constexpr static INLINE uint64_t rup64(uint64_t v, uint64_t m)
    {
       uint64_t r = rdown64(v, m);
       return r != v ? r + m : r;
@@ -429,7 +429,7 @@ namespace CppCore
    /// Rounds v to the next closest multiple of m.
    /// If same distance, picks lower one, except if lower would one be 0.
    /// </summary>
-   static INLINE uint32_t round32(uint32_t v, uint32_t m)
+   constexpr static INLINE uint32_t round32(uint32_t v, uint32_t m)
    {
       uint32_t a = rdown32(v, m);
       uint32_t b = a + m;
@@ -440,7 +440,7 @@ namespace CppCore
    /// Rounds v to the next closest multiple of m.
    /// If same distance, picks lower one, except if lower would one be 0.
    /// </summary>
-   static INLINE uint64_t round64(uint64_t v, uint64_t m)
+   constexpr static INLINE uint64_t round64(uint64_t v, uint64_t m)
    {
       uint64_t a = rdown64(v, m);
       uint64_t b = a + m;
@@ -454,7 +454,7 @@ namespace CppCore
    /// <summary>
    /// Returns next greater power of 2 for 32-bit integer
    /// </summary>
-   static INLINE uint32_t ngptwo32(uint32_t n)
+   constexpr static INLINE uint32_t ngptwo32(uint32_t n)
    {
       n--;
       n |= n >> 1;
@@ -469,7 +469,7 @@ namespace CppCore
    /// <summary>
    /// Returns next greater power of 2 for 64-bit integer
    /// </summary>
-   static INLINE uint64_t ngptwo64(uint64_t n)
+   constexpr static INLINE uint64_t ngptwo64(uint64_t n)
    {
       n--;
       n |= n >> 1;
@@ -485,7 +485,7 @@ namespace CppCore
    /// <summary>
    /// Returns next lower power of 2 for 32-bit integer
    /// </summary>
-   static INLINE uint32_t nlptwo32(uint32_t n)
+   constexpr static INLINE uint32_t nlptwo32(uint32_t n)
    {
       n |= n >> 1;
       n |= n >> 2;
@@ -498,7 +498,7 @@ namespace CppCore
    /// <summary>
    /// Returns next lower power of 2 for 64-bit integer
    /// </summary>
-   static INLINE uint64_t nlptwo64(uint64_t n)
+   constexpr static INLINE uint64_t nlptwo64(uint64_t n)
    {
       n |= n >> 1;
       n |= n >> 2;
