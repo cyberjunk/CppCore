@@ -118,9 +118,25 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Specialization: Hash of const string
+      /// </summary>
+      template<> INLINE void hash<const string>(const string& data, Digest& digest)
+      {
+         thiss().hash(data.c_str(), data.length(), digest);
+      }
+
+      /// <summary>
       /// Specialization: Hash of string_view
       /// </summary>
       template<> INLINE void hash<string_view>(string_view& data, Digest& digest)
+      {
+         thiss().hash(data.data(), data.length(), digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of const string_view
+      /// </summary>
+      template<> INLINE void hash<const string_view>(const string_view& data, Digest& digest)
       {
          thiss().hash(data.data(), data.length(), digest);
       }
@@ -134,9 +150,25 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Specialization: Hash of const wstring
+      /// </summary>
+      template<> INLINE void hash<const wstring>(const wstring& data, Digest& digest)
+      {
+         thiss().hash(data.c_str(), data.size() * sizeof(wchar_t), digest);
+      }
+
+      /// <summary>
       /// Specialization: Hash of string_view
       /// </summary>
       template<> INLINE void hash<wstring_view>(wstring_view& data, Digest& digest)
+      {
+         thiss().hash(data.data(), data.size() * sizeof(wchar_t), digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of const string_view
+      /// </summary>
+      template<> INLINE void hash<const wstring_view>(const wstring_view& data, Digest& digest)
       {
          thiss().hash(data.data(), data.size() * sizeof(wchar_t), digest);
       }

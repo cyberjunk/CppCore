@@ -86,10 +86,10 @@ namespace CppCore
          }
       };
 
-      INLINE Flags()                              {                   }
-      INLINE Flags(T flags) : mFlags(flags)       {                   } 
-      INLINE Flags(StdIStream& stream)            { readFrom(stream); }
-      INLINE ~Flags()                             {                   }
+      INLINE Flags()                        { }
+      INLINE Flags(T flags) : mFlags(flags) { }
+      INLINE Flags(istream& stream)         { readFrom(stream); }
+      INLINE ~Flags()                       { }
 
       INLINE void* ptr()                                { return (void*)&mFlags;                 }
       INLINE T     getFlags()                     const { return mFlags;                         }
@@ -103,7 +103,7 @@ namespace CppCore
       INLINE void  unset(T mask)                        { Ops::unset(mFlags, mask);              }
 
       INLINE size_t getByteLength()               const { return sizeof(T); }
-      INLINE void   readFrom(StdIStream& stream)        { stream.read((char*)ptr(), sizeof(T));  }
-      INLINE void   writeTo(StdOStream& stream)   const { stream.write((char*)ptr(), sizeof(T)); }
+      INLINE void   readFrom(istream& stream)           { stream.read((char*)ptr(), sizeof(T));  }
+      INLINE void   writeTo(ostream& stream)      const { stream.write((char*)ptr(), sizeof(T)); }
    };
 }
