@@ -1,3 +1,7 @@
+<p align="center">
+<img src="/CppCore.png?raw=true" width="512" />
+</p>
+
 # Introduction
 
 CppCore is my personal [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) framework with focus on:
