@@ -21,6 +21,22 @@ namespace CppCore
       using Digest = DIGEST;
 
       /// <summary>
+      /// Step on char* string with unknown length.
+      /// </summary>
+      INLINE void step(char* data)
+      {
+         thiss().step(data, ::strlen(data));
+      }
+
+      /// <summary>
+      /// Step on const char* string with unknown length.
+      /// </summary>
+      INLINE void step(const char* data)
+      {
+         thiss().step(data, ::strlen(data));
+      }
+
+      /// <summary>
       /// Step on memory of any type T
       /// </summary>
       template<typename T> 
@@ -38,9 +54,25 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Specialization: Step on const string
+      /// </summary>
+      template<> INLINE void step<const string>(const string& data)
+      {
+         thiss().step(data.c_str(), data.length());
+      }
+
+      /// <summary>
       /// Specialization: Step on string_view
       /// </summary>
       template<> INLINE void step<string_view>(string_view& data)
+      {
+         thiss().step(data.data(), data.length());
+      }
+
+      /// <summary>
+      /// Specialization: Step on const string_view
+      /// </summary>
+      template<> INLINE void step<const string_view>(const string_view& data)
       {
          thiss().step(data.data(), data.length());
       }
@@ -54,9 +86,25 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Specialization: Step on const wstring
+      /// </summary>
+      template<> INLINE void step<const wstring>(const wstring& data)
+      {
+         thiss().step(data.c_str(), data.size() * sizeof(wchar_t));
+      }
+
+      /// <summary>
       /// Specialization: Step on wstring_view
       /// </summary>
       template<> INLINE void step<wstring_view>(wstring_view& data)
+      {
+         thiss().step(data.data(), data.size() * sizeof(wchar_t));
+      }
+
+      /// <summary>
+      /// Specialization: Step on const wstring_view
+      /// </summary>
+      template<> INLINE void step<const wstring_view>(const wstring_view& data)
       {
          thiss().step(data.data(), data.size() * sizeof(wchar_t));
       }
@@ -97,6 +145,22 @@ namespace CppCore
          thiss().reset();
          thiss().step(data, length);
          thiss().finish(digest);
+      }
+
+      /// <summary>
+      /// Hash of char* string with unknown length.
+      /// </summary>
+      INLINE void hash(char* data, Digest& digest)
+      {
+         thiss().hash(data, ::strlen(data), digest);
+      }
+
+      /// <summary>
+      /// Hash of const char* string with unknown length.
+      /// </summary>
+      INLINE void hash(const char* data, Digest& digest)
+      {
+         thiss().hash(data, ::strlen(data), digest);
       }
 
       /// <summary>
