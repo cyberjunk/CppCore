@@ -1,8 +1,9 @@
-##############################################################################################################
-# WINDOWS
-##############################################################################################################
+# default publisher common name if not specified
+ifeq ($(PUBLISHERCN),)
+PUBLISHERCN = CppCore Developer
+endif
 
-# default publisher if not specified
+# default full publisher if not specified
 ifeq ($(PUBLISHER),)
 PUBLISHER = CN=CppCore Developer
 endif
@@ -14,6 +15,10 @@ ifeq ($(SIGN_PFX_PASS),)
 SIGN_PFX_PASS = CppCore
 endif
 endif
+
+##############################################################################################################
+# WINDOWS
+##############################################################################################################
 
 PUBLISHERID = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
@@ -70,10 +75,14 @@ dist-%:
 	echo [DST] $(NAME)-$*
 dist: dist-x64 dist-arm64
 	@echo [LIP] $(NAME)$(EXTBIN)
+	@mkdir -p $(DISTDIR)/$(NAME).app/Contents/MacOS
 	@lipo -create -output $(OUTDIST) \
 	  ./bin/osx-x64/$(NAME)$(EXTBIN) \
 	  ./bin/osx-arm64/$(NAME)$(EXTBIN)
+	@security import $(SIGN_PFX_FILE) -P $(SIGN_PFX_PASS)
+	@codesign --sign "$(PUBLISHERCN)" $(DISTDIR)/$(NAME).app
 	@productbuild --component $(DISTDIR)/$(NAME).app /Applications $(DISTDIR)/$(NAME).pkg
+	@codesign --sign "$(PUBLISHERCN)" $(DISTDIR)/$(NAME).pkg
 endif
 
 ##############################################################################################################
