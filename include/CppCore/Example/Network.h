@@ -3,6 +3,7 @@
 #include <CppCore/Root.h>
 #include <CppCore/Network/Message.h>
 #include <CppCore/Example/Model.h>
+#include <CppCore/Hash/CRC32.h>
 
 namespace CppCore { namespace Example 
 {
@@ -39,16 +40,21 @@ namespace CppCore { namespace Example
       class Header
       {
       public:
+         /// <summary>
+         /// CRC used in headers
+         /// </summary>
+         using CRC = CRC32C;
+
 #pragma pack (push, 1)
          /// <summary>
          /// Example Tcp Header
          /// </summary>
          struct Tcp
          {
-            uint16_t len1;
-            uint16_t crc;
-            uint16_t len2;
-            uint8_t  epoch;
+            uint16_t    len1;
+            CRC::Digest crc;
+            uint16_t    len2;
+            uint8_t     epoch;
 
             /// <summary>
             /// Mandatory: Length of body from header
@@ -66,10 +72,10 @@ namespace CppCore { namespace Example
          /// </summary>
          struct Udp
          {
-            uint32_t sessionid;
-            uint32_t seqno;
-            uint16_t crc;
-            uint8_t  epoch;
+            uint32_t    sessionid;
+            uint32_t    seqno;
+            CRC::Digest crc;
+            uint8_t     epoch;
          };
 #pragma pack(pop)
       };

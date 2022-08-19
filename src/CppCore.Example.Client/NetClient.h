@@ -2,7 +2,6 @@
 
 #include <CppCore/Network/NetClient.h> // the base class
 #include <CppCore/Example/Network.h>   // the example protocol
-#include <CppCore/Hash/CRC32.h>        // CRC32
 
 namespace CppCore { namespace Example 
 {
@@ -66,52 +65,57 @@ namespace CppCore { namespace Example
 
       /// <summary>
       /// Executed on workload handler and last chance to modify outgoing tcp message.
+      /// The header must be set here because the base class knows nothing about its layout.
       /// </summary>
       INLINE void onSendFinalizeTcp(Message::Tcp& msg) override
       {
          Base::onSendFinalizeTcp(msg);
 
-         // get body length
-         const uint16_t BLEN = (uint16_t)msg.getLengthBody();
-
-         // calculate crc on message body
-         uint32_t crc32;
-         CRC32C::hashMem(msg.getPtrBody(), BLEN, crc32);
-
          // get reference to message header
          Message::Header::Tcp& header = msg.getHeader();
 
+         // calculate crc on message body
+         Message::Header::CRC::hashMem(
+            msg.getPtrBody(),
+            msg.getLengthBody(),
+            header.crc);
+
+         // get body length
+         const uint16_t BLEN = (uint16_t)msg.getLengthBody();
+
          // set header values
          header.len1  = BLEN;
-         header.crc   = (uint16_t)crc32;
          header.len2  = BLEN;
          header.epoch = mEpoch;
       }
 
       /// <summary>
       /// Executed on workload handler and last chance to modify outgoing udp message.
+      /// The header must be set here because the base class knows nothing about its layout.
       /// </summary>
       INLINE void onSendFinalizeUdp(Message::Udp& msg) override
       {
          Base::onSendFinalizeUdp(msg);
 
-         // calculate crc on message body
-         uint32_t crc32;
-         CRC32C::hashMem(msg.getPtrBody(), msg.getLengthBody(), crc32);
-
          // get reference to message header
          Message::Header::Udp& header = msg.getHeader();
 
-         // set header values
+         // calculate crc on message body
+         Message::Header::CRC::hashMem(
+            msg.getPtrBody(), 
+            msg.getLengthBody(), 
+            header.crc);
+
+         // set other header values
          header.sessionid = mSessionId;
          header.seqno     = mSeqNumUdp++;
-         header.crc       = (uint16_t)crc32;
          header.epoch     = mEpoch;
       }
 
       /// <summary>
       /// Executed on workload handler and first chance to check incoming message.
       /// Returning false will discard the message and disconnect from server.
+      /// The header must be checked here because the base class knows nothing about its layout.
       /// </summary>
       INLINE bool onRecvCheckTcp(Message::Tcp& msg) override
       {
@@ -119,11 +123,14 @@ namespace CppCore { namespace Example
             return false;
 
          // calculate crc
-         uint32_t crc32;
-         CRC32C::hashMem(msg.getPtrBody(), msg.getLengthBody(), crc32);
+         Message::Header::CRC::Digest crc;
+         Message::Header::CRC::hashMem(
+            msg.getPtrBody(), 
+            msg.getLengthBody(), 
+            crc);
 
          // check crc
-         return msg.getHeader().crc == (uint16_t)crc32;
+         return msg.getHeader().crc == crc;
       }
 
       /// <summary>

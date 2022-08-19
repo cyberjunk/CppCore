@@ -2,7 +2,6 @@
 
 #include <CppCore/Network/NetSession.h> // the base class
 #include <CppCore/Example/Network.h>    // the example protocol
-#include <CppCore/Hash/CRC32.h>         // CRC32
 
 namespace CppCore { namespace Example 
 {
@@ -64,11 +63,14 @@ namespace CppCore { namespace Example
       INLINE bool onRecvCheckUdp(Message::Udp& msg) override
       {
          // calculate crc
-         uint32_t crc32;
-         CRC32C::hashMem(msg.getPtrBody(), msg.getLengthBody(), crc32);
+         Message::Header::CRC::Digest crc;
+         Message::Header::CRC::hashMem(
+            msg.getPtrBody(), 
+            msg.getLengthBody(), 
+            crc);
 
          // check crc
-         if (msg.getHeader().crc != (uint16_t)crc32)
+         if (msg.getHeader().crc != crc)
          {
             this->logDebug("Discarding UDP with invalid crc");
             return false;
@@ -124,19 +126,20 @@ namespace CppCore { namespace Example
       {
          Base::onSendFinalizeTcp(msg);
 
-         // get body length
-         const uint16_t BLEN = (uint16_t)msg.getLengthBody();
-
-         // calculate crc
-         uint32_t crc32;
-         CRC32C::hashMem(msg.getPtrBody(), BLEN, crc32);
-
          // get reference to header
          Message::Header::Tcp& header = msg.getHeader();
 
+         // calculate crc on message body
+         Message::Header::CRC::hashMem(
+            msg.getPtrBody(),
+            msg.getLengthBody(),
+            header.crc);
+
+         // get body length
+         const uint16_t BLEN = (uint16_t)msg.getLengthBody();
+
          // set header values
          header.len1 = BLEN;
-         header.crc = (uint16_t)crc32;
          header.len2 = BLEN;
          header.epoch = mSharedData.mEpoch;
       }
@@ -148,11 +151,14 @@ namespace CppCore { namespace Example
       INLINE bool onRecvCheckTcp(Message::Tcp& msg) override
       {
          // calculate crc
-         uint32_t crc32;
-         CRC32C::hashMem(msg.getPtrBody(), (uint32_t)msg.getLengthBody(), crc32);
+         Message::Header::CRC::Digest crc;
+         Message::Header::CRC::hashMem(
+            msg.getPtrBody(),
+            msg.getLengthBody(),
+            crc);
 
          // check crc
-         if (msg.getHeader().crc != (uint16_t)crc32)
+         if (msg.getHeader().crc != crc)
             return false;
 
          // all good
