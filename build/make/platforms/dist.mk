@@ -95,7 +95,7 @@ dist: dist-x64 dist-arm64
 	@echo [PKG] $(NAME).pkg
 	@productbuild --component $(DISTDIR)/$(NAME).app /Applications $(DISTDIR)/$(NAME).pkg
 	@echo [SIG] $(NAME).pkg
-#	@codesign --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).pkg
+#	@productsign --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).pkg $(DISTDIR)/$(NAME)2.pkg
 	@echo [DEL] $(KEYCHAIN)
 	@security delete-keychain $(KEYCHAIN)
 endif
