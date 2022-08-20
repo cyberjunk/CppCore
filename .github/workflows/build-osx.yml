@@ -39,14 +39,13 @@ jobs:
         echo $PFX_BASE64 > ./TrueCert.pfx.base64
         base64 --decode -i ./TrueCert.pfx.base64 -o ./TrueCert.pfx
 
-    - name: Dist
+    - name: Distribution Packages
       env:
         SIGN_PFX_FILE: ../../TrueCert.pfx
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
         PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
         PUBLISHERCN: Clint Banzhaf
-      run: |
-        make dist -j${{ env.JOBS }}
+      run: make dist
       
     - name: Test
       run: |
