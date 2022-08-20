@@ -48,15 +48,10 @@ jobs:
       run: make dist
       
     - name: Test
-      run: |
-        ./dist/osx-10.15/CppCore.Test.app/Contents/MacOS/CppCore.Test
+      run: ./dist/osx-10.15/CppCore.Test.app/Contents/MacOS/CppCore.Test
 
     - name: Upload
       uses: actions/upload-artifact@v3
       with:
         name: Packages (${{ matrix.os }})
-        path: |
-          ./dist/osx-10.15/CppCore.Example.Server.pkg
-          ./dist/osx-10.15/CppCore.Example.Client.pkg
-          ./dist/osx-10.15/CppCore.Test.pkg
-          ./dist/osx-10.15/CppCore.Debug.pkg
+        path: ./dist/osx-10.15/*.pkg

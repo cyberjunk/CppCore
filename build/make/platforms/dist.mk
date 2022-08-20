@@ -113,7 +113,6 @@ dist: dist-prep dist-x64 dist-arm64
 	@pkgutil --payload-files $(DISTDIR)/$(NAME).pkg
 	@echo [SIG] $(NAME).pkg
 #	@productsign --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).pkg $(DISTDIR)/$(NAME)2.pkg
-	@echo [DEL] $(KEYCHAIN)
 endif
 
 ##############################################################################################################
