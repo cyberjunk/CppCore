@@ -91,7 +91,7 @@ dist: dist-x64 dist-arm64
 	@security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(SIGN_PFX_PASS) $(KEYCHAIN)
 	@security list-keychain -d user -s $(KEYCHAIN)
 	@echo [SIG] $(NAME).app
-	@codesign --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).app
+#	@codesign --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).app
 	@echo [PKG] $(NAME).pkg
 	@productbuild --component $(DISTDIR)/$(NAME).app /Applications $(DISTDIR)/$(NAME).pkg
 	@echo [SIG] $(NAME).pkg
