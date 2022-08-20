@@ -21,14 +21,30 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Make (build)
+    - name: Versions
       run: |
         make -v
         clang++ -v
-        make TARGET_ARCH=x64 -j${{ env.JOBS }}
-        make TARGET_ARCH=arm64 -j${{ env.JOBS }}
 
-    - name: Make (dist)
+    - name: Build (X64)
+      run: make TARGET_ARCH=x64 -j${{ env.JOBS }}
+
+    - name: Build (ARM64)
+      run: make TARGET_ARCH=arm64 -j${{ env.JOBS }}
+
+    - name: Load Code Signing Certificate
+      env:
+        PFX_BASE64: ${{ secrets.SIGN_PFX_FILE }}
+      run: |
+        echo $PFX_BASE64 > ./TrueCert.pfx.base64
+        base64 --decode -i ./TrueCert.pfx.base64 -o ./TrueCert.pfx
+
+    - name: Dist
+      env:
+        SIGN_PFX_FILE: ../../TrueCert.pfx
+        SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
+        PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
+        PUBLISHERCN: Clint Banzhaf
       run: |
         make dist -j${{ env.JOBS }}
       
