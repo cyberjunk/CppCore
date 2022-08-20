@@ -1,8 +1,9 @@
-##############################################################################################################
-# WINDOWS
-##############################################################################################################
+# default publisher common name if not specified
+ifeq ($(PUBLISHERCN),)
+PUBLISHERCN = CppCore Developer
+endif
 
-# default publisher if not specified
+# default full publisher if not specified
 ifeq ($(PUBLISHER),)
 PUBLISHER = CN=CppCore Developer
 endif
@@ -14,6 +15,10 @@ ifeq ($(SIGN_PFX_PASS),)
 SIGN_PFX_PASS = CppCore
 endif
 endif
+
+##############################################################################################################
+# WINDOWS
+##############################################################################################################
 
 PUBLISHERID = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
@@ -66,14 +71,33 @@ endif
 ##############################################################################################################
 
 ifeq ($(TARGET_OS),osx)
+KEYCHAIN = sign-$(NAME).keychain-db
 dist-%:
-	echo [DST] $(NAME)-$*
+	@echo [DST] $(NAME)-$*
 dist: dist-x64 dist-arm64
+	@echo [MKD] $(NAME).app/Contents/MacOS
+	@mkdir -p $(DISTDIR)/$(NAME).app/Contents/MacOS
 	@echo [LIP] $(NAME)$(EXTBIN)
 	@lipo -create -output $(OUTDIST) \
 	  ./bin/osx-x64/$(NAME)$(EXTBIN) \
 	  ./bin/osx-arm64/$(NAME)$(EXTBIN)
+	@echo [KCH] $(KEYCHAIN)
+#	@security delete-keychain $(KEYCHAIN)
+	@security create-keychain -p "$(SIGN_PFX_PASS)" $(KEYCHAIN)
+	@security set-keychain-settings -lut 21600 $(KEYCHAIN)
+	@security unlock-keychain -p "$(SIGN_PFX_PASS)" $(KEYCHAIN)
+	@echo [IMP] $(SIGN_PFX_FILE)
+	@security import $(SIGN_PFX_FILE) -P $(SIGN_PFX_PASS) -k $(KEYCHAIN) -T /usr/bin/codesign
+	@security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(SIGN_PFX_PASS) $(KEYCHAIN)
+	@security list-keychain -d user -s $(KEYCHAIN)
+	@echo [SIG] $(NAME).app
+	@codesign --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).app
+	@echo [PKG] $(NAME).pkg
 	@productbuild --component $(DISTDIR)/$(NAME).app /Applications $(DISTDIR)/$(NAME).pkg
+	@echo [SIG] $(NAME).pkg
+#	@productsign --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).pkg $(DISTDIR)/$(NAME)2.pkg
+	@echo [DEL] $(KEYCHAIN)
+	@security delete-keychain $(KEYCHAIN)
 endif
 
 ##############################################################################################################
