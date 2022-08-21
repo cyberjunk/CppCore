@@ -1,3 +1,5 @@
 *.pkg
 **/_CodeSignature/
 **/MacOS/
+**/Resources/
+**/.icns

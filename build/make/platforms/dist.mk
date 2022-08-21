@@ -103,6 +103,10 @@ dist: dist-prep dist-x64 dist-arm64
 	@lipo -create -output $(OUTDIST) \
 	  ./bin/osx-x64/$(NAME)$(EXTBIN) \
 	  ./bin/osx-arm64/$(NAME)$(EXTBIN)
+	@echo [MKD] $(NAME).app/Contents/Resources
+	@mkdir -p $(DISTDIR)/$(NAME).app/Contents/Resources
+	@echo [ICO] $(NAME).icns
+	@cp $(SRCDIR)/app.icns $(DISTDIR)/$(NAME).app/Contents/Resources/Icon.icns
 	@echo [SIG] $(NAME).app
 	@codesign -v --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).app
 	@echo [VFY] $(NAME).app
