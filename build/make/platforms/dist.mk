@@ -108,15 +108,36 @@ dist: dist-prep dist-x64 dist-arm64
 	@echo [ICO] $(NAME).icns
 	@cp $(SRCDIR)/app.icns $(DISTDIR)/$(NAME).app/Contents/Resources/Icon.icns
 	@echo [SIG] $(NAME).app
-	@codesign -v --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).app
+	@codesign -v \
+	  --sign "$(PUBLISHERCN)" \
+	  --keychain $(KEYCHAIN) \
+	  --timestamp \
+	  $(DISTDIR)/$(NAME).app
 	@echo [VFY] $(NAME).app
 	@codesign -vvvd $(DISTDIR)/$(NAME).app
 	@echo [PKG] $(NAME).pkg
-	@productbuild --component $(DISTDIR)/$(NAME).app /Applications $(DISTDIR)/$(NAME).pkg
+	@pkgbuild \
+	  --analyze \
+	  --root $(DISTDIR)/$(NAME).app \
+	  $(DISTDIR)/$(NAME).plist
+	@pkgbuild \
+	  --identifier $(NAME).app \
+	  --root $(DISTDIR)/$(NAME).app \
+	  --install-location /Applications/$(NAME).app \
+	  --component-plist $(DISTDIR)/$(NAME).plist \
+	  $(DISTDIR)/$(NAME).pkg
+#	@productbuild --component \
+	  $(DISTDIR)/$(NAME).app \
+	  /Applications/$(NAME).app \
+	  $(DISTDIR)/$(NAME).pkg
 	@echo [FIL] $(NAME).pkg
 	@pkgutil --payload-files $(DISTDIR)/$(NAME).pkg
 	@echo [SIG] $(NAME).pkg
-#	@productsign --sign "$(PUBLISHERCN)" --keychain $(KEYCHAIN) $(DISTDIR)/$(NAME).pkg $(DISTDIR)/$(NAME)2.pkg
+#	@productsign \
+	  --sign "$(PUBLISHERCN)" \
+	  --keychain $(KEYCHAIN) \
+	  $(DISTDIR)/$(NAME).pkg \
+	  $(DISTDIR)/$(NAME)-sig.pkg
 endif
 
 ##############################################################################################################
