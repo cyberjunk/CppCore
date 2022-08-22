@@ -1,6 +1,6 @@
 #pragma once
 
-#include <CppCore/Input.h> // the base class
+#include <CppCore/UI/Input.h> // the base class
 
 namespace CppCore { namespace Example 
 {
