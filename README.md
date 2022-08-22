@@ -121,8 +121,21 @@ Low-Latency Multi-Threading Model
 |--------------------------------------------------------------------------------------------|----------------------|
 | [Random.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Random.h)      | PRNG |
 
-# Example Applications
+# Applications
 
-## CppCore.Example.Client
-## CppCore.Example.Server
-## CppCore.Example.UI
+Start type `Console` from terminal on OSX.
+
+## Examples
+
+|                                                                      | Name | Type    | Folder | Notes |
+|----------------------------------------------------------------------|------|---------|--------|-------|
+|<img src="/src/CppCore.Example.Client/app.png?raw=true" width="24" /> | CppCore.Example.Client | Console | [Link](https://github.com/cyberjunk/CppCore/tree/master/src/CppCore.Example.Client) | Custom binary network protocol client |
+|<img src="/src/CppCore.Example.Server/app.png?raw=true" width="24" /> | CppCore.Example.Server | Console | [Link](https://github.com/cyberjunk/CppCore/tree/master/src/CppCore.Example.Server) | Custom binary network protocol server |
+|<img src="/src/CppCore.Example.UI/app.png?raw=true" width="24" /> | CppCore.Example.UI | Window | [Link](https://github.com/cyberjunk/CppCore/tree/master/src/CppCore.Example.UI) | Cross-Platform Application Window and Input |
+
+## Others
+
+|                                                                      | Name | Type    | Folder | Notes |
+|----------------------------------------------------------------------|------|---------|--------|-------|
+|<img src="/src/CppCore.Test/app.png?raw=true" width="24" /> | CppCore.Test | Console \| VS-Test | [Link](https://github.com/cyberjunk/CppCore/tree/master/src/CppCore.Test) | Unit Tests |
+|<img src="/src/CppCore.Debug/app.png?raw=true" width="24" /> | CppCore.Debug | Console | [Link](https://github.com/cyberjunk/CppCore/tree/master/src/CppCore.Debug) | Empty project to run code during development |
