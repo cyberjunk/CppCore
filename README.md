@@ -61,9 +61,9 @@ CppCore is my personal [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) framewor
 |--------------------------------------------------------------------------------------------|---------------------------------------------|
 | [BigInt.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/BigInt.h) | Large unsigned integers from ```uint128_t``` up to ```uint2048_t``` |
 | [Primes.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/Primes.h) | Prime Tests (Miller-Rabin/Lucas-Lehmer/...) |
-| [V2.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V2.h) | 
-| [V3.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V3.h) | 
-| [V4.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V4.h) | 
+| [V2.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V2.h) | 2D Vector for `float` `double` `int32_t` `int64_t` with SSE/AVX |
+| [V3.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V3.h) | 3D Vector for `float` `double` `int32_t` `int64_t` with SSE/AVX |
+| [V4.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Math/V4.h) | 4D Vector for `float` `double` `int32_t` `int64_t` with SSE/AVX |
 
 ## Containers
 
@@ -119,7 +119,8 @@ Low-Latency Multi-Threading Model
 
 | Header                                                                                     | Notes                |
 |--------------------------------------------------------------------------------------------|----------------------|
-| [Random.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Random.h)      | PRNG |
+| [Random.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Random.h)      | Pseudo Random Number Generators <ul><li>`Xorshift32`</li><li>`Xorshift64`</li><li>`Xoshiro32`</li><li>`Xoshiro64`</li><li>`Mulberry32`</li><li>`Splitmix64`</li><li>`Cpu32`</li><li>`Cpu64`</li></ul> |
+| [Uuid.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Uuid.h)          | Universally Unique Identifier |
 
 # Applications
 
