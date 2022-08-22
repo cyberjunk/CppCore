@@ -30,8 +30,8 @@ It was made for my own use but I am happy to share it with everyone.
 
 1) **Performance, Performance, Performance**: </br> The most important principle. This framework was design to be used in real-time critical applications such as games. If you find something that can be done faster, please let me know.
 2) **Fixed-Size Memory Pooling**: </br> This framework avoids using `malloc()` and `free()` (respectively `new` and `delete`) to allocate memory at runtime in favor of a fully compile-time specified memory layout. Almost all memory is allocated on startup and used until shutdown - faster, predictable and no undefined out-of-memory behaviour. Yes, there are always exclusions.
-3) **Virtual Function Pointers**: </br> OOB programming is great but its disadvantages are often forgotten. No, you won't find things like tiny vectory classes blown up in size due to a VFPTR with horribly slow non-inlined arithmetic function calls in this library.
-4) **Header Only**: </br> Allows the compiler to efficiently inline all the framework code into your object files and making integration much simpler.
+3) **Virtual Function Pointers**: </br> OOB programming is great but its disadvantages are often forgotten. No, you won't find things like tiny vector classes blown up in size due to a VFPTR with horribly slow non-inlined arithmetic function calls in this library.
+4) **Header-Only**: </br> Allows the compiler to efficiently inline all the framework code into your object files and therefore making integration much simpler and code executing faster. There are a few exclusions to this pattern due to platform limitations (e.g. Windows Message Processing Function)
 5) **Multithreading**: </br> This framework comes with its own multithreading patterns and uses multiple cores whenever possible/useful.
 
 # How-To
