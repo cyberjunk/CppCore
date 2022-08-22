@@ -2100,7 +2100,7 @@ namespace CppCore
       /// <summary>
       /// Convert to Decimal String
       /// </summary>
-      INLINE explicit operator StdString() const
+      INLINE explicit operator string() const
       {
          return thiss()->toString();
       }
@@ -2113,10 +2113,10 @@ namespace CppCore
       /// Returns string representation using any alphabet. By default decimal.
       /// Returns empty string if alphabet is invalid (e.g. less than 2 symbols).
       /// </summary>
-      INLINE StdString toString(const StdString& alphabet = CPPCORE_ALPHABET_B10) const
+      INLINE string toString(const string& alphabet = CPPCORE_ALPHABET_B10) const
       {
          const uint32_t b = (uint32_t)alphabet.length();
-         StdString s;
+         string s;
          if (b > 1U)
          {
             TC t(*thiss());
@@ -2138,9 +2138,9 @@ namespace CppCore
       /// <summary>
       /// Returns a fixed-length, leading zero padded string representation in Hex (Base16). Optimized.
       /// </summary>
-      INLINE StdString toHexString() const
+      INLINE string toHexString() const
       {
-         StdString s;
+         string s;
          s.resize(N64 * 16U);
       #if defined(CPPCORE_CPU_64BIT)
          CppCore::Hex::tostring(d.i64, s.data(), N64, false);
@@ -2173,7 +2173,7 @@ namespace CppCore
       /// Tries to parse integer from string input using any alphabet.
       /// Returns false if (a) empty input (b) invalid symbol or (c) overflow.
       /// </summary>
-      constexpr INLINE static bool tryParse(const StdString& input, TC& r, const StdString& alphabet = CPPCORE_ALPHABET_B10)
+      constexpr INLINE static bool tryParse(const string& input, TC& r, const string& alphabet = CPPCORE_ALPHABET_B10)
       {
          r = 0ULL;
          TC t[2];
@@ -2185,7 +2185,7 @@ namespace CppCore
             {
                const char c = input[i];
                size_t idx = alphabet.find(c, 0);
-               if (idx != StdString::npos)
+               if (idx != string::npos)
                {
                   TC::Op::mulw(r, b, &t[0].d.i64[0]);
                   if (t[1] != 0U) // mul overflow
