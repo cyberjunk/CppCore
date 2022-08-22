@@ -10,6 +10,8 @@ CppCore is my personal [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) framewor
 * Cross Platform Compatibility
 * Easy Integration (almost header-only)
 
+It was made for my own use but I am happy to share it with everyone.
+
 # License
 
 [MIT License](https://github.com/cyberjunk/cppcore/blob/master/LICENSE.md)
@@ -26,10 +28,11 @@ CppCore is my personal [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) framewor
 
 # Design Principles
 
-1) **Performance**: The most important principle. This framework was design to be used in real-time critical applications such as games.
-2) **Fixed-Size Memory Pooling**: This framework avoids using `malloc()` and `free()` (respectively `new` and `delete`) to allocate memory at runtime in favor of a fully compile-time specified memory layout. Almost all memory is allocated on startup and used until shutdown. This is much faster and avoids undefined out-of-memory behaviour.
-3) **Header Only**: Allows the compiler to efficiently inline all the framework code into your object files and making integration much simpler.
-4) **Multithreading**: This framework comes with its own multithreading patterns and uses multiple cores whenever possible/useful.
+1) **Performance, Performance, Performance**: </br> The most important principle. This framework was design to be used in real-time critical applications such as games. If you find something that can be done faster, please let me know.
+2) **Fixed-Size Memory Pooling**: </br> This framework avoids using `malloc()` and `free()` (respectively `new` and `delete`) to allocate memory at runtime in favor of a fully compile-time specified memory layout. Almost all memory is allocated on startup and used until shutdown - faster, predictable and no undefined out-of-memory behaviour. Yes, there are always exclusions.
+3) **Virtual Function Pointers**: </br> OOB programming is great but its disadvantages are often forgotten. No, you won't find things like tiny vectory classes blown up in size due to a VFPTR with horribly slow non-inlined arithmetic function calls in this library.
+4) **Header Only**: </br> Allows the compiler to efficiently inline all the framework code into your object files and making integration much simpler.
+5) **Multithreading**: </br> This framework comes with its own multithreading patterns and uses multiple cores whenever possible/useful.
 
 # How-To
 
@@ -93,8 +96,13 @@ Different `O(k)` are used to outline some differences between operations with co
 |--------|-----------|------------|-------------------|
 | [Cache.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Containers/Cache.h)  |
 
-## Threading 
-Low-Latency Multi-Threading Model
+## Threading
+
+| Header                                                                                     | Notes                |
+|--------------------------------------------------------------------------------------------|----------------------|
+| [Runnable.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Threading/Runnable.h)      | Wraps [std::function](https://en.cppreference.com/w/cpp/utility/functional/function) executing a piece of code on a thread at a certain time.  |
+| [Thread.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Threading/Thread.h)          | Uses [std::thread](https://en.cppreference.com/w/cpp/thread/thread) |
+| [Schedule.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Threading/Schedule.h)      |  |
 
 ## Network
 
@@ -117,9 +125,10 @@ Low-Latency Multi-Threading Model
 
 ## Misc
 
-| Header                                                                                     | Notes                |
-|--------------------------------------------------------------------------------------------|----------------------|
-| [Random.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Random.h)      | Pseudo Random Number Generators <ul><li>`Xorshift32`</li><li>`Xorshift64`</li><li>`Xoshiro32`</li><li>`Xoshiro64`</li><li>`Mulberry32`</li><li>`Splitmix64`</li><li>`Cpu32`</li><li>`Cpu64`</li></ul> |
+| Header                                                                                     | Notes                    |
+|--------------------------------------------------------------------------------------------|--------------------------|
+| [Buffer.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Buffer.h)      | Fixed Size Memory Buffer |
+| [Random.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Random.h)      | Pseudo Random Number Generators <ul><li>`Xorshift32`</li><li>`Xorshift64`</li><li>`Xoshiro32`</li><li>`Xoshiro64`</li><li>`Mulberry32`</li><li>`Splitmix64`</li><li>`Cpu32*`</li><li>`Cpu64*`</li></ul> `*` with [RDRAND](https://en.wikipedia.org/wiki/RDRAND) |
 | [Uuid.h](https://github.com/cyberjunk/cppcore/blob/master/include/CppCore/Uuid.h)          | Universally Unique Identifier |
 
 # Applications
