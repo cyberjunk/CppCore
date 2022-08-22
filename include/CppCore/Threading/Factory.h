@@ -468,7 +468,7 @@ namespace CppCore
          mRunnableOnResult([this]() { onResult(); })
       {
          // log startup
-         this->log(StdString("Initializing factory with " + ::std::to_string(NUMWORKERS) + " workers."));
+         this->log("Initializing factory with " + ::std::to_string(NUMWORKERS) + " workers."));
 
          // validate maxworkers
          if (NUMWORKERS > 16)

@@ -2,7 +2,7 @@
 
 #include <CppCore/Root.h>
 #include <CppCore/Math/BBox2.h>
-#include <CppCore/Input.h>
+#include <CppCore/UI/Input.h>
 
 #if defined(CPPCORE_OS_LINUX)
 #include <X11/Xlib.h>

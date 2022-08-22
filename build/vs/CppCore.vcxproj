@@ -52,7 +52,6 @@
     <ClInclude Include="..\..\include\CppCore\Hash\MD5.h" />
     <ClInclude Include="..\..\include\CppCore\Hash\Murmur3.h" />
     <ClInclude Include="..\..\include\CppCore\Hash\SHA2.h" />
-    <ClInclude Include="..\..\include\CppCore\Input.h" />
     <ClInclude Include="..\..\include\CppCore\IO\File.h" />
     <ClInclude Include="..\..\include\CppCore\Iterator.h" />
     <ClInclude Include="..\..\include\CppCore\Logger.h" />
@@ -93,6 +92,7 @@
     <ClInclude Include="..\..\include\CppCore\Threading\Schedule.h" />
     <ClInclude Include="..\..\include\CppCore\Threading\Thread.h" />
     <ClInclude Include="..\..\include\CppCore\Ticker.h" />
+    <ClInclude Include="..\..\include\CppCore\UI\Input.h" />
     <ClInclude Include="..\..\include\CppCore\UI\Window.h" />
     <ClInclude Include="..\..\include\CppCore\Uuid.h" />
   </ItemGroup>

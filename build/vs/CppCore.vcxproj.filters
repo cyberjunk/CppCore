@@ -142,7 +142,6 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\CppCore\Memory.h" />
-    <ClInclude Include="..\..\include\CppCore\Input.h" />
     <ClInclude Include="..\..\include\CppCore\String.h" />
     <ClInclude Include="..\..\include\CppCore\Encoding.h" />
     <ClInclude Include="..\..\include\CppCore\Iterator.h" />
@@ -189,6 +188,9 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\CppCore\StringUtil.h" />
+    <ClInclude Include="..\..\include\CppCore\UI\Input.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Threading">
