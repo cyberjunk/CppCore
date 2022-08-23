@@ -218,11 +218,7 @@
 #include <x86intrin.h>
 #elif defined(CPPCORE_CPU_ARMORARM64) && defined(CPPCORE_COMPILER_CLANG)
 #include <arm_acle.h>
-#if defined(CPPCORE_CPU_ARM64)
-#include <arm64_neon.h>
-#else
 #include <arm_neon.h>
-#endif
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
