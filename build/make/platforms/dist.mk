@@ -43,7 +43,7 @@ VERSION4 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 dist-prep:
 	echo [VER] $(VERSION4)
 	echo [CPG] CodePage 1252
-	chcp 1252 >nul 2>&1
+	chcp 1252
 	echo [PUB] $(PUBLISHER)
 	echo [PFX] $(SIGN_PFX_FILE)
 	$(call rmdir,$(DISTDIR)/$(NAME))	
