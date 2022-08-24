@@ -603,10 +603,9 @@ namespace CppCore
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
       // CUSTOM PACKED PSEUDO RANDOM NUMBER GENERATORS
-      // TODO: WINDOWS ONLY (BECAUSE OF DIV)
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_OS_WINDOWS)
+#if defined(CPPCORE_CPUFEAT_SSE2)
       /// <summary>
       /// Base Class for 32x4 Bits Packed Pseudo Random Number Generators. Requires SSE2.
       /// </summary>
@@ -626,13 +625,17 @@ namespace CppCore
          /// </summary>
          INLINE __m128i next(const uint32_t min, const uint32_t max)
          {
-            __m128i r;
             assert(min < max);
             assert(max - min < std::numeric_limits<uint32_t>::max());
-            const __m128i n = thiss()->next();
-            const __m128i d = _mm_set1_epi32(((max - min) + 1U));
-            _mm_udivrem_epi32(&r, n, d);
-            return _mm_add_epi32(r, _mm_set1_epi32(min));
+            const uint32_t d = (max - min) + 1U;
+            union {
+               __m128i  n;
+               uint32_t n32[4];
+            };
+            n = thiss()->next();
+            n32[0] %= d; n32[1] %= d;
+            n32[2] %= d; n32[3] %= d;
+            return _mm_add_epi32(n, _mm_set1_epi32(min));
          }
 
          /// <summary>
@@ -665,17 +668,22 @@ namespace CppCore
          /// </summary>
          INLINE void fill(__m128i* m, const size_t n, const uint32_t min, const uint32_t max)
          {
-            __m128i r;
+
             assert(min < max);
             assert(max - min < std::numeric_limits<uint32_t>::max());
-            const __m128i d = _mm_set1_epi32(((max - min) + 1U));
-            const __m128i u = _mm_set1_epi32(min);
+            const uint32_t d = (max - min) + 1U;
+            const __m128i  u = _mm_set1_epi32(min);
             CPPCORE_UNROLL
             for (size_t i = 0; i < n; i++)
             {
-               const __m128i n = thiss()->next();
-               _mm_udivrem_epi32(&r, n, d);
-               m[i] = _mm_add_epi32(r, u);
+               union {
+                  __m128i  n;
+                  uint32_t n32[4];
+               };
+               n = thiss()->next();
+               n32[0] %= d; n32[1] %= d;
+               n32[2] %= d; n32[3] %= d;
+               m[i] = _mm_add_epi32(n, u);
             }
          }
 
