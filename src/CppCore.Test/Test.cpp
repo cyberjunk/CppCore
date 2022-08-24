@@ -419,6 +419,28 @@ int main()
    TEST(CppCore::Test::Math::Primes::ismersenneprime128,         "ismersenneprime128:      ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
+   std::cout << "         CppCore::Random       " << std::endl;
+   std::cout << "-------------------------------" << std::endl;
+   TEST(CppCore::Test::Random::next32<CppCore::Random::Xorshift32>, "Xorshift32_next: ", std::endl);
+   TEST(CppCore::Test::Random::fill32<CppCore::Random::Xorshift32>, "Xorshift32_fill: ", std::endl);
+   TEST(CppCore::Test::Random::next64<CppCore::Random::Xorshift64>, "Xorshift64_next: ", std::endl);
+   TEST(CppCore::Test::Random::fill64<CppCore::Random::Xorshift64>, "Xorshift64_fill: ", std::endl);
+   TEST(CppCore::Test::Random::next32<CppCore::Random::Xoshiro32>,  "Xoshiro32_next:  ", std::endl);
+   TEST(CppCore::Test::Random::fill32<CppCore::Random::Xoshiro32>,  "Xoshiro32_fill:  ", std::endl);
+   TEST(CppCore::Test::Random::next64<CppCore::Random::Xoshiro64>,  "Xoshiro64_next:  ", std::endl);
+   TEST(CppCore::Test::Random::fill64<CppCore::Random::Xoshiro64>,  "Xoshiro64_fill:  ", std::endl);
+   TEST(CppCore::Test::Random::next32<CppCore::Random::Mulberry32>, "Mulberry32_next: ", std::endl);
+   TEST(CppCore::Test::Random::fill32<CppCore::Random::Mulberry32>, "Mulberry32_fill: ", std::endl);
+   TEST(CppCore::Test::Random::next64<CppCore::Random::Splitmix64>, "Splitmix64_next: ", std::endl);
+   TEST(CppCore::Test::Random::fill64<CppCore::Random::Splitmix64>, "Splitmix64_fill: ", std::endl);
+#if defined(CPPCORE_CPUFEAT_RDRAND) && defined(CPPCORE_CPUFEAT_SSE2)
+   TEST(CppCore::Test::Random::next32<CppCore::Random::Cpu32>,      "Cpu32_next:      ", std::endl);
+   TEST(CppCore::Test::Random::fill32<CppCore::Random::Cpu32>,      "Cpu32_fill:      ", std::endl);
+   TEST(CppCore::Test::Random::next64<CppCore::Random::Cpu64>,      "Cpu64_next:      ", std::endl);
+   TEST(CppCore::Test::Random::fill64<CppCore::Random::Cpu64>,      "Cpu64_fill:      ", std::endl);
+#endif
+
+   std::cout << "-------------------------------" << std::endl;
    std::cout << "      CppCore::Hash::CRC32"      << std::endl;
    std::cout << "-------------------------------" << std::endl;
    TEST(CppCore::Test::Hash::CRC32::crc32test1, "crc32test1: ", std::endl);

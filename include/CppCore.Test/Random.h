@@ -47,14 +47,14 @@ namespace CppCore { namespace Test
          // unsigned
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
          {
-            uint64_t r = rnd.next(0ULL, 16ULL);
+            uint64_t r = rnd.next((uint64_t)0ULL, (uint64_t)16ULL);
             if (r > 16U)
                return false;
          }
          // signed
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
          {
-            int64_t r = rnd.next(-10LL, 10LL);
+            int64_t r = rnd.next((int64_t)-10LL, (int64_t)10LL);
             if (r < -10 || r > 10)
                return false;
          }
@@ -126,7 +126,7 @@ namespace CppCore { namespace Test
          return true;
       }
 
-#if defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_OS_WINDOWS)
+#if defined(CPPCORE_CPUFEAT_SSE2)
       template<typename PPRNG32x4, typename PRNG32>
       INLINE static bool next32x4()
       {
@@ -144,62 +144,52 @@ namespace CppCore { namespace Test
          // unsigned
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
          {
-            __m128i r = rnd.next(0U, 16U);
-
+            union { __m128i r; uint32_t r32[4]; } v;
+            v.r = rnd.next(0U, 16U);
             uint32_t v1 = rnd1.next(0U, 16U);
             uint32_t v2 = rnd2.next(0U, 16U);
             uint32_t v3 = rnd3.next(0U, 16U);
             uint32_t v4 = rnd4.next(0U, 16U);
-
-            if (r.m128i_u32[0] != v1 || r.m128i_u32[1] != v2 ||
-                r.m128i_u32[2] != v3 || r.m128i_u32[3] != v4)
+            if (v.r32[0] != v1 || v.r32[1] != v2 || v.r32[2] != v3 || v.r32[3] != v4)
                 return false;
-
-            if (r.m128i_u32[0] > 16U || r.m128i_u32[1] > 16U || 
-                r.m128i_u32[2] > 16U || r.m128i_u32[3] > 16U)
+            if (v.r32[0] > 16U || v.r32[1] > 16U || v.r32[2] > 16U || v.r32[3] > 16U)
                 return false;
          }
 
          // signed
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
          {
-            __m128i r = rnd.next(-10, 10);
-
+            union { __m128i r; int32_t r32[4]; } v;
+            v.r = rnd.next(-10, 10);
             int32_t v1 = rnd1.next(-10, 10);
             int32_t v2 = rnd2.next(-10, 10);
             int32_t v3 = rnd3.next(-10, 10);
             int32_t v4 = rnd4.next(-10, 10);
-
-            if (r.m128i_u32[0] != v1 || r.m128i_u32[1] != v2 ||
-                r.m128i_u32[2] != v3 || r.m128i_u32[3] != v4)
+            if (v.r32[0] != v1 || v.r32[1] != v2 || v.r32[2] != v3 || v.r32[3] != v4)
                 return false;
-
-            if (r.m128i_i32[0] < -10 || r.m128i_i32[0] > 10 ||
-                r.m128i_i32[1] < -10 || r.m128i_i32[1] > 10 ||
-                r.m128i_i32[2] < -10 || r.m128i_i32[2] > 10 ||
-                r.m128i_i32[3] < -10 || r.m128i_i32[3] > 10)
-               return false;
+            if (v.r32[0] < -10 || v.r32[0] > 10 ||
+                v.r32[1] < -10 || v.r32[1] > 10 ||
+                v.r32[2] < -10 || v.r32[2] > 10 ||
+                v.r32[3] < -10 || v.r32[3] > 10)
+                return false;
          }
 
          // float
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
          {
-            __m128 r = rnd.next(-10.0f, 10.0f);
-
+            union { __m128 r; float r32[4]; } v;
+            v.r = rnd.next(-10.0f, 10.0f);
             float v1 = rnd1.next(-10.0f, 10.0f);
             float v2 = rnd2.next(-10.0f, 10.0f);
             float v3 = rnd3.next(-10.0f, 10.0f);
             float v4 = rnd4.next(-10.0f, 10.0f);
-
-            if (r.m128_f32[0] != v1 || r.m128_f32[1] != v2 ||
-                r.m128_f32[2] != v3 || r.m128_f32[3] != v4)
+            if (v.r32[0] != v1 || v.r32[1] != v2 || v.r32[2] != v3 || v.r32[3] != v4)
                 return false;
-
-            if (r.m128_f32[0] < -10.0f || r.m128_f32[0] > 10.0f ||
-                r.m128_f32[1] < -10.0f || r.m128_f32[1] > 10.0f ||
-                r.m128_f32[2] < -10.0f || r.m128_f32[2] > 10.0f ||
-                r.m128_f32[3] < -10.0f || r.m128_f32[3] > 10.0f)
-               return false;
+            if (v.r32[0] < -10.0f || v.r32[0] > 10.0f ||
+                v.r32[1] < -10.0f || v.r32[1] > 10.0f ||
+                v.r32[2] < -10.0f || v.r32[2] > 10.0f ||
+                v.r32[3] < -10.0f || v.r32[3] > 10.0f)
+                return false;
          }
 
          return true;
@@ -209,33 +199,34 @@ namespace CppCore { namespace Test
       INLINE static bool fill32x4()
       {
          PPRNG32x4 rnd;
-         __m128i m_uint32[CPPCORE_TEST_RANDOM_ITERATIONS];
-         __m128i m_int32[CPPCORE_TEST_RANDOM_ITERATIONS];
-         __m128  m_float[CPPCORE_TEST_RANDOM_ITERATIONS];
+         CPPCORE_ALIGN16 uint32_t du32[CPPCORE_TEST_RANDOM_ITERATIONS * 4];
+         
+         int32_t* di32 = (int32_t*)du32;
+         float*   df32 = (float*)du32;
 
          // unsigned
-         rnd.fill(m_uint32, CPPCORE_TEST_RANDOM_ITERATIONS, 0U, 16U);
+         rnd.fill((__m128i*)du32, CPPCORE_TEST_RANDOM_ITERATIONS, 0U, 16U);
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
-            if (m_uint32[i].m128i_u32[0] > 16U || m_uint32[i].m128i_u32[1] > 16U ||
-                m_uint32[i].m128i_u32[2] > 16U || m_uint32[i].m128i_u32[3] > 16U)
+            if (du32[i*4+0] > 16U || du32[i*4+1] > 16U ||
+                du32[i*4+2] > 16U || du32[i*4+3] > 16U)
                 return false;
 
          // signed
-         rnd.fill(m_int32, CPPCORE_TEST_RANDOM_ITERATIONS, -10, 10);
+         rnd.fill((__m128i*)du32, CPPCORE_TEST_RANDOM_ITERATIONS, -10, 10);
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
-            if (m_int32[i].m128i_i32[0] < -10 || m_int32[i].m128i_i32[0] > 10 ||
-                m_int32[i].m128i_i32[1] < -10 || m_int32[i].m128i_i32[1] > 10 ||
-                m_int32[i].m128i_i32[2] < -10 || m_int32[i].m128i_i32[2] > 10 ||
-                m_int32[i].m128i_i32[3] < -10 || m_int32[i].m128i_i32[3] > 10)
+            if (di32[i*4+0] < -10 || di32[i*4+0] > 10 ||
+                di32[i*4+1] < -10 || di32[i*4+1] > 10 ||
+                di32[i*4+2] < -10 || di32[i*4+2] > 10 ||
+                di32[i*4+3] < -10 || di32[i*4+3] > 10)
                 return false;
 
          // float
-         rnd.fill(m_float, CPPCORE_TEST_RANDOM_ITERATIONS, -10.0f, 10.0f);
+         rnd.fill((__m128*)du32, CPPCORE_TEST_RANDOM_ITERATIONS, -10.0f, 10.0f);
          for (size_t i = 0; i < CPPCORE_TEST_RANDOM_ITERATIONS; i++)
-            if (m_float[i].m128_f32[0] < -10.0f || m_float[i].m128_f32[0] > 10.0f ||
-                m_float[i].m128_f32[1] < -10.0f || m_float[i].m128_f32[1] > 10.0f ||
-                m_float[i].m128_f32[2] < -10.0f || m_float[i].m128_f32[2] > 10.0f ||
-                m_float[i].m128_f32[3] < -10.0f || m_float[i].m128_f32[3] > 10.0f)
+            if (df32[i*4+0] < -10.0f || df32[i*4+0] > 10.0f ||
+                df32[i*4+1] < -10.0f || df32[i*4+1] > 10.0f ||
+                df32[i*4+2] < -10.0f || df32[i*4+2] > 10.0f ||
+                df32[i*4+3] < -10.0f || df32[i*4+3] > 10.0f)
                 return false;
 
          //todo: test for equal with non-packed versions
@@ -374,7 +365,7 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(CPU64_NEXT)      { Assert::AreEqual(true, CppCore::Test::Random::next64<CppCore::Random::Cpu64>()); }
       TEST_METHOD(CPU64_FILL)      { Assert::AreEqual(true, CppCore::Test::Random::fill64<CppCore::Random::Cpu64>()); }
    #endif
-   #if defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_OS_WINDOWS)
+   #if defined(CPPCORE_CPUFEAT_SSE2)
       TEST_METHOD(XORSHIFT32X4_NEXT) { Assert::AreEqual(true, CppCore::Test::Random::next32x4<CppCore::Random::Xorshift32x4, CppCore::Random::Xorshift32>()); }
       TEST_METHOD(XORSHIFT32X4_FILL) { Assert::AreEqual(true, CppCore::Test::Random::fill32x4<CppCore::Random::Xorshift32x4>()); }
    #endif
@@ -382,7 +373,7 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(XORSHIFT64X2_NEXT) { Assert::AreEqual(true, CppCore::Test::Random::next64x2<CppCore::Random::Xorshift64x2, CppCore::Random::Xorshift64>()); }
       TEST_METHOD(XORSHIFT64X2_FILL) { Assert::AreEqual(true, CppCore::Test::Random::fill64x2<CppCore::Random::Xorshift64x2>()); }
    #endif
-   #if defined(CPPCORE_CPUFEAT_SSE41) && defined(CPPCORE_OS_WINDOWS)
+   #if defined(CPPCORE_CPUFEAT_SSE41)
       TEST_METHOD(MULBERRY32X4_NEXT) { Assert::AreEqual(true, CppCore::Test::Random::next32x4<CppCore::Random::Mulberry32x4, CppCore::Random::Mulberry32>()); }
       TEST_METHOD(MULBERRY32X4_FILL) { Assert::AreEqual(true, CppCore::Test::Random::fill32x4<CppCore::Random::Mulberry32x4>()); }
    #endif
