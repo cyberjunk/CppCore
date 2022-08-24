@@ -1611,11 +1611,8 @@ namespace CppCore
    /// </summary>
    INLINE static void udivmod32(uint32_t a, uint32_t b, uint32_t& q, uint32_t& r)
    {
-   #if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_MSVC)
-      // the naming is a bit confusing, but consistent with assembly, this is X86 DIV op (64/32=32) as available on 32-Bit CPU.
-      // but using it with dividend > 0xFFFFFFFF is unsafe because may cause overflow exception depending on b.
-      // that basically makes it 32/32=32 unless you can guarantee a working pair a and b.
-      q = _udiv64(a, b, &r);
+   #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
+      q = _udiv64(a, b, &r); // exists also on x86, but is buggy
    #else
       q = a / b;
       r = a % b;
@@ -1628,9 +1625,6 @@ namespace CppCore
    INLINE static void udivmod64(uint64_t a, uint64_t b, uint64_t& q, uint64_t& r)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
-      // the naming is a bit confusing, but consistent with assembly, this is X64 DIV op (128/64=64) as available on 64-Bit CPU.
-      // but using it with dividend > 0xFFFFFFFFFFFFFFFF is unsafe because may cause overflow exception depending on b.
-      // that basically makes it 64/64=64 unless you can guarantee a working pair a and b.
       q = _udiv128(0, a, b, &r);
    #else
       q = a / b;
@@ -1669,8 +1663,8 @@ namespace CppCore
    /// </summary>
    INLINE static void udivmod64_32(uint64_t a, uint32_t b, uint32_t& q, uint32_t& r)
    {
-   #if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_MSVC)
-      q = _udiv64(a, b, &r);
+   #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
+      q = _udiv64(a, b, &r); // exists also on x86, but is buggy
    #elif defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
       __asm("DIVL %4" : "=a" (q), "=d" (r) : "0" ((uint32_t)a), "1" ((uint32_t)(a >> 32)), "r" (b));
    #else
@@ -1686,9 +1680,9 @@ namespace CppCore
    /// </summary>
    INLINE static void udivmod64_32(uint32_t ah, uint32_t al, uint32_t b, uint32_t& q, uint32_t& r)
    {
-   #if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_MSVC)
+   #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       uint64_t a = (uint64_t)al | ((uint64_t)ah << 32);
-      q = _udiv64(a, b, &r);
+      q = _udiv64(a, b, &r); // exists also on x86, but is buggy
    #elif defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
       __asm("DIVL %4" : "=a" (q), "=d" (r) : "0" (al), "1" (ah), "r" (b));
    #else
@@ -1912,11 +1906,10 @@ namespace CppCore
    /// </summary>
    INLINE static void divmod32(int32_t a, int32_t b, int32_t& q, int32_t& r)
    {
-   #if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_MSVC)
-      // the naming is a bit confusing, but consistent with assembly, this is X86 DIV op (64/32=32) as available on 32-Bit CPU.
-      // but using it with dividend > 0xFFFFFFFF is unsafe because may cause overflow exception depending on b.
-      // that basically makes it 32/32=32 unless you can guarantee a working pair a and b.
-      q = _div64(a, b, &r);
+   #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
+      q = _div64(a, b, &r); // exists also on x86, but is buggy
+   #elif false && defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
+      // TODO: Use Assembly like in udivmod32
    #else
       q = a / b;
       r = a % b;
@@ -1929,10 +1922,9 @@ namespace CppCore
    INLINE static void divmod64(int64_t a, int64_t b, int64_t& q, int64_t& r)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
-      // the naming is a bit confusing, but consistent with assembly, this is X64 DIV op (128/64=64) as available on 64-Bit CPU.
-      // but using it with dividend > 0xFFFFFFFFFFFFFFFF is unsafe because may cause overflow exception depending on b.
-      // that basically makes it 64/64=64 unless you can guarantee a working pair a and b.
       q = _div128(a < 0 ? -1 : 0, a, b, &r);
+   #elif false && defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
+      // TODO: Use Assembly like in udivmod64
    #else
       q = a / b;
       r = a % b;
