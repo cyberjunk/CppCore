@@ -2303,8 +2303,9 @@ namespace CppCore
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_clzll)
       return v ? __builtin_clzll(v) : 64U;
    #else
-      const uint32_t r = lzcnt32((uint32_t)(v >> 32));
-      return (r != 32U) ? r : 32U + lzcnt32((uint32_t)v);
+      const uint32_t hi = (uint32_t)(v >> 32);
+      const uint32_t lo = (uint32_t)(v);
+      return hi ? lzcnt32(hi) : lzcnt32(lo) + 32U;
    #endif
    }
 
