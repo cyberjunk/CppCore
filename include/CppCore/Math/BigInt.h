@@ -72,13 +72,20 @@ namespace CppCore
       struct { __m128i sse0;};
       INLINE uint128_d(const uint128_d& oth) : sse0(oth.sse0) { }
       INLINE uint128_d(const __m128i& sse0) : sse0(sse0) { }
-      INLINE uint128_d(const uint64_t& l, const uint64_t& h = 0ULL) : sse0(_mm_set_epi64x(h, l)) { }
+      #if defined(CPPCORE_CPU_X86) && defined(CPPCORE_COMPILER_MSVC)
+      // _mm_set_epi64x is broken in MSVC X86 with optimizations
+      INLINE uint128_d(const uint64_t& l, const uint64_t& h = 0ULL) : 
+         sse0(_mm_castpd_si128(_mm_set_pd(*(double*)&h, *(double*)&l))) { }
+      #else
+      INLINE uint128_d(const uint64_t& l, const uint64_t& h = 0ULL) : 
+         sse0(_mm_set_epi64x(h, l)) { }
+      #endif
       INLINE uint128_d(
          const uint32_t& ll,
          const uint32_t& lh = 0U,
          const uint32_t& hl = 0U,
          const uint32_t& hh = 0U) :
-         sse0(_mm_setr_epi32(ll, lh, hl, hh)) { }
+         sse0(_mm_set_epi32(hh, hl, lh, ll)) { }
       INLINE operator const __m128i&() const { return sse0; }
    #else
       INLINE uint128_d(const uint128_d& oth) : l(oth.l), h(oth.h) { }
@@ -138,6 +145,16 @@ namespace CppCore
          avx0(_mm256_set_epi64x(hh,hl,lh,ll)) { }
    #elif defined(CPPCORE_CPUFEAT_SSE2)
       INLINE uint256_d(const uint256_d& oth) : sse0(oth.sse0), sse1(oth.sse1) { }
+      #if defined(CPPCORE_CPU_X86) && defined(CPPCORE_COMPILER_MSVC)
+      // _mm_set_epi64x is broken in MSVC X86 with optimizations
+      INLINE uint256_d(
+         const uint64_t& ll,
+         const uint64_t& lh = 0ULL,
+         const uint64_t& hl = 0ULL,
+         const uint64_t& hh = 0ULL) :
+         sse0(_mm_castpd_si128(_mm_set_pd(*(double*)&lh, *(double*)&ll))),
+         sse1(_mm_castpd_si128(_mm_set_pd(*(double*)&hh, *(double*)&hl))) { }
+      #else
       INLINE uint256_d(
          const uint64_t& ll,
          const uint64_t& lh = 0ULL,
@@ -145,6 +162,7 @@ namespace CppCore
          const uint64_t& hh = 0ULL) :
          sse0(_mm_set_epi64x(lh,ll)),
          sse1(_mm_set_epi64x(hh,hl)) { }
+      #endif
    #else
       INLINE uint256_d(const uint256_d& oth) : l(oth.l), h(oth.h) { }
       INLINE uint256_d(
@@ -241,6 +259,22 @@ namespace CppCore
    #elif defined(CPPCORE_CPUFEAT_SSE2)
       INLINE uint512_d(const uint512_d& oth) :
          sse0(oth.sse0), sse1(oth.sse1), sse2(oth.sse2), sse3(oth.sse3) { }
+      #if defined(CPPCORE_CPU_X86) && defined(CPPCORE_COMPILER_MSVC)
+      // _mm_set_epi64x is broken in MSVC X86 with optimizations
+      INLINE uint512_d(
+         const uint64_t& v0,
+         const uint64_t& v1 = 0ULL,
+         const uint64_t& v2 = 0ULL,
+         const uint64_t& v3 = 0ULL,
+         const uint64_t& v4 = 0ULL,
+         const uint64_t& v5 = 0ULL,
+         const uint64_t& v6 = 0ULL,
+         const uint64_t& v7 = 0ULL) :
+         sse0(_mm_castpd_si128(_mm_set_pd(*(double*)&v1, *(double*)&v0))),
+         sse1(_mm_castpd_si128(_mm_set_pd(*(double*)&v3, *(double*)&v2))),
+         sse2(_mm_castpd_si128(_mm_set_pd(*(double*)&v5, *(double*)&v4))),
+         sse3(_mm_castpd_si128(_mm_set_pd(*(double*)&v7, *(double*)&v6))) { }
+      #else
       INLINE uint512_d(
          const uint64_t& v0,
          const uint64_t& v1 = 0ULL,
@@ -254,6 +288,7 @@ namespace CppCore
          sse1(_mm_set_epi64x(v3,v2)),
          sse2(_mm_set_epi64x(v5,v4)),
          sse3(_mm_set_epi64x(v7,v6)) { }
+      #endif
    #else
       INLINE uint512_d(const uint512_d& oth) :
          l(oth.l), h(oth.h) { }
@@ -366,6 +401,22 @@ namespace CppCore
       INLINE uint1024_d(const uint1024_d& oth) :
          sse0(oth.sse0), sse1(oth.sse1), sse2(oth.sse2), sse3(oth.sse3),
          sse4(oth.sse4), sse5(oth.sse5), sse6(oth.sse6), sse7(oth.sse7) { }
+      #if defined(CPPCORE_CPU_X86) && defined(CPPCORE_COMPILER_MSVC)
+      // _mm_set_epi64x is broken in MSVC X86 with optimizations
+      INLINE uint1024_d(
+         const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
+         const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
+         const uint64_t& v8  = 0ULL, const uint64_t& v9  = 0ULL, const uint64_t& v10 = 0ULL, const uint64_t& v11 = 0ULL,
+         const uint64_t& v12 = 0ULL, const uint64_t& v13 = 0ULL, const uint64_t& v14 = 0ULL, const uint64_t& v15 = 0ULL) :
+         sse0(_mm_castpd_si128(_mm_set_pd(*(double*)&v1,  *(double*)&v0))),
+         sse1(_mm_castpd_si128(_mm_set_pd(*(double*)&v3,  *(double*)&v2))),
+         sse2(_mm_castpd_si128(_mm_set_pd(*(double*)&v5,  *(double*)&v4))),
+         sse3(_mm_castpd_si128(_mm_set_pd(*(double*)&v7,  *(double*)&v6))),
+         sse4(_mm_castpd_si128(_mm_set_pd(*(double*)&v9,  *(double*)&v8))),
+         sse5(_mm_castpd_si128(_mm_set_pd(*(double*)&v11, *(double*)&v10))),
+         sse6(_mm_castpd_si128(_mm_set_pd(*(double*)&v13, *(double*)&v12))),
+         sse7(_mm_castpd_si128(_mm_set_pd(*(double*)&v15, *(double*)&v14))) { }
+      #else
       INLINE uint1024_d(
          const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
          const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
@@ -373,6 +424,7 @@ namespace CppCore
          const uint64_t& v12 = 0ULL, const uint64_t& v13 = 0ULL, const uint64_t& v14 = 0ULL, const uint64_t& v15 = 0ULL) :
          sse0(_mm_set_epi64x(v1,v0)), sse1(_mm_set_epi64x(v3,v2)),   sse2(_mm_set_epi64x(v5,v4)),   sse3(_mm_set_epi64x(v7,v6)),
          sse4(_mm_set_epi64x(v9,v8)), sse5(_mm_set_epi64x(v11,v10)), sse6(_mm_set_epi64x(v13,v12)), sse7(_mm_set_epi64x(v15,v14)) { }
+      #endif
    #else
       INLINE uint1024_d(const uint1024_d& oth) :
          l(oth.l), h(oth.h) { }
@@ -517,6 +569,34 @@ namespace CppCore
          sse4(oth.sse4),   sse5(oth.sse5),   sse6(oth.sse6),   sse7(oth.sse7),
          sse8(oth.sse8),   sse9(oth.sse9),   sse10(oth.sse10), sse11(oth.sse11),
          sse12(oth.sse12), sse13(oth.sse13), sse14(oth.sse14), sse15(oth.sse15) { }
+      #if defined(CPPCORE_CPU_X86) && defined(CPPCORE_COMPILER_MSVC)
+      // _mm_set_epi64x is broken in MSVC X86 with optimizations
+      INLINE uint2048_d(
+         const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
+         const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
+         const uint64_t& v8  = 0ULL, const uint64_t& v9  = 0ULL, const uint64_t& v10 = 0ULL, const uint64_t& v11 = 0ULL,
+         const uint64_t& v12 = 0ULL, const uint64_t& v13 = 0ULL, const uint64_t& v14 = 0ULL, const uint64_t& v15 = 0ULL,
+         const uint64_t& v16 = 0ULL, const uint64_t& v17 = 0ULL, const uint64_t& v18 = 0ULL, const uint64_t& v19 = 0ULL,
+         const uint64_t& v20 = 0ULL, const uint64_t& v21 = 0ULL, const uint64_t& v22 = 0ULL, const uint64_t& v23 = 0ULL,
+         const uint64_t& v24 = 0ULL, const uint64_t& v25 = 0ULL, const uint64_t& v26 = 0ULL, const uint64_t& v27 = 0ULL,
+         const uint64_t& v28 = 0ULL, const uint64_t& v29 = 0ULL, const uint64_t& v30 = 0ULL, const uint64_t& v31 = 0ULL) :
+         sse0 (_mm_castpd_si128(_mm_set_pd(*(double*)&v1,  *(double*)&v0))),
+         sse1 (_mm_castpd_si128(_mm_set_pd(*(double*)&v3,  *(double*)&v2))),
+         sse2 (_mm_castpd_si128(_mm_set_pd(*(double*)&v5,  *(double*)&v4))),
+         sse3 (_mm_castpd_si128(_mm_set_pd(*(double*)&v7,  *(double*)&v6))),
+         sse4 (_mm_castpd_si128(_mm_set_pd(*(double*)&v9,  *(double*)&v8))),
+         sse5 (_mm_castpd_si128(_mm_set_pd(*(double*)&v11, *(double*)&v10))),
+         sse6 (_mm_castpd_si128(_mm_set_pd(*(double*)&v13, *(double*)&v12))),
+         sse7 (_mm_castpd_si128(_mm_set_pd(*(double*)&v15, *(double*)&v14))),
+         sse8 (_mm_castpd_si128(_mm_set_pd(*(double*)&v17, *(double*)&v16))),
+         sse9 (_mm_castpd_si128(_mm_set_pd(*(double*)&v19, *(double*)&v18))),
+         sse10(_mm_castpd_si128(_mm_set_pd(*(double*)&v21, *(double*)&v20))),
+         sse11(_mm_castpd_si128(_mm_set_pd(*(double*)&v23, *(double*)&v22))),
+         sse12(_mm_castpd_si128(_mm_set_pd(*(double*)&v25, *(double*)&v24))),
+         sse13(_mm_castpd_si128(_mm_set_pd(*(double*)&v27, *(double*)&v26))),
+         sse14(_mm_castpd_si128(_mm_set_pd(*(double*)&v29, *(double*)&v28))),
+         sse15(_mm_castpd_si128(_mm_set_pd(*(double*)&v31, *(double*)&v30))) { }
+      #else
       INLINE uint2048_d(
          const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
          const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
@@ -530,6 +610,7 @@ namespace CppCore
          sse4(_mm_set_epi64x(v9,v8)),    sse5(_mm_set_epi64x(v11,v10)),  sse6(_mm_set_epi64x(v13,v12)),  sse7(_mm_set_epi64x(v15,v14)),
          sse8(_mm_set_epi64x(v17,v16)),  sse9(_mm_set_epi64x(v19,v18)),  sse10(_mm_set_epi64x(v21,v20)), sse11(_mm_set_epi64x(v23,v22)),
          sse12(_mm_set_epi64x(v25,v24)), sse13(_mm_set_epi64x(v27,v26)), sse14(_mm_set_epi64x(v29,v28)), sse15(_mm_set_epi64x(v31,v30)) { }
+      #endif
    #else
       INLINE uint2048_d(const uint2048_d& oth) :
          l(oth.l), h(oth.h) { }
