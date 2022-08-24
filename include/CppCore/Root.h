@@ -320,9 +320,16 @@ static_assert(sizeof(double) == 8U);
 
 // Inline Macro
 #if defined(CPPCORE_COMPILER_MSVC)
-#define INLINE  __forceinline
+#define INLINE  inline
 #else
 #define INLINE  inline
+#endif
+
+// Force Inline Macro
+#if defined(CPPCORE_COMPILER_MSVC)
+#define FORCEINLINE  __forceinline
+#else
+#define FORCEINLINE  inline
 #endif
 
 // Macro for constexpr when CLANG supports it but MSVC does not
