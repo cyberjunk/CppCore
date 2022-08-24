@@ -31,14 +31,14 @@ RCFLAGS    = /l 0x0409 /nologo
 # Debug vs. Release
 ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
-CXXFLAGS  := $(CXXFLAGS) -flto -O3 -g -ffunction-sections -fdata-sections
-CFLAGS    := $(CFLAGS) -flto -O3 -g -ffunction-sections -fdata-sections
+CXXFLAGS  := $(CXXFLAGS) -flto -O3 -g -ffunction-sections -fdata-sections -Xclang -MT
+CFLAGS    := $(CFLAGS) -flto -O3 -g -ffunction-sections -fdata-sections -Xclang -MT
 LINKFLAGS := $(LINKFLAGS) -flto -g -Xlinker /OPT:ref -Xlinker /OPT:icf
 LINKLIBS  := $(LINKLIBS) -llibcmt.lib
 else
 DEFINES   := $(DEFINES) -D_DEBUG
-CXXFLAGS  := $(CXXFLAGS) -Og -g3
-CFLAGS    := $(CFLAGS) -Og -g3
+CXXFLAGS  := $(CXXFLAGS) -Og -g3 -Xclang -MTd
+CFLAGS    := $(CFLAGS) -Og -g3 -Xclang -MTd
 LINKFLAGS := $(LINKFLAGS) -g3
 LINKLIBS  := $(LINKLIBS) -llibcmtd.lib -lDbgHelp.lib 
 endif
