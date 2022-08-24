@@ -89,8 +89,14 @@ endif
 ##############################################################################################################
 
 ifeq ($(TARGET_OS),osx)
-KEYCHAIN = sign-$(NAME).keychain-db
+KEYCHAIN     = sign-$(NAME).keychain-db
+VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
+VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
+VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
+VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
+VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 dist-prep:
+	@echo [VER] $(VERSION3)
 	@echo [KCH] $(KEYCHAIN)
 	@-security delete-keychain $(KEYCHAIN)
 	@security create-keychain -p "$(SIGN_PFX_PASS)" $(KEYCHAIN)
@@ -111,7 +117,7 @@ dist-prep:
 	@security list-keychain -d user -s $(KEYCHAIN)
 	@echo [INF] $(KEYCHAIN)
 	@security show-keychain-info $(KEYCHAIN)
-dist-%:
+dist-%: dist-prep
 	@echo [DST] $(NAME)-$*
 dist: dist-prep dist-x64 dist-arm64
 	@echo [MKD] $(NAME).app/Contents/MacOS
@@ -124,6 +130,9 @@ dist: dist-prep dist-x64 dist-arm64
 	@mkdir -p $(DISTDIR)/$(NAME).app/Contents/Resources
 	@echo [ICO] $(NAME).icns
 	@cp $(SRCDIR)/app.icns $(DISTDIR)/$(NAME).app/Contents/Resources/Icon.icns
+	@cp $(DISTDIR)/$(NAME).Info.plist $(DISTDIR)/$(NAME).app/Contents/Info.plist
+	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME).app/Contents/Info.plist
+	@rm $(DISTDIR)/$(NAME).app/Contents/Info.plist.orig
 	@echo [SIG] $(NAME).app
 	@codesign -v \
 	  --sign "$(PUBLISHERCN)" \
@@ -136,12 +145,12 @@ dist: dist-prep dist-x64 dist-arm64
 	@pkgbuild \
 	  --analyze \
 	  --root $(DISTDIR)/$(NAME).app \
-	  $(DISTDIR)/$(NAME).plist
+	  $(DISTDIR)/$(NAME).component.plist
 	@pkgbuild \
 	  --identifier $(NAME).app \
 	  --root $(DISTDIR)/$(NAME).app \
 	  --install-location /Applications/$(NAME).app \
-	  --component-plist $(DISTDIR)/$(NAME).plist \
+	  --component-plist $(DISTDIR)/$(NAME).component.plist \
 	  $(DISTDIR)/$(NAME).pkg
 #	@productbuild --component \
 	  $(DISTDIR)/$(NAME).app \

@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleVersion</key>
-	<string>Version 1.0.0</string>
+	<string>Version {VERSION}</string>
 	<key>CFBundleExecutable</key>
 	<string>CppCore.Example.Client</string>
 	<key>CFBundleGetInfoString</key>
@@ -27,6 +27,6 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>10.15.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>{VERSION}</string>
 </dict>
 </plist>

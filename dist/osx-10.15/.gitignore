@@ -1,6 +1,7 @@
 *.pkg
-**/_CodeSignature/
-**/MacOS/
-**/Resources/
+**/Contents/_CodeSignature/
+**/Contents/MacOS/
+**/Contents/Resources/
+**/Contents/Info.plist
 **/.icns
-*.plist
+*.component.plist
