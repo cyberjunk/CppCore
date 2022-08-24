@@ -2237,12 +2237,12 @@ namespace CppCore
                const size_t idx = alphabet.find(c, 0);
                if (idx != string::npos)
                {
-                  TC::Op::mulw(r, b, t.v.d.i64);
+                  CppCore::umul(r, b, t);
                   if (t.of != 0U) // mul overflow
                      return false;
                   r = t.v;
                   uint8_t carry = 0;
-                  TC::Op::addc(r, idx, r, carry);
+                  CppCore::addcarry(r, idx, r, carry);
                   if (carry != 0) // add overflow
                      return false;
                }
