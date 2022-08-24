@@ -7,7 +7,7 @@ Model models[MAXMODELS];
 // help macro
 #define TEST(f, n, nl)       \
   r = (f)();                   \
-  std::cout << n << r << nl; \
+  std::cout << (n) << r << (nl); \
   if (!r)                    \
     return 1;                \
 
@@ -438,6 +438,14 @@ int main()
    TEST(CppCore::Test::Random::fill32<CppCore::Random::Cpu32>,      "Cpu32_fill:      ", std::endl);
    TEST(CppCore::Test::Random::next64<CppCore::Random::Cpu64>,      "Cpu64_next:      ", std::endl);
    TEST(CppCore::Test::Random::fill64<CppCore::Random::Cpu64>,      "Cpu64_fill:      ", std::endl);
+#endif
+#if defined(CPPCORE_CPUFEAT_SSE2)
+   TEST((CppCore::Test::Random::next32x4<CppCore::Random::Xorshift32x4, CppCore::Random::Xorshift32>), "Xorshift32x4_next:      ", std::endl);
+   TEST((CppCore::Test::Random::fill32x4<CppCore::Random::Xorshift32x4>),                              "Xorshift32x4_fill:      ", std::endl);
+#endif
+#if defined(CPPCORE_CPUFEAT_SSE41)
+   TEST((CppCore::Test::Random::next32x4<CppCore::Random::Mulberry32x4, CppCore::Random::Mulberry32>), "Mulberry32x4_next:      ", std::endl);
+   TEST((CppCore::Test::Random::fill32x4<CppCore::Random::Mulberry32x4>),                              "Mulberry32x4_fill:      ", std::endl);
 #endif
 
    std::cout << "-------------------------------" << std::endl;

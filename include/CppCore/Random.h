@@ -668,7 +668,6 @@ namespace CppCore
          /// </summary>
          INLINE void fill(__m128i* m, const size_t n, const uint32_t min, const uint32_t max)
          {
-
             assert(min < max);
             assert(max - min < std::numeric_limits<uint32_t>::max());
             const uint32_t d = (max - min) + 1U;
@@ -829,7 +828,7 @@ namespace CppCore
       };
 #endif
 
-#if defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_OS_WINDOWS)
+#if defined(CPPCORE_CPUFEAT_SSE2)
       /// <summary>
       /// Xorshift32 four times in parallel. Requires SSE2.
       /// </summary>
@@ -895,7 +894,7 @@ namespace CppCore
       };
 #endif
 
-#if defined(CPPCORE_CPUFEAT_SSE41) && defined(CPPCORE_OS_WINDOWS)
+#if defined(CPPCORE_CPUFEAT_SSE41)
       /// <summary>
       /// Mulberry32 four times in parallel. Requires SSE4.1.
       /// </summary>

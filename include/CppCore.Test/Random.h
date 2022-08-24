@@ -74,7 +74,7 @@ namespace CppCore { namespace Test
          PRNG32 rnd;
          uint32_t m_uint32[CPPCORE_TEST_RANDOM_ITERATIONS];
          int32_t  m_int32[CPPCORE_TEST_RANDOM_ITERATIONS];
-         float_t  m_float[CPPCORE_TEST_RANDOM_ITERATIONS];
+         float    m_float[CPPCORE_TEST_RANDOM_ITERATIONS];
 
          // unsigned
          rnd.fill(m_uint32, CPPCORE_TEST_RANDOM_ITERATIONS, 0U, 16U);
@@ -101,9 +101,9 @@ namespace CppCore { namespace Test
       INLINE static bool fill64()
       {
          PRNG64 rnd;
-         uint64_t  m_uint64[CPPCORE_TEST_RANDOM_ITERATIONS];
-         int64_t   m_int64[CPPCORE_TEST_RANDOM_ITERATIONS];
-         double_t  m_double[CPPCORE_TEST_RANDOM_ITERATIONS];
+         uint64_t m_uint64[CPPCORE_TEST_RANDOM_ITERATIONS];
+         int64_t  m_int64[CPPCORE_TEST_RANDOM_ITERATIONS];
+         double   m_double[CPPCORE_TEST_RANDOM_ITERATIONS];
 
          // unsigned
          rnd.fill(m_uint64, CPPCORE_TEST_RANDOM_ITERATIONS, 0ULL, 16ULL);
