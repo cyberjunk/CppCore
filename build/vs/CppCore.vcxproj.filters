@@ -191,6 +191,7 @@
     <ClInclude Include="..\..\include\CppCore\UI\Input.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\CppCore\Version.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Threading">

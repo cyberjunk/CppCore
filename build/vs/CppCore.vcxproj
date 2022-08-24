@@ -95,6 +95,7 @@
     <ClInclude Include="..\..\include\CppCore\UI\Input.h" />
     <ClInclude Include="..\..\include\CppCore\UI\Window.h" />
     <ClInclude Include="..\..\include\CppCore\Uuid.h" />
+    <ClInclude Include="..\..\include\CppCore\Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\CppCore\UI\Window.cpp" />

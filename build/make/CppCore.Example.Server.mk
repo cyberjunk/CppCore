@@ -22,6 +22,11 @@ LINKLIBS  := $(LINKLIBS)
 OBJS       = main.o
 RESO       =
 
+VERSIONFILE       = $(INCDIR)/CppCore/Version.h
+VERSIONMACROMAJOR = CPPCORE_VERSION_MAJOR
+VERSIONMACROMINOR = CPPCORE_VERSION_MINOR
+VERSIONMACROPATCH = CPPCORE_VERSION_PATCH
+
 ################################################################################################
 # CPU Specific
 
@@ -72,8 +77,6 @@ CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS)
 LINKLIBS  := $(LINKLIBS) -lpthread
 RESO      := $(RESO)
-DEBVERS   := $(shell cat $(DISTDIR)/$(NAME).control | grep Version: | cut -d' ' -f2-)
-DEBFILE   := $(NAME)-$(DEBVERS)-ubuntu-$(LSBREL)-$(DEBARCH).deb
 endif
 
 ifeq ($(TARGET_OS),android)

@@ -17,3 +17,11 @@ function Get-PublisherHash($publisherName)
  
     return $result.ToLower();
 }
+
+function Extract-Macro($header, $macro)
+{
+	$match = Select-String -Path $header "#define $($macro) "
+	$str = $match.ToString()
+	$idx = $str.LastIndexOf(' ')	
+	return $str.Substring($idx+1)
+}

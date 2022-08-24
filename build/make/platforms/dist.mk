@@ -21,27 +21,44 @@ endif
 # WINDOWS
 ##############################################################################################################
 
+ifeq ($(TARGET_OS),win)
 PUBLISHERID = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
   . $(DISTDIR)/CppCore.ps1;\
   Get-PublisherHash '$(PUBLISHER)'; }")
-
-ifeq ($(TARGET_OS),win)
+VERSIONMAJOR = $(shell powershell -command "& {\
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
+  . $(DISTDIR)/CppCore.ps1;\
+  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMAJOR)'; }")
+VERSIONMINOR = $(shell powershell -command "& {\
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
+  . $(DISTDIR)/CppCore.ps1;\
+  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMINOR)'; }")
+VERSIONPATCH = $(shell powershell -command "& {\
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
+  . $(DISTDIR)/CppCore.ps1;\
+  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROPATCH)'; }")
+VERSION3 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
+VERSION4 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 dist-prep:
-	chcp 1252
+	echo [VER] $(VERSION4)
+	echo [CPG] CodePage 1252
+	chcp 1252 >nul 2>&1
 	echo [PUB] $(PUBLISHER)
 	echo [PFX] $(SIGN_PFX_FILE)
 	$(call rmdir,$(DISTDIR)/$(NAME))	
 	$(call mkdir,$(DISTDIR)/$(NAME))
-dist-%:
+dist-%: dist-prep
 	echo [PKG] $(NAME)-$*.appx
 	$(call rmdir,$(DISTDIR)/$(NAME)-$*)	
 	$(call mkdir,$(DISTDIR)/$(NAME)-$*)
 	$(call copyfiles,./bin/win-$*/$(NAME)$(EXTBIN),$(DISTDIR)/$(NAME)-$*/$(NAME)$(EXTBIN))
 	$(call copyfiles,$(SRCDIR)/app.png,$(DISTDIR)/$(NAME)-$*/app.png)
-	$(call replace,$(DISTDIR)/$(NAME).appxmanifest,{ARCH},$*,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
+	$(call copyfiles,$(DISTDIR)/$(NAME).appxmanifest,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
+	$(call replace,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml,{ARCH},$*,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
 	$(call replace,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml,{PUBLISHER},$(PUBLISHER),$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
 	$(call replace,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml,{PUBLISHERID},$(PUBLISHERID),$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
+	$(call replace,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml,{VERSION},$(VERSION4),$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
 ifeq ($(SIGN_PFX_FILE),)
 	$(call makepkg,$(DISTDIR)/$(NAME)-$*,$(DISTDIR)/$(NAME)/$(NAME)-$*.appx)
 else
@@ -145,15 +162,25 @@ endif
 ##############################################################################################################
 
 ifeq ($(TARGET_OS),linux)
-dist-%:
+VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
+VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
+VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
+VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
+VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
+DEBFILE      = $(NAME)-$(VERSION3)-1-ubuntu-$(LSBREL)-$(DEBARCH).deb
+dist-prep:
+	echo [VER] $(VERSION3)
+dist-%: dist-prep
 	echo [DST] $(NAME)-$*
-dist: dist-x64 dist-x86 dist-arm64 dist-arm
+dist: dist-prep dist-x64 dist-x86 dist-arm64 dist-arm
 	@echo [DEB] $(DEBFILE)
 	mkdir -p $(DISTDIR)/$(NAME)/DEBIAN
 	mkdir -p $(DISTDIR)/$(NAME)/usr/bin
 	mkdir -p $(DISTDIR)/$(NAME)/usr/share/applications
 	mkdir -p $(DISTDIR)/$(NAME)/usr/share/pixmaps
-	sed 's/{ARCH}/${DEBARCH}/g' $(DISTDIR)/$(NAME).control > $(DISTDIR)/$(NAME)/DEBIAN/control
+	cp $(DISTDIR)/$(NAME).control $(DISTDIR)/$(NAME)/DEBIAN/control
+	sed -i 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME)/DEBIAN/control
+	sed -i 's/{ARCH}/${DEBARCH}/g' $(DISTDIR)/$(NAME)/DEBIAN/control
 	cp $(SRCDIR)/app.png $(DISTDIR)/$(NAME)/usr/share/pixmaps/$(NAME).png
 	cp $(DISTDIR)/$(NAME).desktop $(DISTDIR)/$(NAME)/usr/share/applications/$(NAME).desktop
 	cp $(OUT) $(OUTDIST)

@@ -129,6 +129,9 @@
       <AdditionalLibraryDirectories>lib\x86</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -149,6 +152,9 @@
       <AdditionalLibraryDirectories>lib\x64</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -175,6 +181,9 @@
       <AdditionalLibraryDirectories>lib\x86</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -202,6 +211,9 @@
       <AdditionalLibraryDirectories>lib\x64</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

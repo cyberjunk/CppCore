@@ -15,7 +15,7 @@
   <Identity 
     Name="3aa58b42-a84a-4fdc-bc1f-ef0069b7dc9a" 
 	Publisher="{PUBLISHER}" 
-	Version="1.0.0.0" 
+	Version="{VERSION}" 
 	ProcessorArchitecture="{ARCH}" />
 	
   <mp:PhoneIdentity 

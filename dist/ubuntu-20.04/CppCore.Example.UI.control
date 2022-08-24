@@ -1,5 +1,5 @@
 Package: CppCore.Example.UI
-Version: 1.0.0-1
+Version: {VERSION}-1
 Section: base
 Priority: optional
 Architecture: {ARCH}
