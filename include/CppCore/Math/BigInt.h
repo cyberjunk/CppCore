@@ -1323,9 +1323,25 @@ namespace CppCore
          }
 
          /// <summary>
-         /// Addition with Carry (a+b+c=r+c)
+         /// Addition with Carry (a+b+c=r+c)(same type)
          /// </summary>
          INLINE static void addc(const TC& a, const TC& b, TC& r, uint8_t& c)
+         {
+            CppCore::addcarry(a, b, r, c);
+         }
+
+         /// <summary>
+         /// Addition with Carry (a+b+c=r+c)(uint64_t)
+         /// </summary>
+         INLINE static void addc(const TC& a, const uint64_t& b, TC& r, uint8_t& c)
+         {
+            CppCore::addcarry(a, b, r, c);
+         }
+
+         /// <summary>
+         /// Addition with Carry (a+b+c=r+c)(uint32_t)
+         /// </summary>
+         INLINE static void addc(const TC& a, const uint32_t& b, TC& r, uint8_t& c)
          {
             CppCore::addcarry(a, b, r, c);
          }
@@ -1374,9 +1390,25 @@ namespace CppCore
          }
 
          /// <summary>
-         /// Subtraction with Borrow (a-b-c=r-c)
+         /// Subtraction with Borrow (a-b-c=r-c)(same type)
          /// </summary>
          INLINE static void subb(const TC& a, const TC& b, TC& r, uint8_t& c)
+         {
+            CppCore::subborrow(a, b, r, c);
+         }
+
+         /// <summary>
+         /// Subtraction with Borrow (a-b-c=r-c)(uint64_t)
+         /// </summary>
+         INLINE static void subb(const TC& a, const uint64_t& b, TC& r, uint8_t& c)
+         {
+            CppCore::subborrow(a, b, r, c);
+         }
+
+         /// <summary>
+         /// Subtraction with Borrow (a-b-c=r-c)(uint32_t)
+         /// </summary>
+         INLINE static void subb(const TC& a, const uint32_t& b, TC& r, uint8_t& c)
          {
             CppCore::subborrow(a, b, r, c);
          }
@@ -1410,12 +1442,30 @@ namespace CppCore
          }
 
          /// <summary>
-         /// Wide Multiplication (a*b=r where len(r)=len(a)+len(b))
+         /// Wide Multiplication (a*b=r)(same type)
          /// </summary>
          INLINE static void mulw(const TC& a, const TC& b, uint64_t r[N64+N64])
          {
             struct TCX2 { uint64_t x[N64+N64]; };
             CppCore::umul(a, b, *(TCX2*)r);
+         }
+
+         /// <summary>
+         /// Wide Multiplication (a*b=r)(uint64_t)
+         /// </summary>
+         INLINE static void mulw(const TC& a, const uint64_t& b, uint64_t r[N64+1])
+         {
+            struct TCX { uint64_t x[N64+1]; };
+            CppCore::umul(a, b, *(TCX*)r);
+         }
+
+         /// <summary>
+         /// Wide Multiplication (a*b=r)(uint32_t)
+         /// </summary>
+         INLINE static void mulw(const TC& a, const uint32_t& b, uint64_t r[N64+1])
+         {
+            const uint64_t b64 = b;
+            TC::Op::mulw(a, b64, r);
          }
 
          /// <summary>
@@ -2176,21 +2226,21 @@ namespace CppCore
       constexpr INLINE static bool tryParse(const string& input, TC& r, const string& alphabet = CPPCORE_ALPHABET_B10)
       {
          r = 0ULL;
-         TC t[2];
          const size_t b = alphabet.length();
          const size_t l = input.length();
-         if ((b > 1U) & (l > 0))
+         if ((b > 1U) && (l > 0))
          {
+            struct { TC v; uint64_t of; } t;
             for (size_t i = 0; i < l; i++)
             {
                const char c = input[i];
-               size_t idx = alphabet.find(c, 0);
+               const size_t idx = alphabet.find(c, 0);
                if (idx != string::npos)
                {
-                  TC::Op::mulw(r, b, &t[0].d.i64[0]);
-                  if (t[1] != 0U) // mul overflow
+                  TC::Op::mulw(r, b, t.v.d.i64);
+                  if (t.of != 0U) // mul overflow
                      return false;
-                  r = t[0];
+                  r = t.v;
                   uint8_t carry = 0;
                   TC::Op::addc(r, idx, r, carry);
                   if (carry != 0) // add overflow
