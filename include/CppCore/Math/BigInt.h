@@ -2689,6 +2689,7 @@ namespace CppCore
                Memory::equal256o<true>(&a.d.avx[1], &b.d.avx[1], TC::N256-1U);
          }
       #endif
+
          INLINE static bool eq(const TC& a, const uint64_t& b)
          {
             if (a.d.i64[0] != b)
@@ -2701,6 +2702,7 @@ namespace CppCore
                Memory::testzero256o<true>(&a.d.avx[1], TC::N256-1U);
          }
 
+      #if defined(CPPCORE_CPUFEAT_AVX2)
          INLINE static bool neq(const TC& a, const TC& b)
          {
             if (!CppCore::equal256(a.d.avx[0], b.d.avx[0]))
@@ -2708,6 +2710,7 @@ namespace CppCore
             return TC::N256 < 2 ? false :
                !Memory::equal256o<true>(&a.d.avx[1], &b.d.avx[1], TC::N256-1U);
          }
+      #endif
 
          INLINE static bool neq(const TC& a, const uint64_t& b)
          {
