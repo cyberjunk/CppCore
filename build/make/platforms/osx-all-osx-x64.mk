@@ -14,10 +14,15 @@
 # | Mac mini    | late  2012 | Core i5-3210M      | Ivy Bridge   |
 # | Mac Pro     | late  2013 | Xeon E5-1620v2     | Ivy Bridge   |
 # |-------------|------------|--------------------|--------------|
-OSXMINVERSION   = 10.15
-OSXINSTRUCTIONS = \
-	-mmmx -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 \
-	-mpopcnt -mcx16 -msahf -mfxsr -mavx -mxsave -mpclmul \
+OSXMINVERSION = 10.15
+
+# For Ivy Bridge (based on table above)
+# x86-64-v2 requires CLANG 12+ and is close to Nehalem
+CPUFLAGS = -march=x86-64-v2 -mtune=generic
+
+# Not or not sure if covered by x86-64-v2
+CPUFLAGS := $(CPUFLAGS) \
+	-mcx16 -mavx -mxsave -mpclmul \
 	-mfsgsbase -mrdrnd -mf16c -maes    
 
 # Generic
@@ -31,7 +36,6 @@ BINDIR     = bin/osx-x64
 DISTDIR    = ../../dist/osx-$(OSXMINVERSION)
 TARGET     = x86_64-apple-darwin19.6.0
 MINVER     = -mmacosx-version-min=$(OSXMINVERSION)
-CPUFLAGS   = -march=x86-64 -mtune=generic $(OSXINSTRUCTIONS)
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
