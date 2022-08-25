@@ -8,7 +8,7 @@ LIBDIR     = lib/win-x86
 BINDIR     = bin/win-x86
 DISTDIR    = ../../dist/win-10
 TARGET     = i686-pc-windows-msvc
-CPUFLAGS   = -march=i686 -mtune=generic
+CPUFLAGS   = -march=i686 -mtune=generic -mmmx -msse -msse2
 DEFINES    = -DWIN32 -D_MT
 INCLUDES   = 
 CXX        = clang++
