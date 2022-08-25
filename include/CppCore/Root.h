@@ -109,7 +109,7 @@
 #if defined(__SSSE3__) && !defined(CPPCORE_CPUFEAT_SSSE3)
 #define CPPCORE_CPUFEAT_SSSE3
 #endif
-#if defined(__CX16__) && !defined(CPPCORE_CPUFEAT_CX16)
+#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16 ) && !defined(CPPCORE_CPUFEAT_CX16)
 #define CPPCORE_CPUFEAT_CX16
 #endif
 #if defined(__SSE4_1__) && !defined(CPPCORE_CPUFEAT_SSE41)
