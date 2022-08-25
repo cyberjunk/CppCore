@@ -64,10 +64,12 @@
 
 //      CPU Instruction                            INTEL ARCH   (YEAR) | AMD ARCH   (YEAR)
 #define CPPCORE_CPUFEAT_MMX_NAME     "MMX"      // P55C         (1997) | K6         (1997)
+#define CPPCORE_CPUFEAT_FXSR_NAME    "FXSR"     // Pentium 2    (----) | ?          (----)
 #define CPPCORE_CPUFEAT_SSE_NAME     "SSE"      // Katmai       (1999) | Palomino   (2001)
 #define CPPCORE_CPUFEAT_SSE2_NAME    "SSE2"     // Willamette   (2001) | Clawhammer (2003)
 #define CPPCORE_CPUFEAT_SSE3_NAME    "SSE3"     // Prescott     (2004) | Venice     (2005)
 #define CPPCORE_CPUFEAT_SSSE3_NAME   "SSSE3"    // Woodcrest    (2006) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_CX16_NAME    "CX16 "    // Penryn       (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_SSE41_NAME   "SSE4.1"   // Penryn       (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_SSE42_NAME   "SSE4.2"   // Nehalem      (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_PCLMUL_NAME  "PCLMUL"   // Westmere     (2010) | Bulldozer  (2011)
@@ -92,6 +94,9 @@
 #if defined(__MMX__) && !defined(CPPCORE_CPUFEAT_MMX)
 #define CPPCORE_CPUFEAT_MMX
 #endif
+#if defined(__FXSR__) && !defined(CPPCORE_CPUFEAT_FXSR)
+#define CPPCORE_CPUFEAT_FXSR
+#endif
 #if defined(__SSE__) && !defined(CPPCORE_CPUFEAT_SSE)
 #define CPPCORE_CPUFEAT_SSE
 #endif
@@ -103,6 +108,9 @@
 #endif
 #if defined(__SSSE3__) && !defined(CPPCORE_CPUFEAT_SSSE3)
 #define CPPCORE_CPUFEAT_SSSE3
+#endif
+#if defined(__CX16__) && !defined(CPPCORE_CPUFEAT_CX16)
+#define CPPCORE_CPUFEAT_CX16
 #endif
 #if defined(__SSE4_1__) && !defined(CPPCORE_CPUFEAT_SSE41)
 #define CPPCORE_CPUFEAT_SSE41
@@ -182,6 +190,9 @@
 #endif
 #endif
 #if defined(CPPCORE_CPUFEAT_AVX)
+#ifndef CPPCORE_CPUFEAT_FXSR
+#define CPPCORE_CPUFEAT_FXSR
+#endif
 #ifndef CPPCORE_CPUFEAT_MMX
 #define CPPCORE_CPUFEAT_MMX
 #endif
@@ -196,6 +207,9 @@
 #endif
 #ifndef CPPCORE_CPUFEAT_SSSE3
 #define CPPCORE_CPUFEAT_SSSE3
+#endif
+#ifndef CPPCORE_CPUFEAT_CX16
+#define CPPCORE_CPUFEAT_CX16
 #endif
 #ifndef CPPCORE_CPUFEAT_SSE41
 #define CPPCORE_CPUFEAT_SSE41
@@ -223,6 +237,11 @@
 #else
 #define CPPCORE_CPUFEAT_MMX_ENABLED 0
 #endif
+#ifdef CPPCORE_CPUFEAT_FXSR
+#define CPPCORE_CPUFEAT_FXSR_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_FXSR_ENABLED 0
+#endif
 #ifdef CPPCORE_CPUFEAT_SSE
 #define CPPCORE_CPUFEAT_SSE_ENABLED 1
 #else
@@ -242,6 +261,11 @@
 #define CPPCORE_CPUFEAT_SSSE3_ENABLED 1
 #else
 #define CPPCORE_CPUFEAT_SSSE3_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_CX16
+#define CPPCORE_CPUFEAT_CX16_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_CX16_ENABLED 0
 #endif
 #ifdef CPPCORE_CPUFEAT_SSE41
 #define CPPCORE_CPUFEAT_SSE41_ENABLED 1

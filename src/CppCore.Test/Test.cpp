@@ -170,10 +170,12 @@ int main()
    std::cout << "Enabled CPU Instructions:      " << std::endl;
    std::cout << "-------------------------------" << std::endl;
    std::cout << "MMX:     " << (CPPCORE_CPUFEAT_MMX_ENABLED    ? "YES" : "NO") << std::endl;
+   std::cout << "FXSR:    " << (CPPCORE_CPUFEAT_FXSR_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "SSE:     " << (CPPCORE_CPUFEAT_SSE_ENABLED    ? "YES" : "NO") << std::endl;
    std::cout << "SSE2:    " << (CPPCORE_CPUFEAT_SSE2_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "SSE3:    " << (CPPCORE_CPUFEAT_SSE3_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "SSSE3:   " << (CPPCORE_CPUFEAT_SSSE3_ENABLED  ? "YES" : "NO") << std::endl;
+   std::cout << "CX16:    " << (CPPCORE_CPUFEAT_CX16_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "SSE4.1:  " << (CPPCORE_CPUFEAT_SSE41_ENABLED  ? "YES" : "NO") << std::endl;
    std::cout << "SSE4.2:  " << (CPPCORE_CPUFEAT_SSE42_ENABLED  ? "YES" : "NO") << std::endl;
    std::cout << "PCLMUL:  " << (CPPCORE_CPUFEAT_PCLMUL_ENABLED ? "YES" : "NO") << std::endl;
