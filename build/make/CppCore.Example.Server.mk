@@ -70,7 +70,7 @@ RESO      := $(RESO)
 endif
 
 ifeq ($(TARGET_OS),linux)
-OUTDIST   := $(DISTDIR)/$(NAME)/usr/bin/$(NAME)$(EXTBIN)
+OUTDIST   := $(DISTDIR)/$(NAME)-$(TARGET_ARCH)/usr/bin/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
@@ -103,7 +103,7 @@ RESO := $(patsubst %,$(OBJDIR)/%,$(RESO))
 
 $(OBJDIR)/%.res:
 	@echo [RC]  $@
-	 $(RC) $(RCFLAGS) $(DEFINES) $(INCLUDES) /fo $@ $(@:$(OBJDIR)/%.res=$(SRCDIR)/%.rc)
+	$(RC) $(RCFLAGS) $(DEFINES) $(INCLUDES) /fo $@ $(@:$(OBJDIR)/%.res=$(SRCDIR)/%.rc)
 
 ################################################################################################
 
