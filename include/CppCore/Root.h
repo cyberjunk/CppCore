@@ -69,12 +69,14 @@
 #define CPPCORE_CPUFEAT_SSE2_NAME    "SSE2"     // Willamette   (2001) | Clawhammer (2003)
 #define CPPCORE_CPUFEAT_SSE3_NAME    "SSE3"     // Prescott     (2004) | Venice     (2005)
 #define CPPCORE_CPUFEAT_SSSE3_NAME   "SSSE3"    // Woodcrest    (2006) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_SAHF_NAME    "SAHF "    // Penryn       (2008) | ?          (----)
 #define CPPCORE_CPUFEAT_CX16_NAME    "CX16 "    // Penryn       (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_SSE41_NAME   "SSE4.1"   // Penryn       (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_SSE42_NAME   "SSE4.2"   // Nehalem      (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_PCLMUL_NAME  "PCLMUL"   // Westmere     (2010) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_AES_NAME     "AES"      // Broadwell    (2010) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_AVX_NAME     "AVX"      // Sandy Bridge (2011) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_XSAVE_NAME   "XSAVE"    // Sandy Bridge (2011) | ?          (----)
 #define CPPCORE_CPUFEAT_F16C_NAME    "F16C"     // Ivy Bridge   (2012) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_RDRAND_NAME  "RDRAND"   // Ivy Bridge   (2012) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_FMA3_NAME    "FMA3"     // Haswell      (2013) | Piledriver (2012)
@@ -109,6 +111,9 @@
 #if defined(__SSSE3__) && !defined(CPPCORE_CPUFEAT_SSSE3)
 #define CPPCORE_CPUFEAT_SSSE3
 #endif
+#if defined(__LAHF_SAHF__ ) && !defined(CPPCORE_CPUFEAT_SAHF)
+#define CPPCORE_CPUFEAT_SAHF
+#endif
 #if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16 ) && !defined(CPPCORE_CPUFEAT_CX16)
 #define CPPCORE_CPUFEAT_CX16
 #endif
@@ -126,6 +131,9 @@
 #endif
 #if defined(__AVX__) && !defined(CPPCORE_CPUFEAT_AVX)
 #define CPPCORE_CPUFEAT_AVX
+#endif
+#if defined(__XSAVE__) && !defined(CPPCORE_CPUFEAT_XSAVE)
+#define CPPCORE_CPUFEAT_XSAVE
 #endif
 #if defined(__F16C__) && !defined(CPPCORE_CPUFEAT_F16C)
 #define CPPCORE_CPUFEAT_F16C
@@ -208,6 +216,9 @@
 #ifndef CPPCORE_CPUFEAT_SSSE3
 #define CPPCORE_CPUFEAT_SSSE3
 #endif
+#ifndef CPPCORE_CPUFEAT_SAHF
+#define CPPCORE_CPUFEAT_SAHF
+#endif
 #ifndef CPPCORE_CPUFEAT_CX16
 #define CPPCORE_CPUFEAT_CX16
 #endif
@@ -262,6 +273,11 @@
 #else
 #define CPPCORE_CPUFEAT_SSSE3_ENABLED 0
 #endif
+#ifdef CPPCORE_CPUFEAT_SAHF
+#define CPPCORE_CPUFEAT_SAHF_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SAHF_ENABLED 0
+#endif
 #ifdef CPPCORE_CPUFEAT_CX16
 #define CPPCORE_CPUFEAT_CX16_ENABLED 1
 #else
@@ -291,6 +307,11 @@
 #define CPPCORE_CPUFEAT_AVX_ENABLED 1
 #else
 #define CPPCORE_CPUFEAT_AVX_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_XSAVE
+#define CPPCORE_CPUFEAT_XSAVE_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_XSAVE_ENABLED 0
 #endif
 #ifdef CPPCORE_CPUFEAT_F16C
 #define CPPCORE_CPUFEAT_F16C_ENABLED 1

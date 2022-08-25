@@ -175,12 +175,14 @@ int main()
    std::cout << "SSE2:    " << (CPPCORE_CPUFEAT_SSE2_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "SSE3:    " << (CPPCORE_CPUFEAT_SSE3_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "SSSE3:   " << (CPPCORE_CPUFEAT_SSSE3_ENABLED  ? "YES" : "NO") << std::endl;
+   std::cout << "SAHF:    " << (CPPCORE_CPUFEAT_SAHF_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "CX16:    " << (CPPCORE_CPUFEAT_CX16_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "SSE4.1:  " << (CPPCORE_CPUFEAT_SSE41_ENABLED  ? "YES" : "NO") << std::endl;
    std::cout << "SSE4.2:  " << (CPPCORE_CPUFEAT_SSE42_ENABLED  ? "YES" : "NO") << std::endl;
    std::cout << "PCLMUL:  " << (CPPCORE_CPUFEAT_PCLMUL_ENABLED ? "YES" : "NO") << std::endl;
    std::cout << "AES:     " << (CPPCORE_CPUFEAT_AES_ENABLED    ? "YES" : "NO") << std::endl;
    std::cout << "AVX:     " << (CPPCORE_CPUFEAT_AVX_ENABLED    ? "YES" : "NO") << std::endl;
+   std::cout << "XSAVE:   " << (CPPCORE_CPUFEAT_XSAVE_ENABLED  ? "YES" : "NO") << std::endl;
    std::cout << "F16C:    " << (CPPCORE_CPUFEAT_F16C_ENABLED   ? "YES" : "NO") << std::endl;
    std::cout << "RDRAND:  " << (CPPCORE_CPUFEAT_RDRAND_ENABLED ? "YES" : "NO") << std::endl;
    std::cout << "FMA3:    " << (CPPCORE_CPUFEAT_FMA3_ENABLED   ? "YES" : "NO") << std::endl;
