@@ -163,10 +163,32 @@ int v3i_test()
    return 0;
 }
 
-
 // console based tests
 int main()
 {
+   std::cout << "-------------------------------" << std::endl;
+   std::cout << "Enabled CPU Instructions:      " << std::endl;
+   std::cout << "-------------------------------" << std::endl;
+   std::cout << "SSE:     " << (CPPCORE_CPUFEAT_SSE_ENABLED    ? "YES" : "NO") << std::endl;
+   std::cout << "SSE2:    " << (CPPCORE_CPUFEAT_SSE2_ENABLED   ? "YES" : "NO") << std::endl;
+   std::cout << "SSE3:    " << (CPPCORE_CPUFEAT_SSE3_ENABLED   ? "YES" : "NO") << std::endl;
+   std::cout << "SSSE3:   " << (CPPCORE_CPUFEAT_SSSE3_ENABLED  ? "YES" : "NO") << std::endl;
+   std::cout << "SSE4.1:  " << (CPPCORE_CPUFEAT_SSE41_ENABLED  ? "YES" : "NO") << std::endl;
+   std::cout << "SSE4.2:  " << (CPPCORE_CPUFEAT_SSE42_ENABLED  ? "YES" : "NO") << std::endl;
+   std::cout << "PCLMUL:  " << (CPPCORE_CPUFEAT_PCLMUL_ENABLED ? "YES" : "NO") << std::endl;
+   std::cout << "AES-NI:  " << (CPPCORE_CPUFEAT_AES_ENABLED    ? "YES" : "NO") << std::endl;
+   std::cout << "RDRAND:  " << (CPPCORE_CPUFEAT_RDRAND_ENABLED ? "YES" : "NO") << std::endl;
+   std::cout << "FMA3:    " << (CPPCORE_CPUFEAT_FMA3_ENABLED   ? "YES" : "NO") << std::endl;
+   std::cout << "LZCNT:   " << (CPPCORE_CPUFEAT_LZCNT_ENABLED  ? "YES" : "NO") << std::endl;
+   std::cout << "BMI1:    " << (CPPCORE_CPUFEAT_BMI1_ENABLED   ? "YES" : "NO") << std::endl;
+   std::cout << "BMI2:    " << (CPPCORE_CPUFEAT_BMI2_ENABLED   ? "YES" : "NO") << std::endl;
+   std::cout << "MOVBE:   " << (CPPCORE_CPUFEAT_MOVBE_ENABLED  ? "YES" : "NO") << std::endl;
+   std::cout << "RDSEED:  " << (CPPCORE_CPUFEAT_RDSEED_ENABLED ? "YES" : "NO") << std::endl;
+   std::cout << "ADX:     " << (CPPCORE_CPUFEAT_ADX_ENABLED    ? "YES" : "NO") << std::endl;
+   std::cout << "AVX:     " << (CPPCORE_CPUFEAT_AVX_ENABLED    ? "YES" : "NO") << std::endl;
+   std::cout << "AVX2:    " << (CPPCORE_CPUFEAT_AVX2_ENABLED   ? "YES" : "NO") << std::endl;
+   std::cout << "AVX512F: " << (CPPCORE_CPUFEAT_AVX512_ENABLED ? "YES" : "NO") << std::endl;
+
    bool r;
 
    std::cout << "-------------------------------" << std::endl;

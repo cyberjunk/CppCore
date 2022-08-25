@@ -62,6 +62,28 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// String Names of CPU Instruction Sets
+
+#define CPPCORE_CPUFEAT_SSE_NAME     "SSE"
+#define CPPCORE_CPUFEAT_SSE2_NAME    "SSE2"
+#define CPPCORE_CPUFEAT_SSE3_NAME    "SSE3"
+#define CPPCORE_CPUFEAT_SSSE3_NAME   "SSSE3"
+#define CPPCORE_CPUFEAT_SSE41_NAME   "SSE4.1"
+#define CPPCORE_CPUFEAT_SSE42_NAME   "SSE4.2"
+#define CPPCORE_CPUFEAT_PCLMUL_NAME  "PCLMUL"
+#define CPPCORE_CPUFEAT_AES_NAME     "AES"
+#define CPPCORE_CPUFEAT_RDRAND_NAME  "RDRAND"
+#define CPPCORE_CPUFEAT_RDSEED_NAME  "RDSEED"
+#define CPPCORE_CPUFEAT_MOVBE_NAME   "MOVBE"
+#define CPPCORE_CPUFEAT_FMA3_NAME    "FMA3"
+#define CPPCORE_CPUFEAT_LZCNT_NAME   "LZCNT"
+#define CPPCORE_CPUFEAT_BMI1_NAME    "BMI1"
+#define CPPCORE_CPUFEAT_BMI2_NAME    "BMI2"
+#define CPPCORE_CPUFEAT_ADX_NAME     "ADX"
+#define CPPCORE_CPUFEAT_AVX_NAME     "AVX"
+#define CPPCORE_CPUFEAT_AVX2_NAME    "AVX2"
+#define CPPCORE_CPUFEAT_AVX512_NAME  "AVX512F"
+
 // Processor Features From Build Settings
 #if defined(__SSE__) && !defined(CPPCORE_CPUFEAT_SSE)
 #define CPPCORE_CPUFEAT_SSE
@@ -146,6 +168,105 @@
 #define CPPCORE_CPUFEAT_AVX2       // Haswell      (2013) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_AVX512     // Skylake      (2015) | -
 #endif
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef CPPCORE_CPUFEAT_SSE
+#define CPPCORE_CPUFEAT_SSE_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SSE_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_SSE2
+#define CPPCORE_CPUFEAT_SSE2_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SSE2_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_SSE3
+#define CPPCORE_CPUFEAT_SSE3_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SSE3_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_SSSE3
+#define CPPCORE_CPUFEAT_SSSE3_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SSSE3_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_SSE41
+#define CPPCORE_CPUFEAT_SSE41_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SSE41_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_SSE42
+#define CPPCORE_CPUFEAT_SSE42_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SSE42_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_PCLMUL
+#define CPPCORE_CPUFEAT_PCLMUL_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_PCLMUL_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AES
+#define CPPCORE_CPUFEAT_AES_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AES_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_RDRAND
+#define CPPCORE_CPUFEAT_RDRAND_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_RDRAND_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_FMA3
+#define CPPCORE_CPUFEAT_FMA3_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_FMA3_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_LZCNT
+#define CPPCORE_CPUFEAT_LZCNT_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_LZCNT_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_BMI1
+#define CPPCORE_CPUFEAT_BMI1_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_BMI1_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_BMI2
+#define CPPCORE_CPUFEAT_BMI2_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_BMI2_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_MOVBE
+#define CPPCORE_CPUFEAT_MOVBE_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_MOVBE_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_RDSEED
+#define CPPCORE_CPUFEAT_RDSEED_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_RDSEED_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_ADX
+#define CPPCORE_CPUFEAT_ADX_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_ADX_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX
+#define CPPCORE_CPUFEAT_AVX_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX2
+#define CPPCORE_CPUFEAT_AVX2_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX2_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512
+#define CPPCORE_CPUFEAT_AVX512_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512_ENABLED 0
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
