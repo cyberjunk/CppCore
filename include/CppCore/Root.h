@@ -62,29 +62,36 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// String Names of CPU Instruction Sets
+//      CPU Instruction                            INTEL ARCH   (YEAR) | AMD ARCH   (YEAR)
+#define CPPCORE_CPUFEAT_MMX_NAME     "MMX"      // P55C         (1997) | K6         (1997)
+#define CPPCORE_CPUFEAT_SSE_NAME     "SSE"      // Katmai       (1999) | Palomino   (2001)
+#define CPPCORE_CPUFEAT_SSE2_NAME    "SSE2"     // Willamette   (2001) | Clawhammer (2003)
+#define CPPCORE_CPUFEAT_SSE3_NAME    "SSE3"     // Prescott     (2004) | Venice     (2005)
+#define CPPCORE_CPUFEAT_SSSE3_NAME   "SSSE3"    // Woodcrest    (2006) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_SSE41_NAME   "SSE4.1"   // Penryn       (2008) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_SSE42_NAME   "SSE4.2"   // Nehalem      (2008) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_PCLMUL_NAME  "PCLMUL"   // Westmere     (2010) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_AES_NAME     "AES"      // Broadwell    (2010) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_AVX_NAME     "AVX"      // Sandy Bridge (2011) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_F16C_NAME    "F16C"     // Ivy Bridge   (2012) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_RDRAND_NAME  "RDRAND"   // Ivy Bridge   (2012) | Excavator  (2015)
+#define CPPCORE_CPUFEAT_FMA3_NAME    "FMA3"     // Haswell      (2013) | Piledriver (2012)
+#define CPPCORE_CPUFEAT_LZCNT_NAME   "LZCNT"    // Haswell      (2013) | Piledriver (2012)
+#define CPPCORE_CPUFEAT_BMI1_NAME    "BMI1"     // Haswell      (2013) | Piledriver (2012)
+#define CPPCORE_CPUFEAT_BMI2_NAME    "BMI2"     // Haswell      (2013) | Excavator  (2015)
+#define CPPCORE_CPUFEAT_MOVBE_NAME   "MOVBE"    // Haswell      (2013) | Excavator  (2015)
+#define CPPCORE_CPUFEAT_AVX2_NAME    "AVX2"     // Haswell      (2013) | Excavator  (2015)
+#define CPPCORE_CPUFEAT_RDSEED_NAME  "RDSEED"   // Broadwell    (2014) | Excavator  (2015)
+#define CPPCORE_CPUFEAT_ADX_NAME     "ADX"      // Broadwell    (2014) | Zen        (2017)
+#define CPPCORE_CPUFEAT_AVX512_NAME  "AVX512F"  // Skylake      (2015) | -
 
-#define CPPCORE_CPUFEAT_SSE_NAME     "SSE"
-#define CPPCORE_CPUFEAT_SSE2_NAME    "SSE2"
-#define CPPCORE_CPUFEAT_SSE3_NAME    "SSE3"
-#define CPPCORE_CPUFEAT_SSSE3_NAME   "SSSE3"
-#define CPPCORE_CPUFEAT_SSE41_NAME   "SSE4.1"
-#define CPPCORE_CPUFEAT_SSE42_NAME   "SSE4.2"
-#define CPPCORE_CPUFEAT_PCLMUL_NAME  "PCLMUL"
-#define CPPCORE_CPUFEAT_AES_NAME     "AES"
-#define CPPCORE_CPUFEAT_RDRAND_NAME  "RDRAND"
-#define CPPCORE_CPUFEAT_RDSEED_NAME  "RDSEED"
-#define CPPCORE_CPUFEAT_MOVBE_NAME   "MOVBE"
-#define CPPCORE_CPUFEAT_FMA3_NAME    "FMA3"
-#define CPPCORE_CPUFEAT_LZCNT_NAME   "LZCNT"
-#define CPPCORE_CPUFEAT_BMI1_NAME    "BMI1"
-#define CPPCORE_CPUFEAT_BMI2_NAME    "BMI2"
-#define CPPCORE_CPUFEAT_ADX_NAME     "ADX"
-#define CPPCORE_CPUFEAT_AVX_NAME     "AVX"
-#define CPPCORE_CPUFEAT_AVX2_NAME    "AVX2"
-#define CPPCORE_CPUFEAT_AVX512_NAME  "AVX512F"
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Processor Features From Build Settings
+#if defined(__MMX__) && !defined(CPPCORE_CPUFEAT_MMX)
+#define CPPCORE_CPUFEAT_MMX
+#endif
 #if defined(__SSE__) && !defined(CPPCORE_CPUFEAT_SSE)
 #define CPPCORE_CPUFEAT_SSE
 #endif
@@ -109,14 +116,14 @@
 #if defined(__AES__) && !defined(CPPCORE_CPUFEAT_AES)
 #define CPPCORE_CPUFEAT_AES
 #endif
+#if defined(__AVX__) && !defined(CPPCORE_CPUFEAT_AVX)
+#define CPPCORE_CPUFEAT_AVX
+#endif
+#if defined(__F16C__) && !defined(CPPCORE_CPUFEAT_F16C)
+#define CPPCORE_CPUFEAT_F16C
+#endif
 #if defined(__RDRND__) && !defined(CPPCORE_CPUFEAT_RDRAND)
 #define CPPCORE_CPUFEAT_RDRAND
-#endif
-#if defined(__RDSEED__) && !defined(CPPCORE_CPUFEAT_RDSEED)
-#define CPPCORE_CPUFEAT_RDSEED
-#endif
-#if defined(__MOVBE__) && !defined(CPPCORE_CPUFEAT_MOVBE)
-#define CPPCORE_CPUFEAT_MOVBE
 #endif
 #if defined(__FMA__) && !defined(CPPCORE_CPUFEAT_FMA3)
 #define CPPCORE_CPUFEAT_FMA3
@@ -130,49 +137,92 @@
 #if defined(__BMI2__) && !defined(CPPCORE_CPUFEAT_BMI2)
 #define CPPCORE_CPUFEAT_BMI2
 #endif
-#if defined(__ADX__) && !defined(CPPCORE_CPUFEAT_ADX)
-#define CPPCORE_CPUFEAT_ADX
-#endif
-#if defined(__AVX__) && !defined(CPPCORE_CPUFEAT_AVX)
-#define CPPCORE_CPUFEAT_AVX
+#if defined(__MOVBE__) && !defined(CPPCORE_CPUFEAT_MOVBE)
+#define CPPCORE_CPUFEAT_MOVBE
 #endif
 #if defined(__AVX2__) && !defined(CPPCORE_CPUFEAT_AVX2)
 #define CPPCORE_CPUFEAT_AVX2
+#endif
+#if defined(__RDSEED__) && !defined(CPPCORE_CPUFEAT_RDSEED)
+#define CPPCORE_CPUFEAT_RDSEED
+#endif
+#if defined(__ADX__) && !defined(CPPCORE_CPUFEAT_ADX)
+#define CPPCORE_CPUFEAT_ADX
 #endif
 #if defined(__AVX512F__) && !defined(CPPCORE_CPUFEAT_AVX512)
 #define CPPCORE_CPUFEAT_AVX512
 #endif
 
-// MSVC - Enabled CPU Instructions    INTEL ARCH   (YEAR) | AMD ARCH   (YEAR)
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// MSVC does not define a lot of them, so do it manually based on AVX/AVX2
 #if defined(CPPCORE_COMPILER_MSVC)
-#if defined(CPPCORE_CPU_X86ORX64)
-#define CPPCORE_CPUFEAT_SSE        // Katmai       (1999) | Palomino   (2001)
-#define CPPCORE_CPUFEAT_SSE2       // Willamette   (2001) | Clawhammer (2003)
-#define CPPCORE_CPUFEAT_SSE3       // Prescott     (2004) | Venice     (2005)
-#define CPPCORE_CPUFEAT_SSSE3      // Woodcrest    (2006) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_SSE41      // Penryn       (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_SSE42      // Nehalem      (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_PCLMUL     // Westmere     (2010) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_AES        // Broadwell    (2010) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_RDRAND     // Ivy Bridge   (2012) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_FMA3       // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_LZCNT      // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_BMI1       // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_BMI2       // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_MOVBE      // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_RDSEED     // Broadwell    (2014) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_ADX        // Broadwell    (2014) | Zen        (2017)
+#if defined(CPPCORE_CPUFEAT_AVX2)
+#ifndef CPPCORE_CPUFEAT_AVX
+#define CPPCORE_CPUFEAT_AVX
 #endif
-#if defined(CPPCORE_CPU_X64)
-#define CPPCORE_CPUFEAT_AVX        // Sandy Bridge (2011) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_AVX2       // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_AVX512     // Skylake      (2015) | -
+#ifndef CPPCORE_CPUFEAT_RDRAND
+#define CPPCORE_CPUFEAT_RDRAND
+#endif
+#ifndef CPPCORE_CPUFEAT_FMA3
+#define CPPCORE_CPUFEAT_FMA3
+#endif
+#ifndef CPPCORE_CPUFEAT_LZCNT
+#define CPPCORE_CPUFEAT_LZCNT
+#endif
+#ifndef CPPCORE_CPUFEAT_BMI1
+#define CPPCORE_CPUFEAT_BMI1
+#endif
+#ifndef CPPCORE_CPUFEAT_BMI2
+#define CPPCORE_CPUFEAT_BMI2
+#endif
+#ifndef CPPCORE_CPUFEAT_MOVBE
+#define CPPCORE_CPUFEAT_MOVBE
+#endif
+#endif
+#if defined(CPPCORE_CPUFEAT_AVX)
+#ifndef CPPCORE_CPUFEAT_MMX
+#define CPPCORE_CPUFEAT_MMX
+#endif
+#ifndef CPPCORE_CPUFEAT_SSE
+#define CPPCORE_CPUFEAT_SSE
+#endif
+#ifndef CPPCORE_CPUFEAT_SSE2
+#define CPPCORE_CPUFEAT_SSE2
+#endif
+#ifndef CPPCORE_CPUFEAT_SSE3
+#define CPPCORE_CPUFEAT_SSE3
+#endif
+#ifndef CPPCORE_CPUFEAT_SSSE3
+#define CPPCORE_CPUFEAT_SSSE3
+#endif
+#ifndef CPPCORE_CPUFEAT_SSE41
+#define CPPCORE_CPUFEAT_SSE41
+#endif
+#ifndef CPPCORE_CPUFEAT_SSE42
+#define CPPCORE_CPUFEAT_SSE42
+#endif
+#ifndef CPPCORE_CPUFEAT_PCLMUL
+#define CPPCORE_CPUFEAT_PCLMUL
+#endif
+#ifndef CPPCORE_CPUFEAT_AES
+#define CPPCORE_CPUFEAT_AES
+#endif
+#ifndef CPPCORE_CPUFEAT_F16C
+#define CPPCORE_CPUFEAT_F16C
+#endif
 #endif
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef CPPCORE_CPUFEAT_MMX
+#define CPPCORE_CPUFEAT_MMX_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_MMX_ENABLED 0
+#endif
 #ifdef CPPCORE_CPUFEAT_SSE
 #define CPPCORE_CPUFEAT_SSE_ENABLED 1
 #else
@@ -213,6 +263,16 @@
 #else
 #define CPPCORE_CPUFEAT_AES_ENABLED 0
 #endif
+#ifdef CPPCORE_CPUFEAT_AVX
+#define CPPCORE_CPUFEAT_AVX_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_F16C
+#define CPPCORE_CPUFEAT_F16C_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_F16C_ENABLED 0
+#endif
 #ifdef CPPCORE_CPUFEAT_RDRAND
 #define CPPCORE_CPUFEAT_RDRAND_ENABLED 1
 #else
@@ -243,6 +303,11 @@
 #else
 #define CPPCORE_CPUFEAT_MOVBE_ENABLED 0
 #endif
+#ifdef CPPCORE_CPUFEAT_AVX2
+#define CPPCORE_CPUFEAT_AVX2_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX2_ENABLED 0
+#endif
 #ifdef CPPCORE_CPUFEAT_RDSEED
 #define CPPCORE_CPUFEAT_RDSEED_ENABLED 1
 #else
@@ -252,16 +317,6 @@
 #define CPPCORE_CPUFEAT_ADX_ENABLED 1
 #else
 #define CPPCORE_CPUFEAT_ADX_ENABLED 0
-#endif
-#ifdef CPPCORE_CPUFEAT_AVX
-#define CPPCORE_CPUFEAT_AVX_ENABLED 1
-#else
-#define CPPCORE_CPUFEAT_AVX_ENABLED 0
-#endif
-#ifdef CPPCORE_CPUFEAT_AVX2
-#define CPPCORE_CPUFEAT_AVX2_ENABLED 1
-#else
-#define CPPCORE_CPUFEAT_AVX2_ENABLED 0
 #endif
 #ifdef CPPCORE_CPUFEAT_AVX512
 #define CPPCORE_CPUFEAT_AVX512_ENABLED 1
