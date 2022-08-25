@@ -2769,6 +2769,7 @@ namespace CppCore
                !Memory::testzero256o<true>(&a.d.avx[1], TC::N256-1U);
          }
 
+      #if defined(CPPCORE_CPUFEAT_AVX2)
          INLINE static void _or(const TC& a, const TC& b, TC& r)
          {
             for (size_t i = 0; i < TC::N256; i++)
@@ -2786,6 +2787,7 @@ namespace CppCore
             for (size_t i = 0; i < TC::N256; i++)
                r.d.avx[i] = _mm256_xor_si256(a.d.avx[i], b.d.avx[i]);
          }
+      #endif
 
          /*INLINE static void shl64x(TC& a, const uint8_t s)
          {

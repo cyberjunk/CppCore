@@ -1008,10 +1008,12 @@ namespace CppCore
          }
          return true;
       }
+#endif
 
+#if defined(CPPCORE_CPUFEAT_AVX2)
       /// <summary>
       /// Returns true if m has n256 zero 256-Bit chunks.
-      /// Requires AVX. OR all values and perform single test only.
+      /// Requires AVX2. OR all values and perform single test only.
       /// </summary>
       template<bool ALIGNED = false>
       INLINE static bool testzero256o(const __m256i* m, const size_t n256)
@@ -1026,6 +1028,16 @@ namespace CppCore
          if (!_mm256_testz_si256(v, v))
             return false;
          return true;
+      }
+#elif defined(CPPCORE_CPUFEAT_AVX)
+      /// <summary>
+      /// Returns true if m has n256 zero 256-Bit chunks.
+      /// Fallback version to testzero256() if AVX2 is not available.
+      /// </summary>
+      template<bool ALIGNED = false>
+      INLINE static bool testzero256o(const __m256i* m, const size_t n256)
+      {
+         return testzero256<ALIGNED>(m, n256);
       }
 #endif
 
