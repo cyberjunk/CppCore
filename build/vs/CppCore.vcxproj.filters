@@ -192,6 +192,7 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\CppCore\Version.h" />
+    <ClInclude Include="..\..\include\CppCore\CPUID.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Threading">
