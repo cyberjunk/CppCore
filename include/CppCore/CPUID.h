@@ -91,6 +91,30 @@ namespace CppCore
 
    public:
       /// <summary>
+      /// __cpuid() on MSVC and __get_cpuid() on CLANG
+      /// </summary>
+      INLINE void cpuid(Data& d, uint32_t leaf)
+      {
+      #if defined(CPPCORE_COMPILER_MSVC)
+         ::__cpuid(d, leaf);
+      #else
+         ::__get_cpuid(leaf, &d.eax, &d.ebx, &d.ecx, &d.edx);
+      #endif
+      }
+
+      /// <summary>
+      /// __cpuidex() on MSVC and __get_cpuid_count() on CLANG
+      /// </summary>
+      INLINE void cpuidex(Data&d, uint32_t leaf, uint32_t subleaf)
+      {
+      #if defined(CPPCORE_COMPILER_MSVC)
+         ::__cpuidex(d, leaf, subleaf);
+      #else
+         ::__get_cpuid_count(leaf, subleaf, &d.eax, &d.ebx, &d.ecx, &d.edx);
+      #endif
+      }
+
+      /// <summary>
       /// Constructor
       /// </summary>
       INLINE CPUID()
@@ -98,20 +122,12 @@ namespace CppCore
          Data t;
 
          // get highest valid function ID with 0x00 argument
-      #if defined(CPPCORE_COMPILER_MSVC)
-         ::__cpuid(t, 0);
-      #else
-         ::__get_cpuid(0, &t.eax, &t.ebx, &t.ecx, &t.edx);
-      #endif
+         cpuid(t, 0);
          mNumIds = t.eax + 1U;
 
          // load them all
          for (uint32_t i = 0; i < MIN(mNumIds, MAXFUNCS); i++)
-      #if defined(CPPCORE_COMPILER_MSVC)
-            ::__cpuidex(mF[i], i, 0);
-      #else
-            ::__get_cpuid_count(i, 0, &mF[i].eax, &mF[i].ebx, &mF[i].ecx, &mF[i].edx);
-      #endif
+            cpuidex(mF[i], i, 0);
 
          // and clear the unused
          for (uint32_t i = mNumIds; i < MAXFUNCS; i++)
@@ -136,22 +152,14 @@ namespace CppCore
             Type::Unknown;
 
          // get highest valid extended ID with 0x80000000 argument
-      #if defined(CPPCORE_COMPILER_MSVC)
-         ::__cpuid(t, MAGIC1);
-      #else
-         ::__get_cpuid(MAGIC1, &t.eax, &t.ebx, &t.ecx, &t.edx);
-      #endif
+         cpuid(t, MAGIC1);
 
          // map 0x80000000 to 0 and turn into count
          mNumExtIds = t.eax + 1U - MAGIC1;
 
          // load them all
          for (uint32_t i = 0; i < MIN(mNumExtIds, MAXEXTFUNCS); i++)
-      #if defined(CPPCORE_COMPILER_MSVC)
-            ::__cpuidex(mFX[i], MAGIC1+i, 0);
-      #else
-            ::__get_cpuid_count(MAGIC1+i, 0, &mFX[i].eax, &mFX[i].ebx, &mFX[i].ecx, &mFX[i].edx);
-      #endif
+            cpuidex(mFX[i], MAGIC1 + i, 0);
 
          // and clear the unused
          for (uint32_t i = mNumExtIds; i < MAXEXTFUNCS; i++)
