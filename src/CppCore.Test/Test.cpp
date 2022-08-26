@@ -163,11 +163,14 @@ int v3i_test()
    return 0;
 }
 
+#if defined(CPPCORE_CPU_X86ORX64)
 CPUID cpuid;
+#endif
 
 // console based tests
 int main()
 {
+#if defined(CPPCORE_CPU_X86ORX64)
    std::cout << "--------------------------------" << std::endl;
    std::cout << "Enabled CPU Instructions:       " << std::endl;
    std::cout << "VEN: " << cpuid.getVendor()       << std::endl;
@@ -199,6 +202,7 @@ int main()
    std::cout << "RDSEED:  " << (CPPCORE_CPUFEAT_RDSEED_ENABLED ? "YES" : "NO ") << "     " << (cpuid.RDSEED()     ? "YES" : "NO") << std::endl;
    std::cout << "ADX:     " << (CPPCORE_CPUFEAT_ADX_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.ADX()        ? "YES" : "NO") << std::endl;
    std::cout << "AVX512F: " << (CPPCORE_CPUFEAT_AVX512_ENABLED ? "YES" : "NO ") << "     " << (cpuid.AVX512F()    ? "YES" : "NO") << std::endl;
+#endif
 
    bool r;
 
