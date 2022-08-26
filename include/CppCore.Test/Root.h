@@ -7,6 +7,7 @@
 #include <CppCore/Containers/MinHeap.h>
 #include <CppCore/Encoding.h>
 #include <CppCore/BitOps.h>
+#include <CppCore/CPUID.h>
 #include <CppCore/Math/Util.h>
 #include <CppCore/Math/BigInt.h>
 #include <CppCore/Math/Primes.h>

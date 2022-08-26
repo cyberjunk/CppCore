@@ -437,6 +437,7 @@
 #include <intrin.h>
 #elif defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
 #include <x86intrin.h>
+#include <cpuid.h>
 #elif defined(CPPCORE_CPU_ARMORARM64) && defined(CPPCORE_COMPILER_CLANG)
 #include <arm_acle.h>
 #include <arm_neon.h>
