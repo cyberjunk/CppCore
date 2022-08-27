@@ -609,7 +609,7 @@ namespace CppCore
       INLINE V2fs(const int32_t x, const int32_t y) { store(_mm_cvtepi32_ps(_mm_set_epi32(0, 0, y, x)));        }
       INLINE V2fs(const int32_t s)                  { store(_mm_cvtepi32_ps(_mm_set_epi32(0, 0, s, s)));        }
       INLINE V2fs(const int32_t v[2])               { store(_mm_cvtepi32_ps(_mm_castpd_si128(_mm_load_sd((const double*)v))));    }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE V2fs(const int64_t x, const int32_t y) { store(_mm_cvtepi64_ps(_mm_set_epi64x(y, x)));             }
       INLINE V2fs(const int64_t s)                  { store(_mm_cvtepi64_ps(_mm_set1_epi64x(s)));               }
       INLINE V2fs(const int64_t v[2])               { store(_mm_cvtepi64_ps(_mm_loadu_epi64(v)));               }
@@ -621,7 +621,7 @@ namespace CppCore
       //------------------------------------------------------------------------------------------------------------------------//
       template<typename V> INLINE V2fs(const V2dt<V>& v) { store(_mm_cvtpd_ps(_mm_loadu_pd(v.vals)));                 }
       template<typename V> INLINE V2fs(const V2it<V>& v) { store(_mm_cvtepi32_ps(_mm_castpd_si128(_mm_load_sd((const double*)v.vals)))); }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       template<typename V> INLINE V2fs(const V2lt<V>& v) { store(_mm_cvtepi64_ps(_mm_loadu_epi64(v.vals)));           }
    #else
       template<typename V> INLINE V2fs(const V2lt<V>& v) { store(_mm_set_ps(0.0f, 0.0f, (float)v.y, (float)v.x));     }
@@ -778,7 +778,7 @@ namespace CppCore
       INLINE V2ds(const int32_t x, const int32_t y) { store(_mm_cvtepi32_pd(_mm_set_epi32(0, 0, y, x)));                      }
       INLINE V2ds(const int32_t s)                  { store(_mm_cvtepi32_pd(_mm_set1_epi32(s)));                              }
       INLINE V2ds(const int32_t v[2])               { store(_mm_cvtepi32_pd(_mm_loadl_epi64((__m128i*)v)));                   }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE V2ds(const int64_t x, const int64_t y) { store(_mm_cvtepi64_pd(_mm_set_epi64x(y, x)));                           }
       INLINE V2ds(const int64_t s)                  { store(_mm_cvtepi64_pd(_mm_set1_epi64x(s)));                             }
       INLINE V2ds(const int64_t v[2])               { store(_mm_cvtepi64_pd(_mm_loadu_si128((__m128i*)v)));                   }
@@ -790,7 +790,7 @@ namespace CppCore
       //------------------------------------------------------------------------------------------------------------------------//
       template<typename V> INLINE V2ds(const V2ft<V>& v) { store(_mm_cvtps_pd(_mm_castsi128_ps(_mm_loadl_epi64((__m128i*)v.vals))));}
       template<typename V> INLINE V2ds(const V2it<V>& v) { store(_mm_cvtepi32_pd(_mm_loadl_epi64((__m128i*)v.vals)));         }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       template<typename V> INLINE V2ds(const V2lt<V>& v) { store(_mm_cvtepi64_pd(_mm_loadu_si128((__m128i*)v.vals)));         }
    #else
       template<typename V> INLINE V2ds(const V2lt<V>& v) { store(_mm_set_pd((double)v.y, (double)v.x));                       }
@@ -938,7 +938,7 @@ namespace CppCore
       INLINE V2is(const double x, const double y)   { store(_mm_cvttpd_epi32(_mm_set_pd(y, x)));                               }
       INLINE V2is(const double s)                   { store(_mm_cvttpd_epi32(_mm_set1_pd(s)));                                 }
       INLINE V2is(const double v[2])                { store(_mm_cvttpd_epi32(_mm_loadu_pd(v)));                                }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE V2is(const int64_t x, const int64_t y) { store(_mm_cvtepi64_epi32(_mm_set_epi64x(y, x)));                         }
       INLINE V2is(const int64_t s)                  { store(_mm_cvtepi64_epi32(_mm_set1_epi64x(s)));                           }
       INLINE V2is(const int64_t v[2])               { store(_mm_cvtepi64_epi32(_mm_loadu_si128((__m128i*)v)));                 }
@@ -950,7 +950,7 @@ namespace CppCore
       //------------------------------------------------------------------------------------------------------------------------//
       template<typename V> INLINE V2is(const V2ft<V>& v) { store(_mm_cvttps_epi32(_mm_castsi128_ps(_mm_loadl_epi64((__m128i*)v.vals))));}
       template<typename V> INLINE V2is(const V2dt<V>& v) { store(_mm_cvttpd_epi32(_mm_loadu_pd(v.vals)));                      }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       template<typename V> INLINE V2is(const V2lt<V>& v) { store(_mm_cvtepi64_epi32(_mm_loadu_si128((__m128i*)v.vals)));       }
    #else
       template<typename V> INLINE V2is(const V2lt<V>& v) { store(_mm_set_epi32(0, 0, (int32_t)v.y, (int32_t)v.x));             }
@@ -960,7 +960,7 @@ namespace CppCore
       INLINE       void* operator new[](size_t size)         { return CPPCORE_ALIGNED_ALLOC(size, 8U);                         }
       INLINE       void  operator delete   (void* ptr)       { return CPPCORE_ALIGNED_FREE(ptr);                               }
       INLINE       void  operator delete[] (void* ptr)       { return CPPCORE_ALIGNED_FREE(ptr);                               }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE       bool  operator == (const V2is&   v) const { return _mm_cmpeq_epi32_mask(load(), v.load()) == 0x0F;          }
       INLINE       bool  operator != (const V2is&   v) const { return _mm_cmpeq_epi32_mask(load(), v.load()) != 0x0F;          }
       INLINE       bool  operator <  (const V2is&   v) const { return _mm_cmplt_epi32_mask(load(), v.load()) == 0x03;          }
@@ -1016,7 +1016,7 @@ namespace CppCore
          __m128d b(_mm_loadh_pd(_mm_castsi128_pd(a), (double*)&h));
          return _mm_castpd_si128(b);
       }
-   #if !defined(CPPCORE_CPUFEAT_AVX512)
+   #if !defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE bool operator <= (const V2is& v) const 
       {
          __m128i a(load());
@@ -1063,7 +1063,7 @@ namespace CppCore
       INLINE V2ls(const int32_t s)                  { store(_mm_set1_epi64x((int64_t)s));                                      }
       INLINE V2ls(const int32_t v[2])               { store(_mm_set_epi64x ((int64_t)v[1], (int64_t)v[0]));                    }
    #endif
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE V2ls(const float x, const float y)     { store(_mm_cvttps_epi64(_mm_set_ps(0.0f, 0.0f, y, x)));                   }
       INLINE V2ls(const float s)                    { store(_mm_cvttps_epi64(_mm_set1_ps(s)));                                 }
       INLINE V2ls(const float v[2])                 { store(_mm_cvttps_epi64(_mm_castsi128_ps(_mm_loadl_epi64((__m128i*)v)))); }
@@ -1079,7 +1079,7 @@ namespace CppCore
       INLINE V2ls(const double v[2])                { store(_mm_set_epi64x ((int64_t)v[1], (int64_t)v[0]));                    }
    #endif
       //------------------------------------------------------------------------------------------------------------------------//
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       template<typename V> INLINE V2ls(const V2ft<V>& v) { store(_mm_cvttps_epi64(_mm_castsi128_ps(_mm_loadl_epi64((__m128i*)v.vals))));}
       template<typename V> INLINE V2ls(const V2dt<V>& v) { store(_mm_cvttpd_epi64(_mm_loadu_pd(v.vals)));                      }
    #else
@@ -1096,7 +1096,7 @@ namespace CppCore
       INLINE       void* operator new[](size_t size)         { return CPPCORE_ALIGNED_ALLOC(size, 16U);                         }
       INLINE       void  operator delete   (void* ptr)       { return CPPCORE_ALIGNED_FREE(ptr);                                }
       INLINE       void  operator delete[] (void* ptr)       { return CPPCORE_ALIGNED_FREE(ptr);                                }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE       bool  operator == (const V2ls&   v) const { return _mm_cmpeq_epi64_mask(load(), v.load()) == 0x03;           }
       INLINE       bool  operator != (const V2ls&   v) const { return _mm_cmpeq_epi64_mask(load(), v.load()) != 0x03;           }
       INLINE       bool  operator <  (const V2ls&   v) const { return _mm_cmplt_epi64_mask(load(), v.load()) == 0x03;           }
@@ -1126,7 +1126,7 @@ namespace CppCore
       INLINE       V2ls& operator /= (const V2ls&   v)       { store(_mm_div_epi64(load(), v.load()));            return *this; }
       INLINE       V2ls& operator /= (const int64_t s)       { store(_mm_div_epi64(load(), _mm_set1_epi64x(s)));  return *this; }
    #endif
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE       V2ls  operator *  (const V2ls&   v) const { return V2ls(_mm_mullo_epi64(load(), v.load()));                  }
       INLINE       V2ls  operator *  (const int64_t s) const { return V2ls(_mm_mullo_epi64(load(), _mm_set1_epi64x(s)));        }
       INLINE       V2ls& operator *= (const V2ls&   v)       { store(_mm_mullo_epi64(load(), v.load()));          return *this; }
@@ -1134,7 +1134,7 @@ namespace CppCore
    #endif
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE void swap(V2ls& v)                                { __m128i t(load()); store(v.load()); v.store(t); }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE V2ls absC()                                 const { return V2ls(_mm_abs_epi64(load()));             }
       INLINE V2ls maxC(const V2ls& v)                    const { return V2ls(_mm_max_epi64(load(), v.load()));   }
       INLINE V2ls minC(const V2ls& v)                    const { return V2ls(_mm_min_epi64(load(), v.load()));   }

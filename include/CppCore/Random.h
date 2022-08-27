@@ -720,7 +720,7 @@ namespace CppCore
       };
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512) && defined(CPPCORE_OS_WINDOWS)
+#if defined(CPPCORE_CPUFEAT_AVX512F) && defined(CPPCORE_OS_WINDOWS)
       /// <summary>
       /// Base Class for 64x2 Bits Packed Pseudo Random Number Generators. Requires AVX512.
       /// </summary>
@@ -862,7 +862,7 @@ namespace CppCore
       };
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512) && defined(CPPCORE_OS_WINDOWS)
+#if defined(CPPCORE_CPUFEAT_AVX512F) && defined(CPPCORE_OS_WINDOWS)
       /// <summary>
       /// Xorshift64 two times in parallel. Requires AVX512.
       /// </summary>
@@ -926,7 +926,7 @@ namespace CppCore
       };
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512) && defined(CPPCORE_OS_WINDOWS)
+#if defined(CPPCORE_CPUFEAT_AVX512F) && defined(CPPCORE_OS_WINDOWS)
       /// <summary>
       /// Splitmix64 two times in parallel. Requires AVX512.
       /// </summary>

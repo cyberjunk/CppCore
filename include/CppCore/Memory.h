@@ -118,7 +118,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Set memory that's multiple of 512-bit from 512-bit integer.
       /// Requires AVX512.
@@ -261,7 +261,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Stream-Set aligned memory that's multiple of 512-bit from 512-bit integer.
       /// Requires AVX512 and memory aligned to 64 bytes.
@@ -383,7 +383,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Shortcut for calling set512() with zero value.
       /// Requires AVX512.
@@ -403,7 +403,7 @@ namespace CppCore
       {
          char*       mem = (char*)m;
          const char* end = mem + len;
-      #if defined(CPPCORE_CPUFEAT_AVX512)
+      #if defined(CPPCORE_CPUFEAT_AVX512F)
          const __m512i z512 = _mm512_setzero_si512();
       #endif
       #if defined(CPPCORE_CPUFEAT_AVX)
@@ -414,7 +414,7 @@ namespace CppCore
       #endif
          while (mem + 64U <= end)
          {
-         #if defined(CPPCORE_CPUFEAT_AVX512)
+         #if defined(CPPCORE_CPUFEAT_AVX512F)
             _mm512_storeu_si512((__m512i*)mem, z512); mem += 64U;
          #elif defined(CPPCORE_CPUFEAT_AVX)
             _mm256_storeu_si256((__m256i*)mem, z256); mem += 32U;
@@ -592,7 +592,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Shortcut for calling streamset512() with zero value.
       /// Requires AVX512.
@@ -750,7 +750,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Returns true if m1 and m2 have n512 identical 512-Bit chunks.
       /// Requires AVX512.
@@ -776,7 +776,7 @@ namespace CppCore
          char* m1 = (char*)mem1;
          char* m2 = (char*)mem2;
          const char* end = m1 + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512)
+      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
          while (m1 + 64U <= end)
          {
             if (!equal512<false>((__m512i*)m1, (__m512i*)m2, 1))
@@ -870,7 +870,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Returns true if m1 and m2 have n512 identical 512-Bit chunks. 
       /// Requires AVX512 and memory aligned to 64 bytes.
@@ -1109,7 +1109,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Copies memory that's multiple of 512-bit using 512-bit chunks.
       /// Requires AVX512.
@@ -1132,7 +1132,7 @@ namespace CppCore
          char* dst = (char*)dstmem;
          char* src = (char*)srcmem;
          const char* end = dst + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512)
+      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
          while (dst + 64U <= end)
          {
             copy512<false>((__m512i*)dst, (__m512i*)src, 1);
@@ -1214,7 +1214,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Stream-Loads a single 512-bit value.
       /// Requires AVX512 and memory aligned to 64 bytes. 
@@ -1373,7 +1373,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Stream-Copies memory that's multiple of 512-bit using 512-bit chunks.
       /// Requires AVX512 and memory aligned to 64 bytes.
@@ -1758,7 +1758,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Swaps memory that's multiple of 512-bit using 512-bit chunks. Requires AVX512.
       /// </summary>
@@ -1796,7 +1796,7 @@ namespace CppCore
          char* dst = (char*)mem1;
          char* src = (char*)mem2;
          const char* end = dst + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512)
+      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
          while (dst + 64U <= end)
          {
             swap512<false>((__m512i*)dst, (__m512i*)src, 1);
@@ -1972,7 +1972,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Stream-Swaps memory that's multiple of 512-bit using 512-bit chunks.
       /// Requires AVX512 and memory aligned to 64 bytes.
@@ -2360,7 +2360,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Searches mem in steps of 64 bytes for the first occurence of the byte duplicated in v.
       /// For instance, searches for 0xAB if v is 0xABAB..AB.
@@ -2429,7 +2429,7 @@ namespace CppCore
       {
          const char* s = mem;
          const char* e = mem + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512)
+      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
          const __m512i z512 = _mm512_set1_epi8(chr);
          while(mem + 64U <= e)
          {
@@ -2601,7 +2601,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
       /// <summary>
       /// Returns index of next 0x00 in mem searching in 512-Bit steps.
       /// </summary>
@@ -2631,7 +2631,7 @@ namespace CppCore
       {
          const char* s = mem;
          const char* e = mem + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512)
+      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
          const __m512i z512 = _mm512_setzero_si512();
          while(mem + 64U <= e)
          {

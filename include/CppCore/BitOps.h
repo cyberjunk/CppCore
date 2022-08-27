@@ -145,7 +145,7 @@
 #define CPPCORE_CHUNK_STEP256_XYZ(forward, p256, type)
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
 #define CPPCORE_CHUNK_LOAD512(t, p)   (alignof(t)%64==0) ? _mm512_load_si512((__m512i*)p)     : _mm512_loadu_si512((__m512i*)p)
 #define CPPCORE_CHUNK_STORE512(t,p,v) (alignof(t)%64==0) ? _mm512_store_si512((__m512i*)p, v) : _mm512_storeu_si512((__m512i*)p, v)
 #define CPPCORE_CHUNK_STEP512_X(forward, p512, type) \
@@ -436,7 +436,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns a bit set to 1 for each equal byte in v1 and v2 (64 Bytes input -> 64 Bits returned).
    /// For instance, returns 0xFFFFFFFFFFFFFFFF if all equal, 0x0000000000000000 if none. Requires AVX512.
@@ -509,7 +509,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns x == y for 512-bit avx512 integer.
    /// </summary>
@@ -525,7 +525,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE bool equal(const UINT& x, const UINT& y)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
          if (!CppCore::equal512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512))) return false;,
          if (!CppCore::equal256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256))) return false;,
@@ -651,7 +651,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns x == 0 for 512-bit avx512 integer.
    /// </summary>
@@ -668,7 +668,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE bool testzero(const UINT& x)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
          if (!CppCore::testzero512(CPPCORE_CHUNK_LOAD512(UINT, px512))) return false;,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
@@ -790,7 +790,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Sets x = 0
    /// </summary>
@@ -806,7 +806,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE void clear(UINT& x)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       const __m512i ZERO512 = _mm512_setzero_si512();
       const __m256i ZERO256 = _mm256_setzero_si256();
       const __m128i ZERO128 = _mm_setzero_si128();
@@ -919,7 +919,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE void clone(UINT& x, const UINT& y)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
          CPPCORE_CHUNK_STORE512(UINT, px512, CPPCORE_CHUNK_LOAD512(UINT, py512));,
          CPPCORE_CHUNK_STORE256(UINT, px256, CPPCORE_CHUNK_LOAD256(UINT, py256));,
@@ -1040,7 +1040,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns x | y for 512-bit avx512 integer.
    /// </summary>
@@ -1056,7 +1056,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE void or_(const UINT& x, const UINT& y, UINT& z)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::or512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::or256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
@@ -1177,7 +1177,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns x ^ y for 512-bit avx512 integer.
    /// </summary>
@@ -1193,7 +1193,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE void xor_(const UINT& x, const UINT& y, UINT& z)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::xor512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::xor256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
@@ -1314,7 +1314,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns x & y for 512-bit avx512 integer.
    /// </summary>
@@ -1330,7 +1330,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE void and_(const UINT& x, const UINT& y, UINT& z)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::and512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::and256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
@@ -1451,7 +1451,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns ~x for 512-bit avx512 integer.
    /// </summary>
@@ -1467,7 +1467,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE void not_(const UINT& x, UINT& y)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
          CPPCORE_CHUNK_STORE512(UINT, py512, CppCore::not512(CPPCORE_CHUNK_LOAD512(UINT, px512))); ,
          CPPCORE_CHUNK_STORE256(UINT, py256, CppCore::not256(CPPCORE_CHUNK_LOAD256(UINT, px256)));,
@@ -3093,7 +3093,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns index (0-63) of first 0x00 byte in 512-Bit integer or 64 if none found (counted from left).
    /// Do not use for processing memory/many, see Memory.h for more efficient version for such case.
@@ -3150,7 +3150,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns index (0-63) of first 0x00 byte in 512-Bit integer or 64 if none found (counted from right).
    /// Do not use for processing memory/many, see Memory.h for more efficient version for such case.
@@ -3203,7 +3203,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns index (0-63) of first c byte in 512-Bit integer or 64 if none found (counted from left).
    /// Do not use for processing memory/many, see Memory.h for more efficient version for such case.
@@ -3258,7 +3258,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// Returns index (0-63) of first c byte in 512-Bit integer or 64 if none found (counted from right).
    /// Do not use for processing memory/many, see Memory.h for more efficient version for such case.

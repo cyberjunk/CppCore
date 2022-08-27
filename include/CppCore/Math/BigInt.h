@@ -215,7 +215,7 @@ namespace CppCore
       struct { __m256i avx0; __m256i avx1;};
       INLINE uint512_d(const __m256i& avx0, const __m256i& avx1) : avx0(avx0), avx1(avx1) { }
    #endif
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       __m512i   avx512[N512];
       struct { __m512i avx5120; };
       INLINE uint512_d(const __m512i& avx5120) : avx5120(avx5120) { }
@@ -229,7 +229,7 @@ namespace CppCore
          const T128& hl = 0ULL,
          const T128& hh = 0ULL) :
          ll(ll), lh(lh), hl(hl), hh(hh) { }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE uint512_d(const uint512_d& oth) :
          avx5120(oth.avx5120) { }
       INLINE uint512_d(
@@ -361,7 +361,7 @@ namespace CppCore
          const __m256i& avx2, const __m256i& avx3) : 
          avx0(avx0), avx1(avx1), avx2(avx2), avx3(avx3) { }
    #endif
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       __m512i   avx512[N512];
       struct { __m512i avx5120; __m512i avx5121;};
       INLINE uint1024_d(
@@ -376,7 +376,7 @@ namespace CppCore
          const T256& hl = 0ULL,
          const T256& hh = 0ULL) :
          ll(ll), lh(lh), hl(hl), hh(hh) { }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE uint1024_d(const uint1024_d& oth) :
          avx5120(oth.avx5120), 
          avx5121(oth.avx5121) { }
@@ -512,7 +512,7 @@ namespace CppCore
          avx0(avx0), avx1(avx1), avx2(avx2), avx3(avx3),
          avx4(avx4), avx5(avx5), avx6(avx6), avx7(avx7) { }
    #endif
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       __m512i  avx512[N512];
       struct { __m512i avx5120; __m512i avx5121; __m512i avx5122; __m512i avx5123; };
       INLINE uint2048_d(
@@ -529,7 +529,7 @@ namespace CppCore
          const T512& hl = 0ULL,
          const T512& hh = 0ULL) :
          ll(ll), lh(lh), hl(hl), hh(hh) { }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE uint2048_d(const uint2048_d& oth) :
          avx5120(oth.avx5120), avx5121(oth.avx5121), 
          avx5122(oth.avx5122), avx5123(oth.avx5123) { }
@@ -2805,7 +2805,7 @@ namespace CppCore
    };
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
    /// <summary>
    /// uintx_t with AVX512
    /// </summary>
@@ -2880,7 +2880,7 @@ namespace CppCore
    using uint2048_bg = uintx_t<uint2048_tg, uint2048_tgd>;
 
    // OPTIMIZED
-#if defined(CPPCORE_CPUFEAT_AVX512) && defined(CPPCORE_CPUFEAT_AVX) && defined(CPPCORE_CPUFEAT_SSE2)
+#if defined(CPPCORE_CPUFEAT_AVX512F) && defined(CPPCORE_CPUFEAT_AVX) && defined(CPPCORE_CPUFEAT_SSE2)
    using uint128_bs  = uintx_t_sse2  <uint128_ts,  uint128_tsd>;
    using uint256_bs  = uintx_t_avx   <uint256_ts,  uint256_tsd>;
    using uint512_bs  = uintx_t_avx512<uint512_ts,  uint512_tsd>;
@@ -3134,7 +3134,7 @@ namespace CppCore
          const uint64_t v1,     const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0, 
          const uint64_t v5 = 0, const uint64_t v6 = 0, const uint64_t v7 = 0, const uint64_t v8 = 0) :
          uint512_bs(uint512_tsd(v1, v2, v3, v4, v5, v6, v7, v8)) { }
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       INLINE uint512_ts(const __m512i& other) : uint512_bs(uint512_tsd(other)) { }
       INLINE operator const __m512i&() const { return d.avx5120; }
    #endif

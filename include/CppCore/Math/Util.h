@@ -317,7 +317,7 @@ namespace CppCore
    /// </remarks>
    INLINE __m128 cvtepu32f(const __m128i& v)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512)
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
       return _mm_cvtepu32_ps(v);
    #else
       __m128i msk_lo     = _mm_set1_epi32(0xFFFF);
