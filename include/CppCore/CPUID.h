@@ -12,19 +12,13 @@ namespace CppCore
    class CPUID
    {
    public:
-      static constexpr uint32_t MAXFUNCS    = 32;
-      static constexpr uint32_t MAXEXTFUNCS = 16;
-      static constexpr uint32_t MAGIC1      = 0x80000000;
+      static constexpr uint32_t INTELSIGEBX = 0x756e6547; // Genu
+      static constexpr uint32_t INTELSIGEDX = 0x49656e69; // ineI
+      static constexpr uint32_t INTELSIGECX = 0x6c65746e; // ntel
 
-      // "GenuineIntel"
-      static constexpr uint32_t INTELSIGEBX = 0x756e6547;
-      static constexpr uint32_t INTELSIGEDX = 0x49656e69;
-      static constexpr uint32_t INTELSIGECX = 0x6c65746e;
-
-      // "AuthenticAMD"
-      static constexpr uint32_t AMDSIGEBX = 0x68747541;
-      static constexpr uint32_t AMDSIGEDX = 0x69746e65;
-      static constexpr uint32_t AMDSIGECX = 0x444d4163;
+      static constexpr uint32_t AMDSIGEBX   = 0x68747541; // Auth
+      static constexpr uint32_t AMDSIGEDX   = 0x69746e65; // enti
+      static constexpr uint32_t AMDSIGECX   = 0x444d4163; // cAMD
 
       /// <summary>
       /// X86 CPU Types
@@ -53,21 +47,22 @@ namespace CppCore
       };
 
    protected:
-      Type mType;
-      Data mF1S0;
-      Data mF7S0;
-      Data mF7S1;
-      Data mF13S1;
-      Data mFX1S0;
-      Data mFX8S0;
-
+      CPPCORE_ALIGN16 Type mType;
+      CPPCORE_ALIGN16 Data mF1S0;
+      CPPCORE_ALIGN16 Data mF7S0;
+      CPPCORE_ALIGN16 Data mF7S1;
+      CPPCORE_ALIGN16 Data mF13S1;
+      CPPCORE_ALIGN16 Data mFX1S0;
+      CPPCORE_ALIGN16 Data mFX8S0;
       union {
          CPPCORE_ALIGN16 char     mVendor[16];
          CPPCORE_ALIGN16 uint32_t mVendor32[4];
+         CPPCORE_ALIGN16 Data     mVendor128[1];
       };
       union {
          CPPCORE_ALIGN16 char     mBrand[64];
          CPPCORE_ALIGN16 uint32_t mBrand32[16];
+         CPPCORE_ALIGN16 Data     mBrand128[4];
       };
 
    public:
@@ -100,59 +95,40 @@ namespace CppCore
       /// </summary>
       INLINE CPUID()
       {
-         uint32_t n;
-         Data     t, f0s0, fx2s0, fx3s0, fx4s0;
+         Data t;
 
-         // get highest valid function ID with 0x00 argument
+         // get highest valid leaf and vendor string
          cpuid(t, 0);
-         n = t.eax + 1U;
 
-         // if exists, load the ones we're interested in
-         if (n > 0) cpuidex(f0s0,   0,  0); else f0s0   = 0;
-         if (n > 1) cpuidex(mF1S0,  1,  0); else mF1S0  = 0;
-         if (n > 2) cpuidex(mF7S0,  7,  0); else mF7S0  = 0;
-         if (n > 3) cpuidex(mF7S1,  7,  1); else mF7S1  = 0;
-         if (n > 4) cpuidex(mF13S1, 13, 1); else mF13S1 = 0;
-
-         // get the vendor string
-         mVendor32[0] = f0s0.ebx;
-         mVendor32[1] = f0s0.edx;
-         mVendor32[2] = f0s0.ecx;
+         // set the vendor string
+         mVendor32[0] = t.ebx;
+         mVendor32[1] = t.edx;
+         mVendor32[2] = t.ecx;
          mVendor32[3] = 0U;
 
+         // load the ones we're interested in if they exist
+         if (t.eax >= 1)  cpuidex(mF1S0,   1, 0); else mF1S0  = 0U;
+         if (t.eax >= 7)  cpuidex(mF7S0,   7, 0); else mF7S0  = 0U;
+         if (t.eax >= 7)  cpuidex(mF7S1,   7, 1); else mF7S1  = 0U;
+         if (t.eax >= 13) cpuidex(mF13S1, 13, 1); else mF13S1 = 0U;
+
          // set type
-         mType =
-            (f0s0.ebx == INTELSIGEBX &&
-             f0s0.edx == INTELSIGEDX && 
-             f0s0.ecx == INTELSIGECX) ? 
-            Type::Intel :
-            (f0s0.ebx == AMDSIGEBX   &&
-             f0s0.edx == AMDSIGEDX   && 
-             f0s0.ecx == AMDSIGECX)   ? 
-            Type::AMD :
+         mType = 
+            (t.ebx == INTELSIGEBX && t.ecx == INTELSIGECX && t.edx == INTELSIGEDX) ? Type::Intel :
+            (t.ebx == AMDSIGEBX   && t.ecx == AMDSIGECX   && t.edx == AMDSIGEDX)   ? Type::AMD :
             Type::Unknown;
 
-         // get highest valid extended ID with 0x80000000 argument
-         cpuid(t, MAGIC1);
+         // get highest valid extended leaf with 0x80000000 argument
+         cpuid(t, 0x80000000);
 
-         // map 0x80000000 to 0 and turn into count
-         n = t.eax + 1U - MAGIC1;
+         if (t.eax >= 0x80000001) cpuidex(mFX1S0,       0x80000001, 0); else mFX1S0       = 0U;
+         if (t.eax >= 0x80000002) cpuidex(mBrand128[0], 0x80000002, 0); else mBrand128[0] = 0U;
+         if (t.eax >= 0x80000003) cpuidex(mBrand128[1], 0x80000003, 0); else mBrand128[1] = 0U;
+         if (t.eax >= 0x80000004) cpuidex(mBrand128[2], 0x80000004, 0); else mBrand128[2] = 0U;
+         if (t.eax >= 0x80000008) cpuidex(mFX8S0,       0x80000008, 0); else mFX8S0       = 0U;
 
-         if (n > 1) cpuidex(mFX1S0, MAGIC1 + 1U, 0); else mFX1S0 = 0;
-         if (n > 2) cpuidex(fx2s0,  MAGIC1 + 2U, 0); else fx2s0  = 0;
-         if (n > 3) cpuidex(fx3s0,  MAGIC1 + 3U, 0); else fx3s0  = 0;
-         if (n > 4) cpuidex(fx4s0,  MAGIC1 + 4U, 0); else fx4s0  = 0;
-         if (n > 8) cpuidex(mFX8S0, MAGIC1 + 8U, 0); else mFX8S0 = 0;
-
-         // load the branding string
-         mBrand32[0]  = fx2s0.eax; mBrand32[1]  = fx2s0.ebx;
-         mBrand32[2]  = fx2s0.ecx; mBrand32[3]  = fx2s0.edx;
-         mBrand32[4]  = fx3s0.eax; mBrand32[5]  = fx3s0.ebx;
-         mBrand32[6]  = fx3s0.ecx; mBrand32[7]  = fx3s0.edx;
-         mBrand32[8]  = fx4s0.eax; mBrand32[9]  = fx4s0.ebx;
-         mBrand32[10] = fx4s0.ecx; mBrand32[11] = fx4s0.edx;
-         mBrand32[12] = 0;         mBrand32[13] = 0;
-         mBrand32[14] = 0;         mBrand32[15] = 0;
+         // branding string termination/unused padding
+         mBrand128[3] = 0U;
       }
 
       ///////////////////////////////////////////////////////////////////////////////
