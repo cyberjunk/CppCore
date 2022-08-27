@@ -86,8 +86,9 @@
 #define CPPCORE_CPUFEAT_MOVBE_NAME    "MOVBE"    // Haswell      (2013) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_AVX2_NAME     "AVX2"     // Haswell      (2013) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_RDSEED_NAME   "RDSEED"   // Broadwell    (2014) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_ADX_NAME      "ADX"      // Broadwell    (2014) | Zen        (2017)
+#define CPPCORE_CPUFEAT_ADX_NAME      "ADX"      // Broadwell    (2014) | Zen1       (2017)
 #define CPPCORE_CPUFEAT_AVX512F_NAME  "AVX512F"  // Skylake      (2015) | -
+#define CPPCORE_CPUFEAT_SHA_NAME      "SHA"      // Goldmont     (2016) | Zen1       (2017)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,12 +169,21 @@
 #if defined(__AVX512F__) && !defined(CPPCORE_CPUFEAT_AVX512F)
 #define CPPCORE_CPUFEAT_AVX512F
 #endif
+#if defined(__SHA__) && !defined(CPPCORE_CPUFEAT_SHA)
+#define CPPCORE_CPUFEAT_SHA
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// MSVC does not define a lot of them, so do it manually based on AVX/AVX2
+// MSVC does not define a lot of them so let's
+// set them based on MVSC setting for AVX/AVX2/AVX512
 #if defined(CPPCORE_COMPILER_MSVC)
+#if defined(CPPCORE_CPUFEAT_AVX512F)
+#ifndef CPPCORE_CPUFEAT_AVX2
+#define CPPCORE_CPUFEAT_AVX2
+#endif
+#endif
 #if defined(CPPCORE_CPUFEAT_AVX2)
 #ifndef CPPCORE_CPUFEAT_AVX
 #define CPPCORE_CPUFEAT_AVX
@@ -367,6 +377,11 @@
 #define CPPCORE_CPUFEAT_AVX512F_ENABLED 1
 #else
 #define CPPCORE_CPUFEAT_AVX512F_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_SHA
+#define CPPCORE_CPUFEAT_SHA_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SHA_ENABLED 0
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

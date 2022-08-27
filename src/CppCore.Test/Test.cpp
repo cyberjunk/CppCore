@@ -202,6 +202,8 @@ int main()
    std::cout << "RDSEED:  " << (CPPCORE_CPUFEAT_RDSEED_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.RDSEED()     ? "YES" : "NO") << std::endl;
    std::cout << "ADX:     " << (CPPCORE_CPUFEAT_ADX_ENABLED      ? "YES" : "NO ") << "     " << (cpuid.ADX()        ? "YES" : "NO") << std::endl;
    std::cout << "AVX512F: " << (CPPCORE_CPUFEAT_AVX512F_ENABLED  ? "YES" : "NO ") << "     " << (cpuid.AVX512F()    ? "YES" : "NO") << std::endl;
+   std::cout << "SHA:     " << (CPPCORE_CPUFEAT_SHA_ENABLED      ? "YES" : "NO ") << "     " << (cpuid.SHA()        ? "YES" : "NO") << std::endl;
+
 #endif
 
    bool r;
