@@ -62,50 +62,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//      CPU Instruction                                 INTEL ARCH   (YEAR) | AMD ARCH   (YEAR)
-#define CPPCORE_CPUFEAT_MMX_NAME        "MMX"        // P55C         (1997) | K6         (1997)
-#define CPPCORE_CPUFEAT_FXSR_NAME       "FXSR"       // Pentium 2    (----) | ?          (----)
-#define CPPCORE_CPUFEAT_SSE_NAME        "SSE"        // Katmai       (1999) | Palomino   (2001)
-#define CPPCORE_CPUFEAT_SSE2_NAME       "SSE2"       // Willamette   (2001) | Clawhammer (2003)
-#define CPPCORE_CPUFEAT_SSE3_NAME       "SSE3"       // Prescott     (2004) | Venice     (2005)
-#define CPPCORE_CPUFEAT_SSSE3_NAME      "SSSE3"      // Woodcrest    (2006) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_SAHF_NAME       "SAHF "      // Penryn       (2008) | ?          (----)
-#define CPPCORE_CPUFEAT_CX16_NAME       "CX16 "      // Penryn       (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_SSE41_NAME      "SSE4.1"     // Penryn       (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_SSE42_NAME      "SSE4.2"     // Nehalem      (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_POPCNT_NAME     "POPCNT"     // Nehalem      (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_PCLMUL_NAME     "PCLMUL"     // Westmere     (2010) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_AES_NAME        "AES"        // Broadwell    (2010) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_AVX_NAME        "AVX"        // Sandy Bridge (2011) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_XSAVE_NAME      "XSAVE"      // Sandy Bridge (2011) | -          (----)
-#define CPPCORE_CPUFEAT_F16C_NAME       "F16C"       // Ivy Bridge   (2012) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_FSGSBASE_NAME   "FSGSBASE"   // Ivy Bridge   (2012) | Steamroller(2014)
-#define CPPCORE_CPUFEAT_RDRAND_NAME     "RDRAND"     // Ivy Bridge   (2012) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_FMA3_NAME       "FMA3"       // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_LZCNT_NAME      "LZCNT"      // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_BMI1_NAME       "BMI1"       // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_BMI2_NAME       "BMI2"       // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_MOVBE_NAME      "MOVBE"      // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_HLE_NAME        "HLE"        // Haswell      (2013) | -          (----)
-#define CPPCORE_CPUFEAT_AVX2_NAME       "AVX2"       // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_RDSEED_NAME     "RDSEED"     // Broadwell    (2014) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_ADX_NAME        "ADX"        // Broadwell    (2014) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_CLFLUSHOPT_NAME "CLFLUSHOPT" // Skylake      (2015) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_XSAVEC_NAME     "XSAVEC"     // Skylake      (2015) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_XSAVES_NAME     "XSAVES"     // Skylake      (2015) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_SGX_NAME        "SGX"        // Skylake      (2015) | -          (----)
-#define CPPCORE_CPUFEAT_AVX512F_NAME    "AVX512F"    // Skylake      (2015) | -          (----)
-#define CPPCORE_CPUFEAT_AVX512VL_NAME   "AVX512VL"   // Skylake      (2015) | -          (----)
-#define CPPCORE_CPUFEAT_AVX512BW_NAME   "AVX512BW"   // Skylake      (2015) | -          (----)
-#define CPPCORE_CPUFEAT_AVX512DQ_NAME   "AVX512DQ"   // Skylake      (2015) | -          (----)
-#define CPPCORE_CPUFEAT_AVX512CD_NAME   "AVX512CD"   // Skylake      (2015) | -          (----)
-#define CPPCORE_CPUFEAT_AVX512PF_NAME   "AVX512PF"   // Kn. Landing  (----) | -          (----)
-#define CPPCORE_CPUFEAT_AVX512ER_NAME   "AVX512ER"   // Kn. Landing  (----) | -          (----)
-#define CPPCORE_CPUFEAT_SHA_NAME        "SHA"        // Goldmont     (2016) | Zen1       (2017)
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 // Processor Features From Build Settings
 #if defined(__MMX__) && !defined(CPPCORE_CPUFEAT_MMX)
 #define CPPCORE_CPUFEAT_MMX
@@ -200,6 +156,9 @@
 #if defined(__SGX__) && !defined(CPPCORE_CPUFEAT_SGX)
 #define CPPCORE_CPUFEAT_SGX
 #endif
+#if defined(__SHA__) && !defined(CPPCORE_CPUFEAT_SHA)
+#define CPPCORE_CPUFEAT_SHA
+#endif
 #if defined(__AVX512F__) && !defined(CPPCORE_CPUFEAT_AVX512F)
 #define CPPCORE_CPUFEAT_AVX512F
 #endif
@@ -221,8 +180,23 @@
 #if defined(__AVX512ER__) && !defined(CPPCORE_CPUFEAT_AVX512ER)
 #define CPPCORE_CPUFEAT_AVX512ER
 #endif
-#if defined(__SHA__) && !defined(CPPCORE_CPUFEAT_SHA)
-#define CPPCORE_CPUFEAT_SHA
+#if defined(__AVX512VBMI__) && !defined(CPPCORE_CPUFEAT_AVX512VBMI)
+#define CPPCORE_CPUFEAT_AVX512VBMI
+#endif
+#if defined(__AVX512IFMA__) && !defined(CPPCORE_CPUFEAT_AVX512IFMA)
+#define CPPCORE_CPUFEAT_AVX512IFMA
+#endif
+#if defined(__AVX512VNNI__) && !defined(CPPCORE_CPUFEAT_AVX512VNNI)
+#define CPPCORE_CPUFEAT_AVX512VNNI
+#endif
+#if defined(__AVX512VBMI2__) && !defined(CPPCORE_CPUFEAT_AVX512VBMI2)
+#define CPPCORE_CPUFEAT_AVX512VBMI2
+#endif
+#if defined(__AVX512BITALG__) && !defined(CPPCORE_CPUFEAT_AVX512BITALG)
+#define CPPCORE_CPUFEAT_AVX512BITALG
+#endif
+#if defined(__AVX512VPOPCNTDQ__) && !defined(CPPCORE_CPUFEAT_AVX512VPOPCNTDQ)
+#define CPPCORE_CPUFEAT_AVX512VPOPCNTDQ
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -463,6 +437,11 @@
 #else
 #define CPPCORE_CPUFEAT_SGX_ENABLED 0
 #endif
+#ifdef CPPCORE_CPUFEAT_SHA
+#define CPPCORE_CPUFEAT_SHA_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_SHA_ENABLED 0
+#endif
 #ifdef CPPCORE_CPUFEAT_AVX512F
 #define CPPCORE_CPUFEAT_AVX512F_ENABLED 1
 #else
@@ -498,10 +477,35 @@
 #else
 #define CPPCORE_CPUFEAT_AVX512ER_ENABLED 0
 #endif
-#ifdef CPPCORE_CPUFEAT_SHA
-#define CPPCORE_CPUFEAT_SHA_ENABLED 1
+#ifdef CPPCORE_CPUFEAT_AVX512VBMI
+#define CPPCORE_CPUFEAT_AVX512VBMI_ENABLED 1
 #else
-#define CPPCORE_CPUFEAT_SHA_ENABLED 0
+#define CPPCORE_CPUFEAT_AVX512VBMI_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512IFMA
+#define CPPCORE_CPUFEAT_AVX512IFMA_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512IFMA_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512VNNI
+#define CPPCORE_CPUFEAT_AVX512VNNI_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512VNNI_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512VBMI2
+#define CPPCORE_CPUFEAT_AVX512VBMI2_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512VBMI2_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512BITALG
+#define CPPCORE_CPUFEAT_AVX512BITALG_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512BITALG_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512VPOPCNTDQ
+#define CPPCORE_CPUFEAT_AVX512VPOPCNTDQ_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512VPOPCNTDQ_ENABLED 0
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
