@@ -1,6 +1,22 @@
 name: Build Windows
 on:
   workflow_dispatch:
+    inputs:
+      cpuflags-x64:
+        description: 'Override CPUFLAGS used for X64'
+        type: string
+        required: false
+        default: 'CPUFLAGS=-march=x86-64 -mtune=generic'
+      cpuflags-x86:
+        description: 'Override CPUFLAGS used for X86'
+        type: string
+        required: false
+        default: 'CPUFLAGS=-march=i686 -mtune=generic'
+      cpuflags-arm64:
+        description: 'Override CPUFLAGS used for ARM64'
+        type: string
+        required: false
+        default: 'CPUFLAGS=-march=armv8-a -mtune=generic'
   workflow_call:
   push:
     branches:
@@ -29,7 +45,7 @@ jobs:
       with:
         arch: amd64
     - name: Build (X64)
-      run: make TARGET_ARCH=x64 -j${{ env.JOBS }}
+      run: make TARGET_ARCH=x64 ${{ inputs.cpuflags-x64 }} -j${{ env.JOBS }}
 
     # Build X86
     - name: MSVC Developer Console (X86)
@@ -37,7 +53,7 @@ jobs:
       with:
         arch: amd64_x86
     - name: Build (X86)
-      run: make TARGET_ARCH=x86 -j${{ env.JOBS }}
+      run: make TARGET_ARCH=x86 ${{ inputs.cpuflags-x86 }}-j${{ env.JOBS }}
 
     # Build ARM64
     - name: MSVC Developer Console (ARM64)
@@ -45,7 +61,7 @@ jobs:
       with:
         arch: amd64_arm64
     - name: Build (ARM64)
-      run: make TARGET_ARCH=arm64 -j${{ env.JOBS }}
+      run: make TARGET_ARCH=arm64 ${{ inputs.cpuflags-arm64 }} -j${{ env.JOBS }}
 
     # Switch back MSVC console (X64)
     - name: MSVC Developer Console (X64)
