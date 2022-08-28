@@ -73,6 +73,7 @@
 #define CPPCORE_CPUFEAT_CX16_NAME     "CX16 "    // Penryn       (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_SSE41_NAME    "SSE4.1"   // Penryn       (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_SSE42_NAME    "SSE4.2"   // Nehalem      (2008) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_POPCNT_NAME   "POPCNT"   // Nehalem      (2008) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_PCLMUL_NAME   "PCLMUL"   // Westmere     (2010) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_AES_NAME      "AES"      // Broadwell    (2010) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_AVX_NAME      "AVX"      // Sandy Bridge (2011) | Bulldozer  (2011)
@@ -125,6 +126,9 @@
 #endif
 #if defined(__SSE4_2__) && !defined(CPPCORE_CPUFEAT_SSE42)
 #define CPPCORE_CPUFEAT_SSE42
+#endif
+#if defined(__POPCNT__) && !defined(CPPCORE_CPUFEAT_POPCNT)
+#define CPPCORE_CPUFEAT_POPCNT
 #endif
 #if defined(__PCLMUL__) && !defined(CPPCORE_CPUFEAT_PCLMUL)
 #define CPPCORE_CPUFEAT_PCLMUL
@@ -246,6 +250,9 @@
 #ifndef CPPCORE_CPUFEAT_SSE42
 #define CPPCORE_CPUFEAT_SSE42
 #endif
+#ifndef CPPCORE_CPUFEAT_POPCNT
+#define CPPCORE_CPUFEAT_POPCNT
+#endif
 #ifndef CPPCORE_CPUFEAT_PCLMUL
 #define CPPCORE_CPUFEAT_PCLMUL
 #endif
@@ -310,6 +317,11 @@
 #define CPPCORE_CPUFEAT_SSE42_ENABLED 1
 #else
 #define CPPCORE_CPUFEAT_SSE42_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_POPCNT
+#define CPPCORE_CPUFEAT_POPCNT_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_POPCNT_ENABLED 0
 #endif
 #ifdef CPPCORE_CPUFEAT_PCLMUL
 #define CPPCORE_CPUFEAT_PCLMUL_ENABLED 1

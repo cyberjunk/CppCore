@@ -187,6 +187,7 @@ int main()
    std::cout << "CX16:    " << (CPPCORE_CPUFEAT_CX16_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.CMPXCHG16B() ? "YES" : "NO") << std::endl;
    std::cout << "SSE4.1:  " << (CPPCORE_CPUFEAT_SSE41_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.SSE41()      ? "YES" : "NO") << std::endl;
    std::cout << "SSE4.2:  " << (CPPCORE_CPUFEAT_SSE42_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.SSE42()      ? "YES" : "NO") << std::endl;
+   std::cout << "POPCNT:  " << (CPPCORE_CPUFEAT_POPCNT_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.POPCNT()     ? "YES" : "NO") << std::endl;
    std::cout << "PCLMUL:  " << (CPPCORE_CPUFEAT_PCLMUL_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.PCLMULQDQ()  ? "YES" : "NO") << std::endl;
    std::cout << "AES:     " << (CPPCORE_CPUFEAT_AES_ENABLED      ? "YES" : "NO ") << "     " << (cpuid.AES()        ? "YES" : "NO") << std::endl;
    std::cout << "AVX:     " << (CPPCORE_CPUFEAT_AVX_ENABLED      ? "YES" : "NO ") << "     " << (cpuid.AVX()        ? "YES" : "NO") << std::endl;

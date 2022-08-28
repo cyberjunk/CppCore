@@ -2187,10 +2187,11 @@ namespace CppCore
 
    /// <summary>
    /// Counts the number of bits set to 1 in 32-bit integer.
+   /// Uses POPCNT instruction if available.
    /// </summary>
    static INLINE uint32_t popcnt32(uint32_t v)
    {
-   #if defined(CPPCORE_CPUFEAT_SSE42)
+   #if defined(CPPCORE_CPUFEAT_POPCNT)
       return _mm_popcnt_u32(v);
    #elif defined(CPPCORE_COMPILER_MSVC)
       return __popcnt(v);
@@ -2203,10 +2204,11 @@ namespace CppCore
 
    /// <summary>
    /// Counts the number of bits set to 1 in 64-bit integer.
+   /// Uses POPCNT instruction if available.
    /// </summary>
    static INLINE uint32_t popcnt64(uint64_t v)
    {
-   #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_SSE42)
+   #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_POPCNT)
       return (uint32_t)_mm_popcnt_u64(v);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       return __popcnt64(v);
