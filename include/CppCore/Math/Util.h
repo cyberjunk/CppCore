@@ -310,7 +310,7 @@ namespace CppCore
 
 #if defined(CPPCORE_CPUFEAT_SSE2)  
    /// <summary>
-   /// Uses _mm_cvtepu32_ps if AVX512 is available, else falls back to SSE2 code.
+   /// Uses _mm_cvtepu32_ps if AVX512F is available, else falls back to SSE2 code.
    /// </summary>
    /// SSE2 Solution From:
    /// https://stackoverflow.com/questions/34066228/how-to-perform-uint32-float-conversion-with-sse

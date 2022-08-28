@@ -750,7 +750,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512F)
+#if defined(CPPCORE_CPUFEAT_AVX512BW)
       /// <summary>
       /// Returns true if m1 and m2 have n512 identical 512-Bit chunks.
       /// Requires AVX512.
@@ -776,7 +776,7 @@ namespace CppCore
          char* m1 = (char*)mem1;
          char* m2 = (char*)mem2;
          const char* end = m1 + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
+      #if false && defined(CPPCORE_CPUFEAT_AVX512BW)
          while (m1 + 64U <= end)
          {
             if (!equal512<false>((__m512i*)m1, (__m512i*)m2, 1))
@@ -870,7 +870,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512F)
+#if defined(CPPCORE_CPUFEAT_AVX512BW)
       /// <summary>
       /// Returns true if m1 and m2 have n512 identical 512-Bit chunks. 
       /// Requires AVX512 and memory aligned to 64 bytes.
@@ -2360,7 +2360,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512F)
+#if defined(CPPCORE_CPUFEAT_AVX512BW)
       /// <summary>
       /// Searches mem in steps of 64 bytes for the first occurence of the byte duplicated in v.
       /// For instance, searches for 0xAB if v is 0xABAB..AB.
@@ -2429,7 +2429,7 @@ namespace CppCore
       {
          const char* s = mem;
          const char* e = mem + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
+      #if false && defined(CPPCORE_CPUFEAT_AVX512BW)
          const __m512i z512 = _mm512_set1_epi8(chr);
          while(mem + 64U <= e)
          {
@@ -2601,7 +2601,7 @@ namespace CppCore
       }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512F)
+#if defined(CPPCORE_CPUFEAT_AVX512BW)
       /// <summary>
       /// Returns index of next 0x00 in mem searching in 512-Bit steps.
       /// </summary>
@@ -2631,7 +2631,7 @@ namespace CppCore
       {
          const char* s = mem;
          const char* e = mem + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
+      #if false && defined(CPPCORE_CPUFEAT_AVX512BW)
          const __m512i z512 = _mm512_setzero_si512();
          while(mem + 64U <= e)
          {

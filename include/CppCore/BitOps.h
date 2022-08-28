@@ -436,10 +436,10 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512F)
+#if defined(CPPCORE_CPUFEAT_AVX512BW)
    /// <summary>
    /// Returns a bit set to 1 for each equal byte in v1 and v2 (64 Bytes input -> 64 Bits returned).
-   /// For instance, returns 0xFFFFFFFFFFFFFFFF if all equal, 0x0000000000000000 if none. Requires AVX512.
+   /// For instance, returns 0xFFFFFFFFFFFFFFFF if all equal, 0x0000000000000000 if none. Requires AVX512BW.
    /// </summary>
    INLINE static uint64_t bytemaskequal512(const __m512i& v1, const __m512i& v2)
    {
@@ -509,7 +509,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512F)
+#if defined(CPPCORE_CPUFEAT_AVX512BW)
    /// <summary>
    /// Returns x == y for 512-bit avx512 integer.
    /// </summary>
@@ -525,7 +525,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE bool equal(const UINT& x, const UINT& y)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512F)
+   #if defined(CPPCORE_CPUFEAT_AVX512BW)
       CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
          if (!CppCore::equal512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512))) return false;,
          if (!CppCore::equal256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256))) return false;,
@@ -651,7 +651,7 @@ namespace CppCore
    }
 #endif
 
-#if defined(CPPCORE_CPUFEAT_AVX512F)
+#if defined(CPPCORE_CPUFEAT_AVX512BW)
    /// <summary>
    /// Returns x == 0 for 512-bit avx512 integer.
    /// </summary>
@@ -668,7 +668,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE bool testzero(const UINT& x)
    {
-   #if defined(CPPCORE_CPUFEAT_AVX512F)
+   #if defined(CPPCORE_CPUFEAT_AVX512BW)
       CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
          if (!CppCore::testzero512(CPPCORE_CHUNK_LOAD512(UINT, px512))) return false;,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
