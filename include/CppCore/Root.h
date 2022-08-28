@@ -90,11 +90,17 @@
 #define CPPCORE_CPUFEAT_AVX2_NAME       "AVX2"       // Haswell      (2013) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_RDSEED_NAME     "RDSEED"     // Broadwell    (2014) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_ADX_NAME        "ADX"        // Broadwell    (2014) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_AVX512F_NAME    "AVX512F"    // Skylake      (2015) | -          (----)
 #define CPPCORE_CPUFEAT_CLFLUSHOPT_NAME "CLFLUSHOPT" // Skylake      (2015) | Zen1       (2017)
 #define CPPCORE_CPUFEAT_XSAVEC_NAME     "XSAVEC"     // Skylake      (2015) | Zen1       (2017)
 #define CPPCORE_CPUFEAT_XSAVES_NAME     "XSAVES"     // Skylake      (2015) | Zen1       (2017)
 #define CPPCORE_CPUFEAT_SGX_NAME        "SGX"        // Skylake      (2015) | -          (----)
+#define CPPCORE_CPUFEAT_AVX512F_NAME    "AVX512F"    // Skylake      (2015) | -          (----)
+#define CPPCORE_CPUFEAT_AVX512VL_NAME   "AVX512VL"   // Skylake      (2015) | -          (----)
+#define CPPCORE_CPUFEAT_AVX512BW_NAME   "AVX512BW"   // Skylake      (2015) | -          (----)
+#define CPPCORE_CPUFEAT_AVX512DQ_NAME   "AVX512DQ"   // Skylake      (2015) | -          (----)
+#define CPPCORE_CPUFEAT_AVX512CD_NAME   "AVX512CD"   // Skylake      (2015) | -          (----)
+#define CPPCORE_CPUFEAT_AVX512PF_NAME   "AVX512PF"   // Kn. Landing  (----) | -          (----)
+#define CPPCORE_CPUFEAT_AVX512ER_NAME   "AVX512ER"   // Kn. Landing  (----) | -          (----)
 #define CPPCORE_CPUFEAT_SHA_NAME        "SHA"        // Goldmont     (2016) | Zen1       (2017)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,9 +188,6 @@
 #if defined(__ADX__) && !defined(CPPCORE_CPUFEAT_ADX)
 #define CPPCORE_CPUFEAT_ADX
 #endif
-#if defined(__AVX512F__) && !defined(CPPCORE_CPUFEAT_AVX512F)
-#define CPPCORE_CPUFEAT_AVX512F
-#endif
 #if defined(__CLFLUSHOPT__) && !defined(CPPCORE_CPUFEAT_CLFLUSHOPT)
 #define CPPCORE_CPUFEAT_CLFLUSHOPT
 #endif
@@ -196,6 +199,27 @@
 #endif
 #if defined(__SGX__) && !defined(CPPCORE_CPUFEAT_SGX)
 #define CPPCORE_CPUFEAT_SGX
+#endif
+#if defined(__AVX512F__) && !defined(CPPCORE_CPUFEAT_AVX512F)
+#define CPPCORE_CPUFEAT_AVX512F
+#endif
+#if defined(__AVX512VL__) && !defined(CPPCORE_CPUFEAT_AVX512VL)
+#define CPPCORE_CPUFEAT_AVX512VL
+#endif
+#if defined(__AVX512BW__) && !defined(CPPCORE_CPUFEAT_AVX512BW)
+#define CPPCORE_CPUFEAT_AVX512BW
+#endif
+#if defined(__AVX512DQ__) && !defined(CPPCORE_CPUFEAT_AVX512DQ)
+#define CPPCORE_CPUFEAT_AVX512DQ
+#endif
+#if defined(__AVX512CD__) && !defined(CPPCORE_CPUFEAT_AVX512CD)
+#define CPPCORE_CPUFEAT_AVX512CD
+#endif
+#if defined(__AVX512PF__) && !defined(CPPCORE_CPUFEAT_AVX512PF)
+#define CPPCORE_CPUFEAT_AVX512PF
+#endif
+#if defined(__AVX512ER__) && !defined(CPPCORE_CPUFEAT_AVX512ER)
+#define CPPCORE_CPUFEAT_AVX512ER
 #endif
 #if defined(__SHA__) && !defined(CPPCORE_CPUFEAT_SHA)
 #define CPPCORE_CPUFEAT_SHA
@@ -419,11 +443,6 @@
 #else
 #define CPPCORE_CPUFEAT_ADX_ENABLED 0
 #endif
-#ifdef CPPCORE_CPUFEAT_AVX512F
-#define CPPCORE_CPUFEAT_AVX512F_ENABLED 1
-#else
-#define CPPCORE_CPUFEAT_AVX512F_ENABLED 0
-#endif
 #ifdef CPPCORE_CPUFEAT_CLFLUSHOPT
 #define CPPCORE_CPUFEAT_CLFLUSHOPT_ENABLED 1
 #else
@@ -443,6 +462,41 @@
 #define CPPCORE_CPUFEAT_SGX_ENABLED 1
 #else
 #define CPPCORE_CPUFEAT_SGX_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512F
+#define CPPCORE_CPUFEAT_AVX512F_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512F_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512VL
+#define CPPCORE_CPUFEAT_AVX512VL_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512VL_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512BW
+#define CPPCORE_CPUFEAT_AVX512BW_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512BW_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512DQ
+#define CPPCORE_CPUFEAT_AVX512DQ_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512DQ_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512CD
+#define CPPCORE_CPUFEAT_AVX512CD_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512CD_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512PF
+#define CPPCORE_CPUFEAT_AVX512PF_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512PF_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_AVX512ER
+#define CPPCORE_CPUFEAT_AVX512ER_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_AVX512ER_ENABLED 0
 #endif
 #ifdef CPPCORE_CPUFEAT_SHA
 #define CPPCORE_CPUFEAT_SHA_ENABLED 1

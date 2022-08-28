@@ -204,13 +204,18 @@ int main()
    std::cout << "AVX2:       " << (CPPCORE_CPUFEAT_AVX2_ENABLED       ? "YES" : "NO ") << "     " << (cpuid.AVX2()        ? "YES" : "NO") << std::endl;
    std::cout << "RDSEED:     " << (CPPCORE_CPUFEAT_RDSEED_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.RDSEED()      ? "YES" : "NO") << std::endl;
    std::cout << "ADX:        " << (CPPCORE_CPUFEAT_ADX_ENABLED        ? "YES" : "NO ") << "     " << (cpuid.ADX()         ? "YES" : "NO") << std::endl;
-   std::cout << "AVX512F:    " << (CPPCORE_CPUFEAT_AVX512F_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.AVX512F()     ? "YES" : "NO") << std::endl;
    std::cout << "CLFLUSHOPT: " << (CPPCORE_CPUFEAT_CLFLUSHOPT_ENABLED ? "YES" : "NO ") << "     " << (cpuid.CLFLUSHOPT()  ? "YES" : "NO") << std::endl;
    std::cout << "XSAVEC:     " << (CPPCORE_CPUFEAT_XSAVEC_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.XSAVEC()      ? "YES" : "NO") << std::endl;
    std::cout << "XSAVES:     " << (CPPCORE_CPUFEAT_XSAVES_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.XSAVES()      ? "YES" : "NO") << std::endl;
    std::cout << "SGX:        " << (CPPCORE_CPUFEAT_SGX_ENABLED        ? "YES" : "NO ") << "     " << (cpuid.SGX()         ? "YES" : "NO") << std::endl;
+   std::cout << "AVX512F:    " << (CPPCORE_CPUFEAT_AVX512F_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.AVX512F()     ? "YES" : "NO") << std::endl;
+   std::cout << "AVX512VL:   " << (CPPCORE_CPUFEAT_AVX512VL_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.AVX512VL()    ? "YES" : "NO") << std::endl;
+   std::cout << "AVX512BW:   " << (CPPCORE_CPUFEAT_AVX512BW_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.AVX512BW()    ? "YES" : "NO") << std::endl;
+   std::cout << "AVX512DQ:   " << (CPPCORE_CPUFEAT_AVX512DQ_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.AVX512DQ()    ? "YES" : "NO") << std::endl;
+   std::cout << "AVX512CD:   " << (CPPCORE_CPUFEAT_AVX512CD_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.AVX512CD()    ? "YES" : "NO") << std::endl;
+   std::cout << "AVX512PF:   " << (CPPCORE_CPUFEAT_AVX512PF_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.AVX512PF()    ? "YES" : "NO") << std::endl;
+   std::cout << "AVX512ER:   " << (CPPCORE_CPUFEAT_AVX512ER_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.AVX512ER()    ? "YES" : "NO") << std::endl;
    std::cout << "SHA:        " << (CPPCORE_CPUFEAT_SHA_ENABLED        ? "YES" : "NO ") << "     " << (cpuid.SHA()         ? "YES" : "NO") << std::endl;
-
 #endif
 
    bool r;
