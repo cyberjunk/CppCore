@@ -50,7 +50,7 @@ jobs:
       with:
         arch: amd64_x86
     - name: Build (X86)
-      run: make TARGET_ARCH=x86 ${{ inputs.cpuflags-x86 }}-j${{ env.JOBS }}
+      run: make TARGET_ARCH=x86 ${{ inputs.cpuflags-x86 }} -j${{ env.JOBS }}
 
     # Build ARM64
     - name: MSVC Developer Console (ARM64)
