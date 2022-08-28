@@ -190,7 +190,7 @@ namespace CppCore
          {
             assert(min < max);
             const REAL r = (REAL)thiss()->next() / (REAL)std::numeric_limits<INT>::max();
-            return (r * (max - min)) + min;
+            return CppCore::madd(r, (max - min), min);
          }
 
          ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -660,7 +660,7 @@ namespace CppCore
             const __m128  n = CppCore::cvtepu32f(v);
             const __m128  d = _mm_set1_ps((float)std::numeric_limits<uint32_t>::max());
             const __m128  r = _mm_div_ps(n, d);
-            return _mm_add_ps(_mm_mul_ps(r, _mm_set1_ps(max - min)), _mm_set1_ps(min));
+            return CppCore::madd128f(r, _mm_set1_ps(max - min), _mm_set1_ps(min));
          }
 
          /// <summary>

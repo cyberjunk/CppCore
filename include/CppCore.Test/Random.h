@@ -183,7 +183,12 @@ namespace CppCore { namespace Test
             float v2 = rnd2.next(-10.0f, 10.0f);
             float v3 = rnd3.next(-10.0f, 10.0f);
             float v4 = rnd4.next(-10.0f, 10.0f);
-            if (v.r32[0] != v1 || v.r32[1] != v2 || v.r32[2] != v3 || v.r32[3] != v4)
+            // if FMA is enabled, the values can slightly differ
+            const float eps = CPPCORE_CPUFEAT_FMA3_ENABLED ? 0.000001f : 0.0f;
+            if (::std::abs(v.r32[0]-v1) > eps || 
+                ::std::abs(v.r32[1]-v2) > eps || 
+                ::std::abs(v.r32[2]-v3) > eps || 
+                ::std::abs(v.r32[3]-v4) > eps)
                 return false;
             if (v.r32[0] < -10.0f || v.r32[0] > 10.0f ||
                 v.r32[1] < -10.0f || v.r32[1] > 10.0f ||
