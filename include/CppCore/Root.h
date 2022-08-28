@@ -76,14 +76,16 @@
 #define CPPCORE_CPUFEAT_PCLMUL_NAME   "PCLMUL"   // Westmere     (2010) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_AES_NAME      "AES"      // Broadwell    (2010) | Bulldozer  (2011)
 #define CPPCORE_CPUFEAT_AVX_NAME      "AVX"      // Sandy Bridge (2011) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_XSAVE_NAME    "XSAVE"    // Sandy Bridge (2011) | ?          (----)
+#define CPPCORE_CPUFEAT_XSAVE_NAME    "XSAVE"    // Sandy Bridge (2011) | -          (----)
 #define CPPCORE_CPUFEAT_F16C_NAME     "F16C"     // Ivy Bridge   (2012) | Bulldozer  (2011)
+#define CPPCORE_CPUFEAT_FSGSBASE_NAME "FSGSBASE" // Ivy Bridge   (2012) | Steamroller(2014)
 #define CPPCORE_CPUFEAT_RDRAND_NAME   "RDRAND"   // Ivy Bridge   (2012) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_FMA3_NAME     "FMA3"     // Haswell      (2013) | Piledriver (2012)
 #define CPPCORE_CPUFEAT_LZCNT_NAME    "LZCNT"    // Haswell      (2013) | Piledriver (2012)
 #define CPPCORE_CPUFEAT_BMI1_NAME     "BMI1"     // Haswell      (2013) | Piledriver (2012)
 #define CPPCORE_CPUFEAT_BMI2_NAME     "BMI2"     // Haswell      (2013) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_MOVBE_NAME    "MOVBE"    // Haswell      (2013) | Excavator  (2015)
+#define CPPCORE_CPUFEAT_HLE_NAME      "HLE"      // Haswell      (2013) | -          (----)
 #define CPPCORE_CPUFEAT_AVX2_NAME     "AVX2"     // Haswell      (2013) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_RDSEED_NAME   "RDSEED"   // Broadwell    (2014) | Excavator  (2015)
 #define CPPCORE_CPUFEAT_ADX_NAME      "ADX"      // Broadwell    (2014) | Zen1       (2017)
@@ -139,6 +141,9 @@
 #if defined(__F16C__) && !defined(CPPCORE_CPUFEAT_F16C)
 #define CPPCORE_CPUFEAT_F16C
 #endif
+#if defined(__FSGSBASE__) && !defined(CPPCORE_CPUFEAT_FSGSBASE)
+#define CPPCORE_CPUFEAT_FSGSBASE
+#endif
 #if defined(__RDRND__) && !defined(CPPCORE_CPUFEAT_RDRAND)
 #define CPPCORE_CPUFEAT_RDRAND
 #endif
@@ -156,6 +161,9 @@
 #endif
 #if defined(__MOVBE__) && !defined(CPPCORE_CPUFEAT_MOVBE)
 #define CPPCORE_CPUFEAT_MOVBE
+#endif
+#if defined(__HLE__) && !defined(CPPCORE_CPUFEAT_HLE)
+#define CPPCORE_CPUFEAT_HLE
 #endif
 #if defined(__AVX2__) && !defined(CPPCORE_CPUFEAT_AVX2)
 #define CPPCORE_CPUFEAT_AVX2
@@ -328,6 +336,11 @@
 #else
 #define CPPCORE_CPUFEAT_F16C_ENABLED 0
 #endif
+#ifdef CPPCORE_CPUFEAT_FSGSBASE
+#define CPPCORE_CPUFEAT_FSGSBASE_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_FSGSBASE_ENABLED 0
+#endif
 #ifdef CPPCORE_CPUFEAT_RDRAND
 #define CPPCORE_CPUFEAT_RDRAND_ENABLED 1
 #else
@@ -357,6 +370,11 @@
 #define CPPCORE_CPUFEAT_MOVBE_ENABLED 1
 #else
 #define CPPCORE_CPUFEAT_MOVBE_ENABLED 0
+#endif
+#ifdef CPPCORE_CPUFEAT_HLE
+#define CPPCORE_CPUFEAT_HLE_ENABLED 1
+#else
+#define CPPCORE_CPUFEAT_HLE_ENABLED 0
 #endif
 #ifdef CPPCORE_CPUFEAT_AVX2
 #define CPPCORE_CPUFEAT_AVX2_ENABLED 1

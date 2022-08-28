@@ -192,12 +192,14 @@ int main()
    std::cout << "AVX:     " << (CPPCORE_CPUFEAT_AVX_ENABLED      ? "YES" : "NO ") << "     " << (cpuid.AVX()        ? "YES" : "NO") << std::endl;
    std::cout << "XSAVE:   " << (CPPCORE_CPUFEAT_XSAVE_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.XSAVE()      ? "YES" : "NO") << std::endl;
    std::cout << "F16C:    " << (CPPCORE_CPUFEAT_F16C_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.F16C()       ? "YES" : "NO") << std::endl;
+   std::cout << "FSGSBASE:" << (CPPCORE_CPUFEAT_FSGSBASE_ENABLED ? "YES" : "NO ") << "     " << (cpuid.FSGSBASE()   ? "YES" : "NO") << std::endl;
    std::cout << "RDRAND:  " << (CPPCORE_CPUFEAT_RDRAND_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.RDRAND()     ? "YES" : "NO") << std::endl;
    std::cout << "FMA3:    " << (CPPCORE_CPUFEAT_FMA3_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.FMA()        ? "YES" : "NO") << std::endl;
    std::cout << "LZCNT:   " << (CPPCORE_CPUFEAT_LZCNT_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.LZCNT()      ? "YES" : "NO") << std::endl;
    std::cout << "BMI1:    " << (CPPCORE_CPUFEAT_BMI1_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.BMI1()       ? "YES" : "NO") << std::endl;
    std::cout << "BMI2:    " << (CPPCORE_CPUFEAT_BMI2_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.BMI2()       ? "YES" : "NO") << std::endl;
    std::cout << "MOVBE:   " << (CPPCORE_CPUFEAT_MOVBE_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.MOVBE()      ? "YES" : "NO") << std::endl;
+   std::cout << "HLE:     " << (CPPCORE_CPUFEAT_HLE_ENABLED      ? "YES" : "NO ") << "     " << (cpuid.HLE()        ? "YES" : "NO") << std::endl;
    std::cout << "AVX2:    " << (CPPCORE_CPUFEAT_AVX2_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.AVX2()       ? "YES" : "NO") << std::endl;
    std::cout << "RDSEED:  " << (CPPCORE_CPUFEAT_RDSEED_ENABLED   ? "YES" : "NO ") << "     " << (cpuid.RDSEED()     ? "YES" : "NO") << std::endl;
    std::cout << "ADX:     " << (CPPCORE_CPUFEAT_ADX_ENABLED      ? "YES" : "NO ") << "     " << (cpuid.ADX()        ? "YES" : "NO") << std::endl;
