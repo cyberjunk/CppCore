@@ -3,20 +3,17 @@ on:
   workflow_dispatch:
     inputs:
       cpuflags-x64:
-        description: 'Override CPUFLAGS used for X64'
+        description: 'CPUFLAGS for X64'
         type: string
         required: false
-        default: 'CPUFLAGS=-march=x86-64 -mtune=generic'
       cpuflags-x86:
-        description: 'Override CPUFLAGS used for X86'
+        description: 'CPUFLAGS for X86'
         type: string
         required: false
-        default: 'CPUFLAGS=-march=i686 -mtune=generic'
       cpuflags-arm64:
-        description: 'Override CPUFLAGS used for ARM64'
+        description: 'CPUFLAGS for ARM64'
         type: string
         required: false
-        default: 'CPUFLAGS=-march=armv8-a -mtune=generic'
   workflow_call:
   push:
     branches:
