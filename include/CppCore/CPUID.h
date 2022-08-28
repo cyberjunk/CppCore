@@ -12,14 +12,6 @@ namespace CppCore
    class CPUID
    {
    public:
-      static constexpr uint32_t INTELSIGEBX = 0x756e6547; // Genu
-      static constexpr uint32_t INTELSIGEDX = 0x49656e69; // ineI
-      static constexpr uint32_t INTELSIGECX = 0x6c65746e; // ntel
-
-      static constexpr uint32_t AMDSIGEBX   = 0x68747541; // Auth
-      static constexpr uint32_t AMDSIGEDX   = 0x69746e65; // enti
-      static constexpr uint32_t AMDSIGECX   = 0x444d4163; // cAMD
-
       /// <summary>
       /// X86 CPU Types
       /// </summary>
@@ -44,6 +36,48 @@ namespace CppCore
          INLINE operator uint32_t* () { return u32; }
          INLINE operator int32_t*  () { return i32; }
          INLINE uint32_t& operator[](size_t index) { return u32[index]; }
+      };
+
+      /// <summary>
+      /// Vendor Signatures
+      /// </summary>
+      class Signature
+      {
+      private:
+         INLINE Signature() { }
+      public:
+         class Intel
+         {
+         private:
+            INLINE Intel() { }
+         public:
+            static constexpr uint32_t EBX = 0x756e6547; // Genu
+            static constexpr uint32_t EDX = 0x49656e69; // ineI
+            static constexpr uint32_t ECX = 0x6c65746e; // ntel
+         };
+         class AMD
+         {
+         private:
+            INLINE AMD() { }
+         public:
+            static constexpr uint32_t EBX = 0x68747541; // Auth
+            static constexpr uint32_t EDX = 0x69746e65; // enti
+            static constexpr uint32_t ECX = 0x444d4163; // cAMD
+         };
+         INLINE static constexpr bool isIntel(const Data& d)
+         {
+            return
+               d.ebx == Intel::EBX &&
+               d.ecx == Intel::ECX &&
+               d.edx == Intel::EDX;
+         }
+         INLINE static constexpr bool isAMD(const Data& d)
+         {
+            return
+               d.ebx == AMD::EBX &&
+               d.ecx == AMD::ECX &&
+               d.edx == AMD::EDX;
+         }
       };
 
    protected:
@@ -114,8 +148,8 @@ namespace CppCore
 
          // set type
          mType = 
-            (t.ebx == INTELSIGEBX && t.ecx == INTELSIGECX && t.edx == INTELSIGEDX) ? Type::Intel :
-            (t.ebx == AMDSIGEBX   && t.ecx == AMDSIGECX   && t.edx == AMDSIGEDX)   ? Type::AMD :
+            (Signature::isIntel(t)) ? Type::Intel :
+            (Signature::isAMD(t))   ? Type::AMD :
             Type::Unknown;
 
          // get highest valid extended leaf with 0x80000000 argument
