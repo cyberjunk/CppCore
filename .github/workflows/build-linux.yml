@@ -1,6 +1,23 @@
 name: Build Linux
 on:
   workflow_dispatch:
+    inputs:
+      cpuflags-x64:
+        description: 'CPUFLAGS for X64'
+        type: string
+        required: false
+      cpuflags-x86:
+        description: 'CPUFLAGS for X86'
+        type: string
+        required: false
+      cpuflags-arm64:
+        description: 'CPUFLAGS for ARM64'
+        type: string
+        required: false
+      cpuflags-arm:
+        description: 'CPUFLAGS for ARM'
+        type: string
+        required: false
   workflow_call:
   push:
     branches:
@@ -41,18 +58,22 @@ jobs:
         if [ $ARCH == amd64 ]; then \
           echo "TARGET_ARCH=x64" >> $GITHUB_ENV; \
           echo "TARGET=x86_64-linux-gnu" >> $GITHUB_ENV; \
+          echo "${{ inputs.cpuflags-x64 }}" >> $GITHUB_ENV; \
         fi
         if [ $ARCH == i386 ]; then \
           echo "TARGET_ARCH=x86" >> $GITHUB_ENV; \
           echo "TARGET=i686-linux-gnu" >> $GITHUB_ENV; \
+          echo "${{ inputs.cpuflags-x86 }}" >> $GITHUB_ENV; \
         fi
         if [ $ARCH == arm64 ]; then \
           echo "TARGET_ARCH=arm64" >> $GITHUB_ENV; \
           echo "TARGET=aarch64-linux-gnu" >> $GITHUB_ENV; \
+          echo "${{ inputs.cpuflags-arm64 }}" >> $GITHUB_ENV; \
         fi
         if [ $ARCH == armhf ]; then \
           echo "TARGET_ARCH=arm" >> $GITHUB_ENV; \
           echo "TARGET=arm-linux-gnueabihf" >> $GITHUB_ENV; \
+          echo "${{ inputs.cpuflags-arm }}" >> $GITHUB_ENV; \
         fi
       
     - name: Build
