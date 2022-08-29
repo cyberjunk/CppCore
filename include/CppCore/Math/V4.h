@@ -4,6 +4,10 @@
 #include <CppCore/Root.h>
 #include <CppCore/Math/Util.h>
 
+#if defined(CPPCORE_HAVE_OGRE3D)
+#include <Ogre/OgreVector4.h>
+#endif
+
 namespace CppCore
 {
    //------------------------------------------------------------------------------------------------------------------------//
@@ -219,6 +223,10 @@ namespace CppCore
       INLINE V4ft(const float s)                                              : V4fdt<V, float>(s, s, s, s) { }
       INLINE V4ft(const float v[4])                                           : V4fdt<V, float>(v) { }
       INLINE V4ft(float* const v)                                             : V4fdt<V, float>(v) { }
+      //------------------------------------------------------------------------------------------------------------------------//
+   #if defined(CPPCORE_HAVE_OGRE3D) && (OGRE_DOUBLE_PRECISION == 0)
+      INLINE operator Ogre::Vector4& () { return *(Ogre::Vector4*)this; }
+   #endif
    };
 
    /// <summary>
@@ -242,6 +250,10 @@ namespace CppCore
       INLINE V4dt(const double s)                                                 : V4fdt<V, double>(s, s, s, s) { }
       INLINE V4dt(const double v[4])                                              : V4fdt<V, double>(v)          { }
       INLINE V4dt(double* const v)                                                : V4fdt<V, double>(v)          { }
+      //------------------------------------------------------------------------------------------------------------------------//
+   #if defined(CPPCORE_HAVE_OGRE3D) && (OGRE_DOUBLE_PRECISION == 1)
+      INLINE operator Ogre::Vector4& () { return *(Ogre::Vector4*)this; }
+   #endif
    };
 
    /// <summary>

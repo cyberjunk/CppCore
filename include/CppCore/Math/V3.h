@@ -4,6 +4,10 @@
 #include <CppCore/Root.h>
 #include <CppCore/Math/Util.h>
 
+#if defined(CPPCORE_HAVE_OGRE3D)
+#include <Ogre/OgreVector3.h>
+#endif
+
 namespace CppCore
 {
    //------------------------------------------------------------------------------------------------------------------------//
@@ -331,6 +335,10 @@ namespace CppCore
       INLINE V3ft(const int64_t x, const int64_t y, const int64_t z) : V3fdt<V, float>((float)x, (float)y, (float)z)        { }
       INLINE V3ft(const int64_t s)                                   : V3fdt<V, float>((float)s)                            { }
       INLINE V3ft(const int64_t v[3])                                : V3fdt<V, float>((float)v[0],(float)v[1],(float)v[2]) { }
+      //------------------------------------------------------------------------------------------------------------------------//
+   #if defined(CPPCORE_HAVE_OGRE3D) && (OGRE_DOUBLE_PRECISION == 0)
+      INLINE operator Ogre::Vector3& () { return *(Ogre::Vector3*)this; }
+   #endif
    };
 
    /// <summary>
@@ -362,6 +370,10 @@ namespace CppCore
       INLINE V3dt(const int64_t x, const int64_t y, const int64_t z) : V3fdt<V, double>((double)x, (double)y, (double)z)         { }
       INLINE V3dt(const int64_t s)                                   : V3fdt<V, double>((double)s)                               { }
       INLINE V3dt(const int64_t v[3])                                : V3fdt<V, double>((double)v[0],(double)v[1], (double)v[2]) { }
+      //------------------------------------------------------------------------------------------------------------------------//
+   #if defined(CPPCORE_HAVE_OGRE3D) && (OGRE_DOUBLE_PRECISION == 1)
+      INLINE operator Ogre::Vector3& () { return *(Ogre::Vector3*)this; }
+   #endif
    };
 
    /// <summary>

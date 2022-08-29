@@ -4,6 +4,10 @@
 #include <CppCore/Root.h>
 #include <CppCore/Math/Util.h>
 
+#if defined(CPPCORE_HAVE_OGRE3D)
+#include <Ogre/OgreVector2.h>
+#endif
+
 namespace CppCore
 {
    //------------------------------------------------------------------------------------------------------------------------//
@@ -399,6 +403,9 @@ namespace CppCore
       INLINE V2ft(const int64_t x, const int64_t y) : V2fdt<V, float>((float)x,    (float)y)    { }
       INLINE V2ft(const int64_t s)                  : V2fdt<V, float>((float)s)                 { }
       INLINE V2ft(const int64_t v[2])               : V2fdt<V, float>((float)v[0], (float)v[1]) { }
+   #if defined(CPPCORE_HAVE_OGRE3D) && (OGRE_DOUBLE_PRECISION == 0)
+      INLINE operator Ogre::Vector2& () { return *(Ogre::Vector2*)this; }
+   #endif
    };
 
    /// <summary>
@@ -430,6 +437,9 @@ namespace CppCore
       INLINE V2dt(const int64_t x, const int64_t y) : V2fdt<V, double>((double)x,    (double)y)    { }
       INLINE V2dt(const int64_t s)                  : V2fdt<V, double>((double)s)                  { }
       INLINE V2dt(const int64_t v[2])               : V2fdt<V, double>((double)v[0], (double)v[1]) { }
+   #if defined(CPPCORE_HAVE_OGRE3D) && (OGRE_DOUBLE_PRECISION == 1)
+      INLINE operator Ogre::Vector2& () { return *(Ogre::Vector2*)this; }
+   #endif
    };
 
    /// <summary>
