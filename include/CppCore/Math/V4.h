@@ -185,7 +185,7 @@ namespace CppCore
       using V4<V, F>::vals;
 
    public:
-      static INLINE F _abs(const F s)  { return ::abs(s);     }
+      static INLINE F _abs(const F s)  { return std::abs(s); }
       static INLINE F _sqrt(const F s) { return (F)::sqrt(s); }
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE V4ilt()                                                                  { }
@@ -205,14 +205,14 @@ namespace CppCore
    class V4ft : public V4fdt<V, float>
    {
    public:
-      static INLINE float _abs(const float s) { return ::fabsf(s); }
+      static INLINE float _abs(const float s)   { return ::fabsf(s); }
       static INLINE float _round(const float s) { return ::roundf(s); }
       static INLINE float _floor(const float s) { return ::floorf(s); }
-      static INLINE float _ceil(const float s) { return ::ceilf(s); }
-      static INLINE float _sqrt(const float s) { return ::sqrtf(s); }
-      static INLINE float _cos(const float s) { return ::cosf(s); }
-      static INLINE float _sin(const float s) { return ::sinf(s); }
-      static INLINE float _acos(const float s) { return ::acosf(s); }
+      static INLINE float _ceil(const float s)  { return ::ceilf(s); }
+      static INLINE float _sqrt(const float s)  { return ::sqrtf(s); }
+      static INLINE float _cos(const float s)   { return ::cosf(s); }
+      static INLINE float _sin(const float s)   { return ::sinf(s); }
+      static INLINE float _acos(const float s)  { return ::acosf(s); }
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE V4ft()                                                                                         { }
       INLINE V4ft(const float x, const float y, const float z, const float w) : V4fdt<V, float>(x, y, z, w) { }
@@ -228,14 +228,14 @@ namespace CppCore
    class V4dt : public V4fdt<V, double>
    {
    public:
-      static INLINE double _abs(const double s) { return ::abs(s); }
-      static INLINE double _round(const double s) { return ::round(s); }
-      static INLINE double _floor(const double s) { return ::floor(s); }
-      static INLINE double _ceil(const double s) { return ::ceil(s); }
-      static INLINE double _sqrt(const double s) { return ::sqrt(s); }
-      static INLINE double _cos(const double s) { return ::cos(s); }
-      static INLINE double _sin(const double s) { return ::sin(s); }
-      static INLINE double _acos(const double s) { return ::acos(s); }
+      static INLINE double _abs(const double s)   { return std::abs(s); }
+      static INLINE double _round(const double s) { return std::round(s); }
+      static INLINE double _floor(const double s) { return std::floor(s); }
+      static INLINE double _ceil(const double s)  { return std::ceil(s); }
+      static INLINE double _sqrt(const double s)  { return std::sqrt(s); }
+      static INLINE double _cos(const double s)   { return std::cos(s); }
+      static INLINE double _sin(const double s)   { return std::sin(s); }
+      static INLINE double _acos(const double s)  { return std::acos(s); }
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE V4dt() { }
       INLINE V4dt(const double x, const double y, const double z, const double w) : V4fdt<V, double>(x, y, z, w) { }
