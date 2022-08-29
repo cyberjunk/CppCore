@@ -3,54 +3,6 @@
 #include <CppCore/Root.h>
 #include <CppCore/BitOps.h>
 
-//      CPU Instruction                                           INTEL ARCH   (YEAR) | AMD ARCH   (YEAR)
-#define CPPCORE_CPUFEAT_MMX_NAME             "MMX"             // P55C         (1997) | K6         (1997)
-#define CPPCORE_CPUFEAT_FXSR_NAME            "FXSR"            // Pentium 2    (----) | ?          (----)
-#define CPPCORE_CPUFEAT_SSE_NAME             "SSE"             // Katmai       (1999) | Palomino   (2001)
-#define CPPCORE_CPUFEAT_SSE2_NAME            "SSE2"            // Willamette   (2001) | Clawhammer (2003)
-#define CPPCORE_CPUFEAT_SSE3_NAME            "SSE3"            // Prescott     (2004) | Venice     (2005)
-#define CPPCORE_CPUFEAT_SSSE3_NAME           "SSSE3"           // Woodcrest    (2006) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_SAHF_NAME            "SAHF "           // Penryn       (2008) | ?          (----)
-#define CPPCORE_CPUFEAT_CX16_NAME            "CX16 "           // Penryn       (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_SSE41_NAME           "SSE4.1"          // Penryn       (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_SSE42_NAME           "SSE4.2"          // Nehalem      (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_POPCNT_NAME          "POPCNT"          // Nehalem      (2008) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_PCLMUL_NAME          "PCLMUL"          // Westmere     (2010) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_AES_NAME             "AES"             // Broadwell    (2010) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_AVX_NAME             "AVX"             // Sandy Bridge (2011) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_XSAVE_NAME           "XSAVE"           // Sandy Bridge (2011) | -          (----)
-#define CPPCORE_CPUFEAT_F16C_NAME            "F16C"            // Ivy Bridge   (2012) | Bulldozer  (2011)
-#define CPPCORE_CPUFEAT_FSGSBASE_NAME        "FSGSBASE"        // Ivy Bridge   (2012) | Steamroller(2014)
-#define CPPCORE_CPUFEAT_RDRAND_NAME          "RDRAND"          // Ivy Bridge   (2012) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_FMA3_NAME            "FMA3"            // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_LZCNT_NAME           "LZCNT"           // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_BMI1_NAME            "BMI1"            // Haswell      (2013) | Piledriver (2012)
-#define CPPCORE_CPUFEAT_BMI2_NAME            "BMI2"            // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_MOVBE_NAME           "MOVBE"           // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_HLE_NAME             "HLE"             // Haswell      (2013) | -          (----)
-#define CPPCORE_CPUFEAT_AVX2_NAME            "AVX2"            // Haswell      (2013) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_RDSEED_NAME          "RDSEED"          // Broadwell    (2014) | Excavator  (2015)
-#define CPPCORE_CPUFEAT_ADX_NAME             "ADX"             // Broadwell    (2014) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_CLFLUSHOPT_NAME      "CLFLUSHOPT"      // Skylake      (2015) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_XSAVEC_NAME          "XSAVEC"          // Skylake      (2015) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_XSAVES_NAME          "XSAVES"          // Skylake      (2015) | Zen1       (2017)
-#define CPPCORE_CPUFEAT_SGX_NAME             "SGX"             // Skylake      (2015) | -          (----)
-#define CPPCORE_CPUFEAT_SHA_NAME             "SHA"             // Goldmont     (2016) | Zen1       (2017)
-//      INTEL AVX512
-#define CPPCORE_CPUFEAT_AVX512F_NAME         "AVX512F"         // Skylake      (2015)
-#define CPPCORE_CPUFEAT_AVX512VL_NAME        "AVX512VL"        // Skylake      (2015)
-#define CPPCORE_CPUFEAT_AVX512BW_NAME        "AVX512BW"        // Skylake      (2015)
-#define CPPCORE_CPUFEAT_AVX512DQ_NAME        "AVX512DQ"        // Skylake      (2015)
-#define CPPCORE_CPUFEAT_AVX512CD_NAME        "AVX512CD"        // Skylake      (2015)
-#define CPPCORE_CPUFEAT_AVX512PF_NAME        "AVX512PF"        // Kn. Landing  (----)
-#define CPPCORE_CPUFEAT_AVX512ER_NAME        "AVX512ER"        // Kn. Landing  (----)
-#define CPPCORE_CPUFEAT_AVX512VBMI_NAME      "AVX512VBMI"      // Cannonlake   (2018)
-#define CPPCORE_CPUFEAT_AVX512IFMA_NAME      "AVX512IFMA"      // Cannonlake   (2018)
-#define CPPCORE_CPUFEAT_AVX512VNNI_NAME      "AVX512VNNI"      // Icelake      (2019)
-#define CPPCORE_CPUFEAT_AVX512VBMI2_NAME     "AVX512VBMI2"     // Icelake      (2019)
-#define CPPCORE_CPUFEAT_AVX512BITALG_NAME    "AVX512BITALG"    // Icelake      (2019)
-#define CPPCORE_CPUFEAT_AVX512VPOPCNTDQ_NAME "AVX512VPOPCNTDQ" // Icelake      (2019)
-
 namespace CppCore
 {
 #if defined(CPPCORE_CPU_X86ORX64)
@@ -60,6 +12,117 @@ namespace CppCore
    class CPUID
    {
    public:
+      /// <summary>
+      /// Instruction Enumeration
+      /// </summary>
+      enum class Instruction
+      {
+         //                   INTEL ARCH   (YEAR) | AMD ARCH   (YEAR)
+         MMX,              // P55C         (1997) | K6         (1997)
+         FXSR,             // Pentium 2    (----) | ?          (----)
+         SSE,              // Katmai       (1999) | Palomino   (2001)
+         SSE2,             // Willamette   (2001) | Clawhammer (2003)
+         SSE3,             // Prescott     (2004) | Venice     (2005)
+         SSSE3,            // Woodcrest    (2006) | Bulldozer  (2011)
+         SAHF,             // Penryn       (2008) | ?          (----)
+         CX16,             // Penryn       (2008) | Bulldozer  (2011)
+         SSE41,            // Penryn       (2008) | Bulldozer  (2011)
+         SSE42,            // Nehalem      (2008) | Bulldozer  (2011)
+         POPCNT,           // Nehalem      (2008) | Bulldozer  (2011)
+         PCLMUL,           // Westmere     (2010) | Bulldozer  (2011)
+         AES,              // Broadwell    (2010) | Bulldozer  (2011)
+         AVX,              // Sandy Bridge (2011) | Bulldozer  (2011)
+         XSAVE,            // Sandy Bridge (2011) | -          (----)
+         F16C,             // Ivy Bridge   (2012) | Bulldozer  (2011)
+         FSGSBASE,         // Ivy Bridge   (2012) | Steamroller(2014)
+         RDRAND,           // Ivy Bridge   (2012) | Excavator  (2015)
+         FMA3,             // Haswell      (2013) | Piledriver (2012)
+         LZCNT,            // Haswell      (2013) | Piledriver (2012)
+         BMI1,             // Haswell      (2013) | Piledriver (2012)
+         BMI2,             // Haswell      (2013) | Excavator  (2015)
+         MOVBE,            // Haswell      (2013) | Excavator  (2015)
+         HLE,              // Haswell      (2013) | -          (----)
+         AVX2,             // Haswell      (2013) | Excavator  (2015)
+         RDSEED,           // Broadwell    (2014) | Excavator  (2015)
+         ADX,              // Broadwell    (2014) | Zen1       (2017)
+         CLFLUSHOPT,       // Skylake      (2015) | Zen1       (2017)
+         XSAVEC,           // Skylake      (2015) | Zen1       (2017)
+         XSAVES,           // Skylake      (2015) | Zen1       (2017)
+         SGX,              // Skylake      (2015) | -          (----)
+         SHA,              // Goldmont     (2016) | Zen1       (2017)
+         //                   INTEL AVX512
+         AVX512F,          // Skylake      (2015)
+         AVX512VL,         // Skylake      (2015)
+         AVX512BW,         // Skylake      (2015)
+         AVX512DQ,         // Skylake      (2015)
+         AVX512CD,         // Skylake      (2015)
+         AVX512PF,         // Kn. Landing  (----)
+         AVX512ER,         // Kn. Landing  (----)
+         AVX512VBMI,       // Cannonlake   (2018)
+         AVX512IFMA,       // Cannonlake   (2018)
+         AVX512VNNI,       // Icelake      (2019)
+         AVX512VBMI2,      // Icelake      (2019)
+         AVX512BITALG,     // Icelake      (2019)
+         AVX512VPOPCNTDQ   // Icelake      (2019)
+      };
+
+      /// <summary>
+      /// Get Name for Instruction Enum
+      /// </summary>
+      constexpr static INLINE const char* getName(const Instruction& i)
+      {
+         switch (i)
+         {
+         case Instruction::MMX:              return "MMX";
+         case Instruction::FXSR:             return "FXSR";
+         case Instruction::SSE:              return "SSE";
+         case Instruction::SSE2:             return "SSE2";
+         case Instruction::SSE3:             return "SSE3";
+         case Instruction::SSSE3:            return "SSSE3";
+         case Instruction::SAHF:             return "SAHF";
+         case Instruction::CX16:             return "CX16";
+         case Instruction::SSE41:            return "SSE4.1";
+         case Instruction::SSE42:            return "SSE4.2";
+         case Instruction::POPCNT:           return "POPCNT";
+         case Instruction::PCLMUL:           return "PCLMUL";
+         case Instruction::AES:              return "AES";
+         case Instruction::AVX:              return "AVX";
+         case Instruction::XSAVE:            return "XSAVE";
+         case Instruction::F16C:             return "F16C";
+         case Instruction::FSGSBASE:         return "FSGSBASE";
+         case Instruction::RDRAND:           return "RDRAND";
+         case Instruction::FMA3:             return "FMA3";
+         case Instruction::LZCNT:            return "LZCNT";
+         case Instruction::BMI1:             return "BMI1";
+         case Instruction::BMI2:             return "BMI2";
+         case Instruction::MOVBE:            return "MOVBE";
+         case Instruction::HLE:              return "HLE";
+         case Instruction::AVX2:             return "AVX2";
+         case Instruction::RDSEED:           return "RDSEED";
+         case Instruction::ADX:              return "ADX";
+         case Instruction::CLFLUSHOPT:       return "CLFLUSHOPT";
+         case Instruction::XSAVEC:           return "XSAVEC";
+         case Instruction::XSAVES:           return "XSAVES";
+         case Instruction::SGX:              return "SGX";
+         case Instruction::SHA:              return "SHA";
+         // INTEL AVX512
+         case Instruction::AVX512F:          return "AVX512F";
+         case Instruction::AVX512VL:         return "AVX512VL";
+         case Instruction::AVX512BW:         return "AVX512BW";
+         case Instruction::AVX512DQ:         return "AVX512DQ";
+         case Instruction::AVX512CD:         return "AVX512CD";
+         case Instruction::AVX512PF:         return "AVX512PF";
+         case Instruction::AVX512ER:         return "AVX512ER";
+         case Instruction::AVX512VBMI:       return "AVX512VBMI";
+         case Instruction::AVX512IFMA:       return "AVX512IFMA";
+         case Instruction::AVX512VNNI:       return "AVX512VNNI";
+         case Instruction::AVX512VBMI2:      return "AVX512VBMI2";
+         case Instruction::AVX512BITALG:     return "AVX512BITALG";
+         case Instruction::AVX512VPOPCNTDQ:  return "AVX512VPOPCNTDQ";
+         default:                            return "";
+         }
+      }
+
       /// <summary>
       /// X86 CPU Types
       /// </summary>
@@ -447,6 +510,75 @@ namespace CppCore
       INLINE bool CLZERO()          const { return CppCore::bittest(mFX8S0.ebx, 0); }
       INLINE bool RDPRU()           const { return CppCore::bittest(mFX8S0.ebx, 4); }
       INLINE bool WBNOINVD()        const { return CppCore::bittest(mFX8S0.ebx, 9); }
+
+      /// <summary>
+      /// Returns true if all instructions enabled at compile-time
+      /// are also supported on the current CPU at run-time.
+      /// </summary>
+      INLINE bool isCompatible() const 
+      {
+         if (CPPCORE_CPUFEAT_MMX_ENABLED        && !this->MMX())        return false;
+         if (CPPCORE_CPUFEAT_FXSR_ENABLED       && !this->FXSR())       return false;
+         if (CPPCORE_CPUFEAT_SSE_ENABLED        && !this->SSE())        return false;
+         if (CPPCORE_CPUFEAT_SSE2_ENABLED       && !this->SSE2())       return false;
+         if (CPPCORE_CPUFEAT_SSE3_ENABLED       && !this->SSE3())       return false;
+         if (CPPCORE_CPUFEAT_SSSE3_ENABLED      && !this->SSSE3())      return false;
+         if (CPPCORE_CPUFEAT_SAHF_ENABLED       && !this->LAHF())       return false;
+         if (CPPCORE_CPUFEAT_CX16_ENABLED       && !this->CMPXCHG16B()) return false;
+         if (CPPCORE_CPUFEAT_SSE41_ENABLED      && !this->SSE41())      return false;
+         if (CPPCORE_CPUFEAT_SSE42_ENABLED      && !this->SSE42())      return false;
+         if (CPPCORE_CPUFEAT_POPCNT_ENABLED     && !this->POPCNT())     return false;
+         if (CPPCORE_CPUFEAT_PCLMUL_ENABLED     && !this->PCLMULQDQ())  return false;
+         if (CPPCORE_CPUFEAT_AES_ENABLED        && !this->AES())        return false;
+         if (CPPCORE_CPUFEAT_AVX_ENABLED        && !this->AVX())        return false;
+         if (CPPCORE_CPUFEAT_XSAVE_ENABLED      && !this->XSAVE())      return false;
+         if (CPPCORE_CPUFEAT_F16C_ENABLED       && !this->F16C())       return false;
+         if (CPPCORE_CPUFEAT_FSGSBASE_ENABLED   && !this->FSGSBASE())   return false;
+         if (CPPCORE_CPUFEAT_RDRAND_ENABLED     && !this->RDRAND())     return false;
+         if (CPPCORE_CPUFEAT_FMA3_ENABLED       && !this->FMA())        return false;
+         if (CPPCORE_CPUFEAT_LZCNT_ENABLED      && !this->LZCNT())      return false;
+         if (CPPCORE_CPUFEAT_BMI1_ENABLED       && !this->BMI1())       return false;
+         if (CPPCORE_CPUFEAT_BMI2_ENABLED       && !this->BMI2())       return false;
+         if (CPPCORE_CPUFEAT_MOVBE_ENABLED      && !this->MOVBE())      return false;
+         if (CPPCORE_CPUFEAT_HLE_ENABLED        && !this->HLE())        return false;
+         if (CPPCORE_CPUFEAT_AVX2_ENABLED       && !this->AVX2())       return false;
+         if (CPPCORE_CPUFEAT_RDSEED_ENABLED     && !this->RDSEED())     return false;
+         if (CPPCORE_CPUFEAT_ADX_ENABLED        && !this->ADX())        return false;
+         if (CPPCORE_CPUFEAT_CLFLUSHOPT_ENABLED && !this->CLFLUSHOPT()) return false;
+         if (CPPCORE_CPUFEAT_XSAVEC_ENABLED     && !this->XSAVEC())     return false;
+         if (CPPCORE_CPUFEAT_XSAVES_ENABLED     && !this->XSAVES())     return false;
+         if (CPPCORE_CPUFEAT_SGX_ENABLED        && !this->SGX())        return false;
+         if (CPPCORE_CPUFEAT_SHA_ENABLED        && !this->SHA())        return false;
+         // AVX512
+         if (CPPCORE_CPUFEAT_AVX512F_ENABLED         && !this->AVX512F())         return false;
+         if (CPPCORE_CPUFEAT_AVX512VL_ENABLED        && !this->AVX512VL())        return false;
+         if (CPPCORE_CPUFEAT_AVX512BW_ENABLED        && !this->AVX512BW())        return false;
+         if (CPPCORE_CPUFEAT_AVX512DQ_ENABLED        && !this->AVX512DQ())        return false;
+         if (CPPCORE_CPUFEAT_AVX512CD_ENABLED        && !this->AVX512CD())        return false;
+         if (CPPCORE_CPUFEAT_AVX512PF_ENABLED        && !this->AVX512PF())        return false;
+         if (CPPCORE_CPUFEAT_AVX512ER_ENABLED        && !this->AVX512ER())        return false;
+         if (CPPCORE_CPUFEAT_AVX512VBMI_ENABLED      && !this->AVX512VBMI())      return false;
+         if (CPPCORE_CPUFEAT_AVX512IFMA_ENABLED      && !this->AVX512IFMA())      return false;
+         if (CPPCORE_CPUFEAT_AVX512VNNI_ENABLED      && !this->AVX512VNNI())      return false;
+         if (CPPCORE_CPUFEAT_AVX512VBMI2_ENABLED     && !this->AVX512VBMI2())     return false;
+         if (CPPCORE_CPUFEAT_AVX512BITALG_ENABLED    && !this->AVX512BITALG())    return false;
+         if (CPPCORE_CPUFEAT_AVX512VPOPCNTDQ_ENABLED && !this->AVX512VPOPCNTDQ()) return false;
+         // ALL OK
+         return true;
+      }
+   };
+
+   /// <summary>
+   /// Writes instruction name to stream
+   /// </summary>
+   INLINE std::ostream& operator << (std::ostream& os, const CPUID::Instruction& v) { return os << CPUID::getName(v); }
+
+#elif defined(CPPCORE_CPU_ARMORARM64)
+   /// <summary>
+   /// TODO: FOR ARM/ARM64
+   /// </summary>
+   class CPUID
+   {
    };
 #endif
 }

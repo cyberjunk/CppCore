@@ -4,6 +4,7 @@
 #include <CppCore/Threading/Handler.h>
 #include <CppCore/Threading/Thread.h>
 #include <CppCore/Logger.h>
+#include <CppCore/CPUID.h>
 
 namespace CppCore
 {
@@ -17,6 +18,7 @@ namespace CppCore
       Thread::Pool<Thread> mThreadPool;
       Schedule<>           mSchedule;
       LOGGER               mLogger;
+      CPUID                mCPUID;
 
       /// <summary>
       /// Helper for casting this from template to final instance type.
@@ -49,6 +51,12 @@ namespace CppCore
          mThreadPool(),
          mLogger(mThreadPool, logToConsole, logToFile, logFile)
       {
+      #if defined(CPPCORE_CPU_X86ORX64)
+         this->log(std::string("CPU: ") + mCPUID.getBrand());
+         if (!mCPUID.isCompatible())
+            this->logError("Some enabled instructions are incompatible with your CPU.");
+      #endif
+
          // log thread count and ids
          stringstream s;
          s << "ThreadPool started with " << mThreadPool.getSize() << " threads: ";
