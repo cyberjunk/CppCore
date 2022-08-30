@@ -11,7 +11,7 @@ endif
 
 # default key if not specified
 ifeq ($(SIGN_PFX_FILE),)
-SIGN_PFX_FILE = ../../CppCore.pfx
+SIGN_PFX_FILE = ../../certs/DevCert.pfx
 ifeq ($(SIGN_PFX_PASS),)
 SIGN_PFX_PASS = CppCore
 endif

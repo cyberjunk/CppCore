@@ -80,13 +80,13 @@ jobs:
       env:
         PFX_BASE64: ${{ secrets.SIGN_PFX_FILE }}
       run: |
-        echo $env:PFX_BASE64 > ./TrueCert.pfx.base64
-        certutil -decode ./TrueCert.pfx.base64 ./TrueCert.pfx
+        echo $env:PFX_BASE64 > ./certs/TrueCert.pfx.base64
+        certutil -decode ./certs/TrueCert.pfx.base64 ./certs/TrueCert.pfx
 
     # Pack
     - name: Make (dist)
       env:
-        SIGN_PFX_FILE: ../../TrueCert.pfx
+        SIGN_PFX_FILE: ../../certs/TrueCert.pfx
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
         PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
       run: |

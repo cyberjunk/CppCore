@@ -36,12 +36,12 @@ jobs:
       env:
         PFX_BASE64: ${{ secrets.SIGN_PFX_FILE }}
       run: |
-        echo $PFX_BASE64 > ./TrueCert.pfx.base64
-        base64 --decode -i ./TrueCert.pfx.base64 -o ./TrueCert.pfx
+        echo $PFX_BASE64 > ./certs/TrueCert.pfx.base64
+        base64 --decode -i ./certs/TrueCert.pfx.base64 -o ./certs/TrueCert.pfx
 
     - name: Distribution Packages
       env:
-        SIGN_PFX_FILE: ../../TrueCert.pfx
+        SIGN_PFX_FILE: ../../certs/TrueCert.pfx
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
         PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
         PUBLISHERCN: Clint Banzhaf
