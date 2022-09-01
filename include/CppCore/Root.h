@@ -531,6 +531,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <ios>
@@ -547,18 +548,6 @@
 #include <string>
 #include <string_view>
 #include <thread>
-
-// silence experimental filesystem deprecated warnings for clang
-#ifndef _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
-#define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
-#endif
-
-// silence experimental filesystem deprecated warnings for msvc
-#ifndef _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#endif
-
-#include <experimental/filesystem>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -866,8 +855,8 @@ namespace CppCore
    using ::std::allocator_traits;
 
    // filesystem
-   using ::std::experimental::filesystem::path;
-   using ::std::experimental::filesystem::directory_iterator;
+   using ::std::filesystem::path;
+   using ::std::filesystem::directory_iterator;
 
    // deprecated: to be removed
    typedef ::std::string StdString;
