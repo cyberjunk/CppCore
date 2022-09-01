@@ -25,7 +25,7 @@ jobs:
       id: setup-ndk
       timeout-minutes: 5
       with:
-        ndk-version: r21e
+        ndk-version: r22b
 
     - name: Build
       env:
