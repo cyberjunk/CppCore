@@ -5,20 +5,22 @@
 #include <CppCore/Threading/Thread.h>
 #include <CppCore/Logger.h>
 #include <CppCore/CPUID.h>
+#include <CppCore/Resources.h>
 
 namespace CppCore
 {
    /// <summary>
    /// Application Main Class
    /// </summary>
-   template<typename TAPPLICATION, typename LOGGER = Logger>
-   class Application : public Looper, public Handler
+   template<typename TAPPLICATION, typename RESOURCES = Resources, typename LOGGER = Logger>
+   class Application : public Looper, public Handler, public RESOURCES::Callback
    {
    protected:
       Thread::Pool<Thread> mThreadPool;
       Schedule<>           mSchedule;
       LOGGER               mLogger;
       CPUID                mCPUID;
+      RESOURCES            mResources;
 
       /// <summary>
       /// Helper for casting this from template to final instance type.
@@ -44,12 +46,14 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE Application(
-         const bool    logToConsole = true, 
-         const bool    logToFile    = true, 
-         const string& logFile      = "app.log") :
+         const bool    logToConsole   = true, 
+         const bool    logToFile      = true, 
+         const string& logFile        = "app.log",
+         const string& linuxsharename = "CppCore") :
          Looper(mSchedule),
          mThreadPool(),
-         mLogger(mThreadPool, logToConsole, logToFile, logFile)
+         mLogger(mThreadPool, logToConsole, logToFile, logFile),
+         mResources(thiss(), mThreadPool, mLogger, thiss(), linuxsharename)
       {
       #if defined(CPPCORE_CPU_X86ORX64)
          this->log(std::string("CPU: ") + mCPUID.getBrand());

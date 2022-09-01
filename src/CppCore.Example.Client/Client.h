@@ -16,7 +16,7 @@ namespace CppCore { namespace Example
    /// Example Client Application using Example NetClient
    /// </summary>
    class Client : 
-      public Application<Client, Logger>, 
+      public Application<Client>, 
       public NetClient::Callback
    {
    public:

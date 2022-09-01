@@ -9,7 +9,7 @@ namespace CppCore { namespace Example
    /// Example Server Application
    /// </summary>
    class Server : 
-      public Application<Server, Logger>, 
+      public Application<Server>, 
       public NetServer::Callback
    {
    public:

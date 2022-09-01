@@ -10,7 +10,7 @@ namespace CppCore { namespace Example
    /// Example UI Application
    /// </summary>
    class Application :
-      public CppCore::Application<Application, Logger>,
+      public CppCore::Application<Application>,
       public CppCore::Window::Callback
    {
    protected:
@@ -48,7 +48,7 @@ namespace CppCore { namespace Example
       /// Constructor
       /// </summary>
       INLINE Application() : 
-         CppCore::Application<Application, Logger>(true, true, "CppCore.Example.UI.log"),
+         CppCore::Application<Application>(true, true, "CppCore.Example.UI.log"),
          mWindow(*this),
          mInput(),
          mRunUpdate([this] { runUpdate(); }, true, std::chrono::milliseconds(16))
