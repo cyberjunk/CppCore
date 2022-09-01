@@ -193,6 +193,7 @@
     </ClInclude>
     <ClInclude Include="..\..\include\CppCore\Version.h" />
     <ClInclude Include="..\..\include\CppCore\CPUID.h" />
+    <ClInclude Include="..\..\include\CppCore\Resources.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Threading">

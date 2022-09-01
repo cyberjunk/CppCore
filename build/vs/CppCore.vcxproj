@@ -81,6 +81,7 @@
     <ClInclude Include="..\..\include\CppCore\Network\TcpSocket.h" />
     <ClInclude Include="..\..\include\CppCore\PreprocessorLoop.h" />
     <ClInclude Include="..\..\include\CppCore\Random.h" />
+    <ClInclude Include="..\..\include\CppCore\Resources.h" />
     <ClInclude Include="..\..\include\CppCore\Root.h" />
     <ClInclude Include="..\..\include\CppCore\Stopwatch.h" />
     <ClInclude Include="..\..\include\CppCore\String.h" />
