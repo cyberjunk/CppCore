@@ -130,6 +130,8 @@ dist: dist-prep dist-x64 dist-arm64
 	@mkdir -p $(DISTDIR)/$(NAME).app/Contents/Resources
 	@echo [ICO] $(NAME).icns
 	@cp $(SRCDIR)/app.icns $(DISTDIR)/$(NAME).app/Contents/Resources/Icon.icns
+	@echo [RES] $(NAME)
+	@cp -r ../../resources/* $(DISTDIR)/$(NAME).app/Contents/Resources/
 	@cp $(DISTDIR)/$(NAME).Info.plist $(DISTDIR)/$(NAME).app/Contents/Info.plist
 	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME).app/Contents/Info.plist
 	@rm $(DISTDIR)/$(NAME).app/Contents/Info.plist.orig
