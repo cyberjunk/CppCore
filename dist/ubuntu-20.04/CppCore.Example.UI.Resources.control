@@ -1,0 +1,9 @@
+Package: CppCore.Example.UI.Resources
+Version: {VERSION}-1
+Section: base
+Priority: optional
+Architecture: all
+Maintainer: Clint Banzhaf <clint@banzhaf.pro>
+Description: CppCore.Example.UI Resources
+  Resources of CppCore.Example.UI.
+
