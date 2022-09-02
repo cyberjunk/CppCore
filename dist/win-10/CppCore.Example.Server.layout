@@ -1,0 +1,36 @@
+<PackagingLayout xmlns="http://schemas.microsoft.com/appx/makeappx/2017">
+  <PackageFamily 
+    ID="CppCore.Example.Server" 
+    FlatBundle="false"
+    ManifestPath="../../dist/win-10/CppCore.Example.Server/AppxManifest.xml"
+    ResourceManager="false">
+    
+    <Package ID="CppCore.Example.Server-x64" ProcessorArchitecture="x64">
+      <Files>
+        <File DestinationPath="CppCore.Example.Server.exe" SourcePath="../../build/make/bin/win-x64/CppCore.Example.Server.exe"/>
+        <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Server/app.png"/>
+      </Files>
+    </Package>
+	
+	<Package ID="CppCore.Example.Server-x86" ProcessorArchitecture="x86">
+      <Files>
+        <File DestinationPath="CppCore.Example.Server.exe" SourcePath="../../build/make/bin/win-x86/CppCore.Example.Server.exe"/>
+        <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Server/app.png"/>
+      </Files>
+    </Package>
+	
+	<Package ID="CppCore.Example.Server-arm64" ProcessorArchitecture="arm64">
+      <Files>
+        <File DestinationPath="CppCore.Example.Server.exe" SourcePath="../../build/make/bin/win-arm64/CppCore.Example.Server.exe"/>
+        <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Server/app.png"/>
+      </Files>
+    </Package>
+	
+    <AssetPackage ID="CppCore.Example.Server-res">
+      <Files>
+        <File DestinationPath="resources\**" SourcePath="../../resources/**"/>
+      </Files>
+    </AssetPackage>
+
+  </PackageFamily>
+</PackagingLayout>

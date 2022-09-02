@@ -46,42 +46,38 @@ dist-prep:
 	chcp 1252
 	echo [PUB] $(PUBLISHER)
 	echo [PFX] $(SIGN_PFX_FILE)
-	$(call rmdir,$(DISTDIR)/$(NAME))	
+	$(call rmdir,$(DISTDIR)/$(NAME))
 	$(call mkdir,$(DISTDIR)/$(NAME))
+	$(call copyfiles,$(DISTDIR)/$(NAME).appxmanifest,$(DISTDIR)/$(NAME)/AppxManifest.xml)
+	$(call replace,$(DISTDIR)/$(NAME)/AppxManifest.xml,{PUBLISHER},$(PUBLISHER),$(DISTDIR)/$(NAME)/AppxManifest.xml)
+	$(call replace,$(DISTDIR)/$(NAME)/AppxManifest.xml,{PUBLISHERID},$(PUBLISHERID),$(DISTDIR)/$(NAME)/AppxManifest.xml)
+	$(call replace,$(DISTDIR)/$(NAME)/AppxManifest.xml,{VERSION},$(VERSION4),$(DISTDIR)/$(NAME)/AppxManifest.xml)
+	$(call copyfiles,$(DISTDIR)/$(NAME).layout,$(DISTDIR)/$(NAME)/Layout.xml)
 dist-%: dist-prep
-	echo [PKG] $(NAME)-$*.appx
-	$(call rmdir,$(DISTDIR)/$(NAME)-$*)	
-	$(call mkdir,$(DISTDIR)/$(NAME)-$*)
-	$(call copyfiles,./bin/win-$*/$(NAME)$(EXTBIN),$(DISTDIR)/$(NAME)-$*/$(NAME)$(EXTBIN))
-	$(call copyfiles,$(SRCDIR)/app.png,$(DISTDIR)/$(NAME)-$*/app.png)
-	$(call copyfiles,$(DISTDIR)/$(NAME).appxmanifest,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
-	$(call replace,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml,{ARCH},$*,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
-	$(call replace,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml,{PUBLISHER},$(PUBLISHER),$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
-	$(call replace,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml,{PUBLISHERID},$(PUBLISHERID),$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
-	$(call replace,$(DISTDIR)/$(NAME)-$*/AppxManifest.xml,{VERSION},$(VERSION4),$(DISTDIR)/$(NAME)-$*/AppxManifest.xml)
-ifeq ($(SIGN_PFX_FILE),)
-	$(call makepkg,$(DISTDIR)/$(NAME)-$*,$(DISTDIR)/$(NAME)/$(NAME)-$*.appx)
-else
+	echo [SIG] ./bin/win-$*/$(NAME)$(EXTBIN)
 ifeq ($(SIGN_PFX_PASS),)
-	$(call sign,$(DISTDIR)/$(NAME)-$*/$(NAME)$(EXTBIN),$(SIGN_PFX_FILE))
-	$(call makepkgs,$(DISTDIR)/$(NAME)-$*,$(DISTDIR)/$(NAME)/$(NAME)-$*.appx,$(SIGN_PFX_FILE))	
-	$(call sign,$(DISTDIR)/$(NAME)/$(NAME)-$*.appx,$(SIGN_PFX_FILE))
+	$(call sign,./bin/win-$*/$(NAME)$(EXTBIN),$(SIGN_PFX_FILE))
 else
-	$(call signp,$(DISTDIR)/$(NAME)-$*/$(NAME)$(EXTBIN),$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
-	$(call makepkgs,$(DISTDIR)/$(NAME)-$*,$(DISTDIR)/$(NAME)/$(NAME)-$*.appx,$(SIGN_PFX_FILE))	
-	$(call signp,$(DISTDIR)/$(NAME)/$(NAME)-$*.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
-endif
+	$(call signp,./bin/win-$*/$(NAME)$(EXTBIN),$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 endif
 dist: dist-prep dist-x64 dist-x86 dist-arm64
-	echo [BDL] $(NAME).msixbundle
-	$(call makebundle,$(DISTDIR)/$(NAME),$(DISTDIR)/$(NAME).msixbundle)
-ifneq ($(SIGN_PFX_FILE),)
+	echo [BDL] $(NAME).appxbundle
+	$(call makepkg,$(DISTDIR)/$(NAME)/Layout.xml,$(DISTDIR))
+	echo [SIG] $(DISTDIR)/$(NAME).appxbundle
 ifeq ($(SIGN_PFX_PASS),)
-	$(call sign,$(DISTDIR)/$(NAME).msixbundle,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME).appxbundle,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)-x64.appx,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)-x86.appx,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)-arm64.appx,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)-res.appx,$(SIGN_PFX_FILE))
 else
-	$(call signp,$(DISTDIR)/$(NAME).msixbundle,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME).appxbundle,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)-x64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)-x86.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)-arm64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)-res.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 endif
-endif
+
 endif
 
 ##############################################################################################################
@@ -130,8 +126,6 @@ dist: dist-prep dist-x64 dist-arm64
 	@mkdir -p $(DISTDIR)/$(NAME).app/Contents/Resources
 	@echo [ICO] $(NAME).icns
 	@cp $(SRCDIR)/app.icns $(DISTDIR)/$(NAME).app/Contents/Resources/Icon.icns
-	@echo [RES] $(NAME)
-	@cp -r ../../resources/* $(DISTDIR)/$(NAME).app/Contents/Resources/
 	@cp $(DISTDIR)/$(NAME).Info.plist $(DISTDIR)/$(NAME).app/Contents/Info.plist
 	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME).app/Contents/Info.plist
 	@rm $(DISTDIR)/$(NAME).app/Contents/Info.plist.orig

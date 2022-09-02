@@ -25,14 +25,9 @@ define replace
 	powershell -Command "(gc $(subst /,\,$(1))) -replace '$(subst /,\,$(2))', '$(subst /,\,$(3))' | Out-File -encoding UTF8 $(subst /,\,$(4))"
 endef
 
-# Create APPX with global test key
+# Create APPX unencrypted
 define makepkg
-	cmd.exe /C "MakeAppx.exe pack /o /h SHA256 /d $(subst /,\,$(1)) /p $(subst /,\,$(2)) /kt >nul 2>&1"
-endef
-
-# Create APPX with specified key
-define makepkgs
-	cmd.exe /C "MakeAppx.exe pack /o /h SHA256 /d $(subst /,\,$(1)) /p $(subst /,\,$(2)) /kf $(subst /,\,$(3)) >nul 2>&1"
+	cmd.exe /C "MakeAppx.exe build /o /h SHA256 /f $(subst /,\,$(1)) /op $(subst /,\,$(2))"
 endef
 
 # Create APPXBUNDLE

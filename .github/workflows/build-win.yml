@@ -99,4 +99,5 @@ jobs:
         name: Packages (${{ matrix.os }})
         path: |
           ./dist/win-10/**/
-          ./dist/win-10/*.msixbundle
+          ./dist/win-10/*.appx
+          ./dist/win-10/*.appxbundle
