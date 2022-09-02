@@ -1,27 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package 
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
-  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" 
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
   xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" 
   xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" 
+  xmlns:uap6="http://schemas.microsoft.com/appx/manifest/uap/windows10/6" 
   xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2" 
   xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4" 
   xmlns:iot2="http://schemas.microsoft.com/appx/manifest/iot/windows10/2" 
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap mp uap4 uap5 iot2 desktop2 desktop4 rescap build" 
-  xmlns:build="http://schemas.microsoft.com/developer/appx/2015/build">
+  xmlns:build="http://schemas.microsoft.com/developer/appx/2015/build"
+  IgnorableNamespaces="uap uap4 uap5 uap6 iot2 desktop2 desktop4 rescap build" >
 
   <Identity 
     Name="a249cf1b-0356-4a8f-b45e-597fe6b2e3a7" 
 	Publisher="{PUBLISHER}" 
 	Version="{VERSION}"
 	ProcessorArchitecture="neutral"	/>
-	
-  <mp:PhoneIdentity 
-    PhoneProductId="040c868c-0ac0-4451-a4ba-e8af9e5a7f51" 
-	PhonePublisherId="00000000-0000-0000-0000-000000000000" />
-	
+
   <Properties>
     <DisplayName>CppCore.Example.UI</DisplayName>
     <PublisherDisplayName>Clint Banzhaf</PublisherDisplayName>
@@ -29,25 +25,18 @@
   </Properties>
   
   <Dependencies>
-    <TargetDeviceFamily 
-      Name="Windows.Universal" 
-      MinVersion="10.0.17134.0"
-      MaxVersionTested="10.0.20348.0" />
-    <PackageDependency 
-      Name="Microsoft.VCLibs.140.00.UWPDesktop" 
-      MinVersion="14.0.30704.0"
-      Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17134.0" MaxVersionTested="10.0.20348.0" />
   </Dependencies>
   
   <Resources>
-    <Resource Language="EN-US" />
+    <Resource Language="en-us" />
   </Resources>
   
   <Applications>
     <Application 
       Id="App" 
       Executable="CppCore.Example.UI.exe"
-      EntryPoint="CppCore.Example.UI.App" 
+	  EntryPoint="Windows.FullTrustApplication"
       desktop4:Subsystem="console" 
       desktop4:SupportsMultipleInstances="true"
       iot2:Subsystem="console"
@@ -58,44 +47,20 @@
         Square150x150Logo="app.png" 
         Square44x44Logo="app.png"
         Description="CppCore.Example.UI"
-        BackgroundColor="transparent">
-		
+        BackgroundColor="transparent">		
         <uap:DefaultTile Wide310x150Logo="app.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="wide310x150Logo" />
             <uap:ShowOn Tile="square150x150Logo" />
           </uap:ShowNameOnTiles>
-        </uap:DefaultTile>
-        
+        </uap:DefaultTile>        
 		<uap:SplashScreen Image="app.png" />
       </uap:VisualElements>
-      
-	  <Extensions>
-        <uap5:Extension 
-          Category="windows.appExecutionAlias" 
-          Executable="CppCore.Example.UI.exe" 
-          EntryPoint="CppCore.Example.UI.App">		  
-          <uap5:AppExecutionAlias desktop4:Subsystem="console" iot2:Subsystem="console">
-            <uap5:ExecutionAlias Alias="CppCore.Example.UI.exe" />
-          </uap5:AppExecutionAlias>
-        </uap5:Extension>
-      </Extensions>
+	  
     </Application>
   </Applications>
   
   <Capabilities>
-  </Capabilities>
-  
-  <build:Metadata>
-    <build:Item Name="cl.exe" Version="19.32.31332.0" />
-    <build:Item Name="VisualStudio" Version="17.0" />
-    <build:Item Name="VisualStudioEdition" Value="Microsoft Visual Studio Community 2022" />
-    <build:Item Name="OperatingSystem" Version="10.0.19041.1826 (WinBuild.160101.0800)" />
-    <build:Item Name="Microsoft.Build.AppxPackage.dll" Version="17.2.32427.441" />
-    <build:Item Name="ProjectGUID" Value="{DF58B305-1A3B-488B-B1D0-26443C40A45C}" />
-    <build:Item Name="OptimizingToolset" Value="None" />
-    <build:Item Name="TargetRuntime" Value="Native" />
-    <build:Item Name="Microsoft.Windows.UI.Xaml.Build.Tasks.dll" Version="17.0.32427.441" />
-    <build:Item Name="MakePri.exe" Version="10.0.20348.1 (WinBuild.160101.0800)" />
-  </build:Metadata>
+    <rescap:Capability Name="runFullTrust"/>
+  </Capabilities> 
 </Package>
