@@ -48,7 +48,7 @@ namespace CppCore { namespace Example
       /// Constructor
       /// </summary>
       INLINE Application() : 
-         CppCore::Application<Application>(true, true, "CppCore.Example.UI.log"),
+         CppCore::Application<Application>(true, true, "CppCore.Example.UI.log", "CppCore.Example.UI"),
          mWindow(*this),
          mInput(),
          mRunUpdate([this] { runUpdate(); }, true, std::chrono::milliseconds(16))

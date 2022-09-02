@@ -174,6 +174,14 @@ VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
 VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 dist-prep:
 	echo [VER] $(VERSION3)
+	echo [DEB] $(NAME).Resources-$(VERSION3)-1-ubuntu-$(LSBREL)-all.deb
+	mkdir -p $(DISTDIR)/$(NAME).Resources/DEBIAN
+	mkdir -p $(DISTDIR)/$(NAME).Resources/usr/share/$(NAME)
+	cp $(DISTDIR)/$(NAME).Resources.control $(DISTDIR)/$(NAME).Resources/DEBIAN/control
+	sed -i 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME).Resources/DEBIAN/control
+	cp -r ../../resources/* $(DISTDIR)/$(NAME).Resources/usr/share/$(NAME)
+	dpkg-deb --build $(DISTDIR)/$(NAME).Resources \
+	  $(DISTDIR)/$(NAME).Resources-$(VERSION3)-1-ubuntu-$(LSBREL)-all.deb > /dev/null 2>&1
 dist-%: dist-prep
 	echo [DST] $(NAME)-$*
 	$(eval DISTDEBARCH:=$(shell \

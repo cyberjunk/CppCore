@@ -20,6 +20,7 @@ namespace CppCore { namespace Example
       public NetClient::Callback
    {
    public:
+      static constexpr char APPNAME[] = "CppCore.Example.Client";
       static constexpr char LOGFILE[] = "CppCore.Example.Client.log";
 
    protected:
@@ -81,7 +82,7 @@ namespace CppCore { namespace Example
       /// Constructor
       /// </summary>
       INLINE Client() :
-         Application(true, true, LOGFILE),
+         Application(true, true, LOGFILE, APPNAME),
          mNetClient(*this, mThreadPool, *this, mLogger, *this),
          mRunnableConnect([this]() { mNetClient.connect(HOST, PORT); }),
          mRunnableDisconnect([this]() { mNetClient.disconnect(); }),

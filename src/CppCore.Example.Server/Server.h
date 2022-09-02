@@ -14,6 +14,11 @@ namespace CppCore { namespace Example
    {
    public:
       /// <summary>
+      /// Application Name
+      /// </summary>
+      static constexpr char APPNAME[] = "CppCore.Example.Server";
+
+      /// <summary>
       /// Log File
       /// </summary>
       static constexpr char LOGFILE[] = "CppCore.Example.Server.log";
@@ -76,7 +81,7 @@ namespace CppCore { namespace Example
       /// Constructor
       /// </summary>
       INLINE Server(const uint16_t port) : 
-         Application(true, true, LOGFILE),
+         Application(true, true, LOGFILE, APPNAME),
          mNetServer(port, *this, mThreadPool, mThreadPool, mLogger, *this),
          mEpochTimer([this]() { runEpochTimer(); }, true, EPOCHLENGTH)
       {

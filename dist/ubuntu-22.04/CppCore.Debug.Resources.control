@@ -1,0 +1,9 @@
+Package: CppCore.Debug.Resources
+Version: {VERSION}-1
+Section: base
+Priority: optional
+Architecture: all
+Maintainer: Clint Banzhaf <clint@banzhaf.pro>
+Description: CppCore.Debug Resources
+  Resources of CppCore.Debug.
+
