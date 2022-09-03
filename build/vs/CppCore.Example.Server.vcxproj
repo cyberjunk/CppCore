@@ -127,7 +127,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>lib\x86</AdditionalLibraryDirectories>
-      <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
+      <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -151,7 +151,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>lib\x64</AdditionalLibraryDirectories>
-      <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
+      <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -180,7 +180,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>lib\x86</AdditionalLibraryDirectories>
-      <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
+      <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -210,7 +210,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>lib\x64</AdditionalLibraryDirectories>
-      <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
+      <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

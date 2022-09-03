@@ -100,7 +100,12 @@
     <ClInclude Include="..\..\include\CppCore\Version.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\CppCore\UI\Window.cpp" />
+    <ClCompile Include="..\..\include\CppCore\UI\Window.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4E2A74EF-4332-4540-8010-A5218487ADB9}</ProjectGuid>

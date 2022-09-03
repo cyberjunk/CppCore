@@ -166,7 +166,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
+      <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -189,7 +189,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
+      <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -218,7 +218,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
+      <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -249,7 +249,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <MinimumRequiredVersion>6.00</MinimumRequiredVersion>
+      <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
