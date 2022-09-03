@@ -12,6 +12,13 @@ namespace CppCore
    class Resources : public Logger::Producer<Logger, Logger::Channel::Resources>
    {
    public:
+      static constexpr char PATHDEV1[]    = "./../../../../resources"; // e.g. $git/build/make/bin/win-x64/
+      static constexpr char PATHDEV2[]    = "./../../resources";       // e.g. $git/build/vs/
+      static constexpr char PATHDISTWIN[] = "./resources";             // Windows Distribution Packages
+      static constexpr char PATHDISTLIN[] = "/usr/share/";             // Linux Distribution Packages (+name)
+      static constexpr char PATHDISTOSX[] = "./../Resources";          // OSX Distribution Packages
+
+   public:
       class Callback
       {
       };
@@ -27,37 +34,35 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE Resources(
-         Handler& application, 
-         Handler& threadPool, 
-         Logger& logger, 
-         Callback& callback, 
+         Handler&      application, 
+         Handler&      threadPool, 
+         Logger&       logger, 
+         Callback&     callback, 
          const string& linuxsharename) :
          Logger::Producer<Logger, Logger::Channel::Resources>(logger),
          mApplication(application),
          mThreadPool(threadPool),
          mCallback(callback),
-         // default: from build output location (development)
-         // e.g. $git/build/make/bin/win-x64/
-         mPath("./../../../../resources")
+         mPath(PATHDEV1)
       {
+         // log current path (aka. working directory)
          this->log("Current Path: " + std::filesystem::current_path().u8string());
 
       #if defined(CPPCORE_OS_WINDOWS)
-         // from build projects folder
-         // e.g. $git/build/vs/
+         char name[256];
          if (!std::filesystem::exists(mPath))
-            mPath = "./../../resources";
-         // platform distribution package location
+            mPath = PATHDEV2;
          if (!std::filesystem::exists(mPath))
-            mPath = "./resources";
+            mPath = PATHDISTWIN;
+         if (!std::filesystem::exists(mPath))
+            if (DWORD len = GetModuleFileName(0, name, sizeof(name)))
+               mPath = path(name).remove_filename() / path("resources");
       #elif defined(CPPCORE_OS_LINUX)
-         // platform distribution package location
          if (!std::filesystem::exists(mPath))
-            mPath = "/usr/share/" + linuxsharename;
+            mPath = PATHDISTLIN + linuxsharename;
       #elif defined(CPPCORE_OS_OSX)
-         // platform distribution package location
          if (!std::filesystem::exists(mPath))
-            mPath = "./../Resources";
+            mPath = PATHDISTOSX;
       #endif
 
          // success
