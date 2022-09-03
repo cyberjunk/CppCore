@@ -13,7 +13,7 @@
   IgnorableNamespaces="uap uap4 uap5 uap6 iot2 desktop2 desktop4 rescap build" >
 
   <Identity 
-    Name="1a6bd186-00a8-454f-aece-87d6a548f539" 
+    Name="CppCore.Example.Server" 
 	Publisher="{PUBLISHER}" 
 	Version="{VERSION}"
 	ProcessorArchitecture="neutral"	/>
@@ -36,7 +36,7 @@
     <Application 
       Id="App" 
       Executable="CppCore.Example.Server.exe"
-	  EntryPoint="Windows.FullTrustApplication"
+	  EntryPoint="CppCore.Example.Server.App"
       desktop4:Subsystem="console" 
       desktop4:SupportsMultipleInstances="true"
       iot2:Subsystem="console"
@@ -56,11 +56,19 @@
         </uap:DefaultTile>      
 		<uap:SplashScreen Image="app.png" />
       </uap:VisualElements>
-      
+
+      <Extensions>	  
+        <uap4:Extension Category="windows.loopbackAccessRules">
+          <uap4:LoopbackAccessRules>
+            <uap4:Rule Direction="in" PackageFamilyName="CppCore.Example.Client_{PUBLISHERID}" />
+          </uap4:LoopbackAccessRules>
+        </uap4:Extension>
+      </Extensions>
     </Application>
   </Applications>
   
   <Capabilities>
-    <rescap:Capability Name="runFullTrust"/>
+    <Capability Name="internetClientServer" />
+    <Capability Name="privateNetworkClientServer" />
   </Capabilities>
 </Package>

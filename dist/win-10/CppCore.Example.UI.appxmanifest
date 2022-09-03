@@ -13,7 +13,7 @@
   IgnorableNamespaces="uap uap4 uap5 uap6 iot2 desktop2 desktop4 rescap build" >
 
   <Identity 
-    Name="a249cf1b-0356-4a8f-b45e-597fe6b2e3a7" 
+    Name="CppCore.Example.UI" 
 	Publisher="{PUBLISHER}" 
 	Version="{VERSION}"
 	ProcessorArchitecture="neutral"	/>
@@ -36,7 +36,7 @@
     <Application 
       Id="App" 
       Executable="CppCore.Example.UI.exe"
-	  EntryPoint="Windows.FullTrustApplication"
+	  EntryPoint="CppCore.Example.UI.App"
       desktop4:Subsystem="console" 
       desktop4:SupportsMultipleInstances="true"
       iot2:Subsystem="console"
@@ -61,6 +61,5 @@
   </Applications>
   
   <Capabilities>
-    <rescap:Capability Name="runFullTrust"/>
   </Capabilities> 
 </Package>

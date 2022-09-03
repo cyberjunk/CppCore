@@ -40,6 +40,8 @@ namespace CppCore
          // e.g. $git/build/make/bin/win-x64/
          mPath("./../../../../resources")
       {
+         this->log("Current Path: " + std::filesystem::current_path().u8string());
+
       #if defined(CPPCORE_OS_WINDOWS)
          // from build projects folder
          // e.g. $git/build/vs/

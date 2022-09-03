@@ -13,7 +13,7 @@
   IgnorableNamespaces="uap uap4 uap5 uap6 iot2 desktop2 desktop4 rescap build" >
 
   <Identity 
-    Name="9d74b2b9-0373-46a5-b154-d95b2b340db3" 
+    Name="CppCore.Debug" 
 	Publisher="{PUBLISHER}" 
 	Version="{VERSION}"
 	ProcessorArchitecture="neutral"	/>
@@ -36,7 +36,7 @@
     <Application 
       Id="App" 
       Executable="CppCore.Debug.exe"
-	  EntryPoint="Windows.FullTrustApplication"
+	  EntryPoint="CppCore.Debug.App"
       desktop4:Subsystem="console" 
       desktop4:SupportsMultipleInstances="true"
       iot2:Subsystem="console"
@@ -61,6 +61,5 @@
   </Applications>
   
   <Capabilities>
-    <rescap:Capability Name="runFullTrust"/>
   </Capabilities>
 </Package>
