@@ -22,21 +22,22 @@ endif
 ##############################################################################################################
 
 ifeq ($(TARGET_OS),win)
+SCRIPTSFILE=Scripts.ps1
 PUBLISHERID = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/CppCore.ps1;\
+  . $(DISTDIR)/$(SCRIPTSFILE);\
   Get-PublisherHash '$(PUBLISHER)'; }")
 VERSIONMAJOR = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/CppCore.ps1;\
+  . $(DISTDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMAJOR)'; }")
 VERSIONMINOR = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/CppCore.ps1;\
+  . $(DISTDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMINOR)'; }")
 VERSIONPATCH = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/CppCore.ps1;\
+  . $(DISTDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROPATCH)'; }")
 VERSION3 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
 VERSION4 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
