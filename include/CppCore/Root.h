@@ -556,6 +556,7 @@
 #include <signal.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <limits.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -606,6 +607,18 @@
 #define NOMINMAX
 #include <windowsx.h>
 #undef NOMINMAX
+#include <sysinfoapi.h>
+#include <WinUser.h>
+#elif defined(CPPCORE_OS_LINUX)
+#include <pwd.h>
+#elif defined(CPPCORE_OS_OSX)
+#include <pwd.h>
+#include <mach-o/dyld.h>
+#elif defined(CPPCORE_OS_ANDROID)
+#include <pwd.h>
+#elif defined(CPPCORE_OS_IPHONE)
+#include <pwd.h>
+#include <mach-o/dyld.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

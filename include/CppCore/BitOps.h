@@ -2211,9 +2211,9 @@ namespace CppCore
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_POPCNT)
       return (uint32_t)_mm_popcnt_u64(v);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
-      return __popcnt64(v);
+      return (uint32_t)__popcnt64(v);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_popcountll)
-      return __builtin_popcountll(v);
+      return (uint32_t)__builtin_popcountll(v);
    #else
       return popcnt64_generic(v);
    #endif

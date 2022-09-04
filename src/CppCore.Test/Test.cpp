@@ -223,6 +223,14 @@ int main()
    std::cout << "AVX512VPOPCNTDQ: " << (CPPCORE_CPUFEAT_AVX512VPOPCNTDQ_ENABLED ? "YES" : "NO ") << "     " << (cpuid.AVX512VPOPCNTDQ() ? "YES" : "NO") << std::endl;
 #endif
 
+   std::cout << "-------------------------------" << std::endl;
+   std::cout << "FOLDERS"                         << std::endl;
+   std::cout << "-------------------------------" << std::endl;
+   std::cout << "TEMP: " << CppCore::System::Folder::getTemp()       << std::endl;
+   std::cout << "HOME: " << CppCore::System::Folder::getHome()       << std::endl;
+   std::cout << "EXEC: " << CppCore::System::Folder::getExecutable() << std::endl;
+   std::cout << "CUR:  " << CppCore::System::Folder::getCurrent()    << std::endl;
+
    bool r;
 
    std::cout << "-------------------------------" << std::endl;
