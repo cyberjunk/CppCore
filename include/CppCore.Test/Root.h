@@ -25,6 +25,7 @@
 #include <CppCore/String.h>
 #include <CppCore/Buffer.h>
 #include <CppCore/Random.h>
+#include <CppCore/System.h>
 #include <CppCore/Network/Socket.h>
 #include <CppCore/Example/Model.h>
 
