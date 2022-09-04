@@ -60,7 +60,8 @@ namespace CppCore
          INLINE static path getHome()
          {
          #if defined(CPPCORE_OS_WINDOWS)
-            return path(::getenv("USERPROFILE"));
+            const char* p = ::getenv("USERPROFILE");
+            return p ? path(p) : path();
          #else
             struct passwd* pw = ::getpwuid(::getuid());
             return path(pw->pw_dir);
@@ -74,8 +75,8 @@ namespace CppCore
          INLINE static path getExecutable()
          {
          #if defined(CPPCORE_OS_WINDOWS)
-            char name[MAX_PATH+1];
-            const DWORD len = GetModuleFileName(0, name, sizeof(name));
+            TCHAR name[MAX_PATH+1];
+            const DWORD len = GetModuleFileName(0, name, MAX_PATH+1);
             return len ? path(name) : path();
          #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
             char name[PATH_MAX+1];
@@ -100,6 +101,24 @@ namespace CppCore
          INLINE static path getExecutablePath()
          {
             return getExecutable().remove_filename();
+         }
+
+         /// <summary>
+         /// Returns the roaming AppData path on Windows.
+         /// </summary>
+         INLINE static path getAppDataRoaming()
+         {
+            const char* p = ::getenv("APPDATA");
+            return p ? path(p) : path();
+         }
+
+         /// <summary>
+         /// Returns the local AppData path on Windows.
+         /// </summary>
+         INLINE static path getAppDataLocal()
+         {
+            const char* p = ::getenv("LOCALAPPDATA");
+            return p ? path(p) : path();
          }
       };
 
