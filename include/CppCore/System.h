@@ -2,11 +2,6 @@
 
 #include <CppCore/Root.h>
 
-#ifdef CPPCORE_OS_WINDOWS
-#include <sysinfoapi.h>
-#include <WinUser.h>
-#endif
-
 namespace CppCore
 {
    /// <summary>
@@ -35,6 +30,73 @@ namespace CppCore
       public:
          uint32_t coresphysical;
          uint32_t coreslogical;
+      };
+
+      /// <summary>
+      /// Info about Folders
+      /// </summary>
+      class Folder
+      {
+      public:
+         /// <summary>
+         /// Returns a temp path to use on this system/user.
+         /// </summary>
+         INLINE static path getTemp()
+         {
+            return std::filesystem::temp_directory_path();
+         }
+
+         /// <summary>
+         /// Returns the curren path of the process.
+         /// </summary>
+         INLINE static path getCurrent()
+         {
+            return std::filesystem::current_path();
+         }
+
+         /// <summary>
+         /// Returns the home folder of the current user.
+         /// </summary>
+         INLINE static path getHome()
+         {
+         #if defined(CPPCORE_OS_WINDOWS)
+            return path(::getenv("USERPROFILE"));
+         #else
+            struct passwd* pw = ::getpwuid(::getuid());
+            return path(pw->pw_dir);
+         #endif
+         }
+
+         /// <summary>
+         /// Returns full path with filename 
+         /// of the current executable.
+         /// </summary>
+         INLINE static path getExecutable()
+         {
+         #if defined(CPPCORE_OS_WINDOWS)
+            char name[MAX_PATH];
+            const DWORD len = GetModuleFileName(0, name, sizeof(name));
+            return len ? path(name) : path();
+         #else
+            return std::filesystem::canonical("/proc/self/exe");
+         #endif
+         }
+
+         /// <summary>
+         /// Returns the filename of the executable without a path.
+         /// </summary>
+         INLINE static path getExecutableName()
+         {
+            return getExecutable().filename();
+         }
+
+         /// <summary>
+         /// Returns the path containing the executable
+         /// </summary>
+         INLINE static path getExecutablePath()
+         {
+            return getExecutable().remove_filename();
+         }
       };
 
       /// <summary>

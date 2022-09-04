@@ -2,6 +2,7 @@
 
 #include <CppCore/Root.h>
 #include <CppCore/Logger.h>
+#include <CppCore/System.h>
 #include <CppCore/Threading/Handler.h>
 
 namespace CppCore
@@ -49,14 +50,12 @@ namespace CppCore
          this->log("Current Path: " + std::filesystem::current_path().u8string());
 
       #if defined(CPPCORE_OS_WINDOWS)
-         char name[256];
          if (!std::filesystem::exists(mPath))
             mPath = PATHDEV2;
          if (!std::filesystem::exists(mPath))
             mPath = PATHDISTWIN;
          if (!std::filesystem::exists(mPath))
-            if (DWORD len = GetModuleFileName(0, name, sizeof(name)))
-               mPath = path(name).remove_filename() / path("resources");
+            mPath = System::Folder::getExecutablePath() / path("resources");
       #elif defined(CPPCORE_OS_LINUX)
          if (!std::filesystem::exists(mPath))
             mPath = PATHDISTLIN + linuxsharename;

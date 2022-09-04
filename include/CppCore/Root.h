@@ -606,6 +606,14 @@
 #define NOMINMAX
 #include <windowsx.h>
 #undef NOMINMAX
+#include <sysinfoapi.h>
+#include <WinUser.h>
+#elif defined(CPPCORE_OS_LINUX)
+#include <pwd.h>
+#elif defined(CPPCORE_OS_OSX)
+#include <pwd.h>
+#elif defined(CPPCORE_OS_ANDROID)
+#include <pwd.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
