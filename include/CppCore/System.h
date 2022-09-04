@@ -78,7 +78,7 @@ namespace CppCore
             const DWORD len = GetModuleFileName(0, name, sizeof(name));
             return len ? path(name) : path();
          #elif defined(CPPCORE_OS_OSX)
-            char name[MAX_PATH+1];
+            char name[PATH_MAX+1];
             uint32_t size = sizeof(name);
             return _NSGetExecutablePath(name, &size) == 0 ? path(name) : path();
          #else
