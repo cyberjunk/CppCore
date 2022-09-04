@@ -610,12 +610,16 @@
 #include <WinUser.h>
 #elif defined(CPPCORE_OS_LINUX)
 #include <pwd.h>
+#include <sys/syslimits.h>
 #elif defined(CPPCORE_OS_OSX)
 #include <pwd.h>
+#include <sys/syslimits.h>
 #elif defined(CPPCORE_OS_ANDROID)
 #include <pwd.h>
+#include <sys/syslimits.h>
 #elif defined(CPPCORE_OS_IPHONE)
 #include <pwd.h>
+#include <sys/syslimits.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -74,11 +74,11 @@ namespace CppCore
          INLINE static path getExecutable()
          {
          #if defined(CPPCORE_OS_WINDOWS)
-            char name[MAX_PATH];
+            char name[MAX_PATH+1];
             const DWORD len = GetModuleFileName(0, name, sizeof(name));
             return len ? path(name) : path();
          #elif defined(CPPCORE_OS_OSX)
-            char name[MAX_PATH];
+            char name[MAX_PATH+1];
             uint32_t size = sizeof(name);
             return _NSGetExecutablePath(name, &size) == 0 ? path(name) : path();
          #else
