@@ -46,9 +46,6 @@ namespace CppCore
          mCallback(callback),
          mPath(PATHDEV1)
       {
-         // log current path (aka. working directory)
-         this->log("Current Path: " + std::filesystem::current_path().u8string());
-
       #if defined(CPPCORE_OS_WINDOWS)
          if (!std::filesystem::exists(mPath))
             mPath = PATHDEV2;

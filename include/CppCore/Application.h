@@ -61,6 +61,12 @@ namespace CppCore
             this->logError("Some enabled instructions are incompatible with your CPU.");
       #endif
 
+         // log some folders
+         this->log("Temp: " + System::Folder::getTemp().string());
+         this->log("Home: " + System::Folder::getHome().string());
+         this->log("Current: " + System::Folder::getCurrent().string());
+         this->log("Executable: " + System::Folder::getExecutablePath().string());
+
          // log thread count and ids
          stringstream s;
          s << "ThreadPool started with " << mThreadPool.getSize() << " threads: ";
