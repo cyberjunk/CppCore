@@ -613,13 +613,11 @@
 #include <pwd.h>
 #elif defined(CPPCORE_OS_OSX)
 #include <pwd.h>
-//#include <sys/syslimits.h>
 #include <mach-o/dyld.h>
 #elif defined(CPPCORE_OS_ANDROID)
 #include <pwd.h>
 #elif defined(CPPCORE_OS_IPHONE)
 #include <pwd.h>
-//#include <sys/syslimits.h>
 #include <mach-o/dyld.h>
 #endif
 
