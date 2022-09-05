@@ -1210,55 +1210,105 @@ namespace CppCore
       /// </summary>
       INLINE static void copy(void* dstmem, const void* srcmem, const size_t len)
       {
-         char* dst = (char*)dstmem;
-         char* src = (char*)srcmem;
-         const char* end = dst + len;
-      #if false && defined(CPPCORE_CPUFEAT_AVX512F)
-         while (dst + 64U <= end)
+         char*       memd = (char*)dstmem;
+         char*       mems = (char*)srcmem;
+         const char*  end = memd + len;
+         while (memd + 64U <= end)
          {
-            copy512<false>((__m512i*)dst, (__m512i*)src, 1);
-            dst += 64U; src += 64U;
+         #if defined(CPPCORE_CPUFEAT_AVX512F)
+            _mm512_storeu_si512((__m512i*)memd, _mm512_loadu_si512((__m512i*)mems)); memd += 64U; mems += 64U;
+         #elif defined(CPPCORE_CPUFEAT_AVX)
+            _mm256_storeu_si256((__m256i*)memd, _mm256_loadu_si256((__m256i*)mems)); memd += 32U; mems += 32U;
+            _mm256_storeu_si256((__m256i*)memd, _mm256_loadu_si256((__m256i*)mems)); memd += 32U; mems += 32U;
+         #elif defined(CPPCORE_CPUFEAT_SSE2)
+            _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;
+            _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;
+            _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;
+            _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;
+         #elif defined(CPPCORE_CPU_64BIT)
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+         #else
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+         #endif
          }
-      #endif
-      #if false && defined(CPPCORE_CPUFEAT_AVX)
-         while (dst + 32U <= end)
+         if (memd + 32U <= end)
          {
-            copy256<false>((__m256i*)dst, (__m256i*)src, 1);
-            dst += 32U; src += 32U;
+         #if defined(CPPCORE_CPUFEAT_AVX)
+            _mm256_storeu_si256((__m256i*)memd, _mm256_loadu_si256((__m256i*)mems)); memd += 32U; mems += 32U;
+         #elif defined(CPPCORE_CPUFEAT_SSE2)
+            _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;
+            _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;
+         #elif defined(CPPCORE_CPU_64BIT)
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+         #else
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+         #endif
          }
-      #endif
-      #if defined(CPPCORE_CPUFEAT_SSE2)
-         while (dst + 16U <= end)
+         if (memd + 16U <= end)
          {
-            copy128<false>((__m128i*)dst, (__m128i*)src, 1);
-            dst += 16U; src += 16U;
+         #if defined(CPPCORE_CPUFEAT_SSE2)
+            _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;
+         #elif defined(CPPCORE_CPU_64BIT)
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+         #else
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+         #endif
          }
-      #endif
-      #if defined(CPPCORE_CPU_64BIT)
-      #if defined(CPPCORE_CPUFEAT_SSE2)
-         if (dst + 8U <= end)
-      #else
-         while (dst + 8U <= end)
-      #endif
+         if (memd + 8U <= end)
          {
-            copy64((uint64_t*)dst, (uint64_t*)src, 1);
-            dst += 8U; src += 8U;
+         #if defined(CPPCORE_CPU_64BIT)
+            *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;
+         #else
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
+         #endif
          }
-         if (dst + 4U <= end)
-      #else
-         while (dst + 4U <= end)
-      #endif
+         if (memd + 4U <= end)
          {
-            copy32((uint32_t*)dst, (uint32_t*)src, 1);
-            dst += 4U; src += 4U;
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;
          }
-         if (dst + 2U <= end)
+         if (memd + 2U <= end)
          {
-            copy16((uint16_t*)dst, (uint16_t*)src, 1);
-            dst += 2U; src += 2U;
+            *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;
          }
-         if (dst < end)
-            copy8((uint8_t*)dst, (uint8_t*)src, 1);
+         if (memd < end)
+            *((uint8_t*)memd) = *((uint8_t*)mems);
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
