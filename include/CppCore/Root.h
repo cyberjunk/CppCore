@@ -626,6 +626,7 @@
 
 #if defined(CPPCORE_COMPILER_MSVC)
 // Memory Alignments
+#define CPPCORE_ALIGN4  __declspec(align(4))
 #define CPPCORE_ALIGN8  __declspec(align(8))
 #define CPPCORE_ALIGN16 __declspec(align(16))
 #define CPPCORE_ALIGN32 __declspec(align(32))
@@ -637,6 +638,7 @@
 #define CPPCORE_ALIGN64_INTRIN __declspec(intrin_type) CPPCORE_ALIGN64
 #else
 // Memory Alignments
+#define CPPCORE_ALIGN4  alignas(4)
 #define CPPCORE_ALIGN8  alignas(8)
 #define CPPCORE_ALIGN16 alignas(16)
 #define CPPCORE_ALIGN32 alignas(32)

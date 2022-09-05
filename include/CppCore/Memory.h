@@ -552,6 +552,33 @@ namespace CppCore
       {
          Memory::streamset128x4(mem, len, _mm_setzero_si128());
       }
+#else
+      /// <summary>
+      /// Fallback Version without Intrinsics.
+      /// len must be multiple of 16 bytes.
+      /// </summary>
+      INLINE static void streamclear128x1(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
+      }
+
+      /// <summary>
+      /// Fallback Version without Intrinsics.
+      /// len must be multiple of 32 bytes.
+      /// </summary>
+      INLINE static void streamclear128x2(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
+      }
+
+      /// <summary>
+      /// Fallback Version without Intrinsics.
+      /// len must be multiple of 64 bytes.
+      /// </summary>
+      INLINE static void streamclear128x4(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
+      }
 #endif
 
 #if defined(CPPCORE_CPUFEAT_AVX)
@@ -566,7 +593,7 @@ namespace CppCore
 
       /// <summary>
       /// Shortcut for calling streamset256x1() with zero value.
-      /// Requires AVX.
+      /// len must be multiple of 32 bytes. Requires AVX.
       /// </summary>
       INLINE static void streamclear256x1(void* mem, const size_t len)
       {
@@ -575,7 +602,7 @@ namespace CppCore
 
       /// <summary>
       /// Shortcut for calling streamset256x2() with zero value.
-      /// Requires AVX.
+      /// len must be multiple of 64 bytes. Requires AVX.
       /// </summary>
       INLINE static void streamclear256x2(void* mem, const size_t len)
       {
@@ -584,11 +611,38 @@ namespace CppCore
 
       /// <summary>
       /// Shortcut for calling streamset256x4() with zero value.
-      /// Requires AVX.
+      /// len must be multiple of 128 bytes. Requires AVX.
       /// </summary>
       INLINE static void streamclear256x4(void* mem, const size_t len)
       {
          Memory::streamset256x4(mem, len, _mm256_setzero_si256());
+      }
+#else
+      /// <summary>
+      /// Fallback Version without Intrinsics.
+      /// len must be multiple of 32 bytes.
+      /// </summary>
+      INLINE static void streamclear256x1(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
+      }
+
+      /// <summary>
+      /// Fallback Version without Intrinsics.
+      /// len must be multiple of 64 bytes.
+      /// </summary>
+      INLINE static void streamclear256x2(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
+      }
+
+      /// <summary>
+      /// Fallback Version without Intrinsics.
+      /// len must be multiple of 128 bytes.
+      /// </summary>
+      INLINE static void streamclear256x4(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
       }
 #endif
 
@@ -604,7 +658,7 @@ namespace CppCore
 
       /// <summary>
       /// Shortcut for calling streamset512x1() with zero value.
-      /// Requires AVX512.
+      /// len must be multiple of 64 bytes. Requires AVX512.
       /// </summary>
       INLINE static void streamclear512x1(void* mem, const size_t len)
       {
@@ -613,7 +667,7 @@ namespace CppCore
 
       /// <summary>
       /// Shortcut for calling streamset512x2() with zero value.
-      /// Requires AVX512.
+      /// len must be multiple of 128 bytes. Requires AVX512.
       /// </summary>
       INLINE static void streamclear512x2(void* mem, const size_t len)
       {
@@ -622,11 +676,38 @@ namespace CppCore
 
       /// <summary>
       /// Shortcut for calling streamset512x4() with zero value.
-      /// Requires AVX512.
+      /// len must be multiple of 256 bytes. Requires AVX512.
       /// </summary>
       INLINE static void streamclear512x4(void* mem, const size_t len)
       {
          Memory::streamset512x4(mem, len, _mm512_setzero_si512());
+      }
+#else
+      /// <summary>
+      /// Fallback Version without Intrinsics.
+      /// len must be multiple of 64 bytes.
+      /// </summary>
+      INLINE static void streamclear512x1(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
+      }
+
+      /// <summary>
+      /// Fallback Version without Intrinsics.
+      /// len must be multiple of 128 bytes.
+      /// </summary>
+      INLINE static void streamclear512x2(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
+      }
+
+      /// <summary>
+      /// Fallback Version without Intrinsics. 
+      /// len must be multiple of 256 bytes.
+      /// </summary>
+      INLINE static void streamclear512x4(void* mem, const size_t len)
+      {
+         Memory::clear(mem, len);
       }
 #endif
 
