@@ -1,79 +1,108 @@
 name: Build Windows
 on:
   workflow_dispatch:
-    inputs:
-      cpuflags-x64:
-        description: 'CPUFLAGS for X64'
-        type: string
-        required: false
-      cpuflags-x86:
-        description: 'CPUFLAGS for X86'
-        type: string
-        required: false
-      cpuflags-arm64:
-        description: 'CPUFLAGS for ARM64'
-        type: string
-        required: false
   workflow_call:
   push:
     branches:
       - 'master'
 jobs:
+###########################################################################
   build:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     env:
       MODE: release
       TARGET_OS: win
+      TARGET_ARCH: ${{ matrix.arch }}
       JOBS: 4
     strategy:
       fail-fast: false
       matrix:
         os: [windows-2019,windows-2022]
+        arch: [x64,x86,arm64]
     steps:
 
     # Checkout
     - name: Checkout
       uses: actions/checkout@v3
 
-    # Build X64
+    # Developer Console (X64)
     - name: MSVC Developer Console (X64)
+      if: matrix.arch == 'x64'
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: amd64
-    - name: Build (X64)
-      run: make TARGET_ARCH=x64 ${{ inputs.cpuflags-x64 }} -j${{ env.JOBS }}
 
-    # Build X86
+    # Developer Console (X86)
     - name: MSVC Developer Console (X86)
+      if: matrix.arch == 'x86'
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: amd64_x86
-    - name: Build (X86)
-      run: make TARGET_ARCH=x86 ${{ inputs.cpuflags-x86 }} -j${{ env.JOBS }}
 
-    # Build ARM64
+    # Developer Console (ARM64)
     - name: MSVC Developer Console (ARM64)
+      if: matrix.arch == 'arm64'
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: amd64_arm64
-    - name: Build (ARM64)
-      run: make TARGET_ARCH=arm64 ${{ inputs.cpuflags-arm64 }} -j${{ env.JOBS }}
 
-    # Switch back MSVC console (X64)
+    # Build
+    - name: Build
+      run: make -j${{ env.JOBS }}
+
+    # Test (X64/X86)
+    - name: Test (X64/X86)
+      if: matrix.arch == 'x64' || matrix.arch == 'x86'
+      run: .\build\make\bin\win-${{ matrix.arch }}\CppCore.Test.exe
+
+    # Upload
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: Binaries (${{ matrix.os }}-${{ matrix.arch }})
+        path: |
+          ./build/make/bin/win-${{ matrix.arch }}/*.exe
+          ./build/make/bin/win-${{ matrix.arch }}/*.dll
+###########################################################################         
+  dist:
+    needs: build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019,windows-2022]
+    steps:
+    
+    # Checkout
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Download X64 Build
+    - uses: actions/download-artifact@v2
+      with:
+        name: Binaries (${{ matrix.os }}-x64)
+        path: ./build/make/bin/win-x64/
+
+    # Download X86 Build
+    - uses: actions/download-artifact@v2
+      with:
+        name: Binaries (${{ matrix.os }}-x86)
+        path: ./build/make/bin/win-x86/
+
+    # Download ARM64 Build
+    - uses: actions/download-artifact@v2
+      with:
+        name: Binaries (${{ matrix.os }}-arm64)
+        path: ./build/make/bin/win-arm64/
+
+    # Developer Console (X64)
     - name: MSVC Developer Console (X64)
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: amd64
-
-    # Test (X64)
-    - name: Test (X64)
-      run: .\build\make\bin\win-x64\CppCore.Test.exe
-      
-    # Test (X86)
-    - name: Test (X86)
-      run: .\build\make\bin\win-x86\CppCore.Test.exe
-
+    
     # Load Code Signing Certificate
     - name: Load Code Signing Certificate
       shell: pwsh
@@ -99,6 +128,5 @@ jobs:
       with:
         name: Packages (${{ matrix.os }})
         path: |
-          ./dist/win-10/**/
           ./dist/win-10/*.appx
           ./dist/win-10/*.appxbundle
