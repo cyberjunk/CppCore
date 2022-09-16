@@ -79,16 +79,23 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    # Download
+    # Download X64 Build
     - uses: actions/download-artifact@v2
       with:
         name: Binaries (${{ matrix.os }}-x64)
+        path: ./build/make/bin/win-x64/
+
+    # Download X86 Build
     - uses: actions/download-artifact@v2
       with:
         name: Binaries (${{ matrix.os }}-x86)
+        path: ./build/make/bin/win-x86/
+
+    # Download ARM64 Build
     - uses: actions/download-artifact@v2
       with:
         name: Binaries (${{ matrix.os }}-arm64)
+        path: ./build/make/bin/win-arm64/
 
     # Developer Console (X64)
     - name: MSVC Developer Console (X64)
