@@ -88,6 +88,7 @@ jobs:
       env:
         SIGN_PFX_FILE: ../../certs/TrueCert.pfx
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
+        PUBLISHERCN: Clint Banzhaf
         PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
       run: |
         make dist -j${{ env.JOBS }}

@@ -105,7 +105,7 @@ RESO := $(patsubst %,$(OBJDIR)/%,$(RESO))
 
 $(OBJDIR)/%.res:
 	@echo [RC]  $@
-	$(RC) $(RCFLAGS) $(DEFINES) $(INCLUDES) /fo $@ $(@:$(OBJDIR)/%.res=$(SRCDIR)/%.rc)
+	$(RC) $(RCFLAGS) $(DEFINES) $(INCLUDES) -FO$@ $(@:$(OBJDIR)/%.res=$(SRCDIR)/%.rc)
 
 ################################################################################################
 
