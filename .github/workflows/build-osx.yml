@@ -8,30 +8,72 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       MODE: release
       TARGET_OS: osx
+      TARGET_ARCH: ${{ matrix.arch }}
       JOBS: 4
     strategy:
       fail-fast: false
       matrix:
         os: [macos-11,macos-12]
+        arch: [x64,arm64]
     steps:
+
+    # Checkout
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Versions
-      run: |
-        make -v
-        clang++ -v
+    # Build
+    - name: Build
+      run: make -j${{ env.JOBS }}
 
-    - name: Build (X64)
-      run: make TARGET_ARCH=x64 -j${{ env.JOBS }}
+    # Test (X64)
+    - name: Test (X64)
+      if: matrix.arch == 'x64'
+      run: ./build/make/bin/osx-x64/CppCore.Test
 
-    - name: Build (ARM64)
-      run: make TARGET_ARCH=arm64 -j${{ env.JOBS }}
+    # Upload
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: Binaries (${{ matrix.os }}-${{ matrix.arch }})
+        path: |
+          ./build/make/bin/osx-${{ matrix.arch }}/*
+          !./build/make/bin/osx-${{ matrix.arch }}/.gitignore
 
+###########################################################################
+
+  dist:
+    needs: build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-11,macos-12]
+    steps:
+
+    # Checkout
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Download X64 Build
+    - name: Download X64 Build
+      uses: actions/download-artifact@v2
+      with:
+        name: Binaries (${{ matrix.os }}-x64)
+        path: ./build/make/bin/osx-x64/
+
+    # Download ARM64 Build
+    - name: Download ARM64 Build
+      uses: actions/download-artifact@v2
+      with:
+        name: Binaries (${{ matrix.os }}-arm64)
+        path: ./build/make/bin/osx-arm64/
+
+    # Load Code Signing Certificate
     - name: Load Code Signing Certificate
       env:
         PFX_BASE64: ${{ secrets.SIGN_PFX_FILE }}
@@ -39,6 +81,7 @@ jobs:
         echo $PFX_BASE64 > ./certs/TrueCert.pfx.base64
         base64 --decode -i ./certs/TrueCert.pfx.base64 -o ./certs/TrueCert.pfx
 
+    # Pack
     - name: Distribution Packages
       env:
         SIGN_PFX_FILE: ../../certs/TrueCert.pfx
@@ -46,10 +89,8 @@ jobs:
         PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
         PUBLISHERCN: Clint Banzhaf
       run: make dist
-      
-    - name: Test
-      run: ./dist/osx-10.15/CppCore.Test.app/Contents/MacOS/CppCore.Test
 
+    # Upload
     - name: Upload
       uses: actions/upload-artifact@v3
       with:
