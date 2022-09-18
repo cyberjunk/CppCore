@@ -8,31 +8,34 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 60
     env:
       MODE: release
       TARGET_OS: android
+      TARGET_ARCH: ${{ matrix.arch }}
+      JOBS: 4
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest,macos-latest]
+        os: [windows-2019,macos-11]
+        arch: [x64,x86,arm64,arm]
+        ndk: [r25b]
     steps:
+    
+    # Checkout
     - name: Checkout
       uses: actions/checkout@v3
 
+    # Android NDK
     - name: Android NDK
       uses: nttld/setup-ndk@v1
       id: setup-ndk
-      timeout-minutes: 5
+      timeout-minutes: 10
       with:
-        ndk-version: r25b
+        ndk-version: ${{ matrix.ndk }}
 
+    # Build
     - name: Build
       env:
         ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-      run: |
-        make -v
-        make TARGET_ARCH=x64 -j4
-        make TARGET_ARCH=x86 -j4
-        make TARGET_ARCH=arm64 -j4
-        make TARGET_ARCH=arm -j4
+      run: make -j${{ env.JOBS }}
