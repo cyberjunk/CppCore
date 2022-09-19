@@ -93,31 +93,20 @@ jobs:
         make -v
         make -j${{ env.JOBS }}
 
-
-    # Binary Info (CppCore.Example.Server)
+    # Binary Info
     - name: Binary Info (CppCore.Example.Server)
       if: matrix.arch == 'amd64' || matrix.arch == 'i386'
-      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.Server
-
-    # Binary Info (CppCore.Example.Client)
-    - name: Binary Info (CppCore.Example.Client)
-      if: matrix.arch == 'amd64' || matrix.arch == 'i386'
-      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.Client
-
-    # Binary Info (CppCore.Example.UI)
-    - name: Binary Info (CppCore.Example.UI)
-      if: matrix.arch == 'amd64' || matrix.arch == 'i386'
-      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.UI
-
-    # Binary Info (CppCore.Test)
-    - name: Binary Info (CppCore.Test)
-      if: matrix.arch == 'amd64' || matrix.arch == 'i386'
-      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Test
-
-    # Binary Info (CppCore.Debug)
-    - name: Binary Info (CppCore.Debug)
-      if: matrix.arch == 'amd64' || matrix.arch == 'i386'
-      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Debug
+      run: |
+        echo CppCore.Example.Server
+        ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.Server
+        echo CppCore.Example.Client
+        ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.Client
+        echo CppCore.Example.UI
+        ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.UI
+        echo CppCore.Test
+        ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Test
+        echo CppCore.Debug
+        ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Debug
 
     # Test
     - name: Test
