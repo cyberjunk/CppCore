@@ -8,19 +8,23 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 60
     env:
       MODE: release
       TARGET_OS: ios
-      TARGET_ARCH: arm64
+      TARGET_ARCH: ${{ matrix.arch }}
       JOBS: 4
     strategy:
       fail-fast: false
       matrix:
         os: [macos-11,macos-12]
+        arch: [arm64]
     steps:
+
+    # Checkout
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Make (build)
+    # Build
+    - name: Build
       run: make -j${{ env.JOBS }}
