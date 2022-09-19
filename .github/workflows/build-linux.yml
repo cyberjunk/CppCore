@@ -94,7 +94,7 @@ jobs:
         make -j${{ env.JOBS }}
 
     # Binary Info
-    - name: Binary Info (CppCore.Example.Server)
+    - name: Binary Info
       if: matrix.arch == 'amd64' || matrix.arch == 'i386'
       run: |
         echo CppCore.Example.Server
