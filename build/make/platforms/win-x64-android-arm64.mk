@@ -1,5 +1,8 @@
 # Requires NDK 22b or later
 
+# Replace any backlash in NDK home
+ANDROID_NDK_HOME := $(subst \,/,$(ANDROID_NDK_HOME))
+
 # Android Specific
 ANDROID_API         = 21
 ANDROID_TOOLCHAIN   = $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/windows-x86_64

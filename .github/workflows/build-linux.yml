@@ -25,7 +25,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       MODE: release
       TARGET_OS: linux
@@ -37,22 +37,28 @@ jobs:
         os: [ubuntu-20.04, ubuntu-22.04]
         arch: [amd64, i386, arm64, armhf]
     steps:
+
+    # Checkout
     - name: Checkout
       uses: actions/checkout@v3
 
+    # Cross-Compile Support
     - name: Cross-Compile Support
       uses: cyberjunk/gha-ubuntu-cross@v1
       if: matrix.arch != 'amd64'
       with:
         arch: ${{ matrix.arch }}
 
+    # Ubuntu Packages
     - name: Ubuntu Packages
       run: sudo apt-get install llvm libx11-dev:$ARCH
     
+    # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
       if: matrix.arch == 'arm64' || matrix.arch == 'armhf' || matrix.arch == 'armel' 
       run: sudo apt-get install qemu-user qemu-user-static
 
+    # Set Environment Vars
     - name: Set Environment Vars
       run: |
         if [ $ARCH == amd64 ]; then \
@@ -75,7 +81,8 @@ jobs:
           echo "TARGET=arm-linux-gnueabihf" >> $GITHUB_ENV; \
           echo "${{ inputs.cpuflags-arm }}" >> $GITHUB_ENV; \
         fi
-      
+
+    # Build
     - name: Build
       run: |
         echo MODE: $MODE
@@ -85,13 +92,37 @@ jobs:
         clang++ --target=$TARGET -v
         make -v
         make -j${{ env.JOBS }}
-        
+
+
+    # Binary Info (CppCore.Example.Server)
+    - name: Binary Info (CppCore.Example.Server)
+      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.Server
+
+    # Binary Info (CppCore.Example.Client)
+    - name: Binary Info (CppCore.Example.Client)
+      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.Client
+
+    # Binary Info (CppCore.Example.UI)
+    - name: Binary Info (CppCore.Example.UI)
+      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Example.UI
+
+    # Binary Info (CppCore.Test)
+    - name: Binary Info (CppCore.Test)
+      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Test
+
+    # Binary Info (CppCore.Debug)
+    - name: Binary Info (CppCore.Debug)
+      run: ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Debug
+
+    # Test
     - name: Test
       run: ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Test
 
+    # Make (dist)
     - name: Make (dist)
       run: make dist -j${{ env.JOBS }}
-      
+
+    # Upload   
     - name: Upload
       uses: actions/upload-artifact@v3
       with:
