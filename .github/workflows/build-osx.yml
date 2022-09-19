@@ -29,6 +29,15 @@ jobs:
     - name: Build
       run: make -j${{ env.JOBS }}
 
+    # Binary Info
+    - name: Binary Info
+      run: |
+        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Server
+        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Client
+        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.UI
+        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Test
+        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Debug
+
     # Test (X64)
     - name: Test (X64)
       if: matrix.arch == 'x64'
