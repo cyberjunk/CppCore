@@ -64,12 +64,12 @@ jobs:
       run: dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.UI.exe
 
     # Binary Info (CppCore.Test)
-    - name: Binary Info (CppCore.Example.Test)
-      run: dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.Test.exe
+    - name: Binary Info (CppCore.Test)
+      run: dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.exe
 
     # Binary Info (CppCore.Debug)
-    - name: Binary Info (CppCore.Example.Debug)
-      run: dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.Debug.exe
+    - name: Binary Info (CppCore.Debug)
+      run: dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.exe
 
     # Test (X64/X86)
     - name: Test (X64/X86)
