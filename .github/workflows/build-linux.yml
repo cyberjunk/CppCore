@@ -44,14 +44,14 @@ jobs:
 
     # Cross-Compile Support
     - name: Cross-Compile Support
-      uses: cyberjunk/gha-ubuntu-cross@v1
+      uses: cyberjunk/gha-ubuntu-cross@feature/improvements
       if: matrix.arch != 'amd64'
       with:
         arch: ${{ matrix.arch }}
 
     # Ubuntu Packages
     - name: Ubuntu Packages
-      run: sudo apt-get install llvm libx11-dev:$ARCH
+      run: sudo apt-get install clang llvm libx11-dev:$ARCH
     
     # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
