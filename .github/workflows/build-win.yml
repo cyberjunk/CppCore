@@ -54,11 +54,11 @@ jobs:
     # Binary Info
     - name: Binary Info
       run: |
-        dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.Server.exe
-        dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.Client.exe
-        dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.UI.exe
-        dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.exe
-        dumpbin /dependents ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.exe
+        dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.Server.exe
+        dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.Client.exe
+        dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.UI.exe
+        dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.exe
+        dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.exe
 
     # Upload
     - name: Upload
