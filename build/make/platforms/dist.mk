@@ -12,6 +12,11 @@ endif
 # set this from ENV to enable PKG signing on OSX
 #PRODUCTSIGNCN =
 
+# set this from ENV to enable notarization of signed PKG on OSX
+#APPLE_ID           =
+#APPLE_TEAM_ID      =
+#APPLE_APPSPEC_PASS =
+
 # default key if not specified
 ifeq ($(SIGN_PFX_FILE),)
 SIGN_PFX_FILE = ../../certs/DevCert.pfx
@@ -139,6 +144,7 @@ dist: dist-prep dist-x64 dist-arm64
 	  --sign "$(PUBLISHERCN)" \
 	  --keychain $(KEYCHAIN) \
 	  --timestamp \
+	  --options runtime \
 	  $(DISTDIR)/$(NAME).app
 	@echo [VFY] $(NAME).app
 	@codesign -vvvd $(DISTDIR)/$(NAME).app
@@ -166,6 +172,13 @@ ifneq ($(PRODUCTSIGNCN),)
 	  --keychain $(KEYCHAIN) \
 	  $(DISTDIR)/$(NAME).pkg \
 	  $(DISTDIR)/$(NAME)-sig.pkg
+ifneq ($(APPLE_ID),)
+	@xcrun notarytool submit $(DISTDIR)/$(NAME)-sig.pkg \
+	  --apple-id=$(APPLE_ID) \
+	  --team-id=$(APPLE_TEAM_ID) \
+	  --password=$(APPLE_APPSPEC_PASS) \
+	  --wait
+endif
 endif
 endif
 

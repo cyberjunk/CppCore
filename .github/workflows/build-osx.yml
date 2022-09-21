@@ -98,6 +98,9 @@ jobs:
         PUBLISHER: "CN=Developer ID Application: Clint Banzhaf (43RQ46H6CR)"
         PUBLISHERCN: "Developer ID Application: Clint Banzhaf (43RQ46H6CR)"
         PRODUCTSIGNCN: "Developer ID Installer: Clint Banzhaf (43RQ46H6CR)"
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        APPLE_APPSPEC_PASS: ${{ secrets.APPLE_APPSPEC_PASS }}
       run: make dist
 
     # Upload
