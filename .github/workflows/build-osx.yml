@@ -95,7 +95,6 @@ jobs:
       env:
         SIGN_PFX_FILE: ../../certs/TrueCert.pfx
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS_OSX }}
-        PUBLISHER: "CN=Developer ID Application: Clint Banzhaf (43RQ46H6CR)"
         PUBLISHERCN: "Developer ID Application: Clint Banzhaf (43RQ46H6CR)"
         PRODUCTSIGNCN: "Developer ID Installer: Clint Banzhaf (43RQ46H6CR)"
         APPLE_ID: ${{ secrets.APPLE_ID }}
@@ -153,12 +152,8 @@ jobs:
       env:
         SIGN_PFX_FILE: ../../certs/TrueCert.pfx
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS_OSX }}
-        PUBLISHER: "CN=3rd Party Mac Developer Application: Clint Banzhaf (43RQ46H6CR)"
         PUBLISHERCN: "3rd Party Mac Developer Application: Clint Banzhaf (43RQ46H6CR)"
         PRODUCTSIGNCN: "3rd Party Mac Developer Installer: Clint Banzhaf (43RQ46H6CR)"
-        APPLE_ID: ${{ secrets.APPLE_ID }}
-        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        APPLE_APPSPEC_PASS: ${{ secrets.APPLE_APPSPEC_PASS }}
       run: make dist
 
     # Upload
