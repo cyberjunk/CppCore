@@ -95,7 +95,6 @@ jobs:
       env:
         SIGN_PFX_FILE: ../../certs/TrueCert.pfx
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS_OSX }}
-        PUBLISHER: "CN=Developer ID Application: Clint Banzhaf (43RQ46H6CR)"
         PUBLISHERCN: "Developer ID Application: Clint Banzhaf (43RQ46H6CR)"
         PRODUCTSIGNCN: "Developer ID Installer: Clint Banzhaf (43RQ46H6CR)"
         APPLE_ID: ${{ secrets.APPLE_ID }}
@@ -108,4 +107,58 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Packages (${{ matrix.os }})
-        path: ./dist/osx-10.15/*.pkg
+        path: ./dist/osx-10.15/*-sig.pkg
+
+###########################################################################
+ 
+  dist-store:
+    needs: build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-11,macos-12]
+    steps:
+
+    # Checkout
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Download X64 Build
+    - name: Download X64 Build
+      uses: actions/download-artifact@v2
+      with:
+        name: Binaries (${{ matrix.os }}-x64)
+        path: ./build/make/bin/osx-x64/
+
+    # Download ARM64 Build
+    - name: Download ARM64 Build
+      uses: actions/download-artifact@v2
+      with:
+        name: Binaries (${{ matrix.os }}-arm64)
+        path: ./build/make/bin/osx-arm64/
+
+    # Load Code Signing Certificate
+    - name: Load Code Signing Certificate
+      env:
+        PFX_BASE64: ${{ secrets.SIGN_PFX_FILE_OSX }}
+      run: |
+        echo $PFX_BASE64 > ./certs/TrueCert.pfx.base64
+        base64 --decode -i ./certs/TrueCert.pfx.base64 -o ./certs/TrueCert.pfx
+
+    # Pack
+    - name: Distribution Packages
+      env:
+        SIGN_PFX_FILE: ../../certs/TrueCert.pfx
+        SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS_OSX }}
+        PUBLISHERCN: "3rd Party Mac Developer Application: Clint Banzhaf (43RQ46H6CR)"
+        PRODUCTSIGNCN: "3rd Party Mac Developer Installer: Clint Banzhaf (43RQ46H6CR)"
+      run: make dist
+
+    # Upload
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: Packages Store (${{ matrix.os }})
+        path: ./dist/osx-10.15/*-sig.pkg
