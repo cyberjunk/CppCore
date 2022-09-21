@@ -85,7 +85,7 @@ jobs:
     # Load Code Signing Certificate
     - name: Load Code Signing Certificate
       env:
-        PFX_BASE64: ${{ secrets.SIGN_PFX_FILE }}
+        PFX_BASE64: ${{ secrets.SIGN_PFX_FILE_OSX }}
       run: |
         echo $PFX_BASE64 > ./certs/TrueCert.pfx.base64
         base64 --decode -i ./certs/TrueCert.pfx.base64 -o ./certs/TrueCert.pfx
@@ -94,9 +94,10 @@ jobs:
     - name: Distribution Packages
       env:
         SIGN_PFX_FILE: ../../certs/TrueCert.pfx
-        SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
-        PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
-        PUBLISHERCN: Clint Banzhaf
+        SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS_OSX }}
+        PUBLISHER: "CN=3rd Party Mac Developer Application: Clint Banzhaf (43RQ46H6CR)"
+        PUBLISHERCN: "3rd Party Mac Developer Application: Clint Banzhaf (43RQ46H6CR)"
+        PRODUCTSIGNCN: "3rd Party Mac Developer Installer: Clint Banzhaf (43RQ46H6CR)"
       run: make dist
 
     # Upload

@@ -9,6 +9,9 @@ ifeq ($(PUBLISHER),)
 PUBLISHER = CN=CppCore Developer
 endif
 
+# set this from ENV to enable PKG signing on OSX
+#PRODUCTSIGNCN =
+
 # default key if not specified
 ifeq ($(SIGN_PFX_FILE),)
 SIGN_PFX_FILE = ../../certs/DevCert.pfx
@@ -156,12 +159,14 @@ dist: dist-prep dist-x64 dist-arm64
 	  $(DISTDIR)/$(NAME).pkg
 	@echo [FIL] $(NAME).pkg
 	@pkgutil --payload-files $(DISTDIR)/$(NAME).pkg
+ifneq ($(PRODUCTSIGNCN),)
 	@echo [SIG] $(NAME).pkg
-#	@productsign \
-	  --sign "$(PUBLISHERCN)" \
+	@productsign \
+	  --sign "$(PRODUCTSIGNCN)" \
 	  --keychain $(KEYCHAIN) \
 	  $(DISTDIR)/$(NAME).pkg \
 	  $(DISTDIR)/$(NAME)-sig.pkg
+endif
 endif
 
 ##############################################################################################################
