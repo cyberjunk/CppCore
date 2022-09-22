@@ -185,9 +185,9 @@ ifneq ($(APPLE_ID),)
 	@bash -c "\
 	  export NOTARYID=\$$(cat $(DISTDIR)/$(NAME).notary.id);\
 	  xcrun notarytool log \$$NOTARYID \
-	  --apple-id=$(APPLE_ID) \
-	  --team-id=$(APPLE_TEAM_ID) \
-	  --password=$(APPLE_APPSPEC_PASS)"
+	    --apple-id=$(APPLE_ID) \
+	    --team-id=$(APPLE_TEAM_ID) \
+	    --password=$(APPLE_APPSPEC_PASS)"
 endif
 endif
 endif
