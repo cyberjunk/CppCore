@@ -100,6 +100,7 @@ jobs:
         APPLE_ID: ${{ secrets.APPLE_ID }}
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         APPLE_APPSPEC_PASS: ${{ secrets.APPLE_APPSPEC_PASS }}
+        APPLE_DIST_STORE: false
       run: make dist
 
     # Upload
@@ -154,6 +155,10 @@ jobs:
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS_OSX }}
         PUBLISHERCN: "3rd Party Mac Developer Application: Clint Banzhaf (43RQ46H6CR)"
         PRODUCTSIGNCN: "3rd Party Mac Developer Installer: Clint Banzhaf (43RQ46H6CR)"
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        APPLE_APPSPEC_PASS: ${{ secrets.APPLE_APPSPEC_PASS }}
+        APPLE_DIST_STORE: false
       run: make dist
 
     # Upload
