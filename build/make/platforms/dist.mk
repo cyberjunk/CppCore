@@ -168,7 +168,7 @@ else
 	@codesign --verify -vvvvd $(DISTDIR)/$(NAME)/$(NAME).app
 	@echo [PKG] $(NAME).pkg
 	@pkgbuild \
-      --version $(VERSION3) \
+	  --version $(VERSION3) \
 	  --root $(DISTDIR)/$(NAME) \
 	  --install-location /Applications \
 	  --component-plist $(DISTDIR)/$(NAME).Component.plist \
