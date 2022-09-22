@@ -13,9 +13,10 @@ endif
 #PRODUCTSIGNCN =
 
 # set this from ENV to enable notarization of signed PKG on OSX
-#APPLE_ID           =
-#APPLE_TEAM_ID      =
-#APPLE_APPSPEC_PASS =
+#APPLE_ID           = someone@somewhere.com
+#APPLE_TEAM_ID      = see https://developer.apple.com/account/#!/membership/
+#APPLE_APPSPEC_PASS = app-specific-password-for someone@somwhere.com
+#APPLE_DIST_STORE   = true if building packages for macOS store
 
 # default key if not specified
 ifeq ($(SIGN_PFX_FILE),)
@@ -126,19 +127,20 @@ dist-%: dist-prep
 	@echo [DST] $(NAME)-$*
 dist: dist-prep dist-x64 dist-arm64
 	@echo [MKD] $(NAME).app/Contents/MacOS
-	@mkdir -p $(DISTDIR)/$(NAME).app/Contents/MacOS
+	@mkdir -p $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS
 	@echo [LIP] $(NAME)$(EXTBIN)
-	@lipo -create -output $(OUTDIST) \
+	@lipo -create -output $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME) \
 	  ./bin/osx-x64/$(NAME)$(EXTBIN) \
 	  ./bin/osx-arm64/$(NAME)$(EXTBIN)
-	@chmod +x $(OUTDIST)
+	@chmod +x $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
 	@echo [MKD] $(NAME).app/Contents/Resources
-	@mkdir -p $(DISTDIR)/$(NAME).app/Contents/Resources
+	@mkdir -p $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Resources
 	@echo [ICO] $(NAME).icns
-	@cp $(SRCDIR)/app.icns $(DISTDIR)/$(NAME).app/Contents/Resources/Icon.icns
-	@cp $(DISTDIR)/$(NAME).Info.plist $(DISTDIR)/$(NAME).app/Contents/Info.plist
-	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME).app/Contents/Info.plist
-	@rm $(DISTDIR)/$(NAME).app/Contents/Info.plist.orig
+	@cp $(SRCDIR)/app.icns $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Resources/Icon.icns
+	@cp $(DISTDIR)/$(NAME).Info.plist $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist
+	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist
+	@rm $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist.orig
+ifeq ($(APPLE_DIST_STORE),true)
 	@echo [SIG] $(NAME).app
 	@codesign --verbose \
 	  --sign "$(PUBLISHERCN)" \
@@ -146,25 +148,32 @@ dist: dist-prep dist-x64 dist-arm64
 	  --timestamp \
 	  --options runtime \
 	  --entitlements $(DISTDIR)/$(NAME).Entitlements.plist \
-	  $(DISTDIR)/$(NAME).app
+	  $(DISTDIR)/$(NAME)/$(NAME).app
 	@echo [VFY] $(NAME).app
-	@codesign -vvvd $(DISTDIR)/$(NAME).app
+	@codesign --verify -vvvvd $(DISTDIR)/$(NAME)/$(NAME).app
+	@echo [PKG] $(NAME).pkg
+	@productbuild \
+      --version $(VERSION3) \
+	  --component $(DISTDIR)/$(NAME)/$(NAME).app /Applications \
+	  $(DISTDIR)/$(NAME).pkg
+else
+	@echo [SIG] $(NAME).app
+	@codesign --verbose \
+	  --sign "$(PUBLISHERCN)" \
+	  --keychain $(KEYCHAIN) \
+	  --timestamp \
+	  --options runtime \
+	  $(DISTDIR)/$(NAME)/$(NAME).app
+	@echo [VFY] $(NAME).app
+	@codesign --verify -vvvvd $(DISTDIR)/$(NAME)/$(NAME).app
 	@echo [PKG] $(NAME).pkg
 	@pkgbuild \
-	  --analyze \
-	  --root $(DISTDIR)/$(NAME).app \
-	  $(DISTDIR)/$(NAME).component.plist
-	@pkgbuild \
-	  --identifier $(NAME).app \
       --version $(VERSION3) \
-	  --root $(DISTDIR)/$(NAME).app \
-	  --install-location /Applications/$(NAME).app \
-	  --component-plist $(DISTDIR)/$(NAME).component.plist \
+	  --root $(DISTDIR)/$(NAME) \
+	  --install-location /Applications \
+	  --component-plist $(DISTDIR)/$(NAME).Component.plist \
 	  $(DISTDIR)/$(NAME).pkg
-#	@productbuild --component \
-	  $(DISTDIR)/$(NAME).app \
-	  /Applications/$(NAME).app \
-	  $(DISTDIR)/$(NAME).pkg
+endif
 	@echo [FIL] $(NAME).pkg
 	@pkgutil --payload-files $(DISTDIR)/$(NAME).pkg
 ifneq ($(PRODUCTSIGNCN),)
@@ -172,9 +181,17 @@ ifneq ($(PRODUCTSIGNCN),)
 	@productsign \
 	  --sign "$(PRODUCTSIGNCN)" \
 	  --keychain $(KEYCHAIN) \
+	  --timestamp \
 	  $(DISTDIR)/$(NAME).pkg \
 	  $(DISTDIR)/$(NAME)-sig.pkg
 ifneq ($(APPLE_ID),)
+ifeq ($(APPLE_DIST_STORE),true)
+	@xcrun altool --validate-app \
+	  -f $(DISTDIR)/$(NAME)-sig.pkg \
+	  -t macOS \
+	  -u $(APPLE_ID) \
+	  -p $(APPLE_APPSPEC_PASS)
+else
 	@xcrun notarytool submit $(DISTDIR)/$(NAME)-sig.pkg \
 	  --apple-id=$(APPLE_ID) \
 	  --team-id=$(APPLE_TEAM_ID) \
@@ -189,6 +206,7 @@ ifneq ($(APPLE_ID),)
 	    --apple-id=$(APPLE_ID) \
 	    --team-id=$(APPLE_TEAM_ID) \
 	    --password=$(APPLE_APPSPEC_PASS)"
+endif
 endif
 endif
 endif

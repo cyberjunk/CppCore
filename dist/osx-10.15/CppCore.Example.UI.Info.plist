@@ -5,7 +5,7 @@
 	<key>CFBundleName</key>
 	<string>CppCore.Example.UI</string>
 	<key>CFBundleIdentifier</key>
-	<string>pro.banzhaf.CppCore.Example.UI</string>
+	<string>pro.banzhaf.cppcore.example.ui</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>CFBundleInfoDictionaryVersion</key>
