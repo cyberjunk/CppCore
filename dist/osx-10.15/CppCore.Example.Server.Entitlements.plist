@@ -6,5 +6,9 @@
   <true/>
   <key>com.apple.security.network.server</key>
   <true/>
+  <key>com.apple.application-identifier</key>
+  <string>43RQ46H6CR.pro.banzhaf.cppcore.example.server</string>
+  <key>com.apple.developer.team-identifier</key>
+  <string>43RQ46H6CR</string>
 </dict>
 </plist>
