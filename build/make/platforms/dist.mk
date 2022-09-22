@@ -178,7 +178,16 @@ ifneq ($(APPLE_ID),)
 	  --apple-id=$(APPLE_ID) \
 	  --team-id=$(APPLE_TEAM_ID) \
 	  --password=$(APPLE_APPSPEC_PASS) \
-	  --wait
+	  --wait | tee $(DISTDIR)/$(NAME).notary.log
+	@cat $(DISTDIR)/$(NAME).notary.log | \
+	  grep -E -o -m1 'id: .{36}' | \
+	  sed 's/id: //g' > $(DISTDIR)/$(NAME).notary.id
+	@bash -c "\
+	  export NOTARYID=\$$(cat $(DISTDIR)/$(NAME).notary.id);\
+	  xcrun notarytool log \$$NOTARYID \
+	  --apple-id=$(APPLE_ID) \
+	  --team-id=$(APPLE_TEAM_ID) \
+	  --password=$(APPLE_APPSPEC_PASS)"
 endif
 endif
 endif
