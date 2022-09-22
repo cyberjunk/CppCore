@@ -138,6 +138,7 @@ dist: dist-prep dist-x64 dist-arm64
 	@echo [ICO] $(NAME).icns
 	@cp $(SRCDIR)/app.icns $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Resources/Icon.icns
 	@cp $(DISTDIR)/$(NAME).Info.plist $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist
+	@cp $(DISTDIR)/$(NAME).provisionprofile $(DISTDIR)/$(NAME)/$(NAME).app/Contents/embedded.provisionprofile
 	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist
 	@rm $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist.orig
 ifeq ($(APPLE_DIST_STORE),true)
