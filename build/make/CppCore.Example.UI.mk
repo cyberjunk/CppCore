@@ -114,7 +114,7 @@ build: $(OBJS) $(RESO)
 	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(OUT)
 ifeq ($(MODE),release)
 	@echo [STR] $(OUT)
-	$(STRIP) $(STRIPFLAGS) $(OUT)
+#	$(STRIP) $(STRIPFLAGS) $(OUT)
 endif
 	
 clean:
