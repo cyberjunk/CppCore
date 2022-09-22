@@ -145,7 +145,6 @@ dist: dist-prep dist-x64 dist-arm64
 	  --keychain $(KEYCHAIN) \
 	  --timestamp \
 	  --options runtime \
-	  --entitlements $(DISTDIR)/$(NAME).Entitlements.plist \
 	  $(DISTDIR)/$(NAME).app
 	@echo [VFY] $(NAME).app
 	@codesign -vvvd $(DISTDIR)/$(NAME).app
