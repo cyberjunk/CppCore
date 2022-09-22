@@ -140,7 +140,7 @@ dist: dist-prep dist-x64 dist-arm64
 	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME).app/Contents/Info.plist
 	@rm $(DISTDIR)/$(NAME).app/Contents/Info.plist.orig
 	@echo [SIG] $(NAME).app
-	@codesign -v \
+	@codesign --verbose \
 	  --sign "$(PUBLISHERCN)" \
 	  --keychain $(KEYCHAIN) \
 	  --timestamp \
@@ -156,6 +156,7 @@ dist: dist-prep dist-x64 dist-arm64
 	  $(DISTDIR)/$(NAME).component.plist
 	@pkgbuild \
 	  --identifier $(NAME).app \
+      --version $(VERSION3) \
 	  --root $(DISTDIR)/$(NAME).app \
 	  --install-location /Applications/$(NAME).app \
 	  --component-plist $(DISTDIR)/$(NAME).component.plist \
