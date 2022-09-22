@@ -186,12 +186,14 @@ ifneq ($(PRODUCTSIGNCN),)
 	  $(DISTDIR)/$(NAME)-sig.pkg
 ifneq ($(APPLE_ID),)
 ifeq ($(APPLE_DIST_STORE),true)
+	@echo [VAL] $(NAME)-sig.pkg
 	@xcrun altool --validate-app \
 	  -f $(DISTDIR)/$(NAME)-sig.pkg \
 	  -t macOS \
 	  -u $(APPLE_ID) \
 	  -p $(APPLE_APPSPEC_PASS)
 else
+	@echo [VAL] $(NAME)-sig.pkg
 	@xcrun notarytool submit $(DISTDIR)/$(NAME)-sig.pkg \
 	  --apple-id=$(APPLE_ID) \
 	  --team-id=$(APPLE_TEAM_ID) \
