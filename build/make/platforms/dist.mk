@@ -153,7 +153,7 @@ ifeq ($(APPLE_DIST_STORE),true)
 	@codesign --verify -vvvvd $(DISTDIR)/$(NAME)/$(NAME).app
 	@echo [PKG] $(NAME).pkg
 	@productbuild \
-      --version $(VERSION3) \
+	  --version $(VERSION3) \
 	  --component $(DISTDIR)/$(NAME)/$(NAME).app /Applications \
 	  $(DISTDIR)/$(NAME).pkg
 else
