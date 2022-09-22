@@ -32,11 +32,11 @@ jobs:
     # Binary Info
     - name: Binary Info
       run: |
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Server
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Client
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.UI
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Test
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Debug
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Server
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Client
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.UI
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Test
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Debug
 
     # Test (X64)
     - name: Test (X64)
@@ -119,7 +119,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-11]
+        os: [macos-11,macos-12]
     steps:
 
     # Checkout
