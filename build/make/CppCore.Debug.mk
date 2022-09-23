@@ -113,12 +113,6 @@ $(OBJDIR)/%.res:
 build: $(OBJS) $(RESO)
 	@echo [LNK] $(OUT)
 	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(OUT)
-	@echo [PDB] $(OUT)
-	$(PDBGEN) $(OUT)
-ifeq ($(MODE),release)
-	@echo [STR] $(OUT)
-	$(STRIP) $(STRIPFLAGS) $(OUT)
-endif
 
 clean:
 	$(call deletefiles,$(OBJDIR),*.o)

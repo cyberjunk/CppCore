@@ -22,7 +22,6 @@ LINK       = $(CXX)
 LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc
 LINKPATH   =
 LINKLIBS   = 
-PDBGEN     = exit 0;
 DEBARCH    = i386
 LSBREL     = $(shell lsb_release -r -s)
 DISTDIR    = ../../dist/ubuntu-$(LSBREL)

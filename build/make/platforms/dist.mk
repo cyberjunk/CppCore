@@ -64,6 +64,8 @@ dist-prep:
 	$(call replace,$(DISTDIR)/$(NAME)/AppxManifest.xml,{VERSION},$(VERSION4),$(DISTDIR)/$(NAME)/AppxManifest.xml)
 	$(call copyfiles,$(DISTDIR)/$(NAME).layout,$(DISTDIR)/$(NAME)/Layout.xml)
 dist-%: dist-prep
+	echo [STR] ./bin/win-$*/$(NAME)$(EXTBIN)
+	$(STRIP) $(STRIPFLAGS) ./bin/win-$*/$(NAME)$(EXTBIN)
 	echo [SIG] ./bin/win-$*/$(NAME)$(EXTBIN)
 ifeq ($(SIGN_PFX_PASS),)
 	$(call sign,./bin/win-$*/$(NAME)$(EXTBIN),$(SIGN_PFX_FILE))
@@ -141,6 +143,15 @@ dist: dist-prep dist-x64 dist-arm64
 	@lipo -create -output $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME) \
 	  ./bin/osx-x64/$(NAME)$(EXTBIN) \
 	  ./bin/osx-arm64/$(NAME)$(EXTBIN)
+	@echo [SYM] $(NAME).dSYM
+	@dsymutil \
+	  -out $(DISTDIR)/$(NAME).dSYM \
+	  $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
+	@xcrun symbols -arch all \
+	  -symbolsPackageDir $(DISTDIR)/$(NAME) \
+	  $(DISTDIR)/$(NAME).dSYM
+	@echo [STR] $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
+	@$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
 	@chmod +x $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
 	@echo [MKD] $(NAME).app/Contents/Resources
 	@mkdir -p $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Resources
@@ -168,6 +179,7 @@ ifeq ($(APPLE_DIST_STORE),true)
 	@echo [PKG] $(NAME).pkg
 	@productbuild \
 	  --version $(VERSION3) \
+	  --symbolication $(DISTDIR)/$(NAME)/6B72E1C7-7070-3D14-9A1E-329802442C72.symbols \
 	  --component $(DISTDIR)/$(NAME)/$(NAME).app /Applications \
 	  $(DISTDIR)/$(NAME).pkg
 else

@@ -23,7 +23,6 @@ LINK       = $(CXX)
 LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -Xlinker /MACHINE:X86
 LINKPATH   =
 LINKLIBS   = 
-PDBGEN     = exit 0;
 
 # MSVC Resource Compiler
 RC         = llvm-rc
