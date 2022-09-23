@@ -32,25 +32,32 @@ jobs:
     # Binary Info
     - name: Binary Info
       run: |
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Server
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Client
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.UI
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Test
-        otool -L ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Debug
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Server
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Client
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.UI
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Test
+        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Debug
 
     # Test (X64)
     - name: Test (X64)
       if: matrix.arch == 'x64'
       run: ./build/make/bin/osx-x64/CppCore.Test
 
-    # Upload
-    - name: Upload
+    # Upload Binaries
+    - name: Upload Binaries
       uses: actions/upload-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-${{ matrix.arch }})
         path: |
           ./build/make/bin/osx-${{ matrix.arch }}/*
           !./build/make/bin/osx-${{ matrix.arch }}/.gitignore
+
+    # Upload lto.o
+    - name: Upload lto.o
+      uses: actions/upload-artifact@v3
+      with:
+        name: lto.o (${{ matrix.os }}-${{ matrix.arch }})
+        path: ./build/make/obj/osx-${{ matrix.arch }}-release/**/lto.o
 
 ###########################################################################
 
@@ -75,12 +82,26 @@ jobs:
         name: Binaries (${{ matrix.os }}-x64)
         path: ./build/make/bin/osx-x64/
 
+    # Download X64 lto.o
+    - name: Download X64 lto.o
+      uses: actions/download-artifact@v2
+      with:
+        name: lto.o (${{ matrix.os }}-x64)
+        path: ./build/make/obj/osx-x64-release/
+
     # Download ARM64 Build
     - name: Download ARM64 Build
       uses: actions/download-artifact@v2
       with:
         name: Binaries (${{ matrix.os }}-arm64)
         path: ./build/make/bin/osx-arm64/
+
+    # Download ARM64 lto.o
+    - name: Download ARM64 lto.o
+      uses: actions/download-artifact@v2
+      with:
+        name: lto.o (${{ matrix.os }}-arm64)
+        path: ./build/make/obj/osx-arm64-release/
 
     # Load Code Signing Certificate
     - name: Load Code Signing Certificate
@@ -100,6 +121,7 @@ jobs:
         APPLE_ID: ${{ secrets.APPLE_ID }}
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         APPLE_APPSPEC_PASS: ${{ secrets.APPLE_APPSPEC_PASS }}
+        APPLE_DIST_STORE: false
       run: make dist
 
     # Upload
@@ -132,12 +154,26 @@ jobs:
         name: Binaries (${{ matrix.os }}-x64)
         path: ./build/make/bin/osx-x64/
 
+    # Download X64 lto.o
+    - name: Download X64 lto.o
+      uses: actions/download-artifact@v2
+      with:
+        name: lto.o (${{ matrix.os }}-x64)
+        path: ./build/make/obj/osx-x64-release/
+
     # Download ARM64 Build
     - name: Download ARM64 Build
       uses: actions/download-artifact@v2
       with:
         name: Binaries (${{ matrix.os }}-arm64)
         path: ./build/make/bin/osx-arm64/
+
+    # Download ARM64 lto.o
+    - name: Download ARM64 lto.o
+      uses: actions/download-artifact@v2
+      with:
+        name: lto.o (${{ matrix.os }}-arm64)
+        path: ./build/make/obj/osx-arm64-release/
 
     # Load Code Signing Certificate
     - name: Load Code Signing Certificate
@@ -154,6 +190,10 @@ jobs:
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS_OSX }}
         PUBLISHERCN: "3rd Party Mac Developer Application: Clint Banzhaf (43RQ46H6CR)"
         PRODUCTSIGNCN: "3rd Party Mac Developer Installer: Clint Banzhaf (43RQ46H6CR)"
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        APPLE_APPSPEC_PASS: ${{ secrets.APPLE_APPSPEC_PASS }}
+        APPLE_DIST_STORE: true
       run: make dist
 
     # Upload

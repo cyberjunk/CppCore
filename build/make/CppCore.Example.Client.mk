@@ -63,7 +63,7 @@ OUTDIST   := $(DISTDIR)/$(NAME).app/Contents/MacOS/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 endif
@@ -112,10 +112,6 @@ $(OBJDIR)/%.res:
 build: $(OBJS) $(RESO)
 	@echo [LNK] $(OUT)
 	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(OUT)
-ifeq ($(MODE),release)
-	@echo [STR] $(OUT)
-	$(STRIP) $(STRIPFLAGS) $(OUT)
-endif
 
 clean:
 	$(call deletefiles,$(OBJDIR),*.o)
