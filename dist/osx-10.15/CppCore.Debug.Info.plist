@@ -32,5 +32,13 @@
 	<string>macosx{OSXSDKVER}</string>
 	<key>DTSDKBuild</key>
 	<string>{OSXSDKBUILDV}</string>
+	<key>BuildMachineOSBuild</key>
+	<string>{OSXBUILDV}</string>
+	<key>DTPlatformName</key>
+	<string>macosx</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
 </dict>
 </plist>
