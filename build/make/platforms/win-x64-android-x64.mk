@@ -39,6 +39,7 @@ LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -static-libstdc++ -static-libg
 LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \
              -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)
 LINKLIBS   = 
+PDBGEN     =
 
 # Debug vs. Release
 ifeq ($(MODE),release)

@@ -15,7 +15,7 @@ CXXFLAGS  := $(CXXFLAGS) \
              -Wno-c++2a-extensions \
              -Wno-unknown-warning-option
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = Test.o
@@ -112,9 +112,11 @@ $(OBJDIR)/%.res:
 build: $(OBJS) $(RESO)
 	@echo [LNK] $(OUT)
 	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(OUT)
+	@echo [PDB] $(OUT)
+	$(PDBGEN) $(OUT)
 ifeq ($(MODE),release)
 	@echo [STR] $(OUT)
-#	$(STRIP) $(STRIPFLAGS) $(OUT)
+	$(STRIP) $(STRIPFLAGS) $(OUT)
 endif
 
 clean:
