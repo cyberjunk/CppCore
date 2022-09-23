@@ -151,9 +151,9 @@ dist: dist-prep dist-x64 dist-arm64
 	@dwarfdump --uuid $(DISTDIR)/$(NAME).dSYM
 	@echo [VFY] $(NAME).dSYM
 	@dwarfdump --verify $(DISTDIR)/$(NAME).dSYM
-	@mkdir -p $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Symbols
+	@mkdir -p $(DISTDIR)/$(NAME).symbols
 	@xcrun symbols -noTextInSOD -noDaemon -arch all \
-	  -symbolsPackageDir $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Symbols \
+	  -symbolsPackageDir $(DISTDIR)/$(NAME).symbols \
 	  $(DISTDIR)/$(NAME).dSYM
 	@echo [STR] $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
 	@$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
@@ -184,6 +184,7 @@ ifeq ($(APPLE_DIST_STORE),true)
 	@echo [PKG] $(NAME).pkg
 	@productbuild \
 	  --version $(VERSION3) \
+	  --symbolication $(DISTDIR)/$(NAME).symbols \
 	  --component $(DISTDIR)/$(NAME)/$(NAME).app /Applications \
 	  $(DISTDIR)/$(NAME).pkg
 else
