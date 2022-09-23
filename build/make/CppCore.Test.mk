@@ -15,7 +15,7 @@ CXXFLAGS  := $(CXXFLAGS) \
              -Wno-c++2a-extensions \
              -Wno-unknown-warning-option
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
+LINKFLAGS := $(LINKFLAGS)
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = Test.o
@@ -63,7 +63,7 @@ OUTDIST   := $(DISTDIR)/$(NAME).app/Contents/MacOS/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 endif
