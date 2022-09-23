@@ -28,5 +28,7 @@
 	<string>10.15.0</string>
 	<key>CFBundleShortVersionString</key>
 	<string>{VERSION}</string>
+	<key>DTSDKName</key>
+	<string>macosx{OSXSDKVER}</string>
 </dict>
 </plist>
