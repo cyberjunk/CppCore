@@ -102,9 +102,10 @@ VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFI
 VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
 VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 OSXSDKVER    = $(shell xcrun --show-sdk-version)
+OSXSDKBUILDV = $(shell xcrun --show-sdk-build-version)
 dist-prep:
 	@echo [VER] $(VERSION3)
-	@echo [SDK] $(OSXSDKVER)
+	@echo [SDK] $(OSXSDKVER) - ${OSXSDKBUILDV}
 	@echo [KCH] $(KEYCHAIN)
 	@-security delete-keychain $(KEYCHAIN)
 	@security create-keychain -p "$(SIGN_PFX_PASS)" $(KEYCHAIN)
@@ -143,6 +144,7 @@ dist: dist-prep dist-x64 dist-arm64
 	@cp $(DISTDIR)/$(NAME).provisionprofile $(DISTDIR)/$(NAME)/$(NAME).app/Contents/embedded.provisionprofile
 	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist
 	@sed -i'.orig' -e 's/{OSXSDKVER}/${OSXSDKVER}/g' $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist
+	@sed -i'.orig' -e 's/{OSXSDKBUILDV}/${OSXSDKBUILDV}/g' $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist
 	@rm $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Info.plist.orig
 ifeq ($(APPLE_DIST_STORE),true)
 	@echo [SIG] $(NAME).app

@@ -30,9 +30,7 @@
 	<string>{VERSION}</string>
 	<key>DTSDKName</key>
 	<string>macosx{OSXSDKVER}</string>
-<!-- TODO
 	<key>DTSDKBuild</key>
-	<string></string>
--->
+	<string>{OSXSDKBUILDV}</string>
 </dict>
 </plist>
