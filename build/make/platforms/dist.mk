@@ -147,8 +147,13 @@ dist: dist-prep dist-x64 dist-arm64
 	@dsymutil \
 	  -out $(DISTDIR)/$(NAME).dSYM \
 	  $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
-	@xcrun symbols -arch all \
-	  -symbolsPackageDir $(DISTDIR)/$(NAME) \
+	@echo [INF] $(NAME).dSYM
+	@dwarfdump --uuid $(DISTDIR)/$(NAME).dSYM
+	@echo [VFY] $(NAME).dSYM
+	@dwarfdump --verify $(DISTDIR)/$(NAME).dSYM
+	@mkdir -p $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Symbols
+	@xcrun symbols -noTextInSOD -noDaemon -arch all \
+	  -symbolsPackageDir $(DISTDIR)/$(NAME)/$(NAME).app/Contents/Symbols \
 	  $(DISTDIR)/$(NAME).dSYM
 	@echo [STR] $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
 	@$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$(NAME).app/Contents/MacOS/$(NAME)
@@ -199,7 +204,7 @@ else
 	  --component-plist $(DISTDIR)/$(NAME).Component.plist \
 	  $(DISTDIR)/$(NAME).pkg
 endif
-	@echo [FIL] $(NAME).pkg
+	@echo [VFY] $(NAME).pkg
 	@pkgutil --payload-files $(DISTDIR)/$(NAME).pkg
 ifneq ($(PRODUCTSIGNCN),)
 	@echo [SIG] $(NAME).pkg
@@ -209,6 +214,8 @@ ifneq ($(PRODUCTSIGNCN),)
 	  --timestamp \
 	  $(DISTDIR)/$(NAME).pkg \
 	  $(DISTDIR)/$(NAME)-sig.pkg
+	@echo [VFY] $(NAME)-sig.pkg
+	@pkgutil --check-signature $(DISTDIR)/$(NAME)-sig.pkg
 ifneq ($(APPLE_ID),)
 ifeq ($(APPLE_DIST_STORE),true)
 	@echo [VAL] $(NAME)-sig.pkg
