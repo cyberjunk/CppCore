@@ -179,7 +179,6 @@ ifeq ($(APPLE_DIST_STORE),true)
 	@echo [PKG] $(NAME).pkg
 	@productbuild \
 	  --version $(VERSION3) \
-	  --symbolication $(DISTDIR)/$(NAME)/6B72E1C7-7070-3D14-9A1E-329802442C72.symbols \
 	  --component $(DISTDIR)/$(NAME)/$(NAME).app /Applications \
 	  $(DISTDIR)/$(NAME).pkg
 else
