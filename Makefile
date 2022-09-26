@@ -49,10 +49,6 @@ CppCore.Test-clean:
 	@echo [CLN] CppCore.Test
 	+@make -s -C ./build/make/ -f CppCore.Test.mk clean
 
-CppCore.Test-dist:
-	@echo [DST] CppCore.Test
-	+@make -s -C ./build/make/ -f CppCore.Test.mk dist
-
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk
@@ -60,10 +56,6 @@ CppCore.Debug:
 CppCore.Debug-clean:
 	@echo [CLN] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk clean
-
-CppCore.Debug-dist:
-	@echo [DST] CppCore.Debug
-	+@make -s -C ./build/make/ -f CppCore.Debug.mk dist
 
 ##################################################################################
 
@@ -84,9 +76,7 @@ clean: \
 dist: \
 	CppCore.Example.Server-dist \
 	CppCore.Example.Client-dist \
-	CppCore.Example.UI-dist \
-	CppCore.Test-dist \
-	CppCore.Debug-dist
+	CppCore.Example.UI-dist
 
 ##################################################################################
 
