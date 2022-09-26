@@ -177,7 +177,7 @@ ifeq ($(APPLE_DIST_STORE),true)
 	  --keychain $(KEYCHAIN) \
 	  --timestamp \
 	  --options runtime \
-	  --entitlements $(DISTDIR)/$(NAME).Entitlements.plist \
+	  --entitlements $(DISTDIR)/$(NAME).Entitlements.Store.plist \
 	  $(DISTDIR)/$(NAME)/$(NAME).app
 	@echo [VFY] $(NAME).app
 	@codesign --verify -vvvvd $(DISTDIR)/$(NAME)/$(NAME).app
@@ -194,6 +194,7 @@ else
 	  --keychain $(KEYCHAIN) \
 	  --timestamp \
 	  --options runtime \
+	  --entitlements $(DISTDIR)/$(NAME).Entitlements.Local.plist \
 	  $(DISTDIR)/$(NAME)/$(NAME).app
 	@echo [VFY] $(NAME).app
 	@codesign --verify -vvvvd $(DISTDIR)/$(NAME)/$(NAME).app

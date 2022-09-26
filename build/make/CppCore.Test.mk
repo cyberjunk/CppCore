@@ -121,7 +121,3 @@ clean:
 	$(call deletefiles,$(DISTDIR),*.exe)
 	$(call deletefiles,$(DISTDIR),*.msixbundle)
 	$(call deletefiles,$(DISTDIR),*.pkg)
-	
-################################################################################################
-
-include ./platforms/dist.mk
