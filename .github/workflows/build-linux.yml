@@ -27,6 +27,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       MODE: release
       TARGET_OS: linux
       ARCH: ${{ matrix.arch }}
