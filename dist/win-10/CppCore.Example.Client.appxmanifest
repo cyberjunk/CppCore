@@ -19,7 +19,7 @@
 	ProcessorArchitecture="neutral"	/>
 
   <Properties>
-    <DisplayName>CppCore.Example.Client</DisplayName>
+    <DisplayName>{DISPLAYNAME}</DisplayName>
     <PublisherDisplayName>Clint Banzhaf</PublisherDisplayName>
     <Logo>app.png</Logo>
   </Properties>
@@ -43,10 +43,10 @@
       iot2:SupportsMultipleInstances="true">
 
       <uap:VisualElements 
-        DisplayName="CppCore.Example.Client" 
+        DisplayName="{DISPLAYNAME}" 
         Square150x150Logo="app.png" 
         Square44x44Logo="app.png"
-        Description="CppCore.Example.Client"
+        Description="Example Cross-Platform Client using CppCore"
         BackgroundColor="transparent">	
         <uap:DefaultTile Wide310x150Logo="app.png">
           <uap:ShowNameOnTiles>
