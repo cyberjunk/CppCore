@@ -61,6 +61,11 @@ jobs:
         dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.exe
         dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.exe
 
+    # Test
+    - name: Test
+      if: matrix.arch == 'x64' || matrix.arch == 'x86'
+      run: ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.exe
+
     # Upload
     - name: Upload
       uses: actions/upload-artifact@v3
