@@ -2,6 +2,7 @@
 include platforms/detect-host.mk
 
 NAME       = CppCore.Example.Client
+APPNAME    = CppCore.Example.Client
 OUT        = $(BINDIR)/$(NAME)$(SUFFIX)$(EXTBIN)
 INCDIR     = ../../include
 SRCDIR     = ../../src/$(NAME)

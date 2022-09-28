@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=CppCore.Example.UI
+Name={DISPLAYNAME}
 Comment=Example UI of CppCore
 Exec=/usr/bin/CppCore.Example.UI
 Icon=/usr/share/pixmaps/CppCore.Example.UI.png
