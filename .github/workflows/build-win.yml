@@ -74,6 +74,7 @@ jobs:
         path: |
           ./build/make/bin/win-${{ matrix.arch }}/*.exe
           ./build/make/bin/win-${{ matrix.arch }}/*.dll
+          ./build/make/bin/win-${{ matrix.arch }}/*.pdb
 
 ###########################################################################         
 
