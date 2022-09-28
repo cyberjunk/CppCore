@@ -277,7 +277,8 @@ dist-prep:
 	sed -i 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME).Resources/DEBIAN/control
 	cp -r ../../resources/* $(DISTDIR)/$(NAME).Resources/usr/share/$(NAME)
 	dpkg-deb --build $(DISTDIR)/$(NAME).Resources \
-	  $(DISTDIR)/$(NAME).Resources-$(VERSION3)-1-ubuntu-$(LSBREL)-all.deb > /dev/null 2>&1dist-%: dist-prep
+	  $(DISTDIR)/$(NAME).Resources-$(VERSION3)-1-ubuntu-$(LSBREL)-all.deb > /dev/null 2>&1
+dist-%: dist-prep
 	echo [DST] $(NAME)-$*
 	$(eval DISTDEBARCH:=$(shell \
 	  case $* in \
