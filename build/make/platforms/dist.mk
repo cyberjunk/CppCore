@@ -83,16 +83,16 @@ dist: dist-prep dist-x64 dist-x86 dist-arm64
 	echo [SIG] $(DISTDIR)/$(NAME)-$(VERSION3).appxbundle
 ifeq ($(SIGN_PFX_PASS),)
 	$(call sign,$(DISTDIR)/$(NAME)-$(VERSION3).appxbundle,$(SIGN_PFX_FILE))
-	$(call sign,$(DISTDIR)/$(NAME)-$(VERSION3)-x64.appx,$(SIGN_PFX_FILE))
-	$(call sign,$(DISTDIR)/$(NAME)-$(VERSION3)-x86.appx,$(SIGN_PFX_FILE))
-	$(call sign,$(DISTDIR)/$(NAME)-$(VERSION3)-arm64.appx,$(SIGN_PFX_FILE))
-	$(call sign,$(DISTDIR)/$(NAME)-$(VERSION3)-res.appx,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)-x64.appx,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)-x86.appx,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)-arm64.appx,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)-res.appx,$(SIGN_PFX_FILE))
 else
 	$(call signp,$(DISTDIR)/$(NAME)-$(VERSION3).appxbundle,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
-	$(call signp,$(DISTDIR)/$(NAME)-$(VERSION3)-x64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
-	$(call signp,$(DISTDIR)/$(NAME)-$(VERSION3)-x86.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
-	$(call signp,$(DISTDIR)/$(NAME)-$(VERSION3)-arm64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
-	$(call signp,$(DISTDIR)/$(NAME)-$(VERSION3)-res.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)-x64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)-x86.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)-arm64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)-res.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 endif
 
 endif

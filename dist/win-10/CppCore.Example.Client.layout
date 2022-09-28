@@ -5,28 +5,28 @@
     ManifestPath="../../dist/win-10/CppCore.Example.Client/AppxManifest.xml"
     ResourceManager="false">
     
-    <Package ID="CppCore.Example.Client-{VERSION}-x64" ProcessorArchitecture="x64">
+    <Package ID="CppCore.Example.Client-x64" ProcessorArchitecture="x64">
       <Files>
         <File DestinationPath="CppCore.Example.Client.exe" SourcePath="../../dist/win-10/CppCore.Example.Client/x64/CppCore.Example.Client.exe"/>
         <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Client/app.png"/>
       </Files>
     </Package>
 	
-	<Package ID="CppCore.Example.Client-{VERSION}-x86" ProcessorArchitecture="x86">
+	<Package ID="CppCore.Example.Client-x86" ProcessorArchitecture="x86">
       <Files>
         <File DestinationPath="CppCore.Example.Client.exe" SourcePath="../../dist/win-10/CppCore.Example.Client/x86/CppCore.Example.Client.exe"/>
         <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Client/app.png"/>
       </Files>
     </Package>
 	
-	<Package ID="CppCore.Example.Client-{VERSION}-arm64" ProcessorArchitecture="arm64">
+	<Package ID="CppCore.Example.Client-arm64" ProcessorArchitecture="arm64">
       <Files>
         <File DestinationPath="CppCore.Example.Client.exe" SourcePath="../../dist/win-10/CppCore.Example.Client/arm64/CppCore.Example.Client.exe"/>
         <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Client/app.png"/>
       </Files>
     </Package>
 	
-    <AssetPackage ID="CppCore.Example.Client-{VERSION}-res">
+    <AssetPackage ID="CppCore.Example.Client-res">
       <Files>
         <File DestinationPath="resources\**" SourcePath="../../resources/**"/>
       </Files>

@@ -5,28 +5,28 @@
     ManifestPath="../../dist/win-10/CppCore.Example.Server/AppxManifest.xml"
     ResourceManager="false">
     
-    <Package ID="CppCore.Example.Server-{VERSION}-x64" ProcessorArchitecture="x64">
+    <Package ID="CppCore.Example.Server-x64" ProcessorArchitecture="x64">
       <Files>
         <File DestinationPath="CppCore.Example.Server.exe" SourcePath="../../dist/win-10/CppCore.Example.Server/x64/CppCore.Example.Server.exe"/>
         <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Server/app.png"/>
       </Files>
     </Package>
 	
-	<Package ID="CppCore.Example.Server-{VERSION}-x86" ProcessorArchitecture="x86">
+	<Package ID="CppCore.Example.Server-x86" ProcessorArchitecture="x86">
       <Files>
         <File DestinationPath="CppCore.Example.Server.exe" SourcePath="../../dist/win-10/CppCore.Example.Server/x86/CppCore.Example.Server.exe"/>
         <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Server/app.png"/>
       </Files>
     </Package>
 	
-	<Package ID="CppCore.Example.Server-{VERSION}-arm64" ProcessorArchitecture="arm64">
+	<Package ID="CppCore.Example.Server-arm64" ProcessorArchitecture="arm64">
       <Files>
         <File DestinationPath="CppCore.Example.Server.exe" SourcePath="../../dist/win-10/CppCore.Example.Server/arm64/CppCore.Example.Server.exe"/>
         <File DestinationPath="app.png" SourcePath="../../src/CppCore.Example.Server/app.png"/>
       </Files>
     </Package>
 	
-    <AssetPackage ID="CppCore.Example.Server-{VERSION}-res">
+    <AssetPackage ID="CppCore.Example.Server-res">
       <Files>
         <File DestinationPath="resources\**" SourcePath="../../resources/**"/>
       </Files>
