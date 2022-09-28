@@ -1,9 +1,0 @@
-Package: CppCore.Test.Resources
-Version: {VERSION}-1
-Section: base
-Priority: optional
-Architecture: all
-Maintainer: Clint Banzhaf <clint@banzhaf.pro>
-Description: CppCore.Test Resources
-  Resources of CppCore.Test.
-

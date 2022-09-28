@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=CppCore.Example.Server
+Name={DISPLAYNAME}
 Comment=Example Server of CppCore
 Exec=/usr/bin/CppCore.Example.Server
 Icon=/usr/share/pixmaps/CppCore.Example.Server.png
