@@ -44,3 +44,18 @@ endef
 define signp
 	cmd.exe /C "SignTool.exe sign /a /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /f $(subst /,\,$(2)) /p $(3) $(subst /,\,$(1)) >nul 2>&1"
 endef
+
+# Create .pri resources
+define makepri
+	cmd.exe /C "MakePri.exe new /v /o /cf $(subst /,\,$(1)) /pr $(subst /,\,$(2)) /of $(subst /,\,$(3)) /IndexName $(4)"
+endef
+
+# Create ZIP
+define makezip
+	cmd.exe /C "powershell Compress-Archive $(1) $(2)"
+endef
+
+# Move Folder or File
+define move
+	cmd.exe /C "powershell Move-Item -Path $(1) -Destination $(2)"
+endef

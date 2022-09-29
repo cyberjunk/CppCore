@@ -4,9 +4,31 @@
     <ClCompile Include="..\..\src\CppCore.Debug\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\src\CppCore.Debug\app.ico" />
+    <ResourceCompile Include="..\..\src\CppCore.Debug\Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\src\CppCore.Debug\Resources.rc" />
+    <Filter Include="res">
+      <UniqueIdentifier>{50dc527d-0839-4632-bdbe-5f7caa458a31}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\src\CppCore.Debug\res\app.ico">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Debug\res\app-44x44.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Debug\res\app-50x50.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Debug\res\app-150x150.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Debug\res\app-256x256.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Debug\res\app-1024x1024.png">
+      <Filter>res</Filter>
+    </Image>
   </ItemGroup>
 </Project>

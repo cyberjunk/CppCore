@@ -16,6 +16,9 @@
     <Filter Include="Crypto">
       <UniqueIdentifier>{26debfe0-f92c-4c0c-b865-1e2d85e00775}</UniqueIdentifier>
     </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{30ce415b-dec8-4fd3-978e-276500f26b69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\CppCore.Test\Precompiled.cpp" />
@@ -84,6 +87,23 @@
     <ResourceCompile Include="..\..\src\CppCore.Test\Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\src\CppCore.Test\app.ico" />
+    <Image Include="..\..\src\CppCore.Test\res\app.ico">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Test\res\app-44x44.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Test\res\app-50x50.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Test\res\app-150x150.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Test\res\app-256x256.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\src\CppCore.Test\res\app-1024x1024.png">
+      <Filter>res</Filter>
+    </Image>
   </ItemGroup>
 </Project>

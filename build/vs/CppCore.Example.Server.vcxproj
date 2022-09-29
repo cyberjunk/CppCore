@@ -30,7 +30,12 @@
     <ResourceCompile Include="..\..\src\CppCore.Example.Server\Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\src\CppCore.Example.Server\app.ico" />
+    <Image Include="..\..\src\CppCore.Example.Server\res\app-1024x1024.png" />
+    <Image Include="..\..\src\CppCore.Example.Server\res\app-150x150.png" />
+    <Image Include="..\..\src\CppCore.Example.Server\res\app-256x256.png" />
+    <Image Include="..\..\src\CppCore.Example.Server\res\app-44x44.png" />
+    <Image Include="..\..\src\CppCore.Example.Server\res\app-50x50.png" />
+    <Image Include="..\..\src\CppCore.Example.Server\res\app.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{86A774BC-CA54-4993-A985-09FECEABDF25}</ProjectGuid>

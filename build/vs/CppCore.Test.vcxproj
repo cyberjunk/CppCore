@@ -58,7 +58,12 @@
     <ResourceCompile Include="..\..\src\CppCore.Test\Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\src\CppCore.Test\app.ico" />
+    <Image Include="..\..\src\CppCore.Test\res\app-1024x1024.png" />
+    <Image Include="..\..\src\CppCore.Test\res\app-150x150.png" />
+    <Image Include="..\..\src\CppCore.Test\res\app-256x256.png" />
+    <Image Include="..\..\src\CppCore.Test\res\app-44x44.png" />
+    <Image Include="..\..\src\CppCore.Test\res\app-50x50.png" />
+    <Image Include="..\..\src\CppCore.Test\res\app.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
