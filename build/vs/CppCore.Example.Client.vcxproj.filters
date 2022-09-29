@@ -11,28 +11,28 @@
     <ResourceCompile Include="..\..\src\CppCore.Example.Client\Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="res">
+    <Filter Include="Resources">
       <UniqueIdentifier>{461ade69-2ad2-470e-9403-9f51ede82344}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\src\CppCore.Example.Client\res\app.ico">
-      <Filter>res</Filter>
+    <Image Include="..\..\src\CppCore.Example.Client\Resources\app.ico">
+      <Filter>Resources</Filter>
     </Image>
-    <Image Include="..\..\src\CppCore.Example.Client\res\app-44x44.png">
-      <Filter>res</Filter>
+    <Image Include="..\..\src\CppCore.Example.Client\Resources\app-44x44.png">
+      <Filter>Resources</Filter>
     </Image>
-    <Image Include="..\..\src\CppCore.Example.Client\res\app-50x50.png">
-      <Filter>res</Filter>
+    <Image Include="..\..\src\CppCore.Example.Client\Resources\app-50x50.png">
+      <Filter>Resources</Filter>
     </Image>
-    <Image Include="..\..\src\CppCore.Example.Client\res\app-150x150.png">
-      <Filter>res</Filter>
+    <Image Include="..\..\src\CppCore.Example.Client\Resources\app-150x150.png">
+      <Filter>Resources</Filter>
     </Image>
-    <Image Include="..\..\src\CppCore.Example.Client\res\app-256x256.png">
-      <Filter>res</Filter>
+    <Image Include="..\..\src\CppCore.Example.Client\Resources\app-256x256.png">
+      <Filter>Resources</Filter>
     </Image>
-    <Image Include="..\..\src\CppCore.Example.Client\res\app-1024x1024.png">
-      <Filter>res</Filter>
+    <Image Include="..\..\src\CppCore.Example.Client\Resources\app-1024x1024.png">
+      <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
 </Project>

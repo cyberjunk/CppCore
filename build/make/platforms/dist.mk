@@ -69,9 +69,9 @@ dist-prep:
 	$(call copyfiles,$(DISTDIR)/$(NAME).layout,$(DISTDIR)/$(NAME)/Layout.xml)
 	$(call replace,$(DISTDIR)/$(NAME)/Layout.xml,{VERSION},$(VERSION3),$(DISTDIR)/$(NAME)/Layout.xml)
 	echo [CPY] Icons
-	$(call copyfiles,$(SRCDIR)/res/app-44x44.png,$(DISTDIR)/$(NAME)/resources/app-44x44.png)
-	$(call copyfiles,$(SRCDIR)/res/app-50x50.png,$(DISTDIR)/$(NAME)/resources/app-50x50.png)
-	$(call copyfiles,$(SRCDIR)/res/app-150x150.png,$(DISTDIR)/$(NAME)/resources/app-150x150.png)
+	$(call copyfiles,$(SRCDIR)/Resources/app-44x44.png,$(DISTDIR)/$(NAME)/resources/app-44x44.png)
+	$(call copyfiles,$(SRCDIR)/Resources/app-50x50.png,$(DISTDIR)/$(NAME)/resources/app-50x50.png)
+	$(call copyfiles,$(SRCDIR)/Resources/app-150x150.png,$(DISTDIR)/$(NAME)/resources/app-150x150.png)
 dist-%: dist-prep
 	echo [MKD] $(DISTDIR)/$(NAME)/$*
 	$(call rmdir,$(DISTDIR)/$(NAME)/$*)
