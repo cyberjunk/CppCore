@@ -60,7 +60,7 @@ dist-prep:
 	$(call rmdir,$(DISTDIR)/$(NAME))
 	$(call mkdir,$(DISTDIR)/$(NAME))
 	$(call mkdir,$(DISTDIR)/$(NAME)/resources)
-	$(call mkdir,$(DISTDIR)/$(NAME)/symbols)
+	$(call mkdir,$(DISTDIR)/$(NAME)/upload)
 	$(call copyfiles,$(DISTDIR)/$(NAME).appxmanifest,$(DISTDIR)/$(NAME)/AppxManifest.xml)
 	$(call replace,$(DISTDIR)/$(NAME)/AppxManifest.xml,{PUBLISHER},$(PUBLISHER),$(DISTDIR)/$(NAME)/AppxManifest.xml)
 	$(call replace,$(DISTDIR)/$(NAME)/AppxManifest.xml,{PUBLISHERID},$(PUBLISHERID),$(DISTDIR)/$(NAME)/AppxManifest.xml)
@@ -86,27 +86,30 @@ ifeq ($(SIGN_PFX_PASS),)
 else
 	$(call signp,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTBIN),$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 endif
-	echo [SYM] $(DISTDIR)/$(NAME)/symbols/$(NAME)-$*.appxsym
-	$(call makezip,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTPDB),$(DISTDIR)/$(NAME)/symbols/$(NAME)-$*.appxsym.zip)
-	$(call move,$(DISTDIR)/$(NAME)/symbols/$(NAME)-$*.appxsym.zip,$(DISTDIR)/$(NAME)/symbols/$(NAME)-$*.appxsym)
+	echo [SYM] $(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym
+	$(call makezip,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTPDB),$(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym.zip)
+	$(call move,$(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym.zip,$(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym)
 dist: dist-prep dist-x64 dist-x86 dist-arm64
-	echo [BDL] $(NAME)-$(VERSION3).appxbundle
+	echo [BDL] $(DISTDIR)/$(NAME).appxbundle
 	$(call makepkg,$(DISTDIR)/$(NAME)/Layout.xml,$(DISTDIR))
-	echo [SIG] $(DISTDIR)/$(NAME)-$(VERSION3).appxbundle
+	echo [SIG] $(DISTDIR)/$(NAME).appxbundle
 ifeq ($(SIGN_PFX_PASS),)
-	$(call sign,$(DISTDIR)/$(NAME)-$(VERSION3).appxbundle,$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME).appxbundle,$(SIGN_PFX_FILE))
 	$(call sign,$(DISTDIR)/$(NAME)-x64.appx,$(SIGN_PFX_FILE))
 	$(call sign,$(DISTDIR)/$(NAME)-x86.appx,$(SIGN_PFX_FILE))
 	$(call sign,$(DISTDIR)/$(NAME)-arm64.appx,$(SIGN_PFX_FILE))
 	$(call sign,$(DISTDIR)/$(NAME)-res.appx,$(SIGN_PFX_FILE))
 else
-	$(call signp,$(DISTDIR)/$(NAME)-$(VERSION3).appxbundle,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME).appxbundle,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 	$(call signp,$(DISTDIR)/$(NAME)-x64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 	$(call signp,$(DISTDIR)/$(NAME)-x86.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 	$(call signp,$(DISTDIR)/$(NAME)-arm64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 	$(call signp,$(DISTDIR)/$(NAME)-res.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 endif
-
+	echo [APU] $(DISTDIR)/$(NAME).appxupload
+	$(call copyfiles,$(DISTDIR)/$(NAME).appxbundle,$(DISTDIR)/$(NAME)/upload/$(NAME).appxbundle)
+	$(call makezip,$(DISTDIR)/$(NAME)/upload/*,$(DISTDIR)/$(NAME).appxupload.zip)
+	$(call move,$(DISTDIR)/$(NAME).appxupload.zip,$(DISTDIR)/$(NAME).appxupload)
 endif
 
 ##############################################################################################################

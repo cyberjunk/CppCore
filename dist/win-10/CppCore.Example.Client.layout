@@ -1,6 +1,6 @@
 <PackagingLayout xmlns="http://schemas.microsoft.com/appx/makeappx/2017">
   <PackageFamily 
-    ID="CppCore.Example.Client-{VERSION}" 
+    ID="CppCore.Example.Client" 
     FlatBundle="false"
     ManifestPath="../../dist/win-10/CppCore.Example.Client/AppxManifest.xml"
     ResourceManager="false">

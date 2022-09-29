@@ -52,10 +52,10 @@ endef
 
 # Create ZIP
 define makezip
-	cmd.exe /C "powershell Compress-Archive $(1) $(2)"
+	cmd.exe /C "powershell Compress-Archive -Force $(1) $(2)"
 endef
 
 # Move Folder or File
 define move
-	cmd.exe /C "powershell Move-Item -Path $(1) -Destination $(2)"
+	cmd.exe /C "powershell Move-Item -Force -Path $(1) -Destination $(2)"
 endef
