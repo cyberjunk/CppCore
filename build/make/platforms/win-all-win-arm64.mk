@@ -33,12 +33,7 @@ ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
 CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -Xclang -MT
 CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -Xclang -MT
-LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -DEBUG=FULL -RELEASE \
-             -Xlinker /OPT:ref \
-             -Xlinker /OPT:icf \
-             -Xlinker /MANIFEST:EMBED \
-             -Xlinker /PDBALTPATH:%_PDB% \
-             -Xlinker /MAP
+LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -OPT=ref -OPT=icf -DEBUG=FULL -RELEASE -Xlinker /MANIFEST:EMBED
 LINKLIBS  := $(LINKLIBS) -llibcmt.lib
 else
 DEFINES   := $(DEFINES) -D_DEBUG
