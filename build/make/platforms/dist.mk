@@ -186,7 +186,7 @@ dist: dist-prep dist-x64 dist-arm64
 	@echo [MKD] $(APPNAME).app/Contents/Resources
 	@mkdir -p $(DISTDIRAPP)/Contents/Resources
 	@echo [ICO] $(NAME).icns
-	@cp $(SRCDIR)/app.icns $(DISTDIRAPP)/Contents/Resources/Icon.icns
+	@cp $(SRCDIR)/Resources/app.icns $(DISTDIRAPP)/Contents/Resources/Icon.icns
 	@cp $(DISTDIR)/$(NAME).Info.plist $(DISTDIRAPP)/Contents/Info.plist
 	@cp $(DISTDIR)/$(NAME).provisionprofile $(DISTDIRAPP)/Contents/embedded.provisionprofile
 	@sed -i'.orig' -e 's/{VERSION}/${VERSION3}/g' $(DISTDIRAPP)/Contents/Info.plist
@@ -312,7 +312,7 @@ dist-%: dist-prep
 	cp $(DISTDIR)/$(NAME).control $(DISTDIR)/$(NAME)-$*/DEBIAN/control
 	sed -i 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME)-$*/DEBIAN/control
 	sed -i 's/{ARCH}/${DEBARCH}/g' $(DISTDIR)/$(NAME)-$*/DEBIAN/control
-	cp $(SRCDIR)/app.png $(DISTDIR)/$(NAME)-$*/usr/share/pixmaps/$(NAME).png
+	cp $(SRCDIR)/Resources/app.png $(DISTDIR)/$(NAME)-$*/usr/share/pixmaps/$(NAME).png
 	cp $(DISTDIR)/$(NAME).desktop $(DISTDIR)/$(NAME)-$*/usr/share/applications/$(NAME).desktop
 	sed -i 's/{DISPLAYNAME}/${APPNAME}/g' $(DISTDIR)/$(NAME)-$*/usr/share/applications/$(NAME).desktop
 	cp ./bin/linux-$*/$(NAME)$(EXTBIN) $(DISTDIR)/$(NAME)-$*/usr/bin/$(NAME)$(EXTBIN)
