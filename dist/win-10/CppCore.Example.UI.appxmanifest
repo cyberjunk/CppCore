@@ -8,9 +8,8 @@
   xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2" 
   xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4" 
   xmlns:iot2="http://schemas.microsoft.com/appx/manifest/iot/windows10/2" 
-  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:build="http://schemas.microsoft.com/developer/appx/2015/build"
-  IgnorableNamespaces="uap uap4 uap5 uap6 iot2 desktop2 desktop4 rescap build" >
+  IgnorableNamespaces="uap uap4 uap5 uap6 iot2 desktop2 desktop4 build" >
 
   <Identity 
     Name="CppCore.Example.UI" 
@@ -21,7 +20,7 @@
   <Properties>
     <DisplayName>{DISPLAYNAME}</DisplayName>
     <PublisherDisplayName>Clint Banzhaf</PublisherDisplayName>
-    <Logo>app.png</Logo>
+    <Logo>app-50x50.png</Logo>
   </Properties>
   
   <Dependencies>
@@ -29,7 +28,7 @@
   </Dependencies>
   
   <Resources>
-    <Resource Language="en-us" />
+    <Resource Language="en-US" />
   </Resources>
   
   <Applications>
@@ -38,28 +37,18 @@
       Executable="CppCore.Example.UI.exe"
 	  EntryPoint="CppCore.Example.UI.App"
       desktop4:Subsystem="console" 
-      desktop4:SupportsMultipleInstances="true"
-      iot2:Subsystem="console"
-      iot2:SupportsMultipleInstances="true">
+      desktop4:SupportsMultipleInstances="true">
 	  
       <uap:VisualElements 
         DisplayName="{DISPLAYNAME}" 
-        Square150x150Logo="app.png" 
-        Square44x44Logo="app.png"
+        Square150x150Logo="app-150x150.png" 
+        Square44x44Logo="app-44x44.png"
         Description="Example Cross-Platform User Interface using CppCore"
         BackgroundColor="transparent">		
-        <uap:DefaultTile Wide310x150Logo="app.png">
-          <uap:ShowNameOnTiles>
-            <uap:ShowOn Tile="wide310x150Logo" />
-            <uap:ShowOn Tile="square150x150Logo" />
-          </uap:ShowNameOnTiles>
-        </uap:DefaultTile>        
-		<uap:SplashScreen Image="app.png" />
-      </uap:VisualElements>
-	  
+      </uap:VisualElements>  
     </Application>
   </Applications>
-  
+
   <Capabilities>
   </Capabilities> 
 </Package>

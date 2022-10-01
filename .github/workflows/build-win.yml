@@ -61,6 +61,20 @@ jobs:
         dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.exe
         dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.exe
 
+    # PDB Info
+    - name: PDB Info
+      run: |
+        echo CppCore.Example.Server
+        llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.Server.pdb
+        echo CppCore.Example.Client
+        llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.Client.pdb
+        echo CppCore.Example.UI
+        llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.UI.pdb
+        echo CppCore.Test
+        llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.pdb        
+        echo CppCore.Debug
+        llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.pdb
+
     # Test
     - name: Test
       if: matrix.arch == 'x64' || matrix.arch == 'x86'
@@ -146,3 +160,4 @@ jobs:
         path: |
           ./dist/win-10/*.appx
           ./dist/win-10/*.appxbundle
+          ./dist/win-10/*.appxupload

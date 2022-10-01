@@ -22,10 +22,15 @@
     <ClCompile Include="..\..\src\CppCore.Debug\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\src\CppCore.Debug\app.ico" />
+    <ResourceCompile Include="..\..\src\CppCore.Debug\Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\src\CppCore.Debug\Resources.rc" />
+    <Image Include="..\..\src\CppCore.Debug\Resources\app-1024x1024.png" />
+    <Image Include="..\..\src\CppCore.Debug\Resources\app-150x150.png" />
+    <Image Include="..\..\src\CppCore.Debug\Resources\app-256x256.png" />
+    <Image Include="..\..\src\CppCore.Debug\Resources\app-44x44.png" />
+    <Image Include="..\..\src\CppCore.Debug\Resources\app-50x50.png" />
+    <Image Include="..\..\src\CppCore.Debug\Resources\app.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4C36504C-4A0B-4020-9D13-5BFBF38E8EDA}</ProjectGuid>

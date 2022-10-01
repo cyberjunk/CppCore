@@ -22,14 +22,19 @@
     <ClCompile Include="..\..\src\CppCore.Example.UI\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\src\CppCore.Example.UI\app.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="..\..\src\CppCore.Example.UI\Resources.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\CppCore.Example.UI\Application.h" />
     <ClInclude Include="..\..\src\CppCore.Example.UI\Input.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\src\CppCore.Example.UI\Resources\app-1024x1024.png" />
+    <Image Include="..\..\src\CppCore.Example.UI\Resources\app-150x150.png" />
+    <Image Include="..\..\src\CppCore.Example.UI\Resources\app-256x256.png" />
+    <Image Include="..\..\src\CppCore.Example.UI\Resources\app-44x44.png" />
+    <Image Include="..\..\src\CppCore.Example.UI\Resources\app-50x50.png" />
+    <Image Include="..\..\src\CppCore.Example.UI\Resources\app.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EA38B305-1A3B-488B-B1D0-26443C40A45C}</ProjectGuid>
