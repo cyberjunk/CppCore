@@ -228,12 +228,12 @@ namespace CppCore
          if (numPoints >= 3)
          {
             const V  d  = e - s;
-            const V& p1 = v[0].point();
+            const V& p1 = v[0];
             const V  t  = s - p1;
             for (size_t j = 0; j < numPoints - 2; j++)
             {
-               const V& p2 = v[j + 1].point();
-               const V& p3 = v[j + 2].point();
+               const V& p2 = v[j+1];
+               const V& p3 = v[j+2];
 
                V e1, e2, p, q;
                F u, v, f, det;
