@@ -117,6 +117,7 @@ build: $(OBJS) $(RESO)
 
 clean:
 	$(call deletefiles,$(OBJDIR),*.o)
+	$(call deletefiles,$(OBJDIR),*.res)
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTBIN))
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTPDB))
 	$(call deletefiles,$(DISTDIR),*.deb)
