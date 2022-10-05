@@ -13,45 +13,23 @@ namespace CppCore { namespace Example
       public CppCore::Application<Application>,
       public CppCore::Window::Callback
    {
+      /// <summary>
+      /// Application Base Class
+      /// </summary>
+      using Base = CppCore::Application<Application>;
+
    protected:
       Window    mWindow;
       TestInput mInput;
-      Runnable  mRunUpdate;
-
-      INLINE void runUpdate()
-      {
-         size_t num = 0;
-      #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
-         @autoreleasepool
-         {
-            NSEvent * ev;
-            while((ev = [NSApp nextEventMatchingMask : NSEventMaskAny
-                               untilDate : nil
-                               inMode : NSDefaultRunLoopMode
-                               dequeue : YES]))
-            {
-               num++;
-               [NSApp sendEvent : ev]; // this will raise delegates
-            }
-         }
-      #else
-         num = mWindow.messagePump();
-      #endif
-
-         if (num > 10)
-            this->logWarn("Processed " + std::to_string((int32_t)num) + 
-               " events in one tick.");
-      }
 
    public:
       /// <summary>
       /// Constructor
       /// </summary>
       INLINE Application() : 
-         CppCore::Application<Application>(true, true, "CppCore.Example.UI.log", "CppCore.Example.UI"),
+         Base(true, true, "CppCore.Example.UI.log", "CppCore.Example.UI"),
          mWindow(*this),
-         mInput(),
-         mRunUpdate([this] { runUpdate(); }, true, std::chrono::milliseconds(16))
+         mInput()
       {
       }
 
@@ -76,8 +54,17 @@ namespace CppCore { namespace Example
          mWindow.setClientSize(CppCore::V2i(800, 800));
          mWindow.setCustomCursor(true);
          mWindow.create();
+      }
 
-         this->schedule(mRunUpdate, ClockHR::now());
+      /// <summary>
+      /// Message Pump on Application Level
+      /// </summary>
+      INLINE virtual size_t messagePump() override
+      {
+         size_t num = 0;
+         num += Base::messagePump();
+         num += mWindow.messagePump();
+         return num;
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,17 +10,12 @@ CppCore::Example::Application app;
 
 @implementation AppDelegate
 @synthesize window;
-
--(void)dealloc
+- (void)dealloc
 {
    [super dealloc];
 }
-
 - (void)applicationDidFinishLaunching:(NSNotification*)aNotification
 {
-   // TODO: Not needed?
-   // This is only executed when message processing started
-   printf("APP DID FINISH LAUNCH\n");
 }
 @end
 #endif
@@ -28,17 +23,9 @@ CppCore::Example::Application app;
 int main(int argc, char* argv[])
 {
 #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
-   [NSApplication sharedApplication];
-   [NSApp setActivationPolicy : NSApplicationActivationPolicyRegular];
-   [NSApp setPresentationOptions : NSApplicationPresentationDefault];
-   [NSApp activateIgnoringOtherApps : YES];
-
-   // set custom delegate from above
+   // set the custom delegate from above before start
    AppDelegate* appDelegate = [[AppDelegate alloc]init];
    [NSApp setDelegate : appDelegate];
-
-   // done init
-   [NSApp finishLaunching];
 #endif
 
    // start the app

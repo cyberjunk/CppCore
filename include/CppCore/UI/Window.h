@@ -452,16 +452,7 @@ namespace CppCore
       INLINE size_t messagePump()
       {
          size_t i = 0;
-      #if defined(CPPCORE_OS_WINDOWS)
-         MSG msg;
-         while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
-         {
-            i++;
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            // continues in WndProc
-         }
-      #elif defined(CPPCORE_OS_LINUX)
+      #if defined(CPPCORE_OS_LINUX)
          XEvent msg;
          while (mDisplay && mWindow && XCheckWindowEvent(mDisplay, mWindow, mEventMask , &msg))
          {
@@ -473,8 +464,10 @@ namespace CppCore
             i++;
             processEvent(msg);
          }
+      #elif defined(CPPCORE_OS_WINDOWS)
+         // happens on Application level,
       #elif defined(CPPCORE_OS_OSX) && defined(__OBJC__)
-         // happens on Application level, e.g. (NSApp nextEventMatchingMask)
+         // happens on Application level
       #endif
          return i;
       }
