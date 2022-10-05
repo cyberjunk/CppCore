@@ -62,6 +62,9 @@ namespace CppCore
          #if defined(CPPCORE_OS_WINDOWS)
             const char* p = ::getenv("USERPROFILE");
             return p ? path(p) : path();
+         #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
+            NSString* s = NSHomeDirectory();
+            return path([s UTF8String]);
          #else
             struct passwd* pw = ::getpwuid(::getuid());
             return path(pw->pw_dir);

@@ -64,10 +64,10 @@ endif
 ifeq ($(TARGET_OS),osx)
 OUTDIST   := $(DISTDIR)/$(NAME).app/Contents/MacOS/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
-CXXFLAGS  := $(CXXFLAGS) -ObjC++
+CXXFLAGS  := $(CXXFLAGS) -fdeclspec -ObjC++
 CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
-LINKLIBS  := $(LINKLIBS) -framework Cocoa
+LINKLIBS  := $(LINKLIBS) -framework AppKit
 RESO      := $(RESO)
 endif
 
