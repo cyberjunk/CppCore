@@ -614,11 +614,17 @@
 #elif defined(CPPCORE_OS_OSX)
 #include <pwd.h>
 #include <mach-o/dyld.h>
+#if defined(__OBJC__)
+#include <Foundation/Foundation.h>
+#endif
 #elif defined(CPPCORE_OS_ANDROID)
 #include <pwd.h>
 #elif defined(CPPCORE_OS_IPHONE)
 #include <pwd.h>
 #include <mach-o/dyld.h>
+#if defined(__OBJC__)
+#include <Foundation/Foundation.h>
+#endif
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -754,11 +760,19 @@ static_assert(sizeof(double) == 8U);
 
 // Constants
 #define TWOPI         (2.0*M_PI)
+
 #define ISZERO(a, e)  (((a) > -e) & ((a) < e))
 #define SIGN(a)       (((a) > 0) ? 1 : (((a) < 0) ? -1 : 0))
+
+#ifndef MAX
 #define MAX(a,b)      ((a) >= (b) ? (a) : (b))
+#endif
+#ifndef MIN
 #define MIN(a,b)      ((a) <= (b) ? (a) : (b))
+#endif
+#ifndef ABS
 #define ABS(a)        ((a) < 0 ? -(a) : (a))
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -64,10 +64,10 @@ endif
 ifeq ($(TARGET_OS),osx)
 OUTDIST   := $(DISTDIR)/$(NAME).app/Contents/MacOS/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
-CXXFLAGS  := $(CXXFLAGS) -ObjC++
+CXXFLAGS  := $(CXXFLAGS) -fdeclspec -ObjC++
 CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
-LINKLIBS  := $(LINKLIBS) -framework Cocoa
+LINKLIBS  := $(LINKLIBS) -framework AppKit
 RESO      := $(RESO)
 endif
 
@@ -88,6 +88,16 @@ CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS)
 LINKLIBS  := $(LINKLIBS) -ldl
+RESO      := $(RESO)
+endif
+
+ifeq ($(TARGET_OS),ios)
+OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
+DEFINES   := $(DEFINES)
+CXXFLAGS  := $(CXXFLAGS) -fdeclspec -ObjC++
+CFLAGS    := $(CFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
+LINKLIBS  := $(LINKLIBS) -framework Foundation
 RESO      := $(RESO)
 endif
 
@@ -121,7 +131,3 @@ clean:
 	$(call deletefiles,$(OBJDIR),*.res)
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTBIN))
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTPDB))
-	$(call deletefiles,$(DISTDIR),*.deb)
-	$(call deletefiles,$(DISTDIR),*.exe)
-	$(call deletefiles,$(DISTDIR),*.msixbundle)
-	$(call deletefiles,$(DISTDIR),*.pkg)
