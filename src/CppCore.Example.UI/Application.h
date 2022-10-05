@@ -21,15 +21,6 @@ namespace CppCore { namespace Example
    protected:
       Window    mWindow;
       TestInput mInput;
-      Runnable  mRunUpdate;
-
-      INLINE void runUpdate()
-      {
-         size_t num = messagePump();
-         if (num > 10)
-            this->logWarn("Processed " + std::to_string((int32_t)num) + 
-               " events in one tick.");
-      }
 
    public:
       /// <summary>
@@ -38,8 +29,7 @@ namespace CppCore { namespace Example
       INLINE Application() : 
          Base(true, true, "CppCore.Example.UI.log", "CppCore.Example.UI"),
          mWindow(*this),
-         mInput(),
-         mRunUpdate([this] { runUpdate(); }, true, std::chrono::milliseconds(16))
+         mInput()
       {
       }
 
@@ -64,9 +54,6 @@ namespace CppCore { namespace Example
          mWindow.setClientSize(CppCore::V2i(800, 800));
          mWindow.setCustomCursor(true);
          mWindow.create();
-
-         // schedule update tick
-         this->schedule(mRunUpdate, ClockHR::now());
       }
 
       /// <summary>

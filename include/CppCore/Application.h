@@ -22,6 +22,7 @@ namespace CppCore
    protected:
       Thread::Pool<Thread> mThreadPool;
       Schedule<>           mSchedule;
+      Runnable             mRunMessagePump;
       LOGGER               mLogger;
       CPUID                mCPUID;
       RESOURCES            mResources;
@@ -45,17 +46,66 @@ namespace CppCore
          this->mThreadPool.stop();
       }
 
+      /// <summary>
+      /// Message Pump on Application Level.
+      /// </summary>
+      INLINE virtual size_t messagePump()
+      {
+         size_t num = 0;
+      #if defined(CPPCORE_OS_WINDOWS)
+         MSG msg;
+         while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+         {
+            i++;
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            // continues in WndProc
+         }
+      #elif defined(CPPCORE_OS_OSX) && defined(__OBJC__)
+         @autoreleasepool
+         {
+            NSEvent * ev;
+            while((ev = [NSApp
+               nextEventMatchingMask : NSEventMaskAny
+               untilDate : nil
+               inMode : NSDefaultRunLoopMode
+               dequeue : YES]))
+            {
+               num++;
+               [NSApp sendEvent : ev];
+               // continues in delegates
+            }
+         }
+      #elif defined(CPPCORE_OS_LINUX)
+         // needs a Window, see messagePump() in Window.h
+      #endif
+         return num;
+      }
+
+      /// <summary>
+      /// Executes the Message Pump
+      /// </summary>
+      INLINE void runMessagePump()
+      {
+         size_t num = messagePump();
+         if (num > 10)
+            this->logWarn("Processed " + std::to_string((int32_t)num) + 
+               " events in one tick.");
+      }
+
    public:
       /// <summary>
       /// Constructor
       /// </summary>
       INLINE Application(
-         const bool    logToConsole   = true, 
-         const bool    logToFile      = true, 
-         const string& logFile        = "app.log",
-         const string& linuxsharename = "CppCore") :
+         const bool        logToConsole        = true, 
+         const bool        logToFile           = true, 
+         const string&     logFile             = "app.log",
+         const string&     linuxsharename      = "CppCore",
+         const DurationHR& messagePumpInterval = std::chrono::milliseconds(16)) :
          Looper(mSchedule),
          mThreadPool(),
+         mRunMessagePump([this] { runMessagePump(); }, true, messagePumpInterval),
          mLogger(mThreadPool, logToConsole, logToFile, logFile),
          mResources(thiss(), mThreadPool, mLogger, thiss(), linuxsharename)
       {
@@ -110,17 +160,30 @@ namespace CppCore
       {
          if (!this->mIsRunning)
          {
+            // set as running
+            this->mIsRunning = true;
+
          #ifdef CPPCORE_OS_WINDOWS
+            // set mainthread priority
             ::SetThreadPriority(::GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
          #endif
 
-            this->mIsRunning = true; // set as running
-            this->init(argc, argv);  // do init before loopstart
+            // do init before loopstart
+            this->init(argc, argv);
+
          #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
-            [NSApp finishLaunching]; // emit startup finished on macos
+            // emit startup finished on macos
+            [NSApp finishLaunching]; 
          #endif
-            this->loop();            // enter mainthread loop
-            this->shutdown();        // run shutdown
+
+            // schedule messagepump
+            this->schedule(mRunMessagePump, ClockHR::now());
+
+            // enter mainthread loop
+            this->loop();
+
+            // run shutdown
+            this->shutdown();
          }
       }
 
@@ -134,42 +197,6 @@ namespace CppCore
             log("Flagged for shutdown. Signal: " + ::std::to_string(signal));
             this->mIsRunning = false;
          }
-      }
-
-      /// <summary>
-      /// Message Pump on Application Level.
-      /// </summary>
-      INLINE virtual size_t messagePump()
-      {
-         size_t num = 0;
-      #if defined(CPPCORE_OS_WINDOWS)
-         MSG msg;
-         while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
-         {
-            i++;
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            // continues in WndProc
-         }
-      #elif defined(CPPCORE_OS_OSX) && defined(__OBJC__)
-         @autoreleasepool
-         {
-            NSEvent * ev;
-            while((ev = [NSApp
-               nextEventMatchingMask : NSEventMaskAny
-               untilDate : nil
-               inMode : NSDefaultRunLoopMode
-               dequeue : YES]))
-            {
-               num++;
-               [NSApp sendEvent : ev];
-               // continues in delegates
-            }
-         }
-      #elif defined(CPPCORE_OS_LINUX)
-         // needs a Window, see messagePump() in Window.h
-      #endif
-         return num;
       }
 
       /// <summary>

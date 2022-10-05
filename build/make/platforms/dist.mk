@@ -161,7 +161,7 @@ dist: dist-prep dist-x64 dist-arm64
 	@-rm -rf $(DISTDIRAPP)
 	@-rm -rf $(DISTDIR)/$(NAME).dSYM
 	@-rm -rf $(DISTDIR)/$(NAME).symbols
-	@-rm -rf $(DISTDIR)/*.pkg
+	@-rm -rf $(DISTDIR)/$(NAME)*.pkg
 	@echo [MKD] $(APPNAME).app/Contents/MacOS
 	@mkdir -p $(DISTDIRAPP)/Contents/MacOS
 	@echo [LIP] $(NAME)$(EXTBIN)
