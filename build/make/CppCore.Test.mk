@@ -90,6 +90,16 @@ LINKLIBS  := $(LINKLIBS) -ldl
 RESO      := $(RESO)
 endif
 
+ifeq ($(TARGET_OS),ios)
+OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
+DEFINES   := $(DEFINES)
+CXXFLAGS  := $(CXXFLAGS) -fdeclspec -ObjC++
+CFLAGS    := $(CFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
+LINKLIBS  := $(LINKLIBS) -framework Foundation
+RESO      := $(RESO)
+endif
+
 ################################################################################################
 
 OBJS := $(patsubst %,$(OBJDIR)/%,$(OBJS))
