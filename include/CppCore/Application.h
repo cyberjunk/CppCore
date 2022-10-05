@@ -56,7 +56,7 @@ namespace CppCore
          MSG msg;
          while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
          {
-            i++;
+            num++;
             TranslateMessage(&msg);
             DispatchMessage(&msg);
             // continues in WndProc
