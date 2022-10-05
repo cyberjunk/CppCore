@@ -131,7 +131,3 @@ clean:
 	$(call deletefiles,$(OBJDIR),*.res)
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTBIN))
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTPDB))
-	$(call deletefiles,$(DISTDIR),*.deb)
-	$(call deletefiles,$(DISTDIR),*.exe)
-	$(call deletefiles,$(DISTDIR),*.msixbundle)
-	$(call deletefiles,$(DISTDIR),*.pkg)
