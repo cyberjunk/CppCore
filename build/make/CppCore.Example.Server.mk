@@ -58,7 +58,7 @@ CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
              -Xlinker /SUBSYSTEM:CONSOLE",10.00" \
              -Xlinker /PDBALTPATH:$(NAME)$(SUFFIX)$(EXTPDB)
-LINKLIBS  := $(LINKLIBS)
+LINKLIBS  := $(LINKLIBS) -lUser32.lib
 RESO      := $(RESO) Resources.res
 endif
 
