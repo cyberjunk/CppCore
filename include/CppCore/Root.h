@@ -588,7 +588,6 @@
 #else
 #include <sys/socket.h>
 #include <sys/ioctl.h>
-#include <sys/sysctl.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
@@ -615,6 +614,7 @@
 #elif defined(CPPCORE_OS_OSX)
 #include <pwd.h>
 #include <mach-o/dyld.h>
+#include <sys/sysctl.h>
 #if defined(__OBJC__)
 #include <Foundation/Foundation.h>
 #endif
@@ -623,6 +623,7 @@
 #elif defined(CPPCORE_OS_IPHONE)
 #include <pwd.h>
 #include <mach-o/dyld.h>
+#include <sys/sysctl.h>
 #if defined(__OBJC__)
 #include <Foundation/Foundation.h>
 #endif
