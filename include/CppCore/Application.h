@@ -7,6 +7,10 @@
 #include <CppCore/CPUID.h>
 #include <CppCore/Resources.h>
 
+#if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
+#include <Cocoa/Cocoa.h>
+#endif
+
 namespace CppCore
 {
    /// <summary>
@@ -61,6 +65,13 @@ namespace CppCore
             this->logError("Some enabled instructions are incompatible with your CPU.");
       #endif
 
+      #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
+         [NSApplication sharedApplication];
+         [NSApp setActivationPolicy : NSApplicationActivationPolicyRegular];
+         [NSApp setPresentationOptions : NSApplicationPresentationDefault];
+         [NSApp activateIgnoringOtherApps : YES];
+      #endif
+
          // log some folders
          this->log("Temp: " + System::Folder::getTemp().string());
          this->log("Home: " + System::Folder::getHome().string());
@@ -105,6 +116,9 @@ namespace CppCore
 
             this->mIsRunning = true; // set as running
             this->init(argc, argv);  // do init before loopstart
+         #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
+            [NSApp finishLaunching]; // emit startup finished on macos
+         #endif
             this->loop();            // enter mainthread loop
             this->shutdown();        // run shutdown
          }
@@ -120,6 +134,42 @@ namespace CppCore
             log("Flagged for shutdown. Signal: " + ::std::to_string(signal));
             this->mIsRunning = false;
          }
+      }
+
+      /// <summary>
+      /// Message Pump on Application Level.
+      /// </summary>
+      INLINE virtual size_t messagePump()
+      {
+         size_t num = 0;
+      #if defined(CPPCORE_OS_WINDOWS)
+         MSG msg;
+         while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+         {
+            i++;
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            // continues in WndProc
+         }
+      #elif defined(CPPCORE_OS_OSX) && defined(__OBJC__)
+         @autoreleasepool
+         {
+            NSEvent * ev;
+            while((ev = [NSApp
+               nextEventMatchingMask : NSEventMaskAny
+               untilDate : nil
+               inMode : NSDefaultRunLoopMode
+               dequeue : YES]))
+            {
+               num++;
+               [NSApp sendEvent : ev];
+               // continues in delegates
+            }
+         }
+      #elif defined(CPPCORE_OS_LINUX)
+         // needs a Window, see messagePump() in Window.h
+      #endif
+         return num;
       }
 
       /// <summary>
