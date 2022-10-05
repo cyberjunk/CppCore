@@ -25,6 +25,7 @@ namespace CppCore
       Runnable             mRunMessagePump;
       LOGGER               mLogger;
       CPUID                mCPUID;
+      System::Cpu          mCPU;
       RESOURCES            mResources;
 
       /// <summary>
@@ -110,10 +111,21 @@ namespace CppCore
          mResources(thiss(), mThreadPool, mLogger, thiss(), linuxsharename)
       {
       #if defined(CPPCORE_CPU_X86ORX64)
+         // log CPU type
          this->log(std::string("CPU: ") + mCPUID.getBrand());
          if (!mCPUID.isCompatible())
             this->logError("Some enabled instructions are incompatible with your CPU.");
       #endif
+
+         // log CPU cores
+         System::getCpuInfo(mCPU);
+         this->log("CPU: " +
+            std::to_string(mCPU.coresphysical) + " Physical-Cores | " +
+            std::to_string(mCPU.coreslogical) + " Logical-Cores");
+
+         // log RAM size
+         const uint64_t MEMSIZE = System::getRamSize() / (1024 * 1024);
+         this->log("RAM: " + std::to_string(MEMSIZE) + " MB");
 
       #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
          [NSApplication sharedApplication];

@@ -141,6 +141,8 @@ namespace CppCore
       #ifdef CPPCORE_OS_WINDOWS
          ULONGLONG m;
          return GetPhysicallyInstalledSystemMemory(&m) ? m * 1024U : 0;
+      #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
+         return [[NSProcessInfo processInfo] physicalMemory];
       #else
          return 0U;
       #endif
@@ -192,6 +194,13 @@ namespace CppCore
             }
          }
          return false;
+      #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
+         size_t size;
+         size = sizeof(cpu.coresphysical);
+         ::sysctlbyname("hw.physicalcpu", &cpu.coresphysical, &size, 0, 0);
+         size = sizeof(cpu.coreslogical);
+         ::sysctlbyname("hw.logicalcpu", &cpu.coreslogical, &size, 0, 0);
+         return true;
       #else
          cpu.coresphysical = cpu.coreslogical = 1;
          return false;
