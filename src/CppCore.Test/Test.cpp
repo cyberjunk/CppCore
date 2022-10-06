@@ -164,7 +164,7 @@ int v3i_test()
 }
 
 CPUID        cpuid;
-System::Info sysinfo;
+System::Info sysinfo("CppCore.Test");
 
 // console based tests
 int main()
