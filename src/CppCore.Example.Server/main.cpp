@@ -4,8 +4,8 @@
 // init sockets on Windows (does nothing on others)
 int init = CppCore::Socket::Op::initSockets();
 
-// init server on port 4321
-CppCore::Example::Server app(4321);
+// init server
+CppCore::Example::Server app;
 
 void stop(int signal)
 {

@@ -8,27 +8,52 @@
 namespace CppCore
 {
    /// <summary>
-   /// Resources stored in a path.
+   /// Resources stored in path on disk.
    /// </summary>
    class Resources : public Logger::Producer<Logger, Logger::Channel::Resources>
    {
    public:
-      static constexpr char PATHDEV1[]    = "./../../../../resources"; // e.g. $git/build/make/bin/win-x64/
-      static constexpr char PATHDEV2[]    = "./../../resources";       // e.g. $git/build/vs/
-      static constexpr char PATHDISTWIN[] = "./resources";             // Windows Distribution Packages
-      static constexpr char PATHDISTLIN[] = "/usr/share/";             // Linux Distribution Packages (+name)
-      static constexpr char PATHDISTOSX[] = "./../Resources";          // OSX Distribution Packages
-
-   public:
-      class Callback
+      /// <summary>
+      /// Possible Locations for Resources
+      /// </summary>
+      class Locations
       {
+      public:
+         const string name;
+         const path exepath = System::Folder::getExecutablePath();
+         const path curpath = System::Folder::getCurrent();
+         const path folders[6] = { 
+            absolute(curpath / "resources"),                               // Development (e.g. $git)
+            absolute(curpath / ".." / ".." / "resources"),                 // Development (e.g. $git/build/vs)
+            absolute(curpath / ".." / ".." / ".." / ".." / "resources"),   // Development (e.g. $git/build/make/bin/win-x64)
+            absolute(exepath / "resources"),                               // Windows Distribution Packages
+            absolute(exepath / ".." / "Resources"),                        // OSX Distribution Packages
+            absolute(path("/") / "usr" / "share" / name)                   // Linux Distribution Packages
+         };
+         INLINE Locations(const string& name) : name(name) { }
+         INLINE path find() const
+         {
+            // search locations
+            for (auto& p : folders)
+               if (std::filesystem::exists(p))
+                  return p;
+
+            // not found
+            return path();
+         }
       };
 
+      /// <summary>
+      /// Callback. Derive from this.
+      /// </summary>
+      class Callback { };
+
    protected:
-      path      mPath;
-      Handler&  mApplication;
-      Handler&  mThreadPool;
-      Callback& mCallback;
+      const Locations mLocations;   // possible resource locations
+      const path      mPath;        // detected path of resources
+      Handler&        mApplication; // ref to application
+      Handler&        mThreadPool;  // ref to threadpool
+      Callback&       mCallback;    // ref to callback instance
 
    public:
       /// <summary>
@@ -41,33 +66,12 @@ namespace CppCore
          Callback&     callback, 
          const string& linuxsharename) :
          Logger::Producer<Logger, Logger::Channel::Resources>(logger),
+         mLocations(linuxsharename),
+         mPath(mLocations.find()),
          mApplication(application),
          mThreadPool(threadPool),
-         mCallback(callback),
-         mPath(PATHDEV1)
+         mCallback(callback)
       {
-      #if defined(CPPCORE_OS_WINDOWS)
-         if (!std::filesystem::exists(mPath))
-            mPath = PATHDEV2;
-         if (!std::filesystem::exists(mPath))
-            mPath = PATHDISTWIN;
-         if (!std::filesystem::exists(mPath))
-            mPath = System::Folder::getExecutablePath() / path("resources");
-      #elif defined(CPPCORE_OS_LINUX)
-         if (!std::filesystem::exists(mPath))
-            mPath = PATHDISTLIN + linuxsharename;
-      #elif defined(CPPCORE_OS_OSX)
-         if (!std::filesystem::exists(mPath))
-            mPath = PATHDISTOSX;
-      #endif
-
-         // success
-         if (std::filesystem::exists(mPath))
-            this->log("Found resources in: " + mPath.u8string());
-
-         // fail
-         else
-            this->logError("Failed to find resources!");
       }
 
       /// <summary>
@@ -79,6 +83,14 @@ namespace CppCore
       /// Base Path combined with p
       /// </summary>
       INLINE path getPath(const path& p) const { return mPath / p; }
+
+      /// <summary>
+      /// Returns true if resources base path exists.
+      /// </summary>
+      INLINE bool exists()
+      {
+         return std::filesystem::exists(mPath);
+      }
 
       /// <summary>
       /// Returns true if sub path p exists in resources.
