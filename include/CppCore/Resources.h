@@ -22,7 +22,8 @@ namespace CppCore
          const string name;
          const path exepath = System::Folder::getExecutablePath();
          const path curpath = System::Folder::getCurrent();
-         const path folders[5] = { 
+         const path folders[6] = { 
+            absolute(curpath / "resources"),                               // Development (e.g. $git)
             absolute(curpath / ".." / ".." / "resources"),                 // Development (e.g. $git/build/vs)
             absolute(curpath / ".." / ".." / ".." / ".." / "resources"),   // Development (e.g. $git/build/make/bin/win-x64)
             absolute(exepath / "resources"),                               // Windows Distribution Packages
