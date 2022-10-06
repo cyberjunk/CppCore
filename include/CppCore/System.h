@@ -340,34 +340,48 @@ namespace CppCore
       class Info
       {
       protected:
-         uint32_t mCoresPhysical; // physical cores
-         uint32_t mCoresLogical;  // logical cores
-         uint64_t mRamSize;       // ram size of system
-         path     mPathTemp;      // suggestion for temporary path
-         path     mPathPerm;      // suggestion for persistent path
-         path     mLogFile;       // suggestion for logfile
-         path     mConfigFile;    // suggestion for configfile
+         const uint32_t mCoresPhysical; // physical cores
+         const uint32_t mCoresLogical;  // logical cores
+         const uint64_t mRamSize;       // ram size of system
+         const path     mPathTemp;      // suggestion for temporary path
+         const path     mPathPermBase;  // suggestion for persistent base path
+         const path     mPathPerm;      // suggestion for persistent path
+         const path     mLogFile;       // suggestion for logfile
+         const path     mConfigFile;    // suggestion for configfile
 
       public:
          INLINE Info(
             const string& appname, 
-            const string& extlog = ".log", 
-            const string& extcfg = ".json") :
+            const string& companyname = "",
+            const string& extlog      = ".log", 
+            const string& extcfg      = ".json") :
             mCoresPhysical(System::getCpuCoresPhysical()),
             mCoresLogical(System::getCpuCoresLogical()),
             mRamSize(System::getRamSize()),
             mPathTemp(Folder::getTemp()),
-            mPathPerm(Folder::getPersistent()),
+            mPathPermBase(Folder::getPersistent()),
+            mPathPerm(companyname.length() ? 
+               mPathPermBase / companyname / appname :
+               mPathPermBase / appname),
             mLogFile(mPathPerm / (appname + extlog)),
-            mConfigFile(mPathPerm / (appname + extcfg)) { }
+            mConfigFile(mPathPerm / (appname + extcfg))
+         {
+            if (!std::filesystem::exists(mPathPerm))
+               std::filesystem::create_directories(mPathPerm);
+         }
 
          INLINE uint32_t    getCpuCoresPhysical( ) const { return mCoresPhysical; }
          INLINE uint32_t    getCpuCoresLogical()   const { return mCoresLogical; }
          INLINE uint64_t    getRamSize()           const { return mRamSize; }
          INLINE const path& getTempPath()          const { return mPathTemp; }
          INLINE const path& getPersistentPath()    const { return mPathPerm; }
-         INLINE const path& getLogFile()           const { return mLogFile; }
          INLINE const path& getConfigFile()        const { return mConfigFile; }
+         INLINE const path& getLogFile()           const { return mLogFile; }
+
+         INLINE path getLogFile(const string& name, const string& ext = ".log") const
+         {
+            return mPathPerm / (name + ext);
+         }
       };
    };
 }
