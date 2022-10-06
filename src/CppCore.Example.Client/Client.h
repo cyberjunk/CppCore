@@ -3,13 +3,6 @@
 #include <CppCore/Application.h> // the base class
 #include "NetClient.h"           // own netclient
 
-//#define HOST "::1"
-#define HOST "127.0.0.1"
-//#define HOST "localhost"
-//#define HOST "::ffff:127.0.0.1"
-
-#define PORT 4321
-
 namespace CppCore { namespace Example 
 {
    /// <summary>
@@ -20,12 +13,13 @@ namespace CppCore { namespace Example
       public NetClient::Callback
    {
    public:
-      static constexpr char APPNAME[] = "CppCore.Example.Client";
-      static constexpr char LOGFILE[] = "CppCore.Example.Client.log";
+      static constexpr char     APPNAME[] = "CppCore.Example.Client";
+      static constexpr char     LOGFILE[] = "CppCore.Example.Client.log";
+      static constexpr char     HOST[]    = "localhost";
+      static constexpr uint16_t PORT      = 4321;
 
    protected:
       NetClient mNetClient;
-      Runnable  mRunnableStats;
       Runnable  mRunnableConnect;
       Runnable  mRunnableDisconnect;
       Runnable  mRunnableTest;

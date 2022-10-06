@@ -28,6 +28,11 @@ namespace CppCore { namespace Example
       /// </summary>
       static constexpr seconds EPOCHLENGTH = seconds(10);
 
+      /// <summary>
+      /// Default TCP/UDP Port
+      /// </summary>
+      static constexpr uint16_t DEFAULTPORT = 4321;
+
    protected:
       NetServer mNetServer;
       Runnable  mEpochTimer;
@@ -80,7 +85,7 @@ namespace CppCore { namespace Example
       /// <summary>
       /// Constructor
       /// </summary>
-      INLINE Server(const uint16_t port) : 
+      INLINE Server(const uint16_t port = DEFAULTPORT) :
          Application(true, true, LOGFILE, APPNAME),
          mNetServer(port, *this, mThreadPool, mThreadPool, mLogger, *this),
          mEpochTimer([this]() { runEpochTimer(); }, true, EPOCHLENGTH)
