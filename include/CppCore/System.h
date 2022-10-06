@@ -340,27 +340,34 @@ namespace CppCore
       class Info
       {
       protected:
-         uint32_t mCoresPhysical;
-         uint32_t mCoresLogical;
-         uint64_t mRamSize;
-         path     mPathTemp;
-         path     mPathPerm;
+         uint32_t mCoresPhysical; // physical cores
+         uint32_t mCoresLogical;  // logical cores
+         uint64_t mRamSize;       // ram size of system
+         path     mPathTemp;      // suggestion for temporary path
+         path     mPathPerm;      // suggestion for persistent path
+         path     mLogFile;       // suggestion for logfile
+         path     mConfigFile;    // suggestion for configfile
 
       public:
-         INLINE Info() :
+         INLINE Info(
+            const string& appname, 
+            const string& extlog = ".log", 
+            const string& extcfg = ".json") :
             mCoresPhysical(System::getCpuCoresPhysical()),
             mCoresLogical(System::getCpuCoresLogical()),
             mRamSize(System::getRamSize()),
             mPathTemp(Folder::getTemp()),
-            mPathPerm(Folder::getPersistent())
-         {
-         }
+            mPathPerm(Folder::getPersistent()),
+            mLogFile(mPathPerm / (appname + extlog)),
+            mConfigFile(mPathPerm / (appname + extcfg)) { }
 
          INLINE uint32_t    getCpuCoresPhysical( ) const { return mCoresPhysical; }
          INLINE uint32_t    getCpuCoresLogical()   const { return mCoresLogical; }
          INLINE uint64_t    getRamSize()           const { return mRamSize; }
          INLINE const path& getTempPath()          const { return mPathTemp; }
          INLINE const path& getPersistentPath()    const { return mPathPerm; }
+         INLINE const path& getLogFile()           const { return mLogFile; }
+         INLINE const path& getConfigFile()        const { return mConfigFile; }
       };
    };
 }

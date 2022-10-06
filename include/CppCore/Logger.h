@@ -158,11 +158,11 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE Logger(
-         Handler& threadPool, 
-         bool     logToConsole           = true, 
-         bool     logToFile              = true, 
-         const    string& logFile        = "app.log",
-         const    DurationHR logInterval = milliseconds(100)) :
+         Handler&         threadPool, 
+         bool             logToConsole = true, 
+         bool             logToFile    = true, 
+         const path&      logFile      = "app.log",
+         const DurationHR logInterval  = milliseconds(100)) :
          mThreadPool(threadPool),
          mLogToConsole(logToConsole),
          mLogToFile(logToFile),

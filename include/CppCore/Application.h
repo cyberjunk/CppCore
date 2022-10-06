@@ -118,15 +118,15 @@ namespace CppCore
          const bool        logToConsole        = true, 
          const bool        logToFile           = true, 
          const string&     logFile             = "app.log",
-         const string&     linuxsharename      = "CppCore",
+         const string&     appname             = "CppCore",
          const DurationHR& messagePumpInterval = DEFAULTMESSAGEPUMPINTERVAL) :
          Looper(mSchedule),
-         mSystemInfo(),
+         mSystemInfo(appname),
          mCPUID(),
          mThreadPool(),
          mRunMessagePump([this] { runMessagePump(); }, true, messagePumpInterval),
-         mLogger(mThreadPool, logToConsole, logToFile, logFile),
-         mResources(thiss(), mThreadPool, mLogger, thiss(), linuxsharename)
+         mLogger(mThreadPool, logToConsole, logToFile, mSystemInfo.getLogFile()),
+         mResources(thiss(), mThreadPool, mLogger, thiss(), appname)
       {
       #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
          [NSApplication sharedApplication];
@@ -151,6 +151,8 @@ namespace CppCore
          this->log("RAM: " + std::to_string(mSystemInfo.getRamSize() / (1024ULL*1024ULL)) + " MB");
          this->log("TMP: " + mSystemInfo.getTempPath().string());
          this->log("DAT: " + mSystemInfo.getPersistentPath().string());
+         this->log("LOG: " + mSystemInfo.getLogFile().string());
+         this->log("CFG: " + mSystemInfo.getConfigFile().string());
          this->log("RES: " + mResources.getPath().string());
 
          // log thread count
