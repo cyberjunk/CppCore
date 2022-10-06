@@ -20,12 +20,12 @@ namespace CppCore
    class Application : public Looper, public Handler, public RESOURCES::Callback
    {
    protected:
+      System::Info         mSystemInfo;
       Thread::Pool<Thread> mThreadPool;
       Schedule<>           mSchedule;
       Runnable             mRunMessagePump;
       LOGGER               mLogger;
       CPUID                mCPUID;
-      System::Cpu          mCPU;
       RESOURCES            mResources;
 
       /// <summary>
@@ -105,28 +105,13 @@ namespace CppCore
          const string&     linuxsharename      = "CppCore",
          const DurationHR& messagePumpInterval = std::chrono::milliseconds(16)) :
          Looper(mSchedule),
+         mSystemInfo(),
          mThreadPool(),
          mRunMessagePump([this] { runMessagePump(); }, true, messagePumpInterval),
          mLogger(mThreadPool, logToConsole, logToFile, logFile),
+         mCPUID(),
          mResources(thiss(), mThreadPool, mLogger, thiss(), linuxsharename)
       {
-      #if defined(CPPCORE_CPU_X86ORX64)
-         // log CPU type
-         this->log(std::string("CPU: ") + mCPUID.getBrand());
-         if (!mCPUID.isCompatible())
-            this->logError("Some enabled instructions are incompatible with your CPU.");
-      #endif
-
-         // log CPU cores
-         System::getCpuInfo(mCPU);
-         this->log("CPU: " +
-            std::to_string(mCPU.coresphysical) + " Physical-Cores | " +
-            std::to_string(mCPU.coreslogical) + " Logical-Cores");
-
-         // log RAM size
-         const uint64_t MEMSIZE = System::getRamSize() / (1024 * 1024);
-         this->log("RAM: " + std::to_string(MEMSIZE) + " MB");
-
       #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
          [NSApplication sharedApplication];
          [NSApp setActivationPolicy : NSApplicationActivationPolicyRegular];
@@ -134,19 +119,27 @@ namespace CppCore
          [NSApp activateIgnoringOtherApps : YES];
       #endif
 
-         // log some folders
-         this->log("Temp: " + System::Folder::getTemp().string());
-         this->log("Perm: " + System::Folder::getPersistent().string());
-         this->log("Curr: " + System::Folder::getCurrent().string());
-         this->log("Exec: " + System::Folder::getExecutablePath().string());
+      #if defined(CPPCORE_CPU_X86ORX64)
+         // log CPU type
+         this->log(std::string("CPU:  ") + mCPUID.getBrand());
+         if (!mCPUID.isCompatible())
+            this->logError("Some enabled instructions are incompatible with your CPU.");
+      #endif
 
-         // log thread count and ids
-         stringstream s;
-         s << "ThreadPool started with " << mThreadPool.getSize() << " threads: ";
-         for (size_t i = 0; i < mThreadPool.getSize(); i++)
-            s << mThreadPool.getId(i) << ' ';
+         // log CPU cores
+         this->log("CPU:  " +
+            std::to_string(mSystemInfo.getCpuCoresPhysical()) + " Physical-Cores | " +
+            std::to_string(mSystemInfo.getCpuCoresLogical()) + " Logical-Cores");
 
-         this->log(s.str());
+         // log RAM size
+         this->log("RAM:  " + std::to_string(mSystemInfo.getRamSize() / (1024ULL*1024ULL)) + " MB");
+
+         // log temporary and persistent folders
+         this->log("TEMP: " + mSystemInfo.getTempPath().string());
+         this->log("PERM: " + mSystemInfo.getPersistentPath().string());
+
+         // log thread count
+         this->log("ThreadPool started with " + std::to_string(mThreadPool.getSize()) + " threads.");
 
          // log fixed memory size
          const size_t MEMSIZEAPP = sizeof(TAPPLICATION) / (1024 * 1024);

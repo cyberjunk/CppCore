@@ -9,6 +9,9 @@ namespace CppCore
    /// </summary>
    class System
    {
+   private:
+      INLINE System() { }
+
    public:
       /// <summary>
       /// Info about Display
@@ -140,7 +143,7 @@ namespace CppCore
          ///  Regular: C:\Users\NAME\AppData\Local\Temp
          ///  Sandbox: C:\Users\NAME\AppData\Local\Packages\PACKAGEID_PUBLISHERID\AC\Temp\
          /// MACOS:
-         ///  Regular: TODO
+         ///  Regular: /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/
          ///  Sandbox: TODO
          /// LINUX:
          ///  Regular: /tmp
@@ -284,7 +287,7 @@ namespace CppCore
          ::sysctlbyname("hw.physicalcpu", &cores, &size, 0, 0);
          return cores;
       #else
-         return 0;
+         return 0; // TODO: Linux/Android
       #endif
       }
 
@@ -330,5 +333,34 @@ namespace CppCore
          return false;
       #endif
       }
+
+      /// <summary>
+      /// System Info
+      /// </summary>
+      class Info
+      {
+      protected:
+         uint32_t mCoresPhysical;
+         uint32_t mCoresLogical;
+         uint64_t mRamSize;
+         path     mPathTemp;
+         path     mPathPerm;
+
+      public:
+         INLINE Info() :
+            mCoresPhysical(System::getCpuCoresPhysical()),
+            mCoresLogical(System::getCpuCoresLogical()),
+            mRamSize(System::getRamSize()),
+            mPathTemp(Folder::getTemp()),
+            mPathPerm(Folder::getPersistent())
+         {
+         }
+
+         INLINE uint32_t    getCpuCoresPhysical( ) const { return mCoresPhysical; }
+         INLINE uint32_t    getCpuCoresLogical()   const { return mCoresLogical; }
+         INLINE uint64_t    getRamSize()           const { return mRamSize; }
+         INLINE const path& getTempPath()          const { return mPathTemp; }
+         INLINE const path& getPersistentPath()    const { return mPathPerm; }
+      };
    };
 }
