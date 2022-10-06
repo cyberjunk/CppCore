@@ -19,8 +19,15 @@ namespace CppCore
    template<typename TAPPLICATION, typename RESOURCES = Resources, typename LOGGER = Logger>
    class Application : public Looper, public Handler, public RESOURCES::Callback
    {
+   public:
+      /// <summary>
+      /// Logs a warning if more than this amount of system
+      /// messages/events are processed in a single execution.
+      /// </summary>
+      static constexpr size_t MESSAGEPUMPWARNTHRESHOLD = 10;
+
    protected:
-      System::Info         mSystemInfo;
+      const System::Info   mSystemInfo;
       Thread::Pool<Thread> mThreadPool;
       Schedule<>           mSchedule;
       Runnable             mRunMessagePump;
@@ -88,10 +95,10 @@ namespace CppCore
       /// </summary>
       INLINE void runMessagePump()
       {
-         size_t num = messagePump();
-         if (num > 10)
-            this->logWarn("Processed " + std::to_string((int32_t)num) + 
-               " events in one tick.");
+         const size_t num = messagePump();
+         if (num > MESSAGEPUMPWARNTHRESHOLD)
+            this->logWarn("Processed " + std::to_string(num) + 
+               " messages in one execution.");
       }
 
    public:
@@ -131,10 +138,8 @@ namespace CppCore
             std::to_string(mSystemInfo.getCpuCoresPhysical()) + " Physical-Cores | " +
             std::to_string(mSystemInfo.getCpuCoresLogical()) + " Logical-Cores");
 
-         // log RAM size
+         // log RAM size and temporary/persistent path
          this->log("RAM:  " + std::to_string(mSystemInfo.getRamSize() / (1024ULL*1024ULL)) + " MB");
-
-         // log temporary and persistent folders
          this->log("TEMP: " + mSystemInfo.getTempPath().string());
          this->log("PERM: " + mSystemInfo.getPersistentPath().string());
 
@@ -148,13 +153,37 @@ namespace CppCore
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+      /// <summary>
+      /// Logs a message with specified type.
+      /// </summary>
       INLINE void log(const string& message, const Logger::Type logType = Logger::Type::Info)
       {
          mLogger.log(message, Logger::Channel::App, logType);
       }
-      INLINE void logError(const string& message) { this->log(message, Logger::Type::Error);   }
-      INLINE void logWarn(const string& message)  { this->log(message, Logger::Type::Warning); }
-      INLINE void logDebug(const string& message) { this->log(message, Logger::Type::Debug);   }
+
+      /// <summary>
+      /// Logs an error message.
+      /// </summary>
+      INLINE void logError(const string& message)
+      {
+         this->log(message, Logger::Type::Error);
+      }
+
+      /// <summary>
+      /// Logs a warning message.
+      /// </summary>
+      INLINE void logWarn(const string& message)
+      {
+         this->log(message, Logger::Type::Warning);
+      }
+
+      /// <summary>
+      /// Logs a debug message.
+      /// </summary>
+      INLINE void logDebug(const string& message)
+      {
+         this->log(message, Logger::Type::Debug);
+      }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////
 
