@@ -29,6 +29,12 @@ namespace CppCore
       /// </summary>
       static constexpr size_t MESSAGEPUMPWARNTHRESHOLD = 10;
 
+      /// <summary>
+      /// Interval for the mainthread for processing the 
+      /// operating system application message queues.
+      /// </summary>
+      static constexpr DurationHR DEFAULTMESSAGEPUMPINTERVAL = milliseconds(16);
+
    protected:
       const System::Info   mSystemInfo;     // basic system info from operating system
       const CPUID          mCPUID;          // cpu info directly from cpu
@@ -113,7 +119,7 @@ namespace CppCore
          const bool        logToFile           = true, 
          const string&     logFile             = "app.log",
          const string&     linuxsharename      = "CppCore",
-         const DurationHR& messagePumpInterval = std::chrono::milliseconds(16)) :
+         const DurationHR& messagePumpInterval = DEFAULTMESSAGEPUMPINTERVAL) :
          Looper(mSchedule),
          mSystemInfo(),
          mCPUID(),
@@ -131,20 +137,21 @@ namespace CppCore
 
       #if defined(CPPCORE_CPU_X86ORX64)
          // log CPU type
-         this->log(std::string("CPU:  ") + mCPUID.getBrand());
+         this->log(std::string("CPU: ") + mCPUID.getBrand());
          if (!mCPUID.isCompatible())
             this->logError("Some enabled instructions are incompatible with your CPU.");
       #endif
 
          // log CPU cores
-         this->log("CPU:  " +
+         this->log("CPU: " +
             std::to_string(mSystemInfo.getCpuCoresPhysical()) + " Physical-Cores | " +
             std::to_string(mSystemInfo.getCpuCoresLogical()) + " Logical-Cores");
 
-         // log RAM size and temporary/persistent path
-         this->log("RAM:  " + std::to_string(mSystemInfo.getRamSize() / (1024ULL*1024ULL)) + " MB");
-         this->log("TEMP: " + mSystemInfo.getTempPath().string());
-         this->log("PERM: " + mSystemInfo.getPersistentPath().string());
+         // log RAM size, temporary/persistent path and path of resources
+         this->log("RAM: " + std::to_string(mSystemInfo.getRamSize() / (1024ULL*1024ULL)) + " MB");
+         this->log("TMP: " + mSystemInfo.getTempPath().string());
+         this->log("DAT: " + mSystemInfo.getPersistentPath().string());
+         this->log("RES: " + mResources.getPath().string());
 
          // log thread count
          this->log("ThreadPool started with " + std::to_string(mThreadPool.getSize()) + " threads.");
