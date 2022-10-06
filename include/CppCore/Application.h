@@ -162,6 +162,8 @@ namespace CppCore
          this->log("Initialized " + std::to_string(MEMSIZEAPP) + " MB fixed memory.");
       }
 
+      INLINE const System::Info& getSystemInfo() const { return mSystemInfo; }
+
       /////////////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
