@@ -86,7 +86,7 @@ namespace CppCore { namespace Example
       /// Constructor
       /// </summary>
       INLINE Server(const uint16_t port = DEFAULTPORT) :
-         Application(true, true, LOGFILE, APPNAME),
+         Application(true, true, APPNAME),
          mNetServer(port, *this, mThreadPool, mThreadPool, mLogger, *this),
          mEpochTimer([this]() { runEpochTimer(); }, true, EPOCHLENGTH)
       {

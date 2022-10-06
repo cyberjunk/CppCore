@@ -117,7 +117,6 @@ namespace CppCore
       INLINE Application(
          const bool        logToConsole        = true, 
          const bool        logToFile           = true, 
-         const string&     logFile             = "app.log",
          const string&     appname             = "CppCore",
          const DurationHR& messagePumpInterval = DEFAULTMESSAGEPUMPINTERVAL) :
          Looper(mSchedule),

@@ -27,11 +27,9 @@ namespace CppCore { namespace Example
       /// Constructor
       /// </summary>
       INLINE Application() : 
-         Base(true, true, "CppCore.Example.UI.log", "CppCore.Example.UI"),
+         Base(true, true, "CppCore.Example.UI"),
          mWindow(*this),
-         mInput()
-      {
-      }
+         mInput() { }
 
       /// <summary>
       /// Destructor

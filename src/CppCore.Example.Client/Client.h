@@ -76,7 +76,7 @@ namespace CppCore { namespace Example
       /// Constructor
       /// </summary>
       INLINE Client() :
-         Application(true, true, LOGFILE, APPNAME),
+         Application(true, true, APPNAME),
          mNetClient(*this, mThreadPool, *this, mLogger, *this),
          mRunnableConnect([this]() { mNetClient.connect(HOST, PORT); }),
          mRunnableDisconnect([this]() { mNetClient.disconnect(); }),
