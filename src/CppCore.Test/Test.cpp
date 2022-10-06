@@ -227,11 +227,9 @@ int main()
    std::cout << "FOLDERS"                         << std::endl;
    std::cout << "-------------------------------" << std::endl;
    std::cout << "TEMP: " << CppCore::System::Folder::getTemp()           << std::endl;
-   std::cout << "HOME: " << CppCore::System::Folder::getHome()           << std::endl;
+   std::cout << "PERM: " << CppCore::System::Folder::getPersistent()     << std::endl;
    std::cout << "EXEC: " << CppCore::System::Folder::getExecutable()     << std::endl;
-   std::cout << "CUR:  " << CppCore::System::Folder::getCurrent()        << std::endl;
-   std::cout << "APDL: " << CppCore::System::Folder::getAppDataLocal()   << std::endl;
-   std::cout << "APDR: " << CppCore::System::Folder::getAppDataRoaming() << std::endl;
+   std::cout << "CURR: " << CppCore::System::Folder::getCurrent()        << std::endl;
 
    bool r;
 

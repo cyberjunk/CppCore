@@ -33,38 +33,132 @@ namespace CppCore
       };
 
       /// <summary>
-      /// Info about Folders
+      /// Special Folders
       /// </summary>
       class Folder
       {
       public:
+      #if defined(CPPCORE_OS_WINDOWS)
+         class Windows
+         {
+         public:
+            /// <summary>
+            /// Returns the roaming AppData path on Windows.
+            /// This was removed in Windows 11 and is NOT accessible from sandbox.
+            /// </summary>
+            /// <remarks>
+            /// Regular: C:\Users\NAME\AppData\Roaming
+            /// Sandbox: C:\Users\NAME\AppData\Roaming
+            /// </remarks>
+            INLINE static path getAppDataRoaming()
+            {
+               const char* p = ::getenv("APPDATA");
+               return p ? path(p) : path();
+            }
+
+            /// <summary>
+            /// Returns the local AppData path on Windows.
+            /// Preferred persistent location to store user specific app data.
+            /// </summary>
+            /// <remarks>
+            /// Regular: C:\Users\NAME\AppData\Local
+            /// Sandbox: C:\Users\NAME\AppData\Local\Packages\PACKAGEID_PUBLISHERID\AC
+            /// </remarks>
+            INLINE static path getAppDataLocal()
+            {
+               const char* p = ::getenv("LOCALAPPDATA");
+               return p ? path(p) : path();
+            }
+
+            /// <summary>
+            /// Returns the user's profile path on Windows.
+            /// This is NOT accessible from sandbox.
+            /// </summary>
+            /// <remarks>
+            /// Regular: C:\Users\NAME
+            /// Sandbox: C:\Users\NAME
+            /// </remarks>
+            INLINE static path getUserProfile()
+            {
+               const char* p = ::getenv("USERPROFILE");
+               return p ? path(p) : path();
+            }
+         };
+      #endif
+
+      #if defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
+         class Apple
+         {
+         public:
+            /// <summary>
+            /// Always returns home folder (/Users/NAME) of current user.
+            /// You may not have access to this folder from sandbox.
+            /// </summary>
+            INLINE static path getHome()
+            {
+               struct passwd* pw = ::getpwuid(::getuid());
+               return path(pw->pw_dir);
+            }
+
+            /// <summary>
+            /// Returns home folder of current user or sandbox container root.
+            /// Preferred persistent location to store user specific app data.
+            /// </summary>
+            /// <remarks>
+            /// Regular: /Users/NAME
+            /// Sandbox: /Users/NAME/Library/Containers/BUNDLEID/Data
+            /// </remarks>
+            INLINE static path getHomeSandbox()
+            {
+               NSString* s = NSHomeDirectory();
+               return path([s UTF8String]);
+            }
+         };
+      #endif
+
+      #if defined(CPPCORE_OS_LINUX)
+         class Linux
+         {
+         public:
+            /// <summary>
+            /// Always returns home folder (/home/NAME) of current user.
+            /// </summary>
+            INLINE static path getHome()
+            {
+               struct passwd* pw = ::getpwuid(::getuid());
+               return path(pw->pw_dir);
+            }
+         };
+      #endif
+
          /// <summary>
-         /// Returns a temp path to use on this system/user.
+         /// Returns a writable temporary path to use on this system/user.
+         /// This is only persistent for one run of the application.
          /// </summary>
+         /// <remarks>
+         /// WINDOWS:
+         ///  Regular: C:\Users\NAME\AppData\Local\Temp
+         ///  Sandbox: C:\Users\NAME\AppData\Local\Packages\PACKAGEID_PUBLISHERID\AC\Temp\
+         /// MACOS:
+         ///  Regular: TODO
+         ///  Sandbox: TODO
+         /// LINUX:
+         ///  Regular: /tmp
+         /// </remarks>
          INLINE static path getTemp()
          {
             return std::filesystem::temp_directory_path();
          }
 
          /// <summary>
-         /// Returns the curren path of the process.
+         /// Returns a writable persistent path to use on this system/user.
          /// </summary>
-         INLINE static path getCurrent()
-         {
-            return std::filesystem::current_path();
-         }
-
-         /// <summary>
-         /// Returns the home folder of the current user.
-         /// </summary>
-         INLINE static path getHome()
+         INLINE static path getPersistent()
          {
          #if defined(CPPCORE_OS_WINDOWS)
-            const char* p = ::getenv("USERPROFILE");
-            return p ? path(p) : path();
+            return Windows::getAppDataLocal();
          #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
-            NSString* s = NSHomeDirectory();
-            return path([s UTF8String]);
+            return Apple::getHomeSandbox();
          #else
             struct passwd* pw = ::getpwuid(::getuid());
             return path(pw->pw_dir);
@@ -72,8 +166,24 @@ namespace CppCore
          }
 
          /// <summary>
-         /// Returns full path with filename 
-         /// of the current executable.
+         /// Returns the curren path of the process.
+         /// </summary>
+         /// <remarks>
+         /// WINDOWS:
+         ///  Regular: Working Directory on Shortcut | Startup Folder on Shell
+         ///  Sandbox: C:\Program Files\WindowsApps\PACKAGEID_VERSION_ARCH__PUBLISHERID
+         /// MACOS:
+         ///  Regular:
+         ///  Sandbox:
+         /// LINUX:
+         /// </remarks>
+         INLINE static path getCurrent()
+         {
+            return std::filesystem::current_path();
+         }
+
+         /// <summary>
+         /// Returns full path with filename of the current executable.
          /// </summary>
          INLINE static path getExecutable()
          {
@@ -105,24 +215,6 @@ namespace CppCore
          {
             return getExecutable().remove_filename();
          }
-
-         /// <summary>
-         /// Returns the roaming AppData path on Windows.
-         /// </summary>
-         INLINE static path getAppDataRoaming()
-         {
-            const char* p = ::getenv("APPDATA");
-            return p ? path(p) : path();
-         }
-
-         /// <summary>
-         /// Returns the local AppData path on Windows.
-         /// </summary>
-         INLINE static path getAppDataLocal()
-         {
-            const char* p = ::getenv("LOCALAPPDATA");
-            return p ? path(p) : path();
-         }
       };
 
       /// <summary>
@@ -144,7 +236,55 @@ namespace CppCore
       #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
          return [[NSProcessInfo processInfo] physicalMemory];
       #else
-         return 0U;
+         uint64_t pages = sysconf(_SC_PHYS_PAGES);
+         uint64_t page_size = sysconf(_SC_PAGE_SIZE);
+         return pages * page_size;
+      #endif
+      }
+
+      /// <summary>
+      /// Returns the number of logical CPU cores (or 0 if not retrievable).
+      /// </summary>
+      INLINE static uint32_t getCpuCoresLogical()
+      {
+         return std::thread::hardware_concurrency();
+      }
+
+      /// <summary>
+      /// Returns the number of physical CPU cores (or 0 if not retrievable).
+      /// </summary>
+      INLINE static uint32_t getCpuCoresPhysical()
+      {
+      #ifdef CPPCORE_OS_WINDOWS
+         uint32_t cores = 0;
+         DWORD len = 0;
+         if (GetLogicalProcessorInformationEx(RelationAll, NULL, &len) == FALSE && 
+             GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+         {
+            char* buf = (char*)malloc(len);
+            if (GetLogicalProcessorInformationEx(RelationAll, 
+               (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)buf, &len))
+            {
+               char* ptr = buf;
+               while (ptr < buf + len) 
+               {
+                  SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX& pi = 
+                     *(SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*)ptr;
+                  if (pi.Relationship == RelationProcessorCore)
+                     cores++;
+                  ptr += pi.Size;
+               }
+            }
+            free(buf);
+         }
+         return cores;
+      #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
+         uint32_t cores = 0;
+         size_t size = sizeof(cores);
+         ::sysctlbyname("hw.physicalcpu", &cores, &size, 0, 0);
+         return cores;
+      #else
+         return 0;
       #endif
       }
 
@@ -153,58 +293,9 @@ namespace CppCore
       /// </summary>
       INLINE static bool getCpuInfo(Cpu& cpu)
       {
-      #ifdef CPPCORE_OS_WINDOWS
-         cpu.coresphysical = cpu.coreslogical = 0;
-         char* buf = NULL;
-         DWORD len = 0;
-         if (FALSE == GetLogicalProcessorInformationEx(RelationAll, (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)buf, &len)) 
-         {
-            if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
-            {
-               bool success;
-               buf = (char*)malloc(len);
-               if ((success = GetLogicalProcessorInformationEx(RelationAll, (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)buf, &len)))
-               {
-                  DWORD offset = 0;
-                  char* ptr = buf;
-                  while (ptr < buf + len) 
-                  {
-                     PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX pi = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)ptr;
-                     if (pi->Relationship == RelationProcessorCore)
-                     {
-                        cpu.coresphysical++;
-                        for (size_t g = 0; g < pi->Processor.GroupCount; ++g)
-                        {
-                           DWORD LSHIFT = sizeof(ULONG_PTR) * 8 - 1;
-                           DWORD bitSetCount = 0;
-                           ULONG_PTR bitTest = (ULONG_PTR)1 << LSHIFT;
-                           for (DWORD i = 0; i <= LSHIFT; ++i) {
-                              bitSetCount += ((pi->Processor.GroupMask[g].Mask & bitTest) ? 1 : 0);
-                              bitTest /= 2;
-                           }
-                           cpu.coreslogical += bitSetCount;
-                        }
-                     }
-                     ptr += pi->Size;
-                  }
-               }
-               free(buf);
-               if (success)
-                  return true;
-            }
-         }
-         return false;
-      #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
-         size_t size;
-         size = sizeof(cpu.coresphysical);
-         ::sysctlbyname("hw.physicalcpu", &cpu.coresphysical, &size, 0, 0);
-         size = sizeof(cpu.coreslogical);
-         ::sysctlbyname("hw.logicalcpu", &cpu.coreslogical, &size, 0, 0);
-         return true;
-      #else
-         cpu.coresphysical = cpu.coreslogical = 1;
-         return false;
-      #endif
+         cpu.coreslogical = getCpuCoresLogical();
+         cpu.coresphysical = getCpuCoresPhysical();
+         return (cpu.coreslogical && cpu.coresphysical);
       }
 
       /// <summary>

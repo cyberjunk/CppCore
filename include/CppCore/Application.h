@@ -136,9 +136,9 @@ namespace CppCore
 
          // log some folders
          this->log("Temp: " + System::Folder::getTemp().string());
-         this->log("Home: " + System::Folder::getHome().string());
-         this->log("Current: " + System::Folder::getCurrent().string());
-         this->log("Executable: " + System::Folder::getExecutablePath().string());
+         this->log("Perm: " + System::Folder::getPersistent().string());
+         this->log("Curr: " + System::Folder::getCurrent().string());
+         this->log("Exec: " + System::Folder::getExecutablePath().string());
 
          // log thread count and ids
          stringstream s;
