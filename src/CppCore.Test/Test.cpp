@@ -163,18 +163,20 @@ int v3i_test()
    return 0;
 }
 
-#if defined(CPPCORE_CPU_X86ORX64)
-CPUID cpuid;
-#endif
+CPUID        cpuid;
+System::Info sysinfo;
 
 // console based tests
 int main()
 {
 #if defined(CPPCORE_CPU_X86ORX64)
-   std::cout << "---------------------------------------------" << std::endl;
-   std::cout << "VEN: " << cpuid.getVendor()       << std::endl;
-   std::cout << "CPU: " << cpuid.getBrand()        << std::endl;
-   std::cout << "---------------------------------------------" << std::endl;
+   std::cout << "--------------------------------------------------"             << std::endl;
+   std::cout << "VEN: " << cpuid.getVendor()                                     << std::endl;
+   std::cout << "CPU: " << cpuid.getBrand()                                      << std::endl;
+   std::cout << "COR: " << sysinfo.getCpuCoresPhysical()          << " PHYSICAL" << std::endl;
+   std::cout << "COR: " << sysinfo.getCpuCoresLogical()           << " LOGICAL"  << std::endl;
+   std::cout << "RAM: " << sysinfo.getRamSize()/(1024ULL*1024ULL) << " MB"       << std::endl;
+   std::cout << "--------------------------------------------------"             << std::endl;
    std::cout << "                 ENABLED " << "SUPPORTED" << std::endl;
    std::cout << "MMX:             " << (CPPCORE_CPUFEAT_MMX_ENABLED             ? "YES" : "NO ") << "     " << (cpuid.MMX()             ? "YES" : "NO") << std::endl;
    std::cout << "FXSR:            " << (CPPCORE_CPUFEAT_FXSR_ENABLED            ? "YES" : "NO ") << "     " << (cpuid.FXSR()            ? "YES" : "NO") << std::endl;
@@ -226,10 +228,10 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "FOLDERS"                         << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   std::cout << "TEMP: " << CppCore::System::Folder::getTemp()           << std::endl;
-   std::cout << "PERM: " << CppCore::System::Folder::getPersistent()     << std::endl;
-   std::cout << "EXEC: " << CppCore::System::Folder::getExecutable()     << std::endl;
-   std::cout << "CURR: " << CppCore::System::Folder::getCurrent()        << std::endl;
+   std::cout << "TEMP: " << sysinfo.getTempPath()                    << std::endl;
+   std::cout << "PERM: " << sysinfo.getPersistentPath()              << std::endl;
+   std::cout << "EXEC: " << CppCore::System::Folder::getExecutable() << std::endl;
+   std::cout << "CURR: " << CppCore::System::Folder::getCurrent()    << std::endl;
 
    bool r;
 
