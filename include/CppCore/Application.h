@@ -16,7 +16,10 @@ namespace CppCore
    /// <summary>
    /// Application Main Class
    /// </summary>
-   template<typename TAPPLICATION, typename RESOURCES = Resources, typename LOGGER = Logger>
+   template<
+      typename TAPPLICATION, 
+      typename RESOURCES = Resources, 
+      typename LOGGER    = Logger>
    class Application : public Looper, public Handler, public RESOURCES::Callback
    {
    public:
@@ -27,13 +30,13 @@ namespace CppCore
       static constexpr size_t MESSAGEPUMPWARNTHRESHOLD = 10;
 
    protected:
-      const System::Info   mSystemInfo;
-      Thread::Pool<Thread> mThreadPool;
-      Schedule<>           mSchedule;
-      Runnable             mRunMessagePump;
-      LOGGER               mLogger;
-      CPUID                mCPUID;
-      RESOURCES            mResources;
+      const System::Info   mSystemInfo;     // basic system info from operating system
+      const CPUID          mCPUID;          // cpu info directly from cpu
+      Thread::Pool<Thread> mThreadPool;     // threadpool for background tasks
+      Schedule<>           mSchedule;       // schedule of the mainthread
+      LOGGER               mLogger;         // logger module
+      RESOURCES            mResources;      // access to resources on disk
+      Runnable             mRunMessagePump; // runnable executing message pump on mainthread
 
       /// <summary>
       /// Helper for casting this from template to final instance type.
@@ -113,10 +116,10 @@ namespace CppCore
          const DurationHR& messagePumpInterval = std::chrono::milliseconds(16)) :
          Looper(mSchedule),
          mSystemInfo(),
+         mCPUID(),
          mThreadPool(),
          mRunMessagePump([this] { runMessagePump(); }, true, messagePumpInterval),
          mLogger(mThreadPool, logToConsole, logToFile, logFile),
-         mCPUID(),
          mResources(thiss(), mThreadPool, mLogger, thiss(), linuxsharename)
       {
       #if defined(CPPCORE_OS_OSX) && defined(__OBJC__)
