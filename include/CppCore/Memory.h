@@ -36,12 +36,16 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Allocates size*sizeof(T) aligned memory.
+      /// Allocates aligned memory on the heap with a size of:
+      /// size*sizeof(T) rounded up to next multiple of alignment which must be a power of 2.
       /// </summary>
       template<typename T = char>
-      INLINE static T* alignedalloc(const size_t size, const size_t alignment)
+      INLINE static T* alignedalloc(const size_t size, const size_t alignment = 16)
       {
-         return (T*)CPPCORE_ALIGNED_ALLOC(size * sizeof(T), alignment);
+         assert(CppCore::popcnt(alignment) == 1U);
+         return (T*)CPPCORE_ALIGNED_ALLOC(
+            CppCore::rupptwo(size * sizeof(T), alignment), 
+            alignment);
       }
 
       /// <summary>
@@ -1429,6 +1433,30 @@ namespace CppCore
             _mm_stream_si128(d, Memory::streamload128(s)); d++; s++;
             _mm_stream_si128(d, Memory::streamload128(s)); d++; s++;
          }
+      }
+#else
+       /// <summary>
+      /// Fallback Version using Memory::copy() if no 128-Bit operations are available.
+      /// </summary>
+      INLINE static void streamcopy128x1(void* dst, const void* src, const size_t len)
+      {
+         Memory::copy(dst, src, len);
+      }
+
+      /// <summary>
+      /// Fallback Version using Memory::copy() if no 128-Bit operations are available.
+      /// </summary>
+      INLINE static void streamcopy128x2(void* dst, const void* src, const size_t len)
+      {
+         Memory::copy(dst, src, len);
+      }
+
+      /// <summary>
+      /// Fallback Version using Memory::copy() if no 128-Bit operations are available.
+      /// </summary>
+      INLINE static void streamcopy128x4(void* dst, const void* src, const size_t len)
+      {
+         Memory::copy(dst, src, len);
       }
 #endif
 
