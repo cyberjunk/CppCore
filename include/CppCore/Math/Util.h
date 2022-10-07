@@ -2029,7 +2029,7 @@ namespace CppCore
             CppCore::addcarry64(tl, k, *rp, c);  // add
             CppCore::addcarry64(th, 0ULL, k, c); // adc
          }
-         if (NA < NR)
+         if constexpr (NA < NR)
             *rp = k;
          for (size_t j = 1; j < NB; j++)
          {
@@ -2075,7 +2075,7 @@ namespace CppCore
             CppCore::addcarry32(tl, k, *rp, c);
             CppCore::addcarry32(th, 0U, k, c);
          }
-         if (NA < NR)
+         if constexpr (NA < NR)
             *rp = k;
          for (size_t j = 1; j < NB; j++)
          {
@@ -2989,14 +2989,8 @@ namespace CppCore
    INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, UINT p[3])
    {
       struct UINTX2 { UINT x[2]; };
-
-      //uint64_t s1 = __rdtsc();
       CppCore::umul<UINT, UINT, UINTX2>(a, b, *(UINTX2*)p);
-      //uint64_t e1 = __rdtsc();
-      //uint64_t s2 = __rdtsc();
       CppCore::umod<UINTX2, UINT>(r, *(UINTX2*)p, m, (UINTX2*)p);
-      //uint64_t e2 = __rdtsc();
-      //printf("MUL:%llu DIV:%llu \n", e1 - s1, e2 - s2);
    }
 
    /// <summary>
@@ -3075,7 +3069,7 @@ namespace CppCore
       CppCore::umulmod64(a, b, m, r);
    }
 
-      /// <summary>
+   /// <summary>
    /// Template Specialization for 64-Bit Unsigned.
    /// </summary>
    template<> INLINE void umulmod(const uint64_t& a, const uint64_t& b, const uint64_t& m, uint64_t& r)
