@@ -465,13 +465,16 @@ namespace CppCore
          /// <summary>
          /// Dynamic Size Array for Single Thread Access
          /// </summary>
-         template<
-            typename T, 
-            bool     CONSTRUCT = !::std::is_trivially_constructible<T>::value,
-            size_t   ALIGNMENT = 16>
+         template<typename T, bool CONSTRUCT = !::std::is_trivially_constructible<T>::value>
          class ST : public Array::Base<T, ST<T, CONSTRUCT>>
          {
             friend Array::Base<T, ST<T, CONSTRUCT>>;
+
+         public:
+            /// <summary>
+            /// Alignment used for Memory on the Heap.
+            /// </summary>
+            static constexpr size_t ALIGNMENT = 64;
 
          protected:
             size_t mSize;
@@ -522,8 +525,7 @@ namespace CppCore
                   // grow
                   if (newSize > SIZE)
                   {
-                     // todo: use aligned copy
-                     Memory::copy(newData, mData, sizeof(T) * SIZE);
+                     Memory::streamcopy128x4(newData, mData, sizeof(T) * SIZE);
                      if (CONSTRUCT)
                         for (size_t i = SIZE; i < newSize; i++)
                            new (&newData[i]) T();
@@ -531,8 +533,7 @@ namespace CppCore
                   // shrink
                   else
                   {
-                     // todo: use aligned copy
-                     Memory::copy(newData, mData, sizeof(T) * newSize);
+                     Memory::streamcopy128x4(newData, mData, sizeof(T) * newSize);
                      if (CONSTRUCT)
                         for (size_t i = newSize; i < SIZE; i++)
                            mData[i].~T();
