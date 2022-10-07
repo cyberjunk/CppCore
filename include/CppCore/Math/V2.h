@@ -39,8 +39,10 @@ namespace CppCore
       static INLINE V UNITY() { return V((F)0.0, (F)1.0); }
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE void* operator new  (size_t size)          { return ::malloc(size); }
+      INLINE void* operator new  (size_t size, V* v)    { return v;              }
       INLINE void* operator new[](size_t size)          { return ::malloc(size); }
       INLINE void  operator delete   (void* ptr)        { return ::free(ptr);    }
+      INLINE void  operator delete   (void* ptr, V* v)  {                        }
       INLINE void  operator delete[] (void* ptr)        { return ::free(ptr);    }
       INLINE F     operator []   (const size_t i) const { return vals[i];        }
       INLINE F     operator []   (const size_t i)       { return vals[i];        }
@@ -638,8 +640,10 @@ namespace CppCore
    #endif
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE       void* operator new  (size_t size)        { return CPPCORE_ALIGNED_ALLOC(size, 8U);                          }
+      INLINE       void* operator new  (size_t size,V2fs* v){ return v;                                                        }
       INLINE       void* operator new[](size_t size)        { return CPPCORE_ALIGNED_ALLOC(size, 8U);                          }
       INLINE       void  operator delete   (void* ptr)      { return CPPCORE_ALIGNED_FREE(ptr);                                }
+      INLINE       void  operator delete   (void* ptr,V2fs* v){                                                                }
       INLINE       void  operator delete[] (void* ptr)      { return CPPCORE_ALIGNED_FREE(ptr);                                }
       INLINE       bool  operator == (const V2fs&  v) const { return _mm_movemask_ps(_mm_cmpeq_ps(load(), v.load())) == 0x0F;  }
       INLINE       bool  operator != (const V2fs&  v) const { return _mm_movemask_ps(_mm_cmpeq_ps(load(), v.load())) != 0x0F;  }
@@ -807,8 +811,10 @@ namespace CppCore
    #endif
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE       void* operator new  (size_t size)        { return CPPCORE_ALIGNED_ALLOC(size, 16U);                        }
+      INLINE       void* operator new  (size_t size,V2ds* v){ return v;                                                       }
       INLINE       void* operator new[](size_t size)        { return CPPCORE_ALIGNED_ALLOC(size, 16U);                        }
       INLINE       void  operator delete   (void* ptr)      { return CPPCORE_ALIGNED_FREE(ptr);                               }
+      INLINE       void  operator delete   (void* ptr,V2ds* v){                                                               }
       INLINE       void  operator delete[] (void* ptr)      { return CPPCORE_ALIGNED_FREE(ptr);                               }
       INLINE       bool  operator == (const V2ds&  v) const { return _mm_movemask_pd(_mm_cmpeq_pd(load(), v.load())) == 0x03; }
       INLINE       bool  operator != (const V2ds&  v) const { return _mm_movemask_pd(_mm_cmpeq_pd(load(), v.load())) != 0x03; }
@@ -967,8 +973,10 @@ namespace CppCore
    #endif
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE       void* operator new  (size_t size)         { return CPPCORE_ALIGNED_ALLOC(size, 8U);                         }
+      INLINE       void* operator new  (size_t size, V2is* v){ return v; }
       INLINE       void* operator new[](size_t size)         { return CPPCORE_ALIGNED_ALLOC(size, 8U);                         }
       INLINE       void  operator delete   (void* ptr)       { return CPPCORE_ALIGNED_FREE(ptr);                               }
+      INLINE       void  operator delete   (void* ptr,V2is* v){                                                                }
       INLINE       void  operator delete[] (void* ptr)       { return CPPCORE_ALIGNED_FREE(ptr);                               }
    #if defined(CPPCORE_CPUFEAT_AVX512F) && defined(CPPCORE_CPUFEAT_AVX512VL)
       INLINE       bool  operator == (const V2is&   v) const { return _mm_cmpeq_epi32_mask(load(), v.load()) == 0x0F;          }
@@ -1103,8 +1111,10 @@ namespace CppCore
    #endif
       //------------------------------------------------------------------------------------------------------------------------//
       INLINE       void* operator new  (size_t size)         { return CPPCORE_ALIGNED_ALLOC(size, 16U);                         }
+      INLINE       void* operator new  (size_t size, V2ls* v){ return v;                                                        }
       INLINE       void* operator new[](size_t size)         { return CPPCORE_ALIGNED_ALLOC(size, 16U);                         }
       INLINE       void  operator delete   (void* ptr)       { return CPPCORE_ALIGNED_FREE(ptr);                                }
+      INLINE       void  operator delete   (void* ptr,V2ls* v){                                                                }
       INLINE       void  operator delete[] (void* ptr)       { return CPPCORE_ALIGNED_FREE(ptr);                                }
    #if defined(CPPCORE_CPUFEAT_AVX512F) && defined(CPPCORE_CPUFEAT_AVX512VL)
       INLINE       bool  operator == (const V2ls&   v) const { return _mm_cmpeq_epi64_mask(load(), v.load()) == 0x03;           }

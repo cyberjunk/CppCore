@@ -469,26 +469,28 @@ namespace CppCore
          class ST : public Array::Base<T, ST<T, CONSTRUCT>>
          {
             friend Array::Base<T, ST<T, CONSTRUCT>>;
-            typedef ::std::allocator<T> Allocator;
+
+         public:
+            /// <summary>
+            /// Alignment used for Memory on the Heap.
+            /// </summary>
+            static constexpr size_t ALIGNMENT = 64;
 
          protected:
-            Allocator mAllocator;
-            size_t    mSize;
-            T*        mData;
+            size_t mSize;
+            T*     mData;
 
          public:
             /// <summary>
             /// Constructor
             /// </summary>
-            INLINE ST(const size_t initialSize = 0) : Array::Base<T, ST<T, CONSTRUCT>>(),
-               mSize(initialSize),
-               mData(mAllocator.allocate(initialSize))
+            INLINE ST(const size_t size = 0) : Array::Base<T, ST<T, CONSTRUCT>>(),
+               mSize(size),
+               mData(Memory::alignedalloc<T>(size, ALIGNMENT))
             {
                if (CONSTRUCT)
-               {
                   for (size_t i = 0; i < mSize; i++)
-                     mAllocator.construct(&mData[i]);
-               }
+                     new (&mData[i]) T();
             }
 
             /// <summary>
@@ -498,9 +500,9 @@ namespace CppCore
             {
                if (CONSTRUCT)
                   for (size_t i = 0; i < mSize; i++)
-                     mAllocator.destroy(&mData[i]);
+                     mData[i].~T();
 
-               mAllocator.deallocate(mData, mSize);
+               Memory::alignedfree(mData);
             }
 
             /// <summary>
@@ -518,32 +520,32 @@ namespace CppCore
                if (newSize != SIZE)
                {
                   // allocate new memory with new size
-                  T* newData = mAllocator.allocate(newSize);
+                  T* newData = Memory::alignedalloc<T>(newSize, ALIGNMENT);
 
                   // grow
                   if (newSize > SIZE)
                   {
-                     Memory::copy(newData, mData, sizeof(T) * SIZE);
+                     Memory::streamcopy128x4(newData, mData, sizeof(T) * SIZE);
                      if (CONSTRUCT)
                         for (size_t i = SIZE; i < newSize; i++)
-                           mAllocator.construct(&newData[i]);
+                           new (&newData[i]) T();
                   }
                   // shrink
                   else
                   {
-                     Memory::copy(newData, mData, sizeof(T) * newSize);
+                     Memory::streamcopy128x4(newData, mData, sizeof(T) * newSize);
                      if (CONSTRUCT)
                         for (size_t i = newSize; i < SIZE; i++)
-                           mAllocator.destroy(&mData[i]);
+                           mData[i].~T();
                   }
 
                   // set length to new size if we shrinked below
                   if (newSize < LEN)
                      this->mLength = newSize;
 
-                  mAllocator.deallocate(mData, SIZE); // free old mem
-                  mData = newData;                    // update data
-                  mSize = newSize;                    // update size
+                  Memory::alignedfree(mData); // free old mem
+                  mData = newData;            // update data
+                  mSize = newSize;            // update size
                }
             }
 
