@@ -122,22 +122,20 @@ namespace CppCore
          /// This appends to the existing string.
          /// </summary>
          template<typename T, typename S>
-         INLINE static void tostringu(T v, S& s, const size_t base, const char* alphabet)
+         INLINE static void tostringu(T v, S& s, const uint32_t base, const char* alphabet)
          {
-            assert(base >= 2);
+            assert(base >= 2U);
             assert(::strlen(alphabet) == base);
-            if (v != (T)0U) CPPCORE_LIKELY
+            if (!CppCore::testzero(v)) CPPCORE_LIKELY
             {
-               T r;
-               size_t n = 1U;
-               CppCore::udivmod(v, (T)base, v, r);
-               s += alphabet[r];
-               while (v != (T)0U)
+               uint32_t r;
+               uint32_t n = 0U;
+               do
                {
-                  n++;
-                  CppCore::udivmod(v, (T)base, v, r);
+                  CppCore::udivmod(v, base, v, r);
                   s += alphabet[r];
-               }
+                  n++;
+               } while (!CppCore::testzero(v));
                Memory::reverse(s.data()+s.length()-n, n);
             }
             else CPPCORE_UNLIKELY
@@ -149,18 +147,18 @@ namespace CppCore
          /// This appends to the existing string.
          /// </summary>
          template<typename T, typename TU, typename S>
-         INLINE static void tostrings(T v, S& s, const size_t base, const char* alphabet)
+         INLINE static void tostrings(T v, S& s, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
             TU u, r;
-            if (v > (T)0)
+            if (v > 0)
             {
                u = (TU)v;
                CppCore::udivmod(u, (TU)base, u, r);
                s += alphabet[r];
             }
-            else if (v < (T)0)
+            else if (v < 0)
             {
                T rs;
                s += '-';
@@ -188,7 +186,7 @@ namespace CppCore
          /// No overflow or invalid symbol check!
          /// </summary>
          template<typename T>
-         INLINE static T parseu(const char* input, const size_t base, const char* alphabet)
+         INLINE static T parseu(const char* input, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
@@ -203,7 +201,7 @@ namespace CppCore
          /// No overflow or invalid symbol check! First symbol can be '-' or '+' to indicate sign.
          /// </summary>
          template<typename T>
-         INLINE static T parses(const char* input, const size_t base, const char* alphabet)
+         INLINE static T parses(const char* input, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
@@ -227,7 +225,7 @@ namespace CppCore
          /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
          /// </summary>
          template<typename T>
-         INLINE static bool tryparseu(const char* input, T& r, const size_t base, const char* alphabet)
+         INLINE static bool tryparseu(const char* input, T& r, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
@@ -260,7 +258,7 @@ namespace CppCore
          /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
          /// </summary>
          template<typename T>
-         INLINE static bool tryparses(const char* input, T& r, const size_t base, const char* alphabet)
+         INLINE static bool tryparses(const char* input, T& r, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
@@ -327,7 +325,7 @@ namespace CppCore
       /// Appends 16-bit unsigned integer v to string s with encoding in base using alphabet
       /// </summary>
       template<typename S>
-      INLINE static void tostring(const uint16_t v, S& s, const size_t base, const char* alphabet)
+      INLINE static void tostring(const uint16_t v, S& s, const uint32_t base, const char* alphabet)
       {
          Util::tostringu<uint16_t, S>(v, s, base, alphabet);
       }
@@ -336,7 +334,7 @@ namespace CppCore
       /// Appends 32-bit unsigned integer v to string s with encoding in base using alphabet
       /// </summary>
       template<typename S>
-      INLINE static void tostring(const uint32_t v, S& s, const size_t base, const char* alphabet)
+      INLINE static void tostring(const uint32_t v, S& s, const uint32_t base, const char* alphabet)
       {
          Util::tostringu<uint32_t, S>(v, s, base, alphabet);
       }
@@ -345,7 +343,7 @@ namespace CppCore
       /// Appends 64-bit unsigned integer v to string s with encoding in base using alphabet
       /// </summary>
       template<typename S>
-      INLINE static void tostring(const uint64_t v, S& s, const size_t base, const char* alphabet)
+      INLINE static void tostring(const uint64_t v, S& s, const uint32_t base, const char* alphabet)
       {
          Util::tostringu<uint64_t, S>(v, s, base, alphabet);
       }
@@ -354,7 +352,7 @@ namespace CppCore
       /// Appends 16-bit signed integer v to string s with encoding in base using alphabet
       /// </summary>
       template<typename S>
-      INLINE static void tostring(const int16_t v, S& s, const size_t base, const char* alphabet)
+      INLINE static void tostring(const int16_t v, S& s, const uint32_t base, const char* alphabet)
       {
          Util::tostrings<int16_t, uint16_t, S>(v, s, base, alphabet);
       }
@@ -363,7 +361,7 @@ namespace CppCore
       /// Appends 32-bit signed integer v to string s with encoding in base using alphabet
       /// </summary>
       template<typename S>
-      INLINE static void tostring(const int32_t v, S& s, const size_t base, const char* alphabet)
+      INLINE static void tostring(const int32_t v, S& s, const uint32_t base, const char* alphabet)
       {
          Util::tostrings<int32_t, uint32_t, S>(v, s, base, alphabet);
       }
@@ -372,7 +370,7 @@ namespace CppCore
       /// Appends 64-bit signed integer v to string s with encoding in base using alphabet
       /// </summary>
       template<typename S>
-      INLINE static void tostring(const int64_t v, S& s, const size_t base, const char* alphabet)
+      INLINE static void tostring(const int64_t v, S& s, const uint32_t base, const char* alphabet)
       {
          Util::tostrings<int64_t, uint64_t, S>(v, s, base, alphabet);
       }
