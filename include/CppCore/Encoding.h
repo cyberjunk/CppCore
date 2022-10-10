@@ -181,26 +181,26 @@ namespace CppCore
          /// Encodes signed integer v into string s using alphabet.
          /// This appends to the existing string.
          /// </summary>
-         template<typename T, typename TU, typename S>
-         INLINE static void tostrings(T v, S& s, const uint32_t base, const char* alphabet)
+         template<typename SINT, typename UINT, typename S>
+         INLINE static void tostrings(SINT v, S& s, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
-            TU u;
+            UINT u;
             uint32_t r;
             if (v > 0)
             {
-               u = (TU)v;
+               u = (UINT)v;
                CppCore::udivmod(u, base, u, r);
                s += alphabet[r];
             }
             else if (v < 0)
             {
-               T rs;
+               SINT rs;
                s += '-';
-               CppCore::divmod(v, (T)base, v, rs);
+               CppCore::divmod(v, (SINT)base, v, rs);
                s += alphabet[-rs];
-               u = (TU)-v;
+               u = (UINT)-v;
             }
             else CPPCORE_UNLIKELY
             {
@@ -1103,26 +1103,19 @@ namespace CppCore
          /// Requires N (or N+1 if writeterm=true) free bytes in parameter s.
          /// Returns pointer to the position of the new 0x00 termination (written or not).
          /// </summary>
-         template<typename T, size_t N>
-         INLINE static char* tostringu(T v, char* s, const bool writeterm)
+         template<typename UINT, size_t N>
+         INLINE static char* tostringu(UINT v, char* s, const bool writeterm)
          {
-            T r;
-            size_t n;
-            if (v != (T)0U) CPPCORE_LIKELY
+            if (!CppCore::testzero(v)) CPPCORE_LIKELY
             {
-               CppCore::udivmod(v, (T)10U, v, r);
-               *s++ = CPPCORE_ALPHABET_B10[r];
-               CPPCORE_UNROLL
-               for (n = 1U; n != N; n++)
+               uint32_t r;
+               uint32_t n = 0U;
+               do
                {
-                  if (v != (T)0U)
-                  {
-                     CppCore::udivmod(v, (T)10U, v, r);
-                     *s++ = CPPCORE_ALPHABET_B10[r];
-                  }
-                  else
-                     break;
-               }
+                  CppCore::udivmod(v, 10U, v, r);
+                  *s++ = CPPCORE_ALPHABET_B10[r];
+                  n++;
+               } while (!CppCore::testzero(v));
                Memory::reverse(s-n, n);
             }
             else CPPCORE_UNLIKELY
@@ -1136,11 +1129,11 @@ namespace CppCore
          /// Creates decimal string with up to N symbols for unsigned integer v.
          /// Requires N (or N+1 if writeterm=true) free bytes in parameter s.
          /// </summary>
-         template<typename T, typename S>
-         INLINE static void tostringu(T v, S& s)
+         template<typename UINT, typename S>
+         INLINE static void tostringu(UINT v, S& s)
          {
          #if true
-            BaseX::Util::tostringu<T, S>(v, s, 10U, CPPCORE_ALPHABET_B10);
+            BaseX::Util::tostringu<UINT, S>(v, s, 10U, CPPCORE_ALPHABET_B10);
          #else
             //TODO: Use tostringu() above with resized s and data() ptr
          #endif
@@ -1154,17 +1147,18 @@ namespace CppCore
          template<typename T, typename TU, size_t N>
          INLINE static char* tostrings(T v, char* s, const bool writeterm)
          {
-            T rs;
-            TU u, r;
-            size_t n;
-            if (v > (T)0)
+            TU u;
+            uint32_t r;
+            uint32_t n;
+            if (v > 0)
             {
                u = (TU)v;
-               CppCore::udivmod(u, (TU)10U, u, r);
+               CppCore::udivmod(u, 10U, u, r);
                *s++ = CPPCORE_ALPHABET_B10[r];
             }
-            else if (v < (T)0)
+            else if (v < 0)
             {
+               T rs;
                *s++ = '-';
                // first one must be signed to deal with MIN (e.g.0x80000000)
                CppCore::divmod(v, (T)10U, v, rs);
@@ -1181,9 +1175,9 @@ namespace CppCore
             CPPCORE_UNROLL
             for (n = 1U; n != N; n++)
             {
-               if (u != (TU)0U)
+               if (!CppCore::testzero(u))
                {
-                  CppCore::udivmod(u, (TU)10U, u, r);
+                  CppCore::udivmod(u, 10U, u, r);
                   *s++ = CPPCORE_ALPHABET_B10[r];
                }
                else
