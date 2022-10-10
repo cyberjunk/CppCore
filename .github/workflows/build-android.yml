@@ -45,11 +45,17 @@ jobs:
 
     - name: ANDROID_HOME (WIN)
       if: matrix.os == 'windows-2019'
-      run: echo $env:ANDROID_HOME
+      run: |
+        echo $env:ANDROID_HOME
+        dir $env:ANDROID_HOME
+        echo $env:PATH
 
-    - name: ANDROID_HOME (WIN)
+    - name: ANDROID_HOME (OSX)
       if: matrix.os == 'macos-11'
-      run: echo $ANDROID_HOME
+      run: |
+        echo $ANDROID_HOME
+        ls -la $ANDROID_HOME
+        echo $PATH
 
     # Build
  #   - name: Build
