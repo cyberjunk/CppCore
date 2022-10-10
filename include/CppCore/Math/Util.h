@@ -1866,7 +1866,7 @@ namespace CppCore
 #endif
 
    /// <summary>
-   /// Same as udivmod8()
+   /// a/b=q,r with 8/8=8,8
    /// </summary>
    INLINE static void udivmod(uint8_t a, uint8_t b, uint8_t& q, uint8_t& r)
    {
@@ -1874,7 +1874,37 @@ namespace CppCore
    }
 
    /// <summary>
-   /// Same as udivmod16()
+   /// a/b=q,r with 8/16=8,16
+   /// </summary>
+   INLINE static void udivmod(uint8_t a, uint16_t b, uint8_t& q, uint16_t& r)
+   {
+      uint16_t t;
+      CppCore::udivmod16(a, b, t, r);
+      q = (uint8_t)t;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 8/32=8,32
+   /// </summary>
+   INLINE static void udivmod(uint8_t a, uint32_t b, uint8_t& q, uint32_t& r)
+   {
+      uint32_t t;
+      CppCore::udivmod32(a, b, t, r);
+      q = (uint8_t)t;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 8/64=8,64
+   /// </summary>
+   INLINE static void udivmod(uint8_t a, uint64_t b, uint8_t& q, uint64_t& r)
+   {
+      uint64_t t;
+      CppCore::udivmod64(a, b, t, r);
+      q = (uint8_t)t;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 16/16=16,16
    /// </summary>
    INLINE static void udivmod(uint16_t a, uint16_t b, uint16_t& q, uint16_t& r)
    {
@@ -1882,7 +1912,27 @@ namespace CppCore
    }
 
    /// <summary>
-   /// Same as udivmod32()
+   /// a/b=q,r with 16/32=16,32
+   /// </summary>
+   INLINE static void udivmod(uint16_t a, uint32_t b, uint16_t& q, uint32_t& r)
+   {
+      uint32_t t;
+      CppCore::udivmod32(a, b, t, r);
+      q = (uint16_t)t;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 16/64=16,64
+   /// </summary>
+   INLINE static void udivmod(uint16_t a, uint64_t b, uint16_t& q, uint64_t& r)
+   {
+      uint64_t t;
+      CppCore::udivmod64(a, b, t, r);
+      q = (uint16_t)t;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 32/32=32,32
    /// </summary>
    INLINE static void udivmod(uint32_t a, uint32_t b, uint32_t& q, uint32_t& r)
    {
@@ -1890,12 +1940,55 @@ namespace CppCore
    }
 
    /// <summary>
-   /// Same as udivmod64()
+   /// a/b=q,r with 32/64=32,64
+   /// </summary>
+   INLINE static void udivmod(uint32_t a, uint64_t b, uint32_t& q, uint64_t& r)
+   {
+      uint64_t t;
+      CppCore::udivmod64(a, b, t, r);
+      q = (uint32_t)t;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 64/64=64,64
    /// </summary>
    INLINE static void udivmod(uint64_t a, uint64_t b, uint64_t& q, uint64_t& r)
    {
       CppCore::udivmod64(a, b, q, r);
    }
+
+   /// <summary>
+   /// a/b=q,r with N32/32=N32,32
+   /// </summary>
+   template<typename UINT>
+   INLINE static void udivmod(const UINT& a, uint32_t b, UINT& q, uint32_t& r)
+   {
+      static_assert(sizeof(UINT) % 4 == 0);
+   #if defined(CPPCORE_CPU_X64)
+      if constexpr (sizeof(UINT) % 8 == 0)
+      {
+         uint64_t r64;
+         CppCore::udivmod128_64x((const uint64_t*)&a, b, (uint64_t*)&q, r64, sizeof(UINT)/8);
+         r = (uint32_t)r64;
+      }
+      else
+   #endif
+      {
+         CppCore::udivmod64_32x((const uint32_t*)&a, b, (uint32_t*)&q, r, sizeof(UINT)/4);
+      }
+   }
+
+#if defined(CPPCORE_CPU_X64)
+   /// <summary>
+   /// a/b=q,r with N64/64=N64,64
+   /// </summary>
+   template<typename UINT>
+   INLINE static void udivmod(const UINT& a, uint64_t b, UINT& q, uint64_t& r)
+   {
+      static_assert(sizeof(UINT) % 8 == 0);
+      CppCore::udivmod128_64x((const uint64_t*)&a, b, (uint64_t*)&q, r, sizeof(UINT)/8);
+   }
+#endif
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // SIGNED DIVISION+MODULO OPERATIONS
@@ -2029,7 +2122,7 @@ namespace CppCore
             CppCore::addcarry64(tl, k, *rp, c);  // add
             CppCore::addcarry64(th, 0ULL, k, c); // adc
          }
-         if (NA < NR)
+         if constexpr (NA < NR)
             *rp = k;
          for (size_t j = 1; j < NB; j++)
          {
@@ -2075,7 +2168,7 @@ namespace CppCore
             CppCore::addcarry32(tl, k, *rp, c);
             CppCore::addcarry32(th, 0U, k, c);
          }
-         if (NA < NR)
+         if constexpr (NA < NR)
             *rp = k;
          for (size_t j = 1; j < NB; j++)
          {
@@ -2989,14 +3082,8 @@ namespace CppCore
    INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, UINT p[3])
    {
       struct UINTX2 { UINT x[2]; };
-
-      //uint64_t s1 = __rdtsc();
       CppCore::umul<UINT, UINT, UINTX2>(a, b, *(UINTX2*)p);
-      //uint64_t e1 = __rdtsc();
-      //uint64_t s2 = __rdtsc();
       CppCore::umod<UINTX2, UINT>(r, *(UINTX2*)p, m, (UINTX2*)p);
-      //uint64_t e2 = __rdtsc();
-      //printf("MUL:%llu DIV:%llu \n", e1 - s1, e2 - s2);
    }
 
    /// <summary>
@@ -3075,7 +3162,7 @@ namespace CppCore
       CppCore::umulmod64(a, b, m, r);
    }
 
-      /// <summary>
+   /// <summary>
    /// Template Specialization for 64-Bit Unsigned.
    /// </summary>
    template<> INLINE void umulmod(const uint64_t& a, const uint64_t& b, const uint64_t& m, uint64_t& r)

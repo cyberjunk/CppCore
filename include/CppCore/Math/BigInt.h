@@ -1563,17 +1563,21 @@ namespace CppCore
          /// </summary>
          INLINE static void divmod(const TC& n, const uint32_t& d, TC& q, uint32_t& r)
          {
-         #if defined(CPPCORE_CPU_X64)
-            uint64_t r64;
-            CppCore::udivmod128_64x(n.d.i64, (uint64_t)d, q.d.i64, r64, N64);
-            r = (uint32_t)r64;
-         #else
-            CppCore::udivmod64_32x(n.d.i32, d, q.d.i32, r, N32);
-         #endif
+            CppCore::udivmod(n, d, q, r);
          }
 
+      #if defined(CPPCORE_CPU_X64)
          /// <summary>
-         /// Division (a/b=r)(same type)
+         /// Division+Modulo (a/b=q,r)(uint64).
+         /// </summary>
+         INLINE static void divmod(const TC& n, const uint64_t& d, TC& q, uint64_t& r)
+         {
+            CppCore::udivmod(n, d, q, r);
+         }
+      #endif
+
+         /// <summary>
+         /// Division (a/b=q)(same type)
          /// </summary>
          INLINE static void div(const TC& a, const TC& b, TC& q)
          {
@@ -1582,13 +1586,24 @@ namespace CppCore
          }
 
          /// <summary>
-         /// Division (a/b=r)(uint32)
+         /// Division (a/b=q)(uint32)
          /// </summary>
          INLINE static void div(const TC& a, const uint32_t& b, TC& q)
          {
             uint32_t r;
             TC::Op::divmod(a, b, q, r);
          }
+
+      #if defined(CPPCORE_CPU_X64)
+         /// <summary>
+         /// Division (a/b=q)(uint64).
+         /// </summary>
+         INLINE static void div(const TC& a, const uint64_t& b, TC& q)
+         {
+            uint64_t r;
+            TC::Op::divmod(a, b, q, r);
+         }
+      #endif
 
          /// <summary>
          /// Modulo (a%b=r)(same type)
@@ -2244,26 +2259,19 @@ namespace CppCore
       /// Returns string representation using any alphabet. By default decimal.
       /// Returns empty string if alphabet is invalid (e.g. less than 2 symbols).
       /// </summary>
-      INLINE string toString(const string& alphabet = CPPCORE_ALPHABET_B10) const
+      INLINE string toString(const uint32_t base, const char* alphabet) const
       {
-         const uint32_t b = (uint32_t)alphabet.length();
          string s;
-         if (b > 1U)
-         {
-            TC t(*thiss());
-            if (!CppCore::testzero(t))
-            {
-               uint32_t r;
-               while (!CppCore::testzero(t))
-               {
-                  TC::Op::divmod(t, b, t, r);
-                  s += (char)alphabet[r];
-               }
-            }
-            else s = '0';
-            std::reverse(std::begin(s), std::end(s));
-         }
+         CppCore::BaseX::Util::tostringu(*thiss(), s, base, alphabet);
          return s;
+      }
+
+      /// <summary>
+      /// Returns string representation using any alphabet. By default decimal.
+      /// </summary>
+      INLINE string toString(const string_view& alphabet = CPPCORE_ALPHABET_B10) const
+      {
+         return thiss()->toString((uint32_t)alphabet.length(), alphabet.data());
       }
 
       /// <summary>

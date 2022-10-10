@@ -61,6 +61,29 @@ namespace CppCore { namespace Test
       class BaseX
       {
       public:
+         INLINE static bool tostring8u()
+         {
+            std::string ss;
+            ss.clear(); CppCore::BaseX::tostring(uint8_t(0x00), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"    ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(uint8_t(0x01), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("1"    ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(uint8_t(0xFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("255"  ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(uint8_t(0x0F), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("15"   ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(uint8_t(0xBC), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("188"  ) != ss) return false;
+            // TODO: More than Base10
+            return true;
+         }
+         INLINE static bool tostring8s()
+         {
+            std::string ss;
+            ss.clear(); CppCore::BaseX::tostring(int8_t(0x00), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"    ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(int8_t(0x01), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("1"    ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(int8_t(0xFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-1"   ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(int8_t(0x0F), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("15"   ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(int8_t(0xBC), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-68"  ) != ss) return false;
+            // TODO: More than Base10
+            return true;
+         }
+
          INLINE static bool tostring16u()
          {
             std::string ss;
@@ -898,6 +921,8 @@ namespace CppCore { namespace Test { namespace VS
    public:
       TEST_METHOD(ISDIGIT)          { Assert::AreEqual(true, CppCore::Test::Encoding::isdigit()); }
       TEST_METHOD(ISXDIGIT)         { Assert::AreEqual(true, CppCore::Test::Encoding::isxdigit()); }
+      TEST_METHOD(BASEX_TOSTRING8U) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring8u()); }
+      TEST_METHOD(BASEX_TOSTRING8S) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring8s()); }
       TEST_METHOD(BASEX_TOSTRING16U){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring16u()); }
       TEST_METHOD(BASEX_TOSTRING16S){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring16s()); }
       TEST_METHOD(BASEX_TOSTRING32U){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring32u()); }
