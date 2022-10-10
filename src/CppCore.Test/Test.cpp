@@ -601,15 +601,6 @@ int main()
 #endif
 
    std::cout << "-------------------------------" << std::endl;
-   std::cout << "       CppCore::Encoding"        << std::endl;
-   std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Encoding::Hex::Util::bytetohexstr, "bytetohexstr: ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::tostring16, "tostring16:   ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::tostring32, "tostring32:   ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::tostring64, "tostring64:   ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::tostring,   "tostring:     ", std::endl);
-
-   std::cout << "-------------------------------" << std::endl;
    std::cout << "  CppCore::Containers::Array"    << std::endl;
    std::cout << "-------------------------------" << std::endl;
    TEST(CppCore::Test::Containers::Array::modelid,   "modelid:   ", std::endl);
@@ -675,13 +666,14 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::Hex      " << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Encoding::Hex::tostring,   "tostring:   ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::tostring16, "tostring16: ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::tostring32, "tostring32: ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::tostring64, "tostring64: ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::parse16,    "parse16:    ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::parse32,    "parse32:    ", std::endl);
-   TEST(CppCore::Test::Encoding::Hex::parse64,    "parse64:    ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::tostring,           "tostring:   ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::tostring16,         "tostring16: ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::tostring32,         "tostring32: ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::tostring64,         "tostring64: ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::parse16,            "parse16:    ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::parse32,            "parse32:    ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::parse64,            "parse64:    ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::Util::bytetohexstr, "bytetohexstr: ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "        CppCore::Socket"         << std::endl;
