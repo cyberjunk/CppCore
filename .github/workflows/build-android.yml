@@ -40,15 +40,15 @@ jobs:
 #      with:
 #        java-version: 1.8
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
+#    - name: Setup Android SDK
+#      uses: android-actions/setup-android@v2
 
     - name: ANDROID_HOME (WIN)
-      if: ${{ matrix.os }} == 'windows-2019'
+      if: matrix.os == 'windows-2019'
       run: echo $env:ANDROID_HOME
 
     - name: ANDROID_HOME (WIN)
-      if: ${{ matrix.os }} == 'macos-11'
+      if: matrix.os == 'macos-11'
       run: echo $ANDROID_HOME
 
     # Build
