@@ -156,8 +156,8 @@ namespace CppCore
          /// Encodes unsigned integer v into string s using alphabet.
          /// This appends to the existing string.
          /// </summary>
-         template<typename T, typename S>
-         INLINE static void tostringu(T v, S& s, const uint32_t base, const char* alphabet)
+         template<typename UINT, typename S>
+         INLINE static void tostringu(UINT v, S& s, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2U);
             assert(::strlen(alphabet) == base);
@@ -357,6 +357,15 @@ namespace CppCore
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
+      /// Appends 8-bit unsigned integer v to string s with encoding in base using alphabet
+      /// </summary>
+      template<typename S>
+      INLINE static void tostring(const uint8_t v, S& s, const uint32_t base, const char* alphabet)
+      {
+         Util::tostringu<uint8_t, S>(v, s, base, alphabet);
+      }
+
+      /// <summary>
       /// Appends 16-bit unsigned integer v to string s with encoding in base using alphabet
       /// </summary>
       template<typename S>
@@ -381,6 +390,15 @@ namespace CppCore
       INLINE static void tostring(const uint64_t v, S& s, const uint32_t base, const char* alphabet)
       {
          Util::tostringu<uint64_t, S>(v, s, base, alphabet);
+      }
+
+      /// <summary>
+      /// Appends 8-bit signed integer v to string s with encoding in base using alphabet
+      /// </summary>
+      template<typename S>
+      INLINE static void tostring(const int8_t v, S& s, const uint32_t base, const char* alphabet)
+      {
+         Util::tostrings<int8_t, uint16_t, S>(v, s, base, alphabet);
       }
 
       /// <summary>

@@ -636,6 +636,8 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::BaseX    " << std::endl;
    std::cout << "-------------------------------" << std::endl;
+   TEST(CppCore::Test::Encoding::BaseX::tostring8u,  "tostring8u:  ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring8s,  "tostring8s:  ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tostring16u, "tostring16u: ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tostring16s, "tostring16s: ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tostring32u, "tostring32u: ", std::endl);
