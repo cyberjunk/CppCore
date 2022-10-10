@@ -1109,13 +1109,20 @@ namespace CppCore
             if (!CppCore::testzero(v)) CPPCORE_LIKELY
             {
                uint32_t r;
-               uint32_t n = 0U;
-               do
+               uint32_t n;
+               CppCore::udivmod(v, 10U, v, r);
+               *s++ = CPPCORE_ALPHABET_B10[r];
+               CPPCORE_UNROLL
+               for (n = 1U; n != N; n++)
                {
-                  CppCore::udivmod(v, 10U, v, r);
-                  *s++ = CPPCORE_ALPHABET_B10[r];
-                  n++;
-               } while (!CppCore::testzero(v));
+                  if (!CppCore::testzero(v))
+                  {
+                     CppCore::udivmod(v, 10U, v, r);
+                     *s++ = CPPCORE_ALPHABET_B10[r];
+                  }
+                  else
+                     break;
+               }
                Memory::reverse(s-n, n);
             }
             else CPPCORE_UNLIKELY
