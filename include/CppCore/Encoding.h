@@ -186,11 +186,12 @@ namespace CppCore
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
-            TU u, r;
+            TU u;
+            uint32_t r;
             if (v > 0)
             {
                u = (TU)v;
-               CppCore::udivmod(u, (TU)base, u, r);
+               CppCore::udivmod(u, base, u, r);
                s += alphabet[r];
             }
             else if (v < 0)
@@ -206,10 +207,10 @@ namespace CppCore
                s += '0';
                return;
             }
-            size_t n = 1U;
-            while (u != (TU)0U)
+            uint32_t n = 1U;
+            while (!CppCore::testzero(u))
             {
-               CppCore::udivmod(u, (TU)base, u, r);
+               CppCore::udivmod(u, base, u, r);
                s += alphabet[r];
                n++;
             }

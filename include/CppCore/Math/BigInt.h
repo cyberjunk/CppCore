@@ -2259,26 +2259,19 @@ namespace CppCore
       /// Returns string representation using any alphabet. By default decimal.
       /// Returns empty string if alphabet is invalid (e.g. less than 2 symbols).
       /// </summary>
-      INLINE string toString(const string& alphabet = CPPCORE_ALPHABET_B10) const
+      INLINE string toString(const uint32_t base, const char* alphabet) const
       {
-         const uint32_t b = (uint32_t)alphabet.length();
          string s;
-         if (b > 1U)
-         {
-            TC t(*thiss());
-            if (!CppCore::testzero(t))
-            {
-               uint32_t r;
-               while (!CppCore::testzero(t))
-               {
-                  TC::Op::divmod(t, b, t, r);
-                  s += (char)alphabet[r];
-               }
-            }
-            else s = '0';
-            std::reverse(std::begin(s), std::end(s));
-         }
+         CppCore::BaseX::Util::tostringu(*thiss(), s, base, alphabet);
          return s;
+      }
+
+      /// <summary>
+      /// Returns string representation using any alphabet. By default decimal.
+      /// </summary>
+      INLINE string toString(const string_view& alphabet = CPPCORE_ALPHABET_B10) const
+      {
+         return thiss()->toString((uint32_t)alphabet.length(), alphabet.data());
       }
 
       /// <summary>
