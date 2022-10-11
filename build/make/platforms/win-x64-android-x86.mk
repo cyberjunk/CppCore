@@ -44,6 +44,8 @@ LINKLIBS   =
 # SDK Tools
 AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager.bat
 SDKMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/sdkmanager.bat
+ADB        = $(ANDROID_HOME)/platform-tools/adb.exe
+EMULATOR   = $(ANDROID_HOME)/emulator/emulator.exe
 
 # Debug vs. Release
 ifeq ($(MODE),release)

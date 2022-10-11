@@ -60,8 +60,8 @@ jobs:
         echo $PATH
  
     # Build
-    - name: Build
-      run: make -j${{ env.JOBS }}
+#    - name: Build
+#      run: make -j${{ env.JOBS }}
 
     # Run
     - name: Run

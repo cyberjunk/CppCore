@@ -135,8 +135,8 @@ ifeq ($(TARGET_OS),android)
 	echo DEVICE
 	$(AVDMANAGER) list device
 
-	$(AVDMANAGER) create avd --force --name testX86 --abi google_apis/x86 --package 'system-images;android-21;google_apis;x86'
-	$(AVDMANAGER) create avd --force --name testX64 --abi google_apis/x86_64 --package 'system-images;android-21;google_apis;x86_64'
+	$(AVDMANAGER) create avd --force --name testX86 --abi x86 --device pixel_5 --package 'system-images;android-21;x86'
+#	$(AVDMANAGER) create avd --force --name testX64 --abi google_apis/x86_64 --package 'system-images;android-21;google_apis;x86_64'
 
 	echo AVD
 	$(AVDMANAGER) list avd
