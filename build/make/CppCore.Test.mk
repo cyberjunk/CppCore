@@ -127,17 +127,6 @@ build: $(OBJS) $(RESO)
 
 run:
 ifeq ($(TARGET_OS),android)
-ifeq ($(DETECTED_OS),win)
-ifeq ($(TARGET_ARCH),x86)
-# X86 on Windows requires VT-X which is disabled in Hyper-V
-SKIP = true
-endif
-ifeq ($(TARGET_ARCH),x64)
-# X64 on Windows requires VT-X which is disabled in Hyper-V
-SKIP = true
-endif
-endif
-ifneq ($(SKIP),true)
 	echo $(ANDROID_HOME)
 #	$(SDKMANAGER) --list_installed
 	$(SDKMANAGER) 'emulator'
@@ -163,9 +152,9 @@ endif
 #	$(ADB) shell ls
 	$(ADB) push $(OUT) /data/local/tmp	
 	$(ADB) shell chmod +x /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
+	$(ADB) shell ls -la /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(AVDMANAGER) delete avd --name $(NAME)_AVD
-endif
 endif
 
 clean:

@@ -72,5 +72,8 @@ jobs:
       run: make -j${{ env.JOBS }}
 
     # Run Test
+    # Note: x64 and x86 require VT-x on Windows.
+    # But it is disabled on Github Hyper-V runners.
     - name: Run Test
+      if: matrix.os != 'windows-2019' || (matrix.arch != 'x64' && matrix.arch != 'x86')
       run: make CppCore.Test-run
