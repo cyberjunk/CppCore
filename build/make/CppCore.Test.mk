@@ -152,13 +152,17 @@ ifeq ($(TARGET_OS),android)
 #	echo AVD
 #	$(AVDMANAGER) list avd
 ifeq ($(DETECTED_OS),osx)
+	$(ADB) start-server
 	$(EMULATOR) -no-window -avd $(NAME)_AVD &
 	sleep 20
+	$(ADB) devices
 	$(ADB) shell ls
 endif
 ifeq ($(DETECTED_OS),win)
+	$(ADB) start-server
 	start "" $(EMULATOR) -no-window -avd $(NAME)_AVD
 	ping -n 20 127.0.0.1 >NUL
+	$(ADB) devices
 	$(ADB) shell ls
 endif
 #	start "" $(EMULATOR) -avd testAVD
