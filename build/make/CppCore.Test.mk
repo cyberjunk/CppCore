@@ -127,7 +127,7 @@ build: $(OBJS) $(RESO)
 
 run:
 ifeq ($(TARGET_OS),android)
-	echo $(ANDROID_HOME)
+	echo [SDK] $(ANDROID_HOME)
 #	$(SDKMANAGER) --list_installed
 	$(SDKMANAGER) 'emulator'
 	$(SDKMANAGER) $(ANDROID_SYSIMAGE)
@@ -139,12 +139,7 @@ ifeq ($(TARGET_OS),android)
 	  --package $(ANDROID_SYSIMAGE)
 	$(AVDMANAGER) list avd
 	$(ADB) start-server
-#ifeq ($(DETECTED_OS),osx)
-#	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
-#	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD &
-#endif
 ifeq ($(DETECTED_OS),win)
-#	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
 	start "" $(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
 else
 	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD &

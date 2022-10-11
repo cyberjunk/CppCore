@@ -93,12 +93,8 @@ clean: \
 	CppCore.Test-clean \
 	CppCore.Debug-clean
 
-run: \
-	CppCore.Example.Server-run \
-	CppCore.Example.Client-run \
-	CppCore.Example.UI-run \
-	CppCore.Test-run \
-	CppCore.Debug-run
+test: \
+	CppCore.Test-run
 
 dist: \
 	CppCore.Example.Server-dist \
