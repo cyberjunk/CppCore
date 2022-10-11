@@ -38,8 +38,8 @@ LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \
 LINKLIBS   = 
 
 # SDK Tools
-AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager.sh
-SDKMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/sdkmanager.sh
+AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager
+SDKMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/sdkmanager
 ADB        = $(ANDROID_HOME)/platform-tools/adb
 EMULATOR   = $(ANDROID_HOME)/emulator/emulator
 
