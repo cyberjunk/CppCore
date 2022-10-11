@@ -35,11 +35,12 @@ jobs:
 #      with:
 #        ndk-version: ${{ matrix.ndk }}
 
-    - name: Set up JDK 1.8
-      if: matrix.os == 'macos-11'
-      uses: actions/setup-java@v3
-      with:
-        java-version: 1.8
+#    - name: Set up JDK 1.8
+#      if: matrix.os == 'macos-11'
+#      uses: actions/setup-java@v3
+#      with:
+#        distribution: 'adopt'
+#        java-version: 8
 
 #    - name: Setup Android SDK
 #      uses: android-actions/setup-android@v2
@@ -47,6 +48,7 @@ jobs:
     - name: ANDROID_HOME (WIN)
       if: matrix.os == 'windows-2019'
       run: |
+        echo $env:JAVA_HOME
         echo $env:ANDROID_HOME
         echo $env:ANDROID_NDK_HOME
         dir $env:ANDROID_HOME
@@ -56,10 +58,10 @@ jobs:
     - name: ANDROID_HOME (OSX)
       if: matrix.os == 'macos-11'
       run: |
+        echo $JAVA_HOME
         echo $ANDROID_HOME
         echo $ANDROID_NDK_HOME
         ls -la $ANDROID_HOME
-        ls -la $ANDROID_HOME/cmdline-tools/latest/bin
         java -version
         echo $PATH
  
