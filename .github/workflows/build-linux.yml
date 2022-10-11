@@ -111,7 +111,7 @@ jobs:
 
     # Test
     - name: Test
-      run: ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Test
+      run: make test
 
     # Make (dist)
     - name: Make (dist)
