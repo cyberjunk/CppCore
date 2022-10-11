@@ -153,6 +153,10 @@ endif
 	$(ADB) wait-for-any-disconnect
 	$(ADB) kill-server
 	$(AVDMANAGER) delete avd --name $(NAME)_AVD
+else ifeq ($(TARGET_OS),ios)
+#	TODO: Run in emulator like on Android
+else
+	$(OUT)
 endif
 
 clean:

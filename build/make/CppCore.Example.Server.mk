@@ -133,8 +133,6 @@ clean:
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTBIN))
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTPDB))
 
-run:
-
 ################################################################################################
 
 include ./platforms/dist.mk

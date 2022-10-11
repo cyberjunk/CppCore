@@ -131,5 +131,3 @@ clean:
 	$(call deletefiles,$(OBJDIR),*.res)
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTBIN))
 	$(call deletefiles,$(BINDIR),$(NAME)$(SUFFIX)$(EXTPDB))
-
-run:
