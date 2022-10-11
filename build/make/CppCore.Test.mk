@@ -128,9 +128,24 @@ build: $(OBJS) $(RESO)
 run:
 ifeq ($(TARGET_OS),android)
 	echo $(ANDROID_HOME)
+	echo AVD
+	$(AVDMANAGER) list avd
+	echo TARGET
+	$(AVDMANAGER) list target
+	echo DEVICE
+	$(AVDMANAGER) list device
+
 #	$(AVDMANAGER) create avd --force --name testAVD --abi google_apis/x86 --package 'system-images;android-29;google_apis;x86'
+#	start "" $(EMULATOR) -avd testAVD
+#	timeout 30
+	
+#	$(ADB) push $(OUT) /data/local/tmp	
+#	$(ADB) shell chmod +x /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
+#	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
+	
+#	$(SDKMANAGER) --list_installed
+#	$(ADB) -shell -x ls
 #	$(AVDMANAGER) delete avd --name testAVD
-	$(SDKMANAGER) --list_installed
 endif
 
 clean:
