@@ -150,7 +150,12 @@ namespace CppCore
          /// </remarks>
          INLINE static path getTemp()
          {
+         #if defined(CPPCORE_OS_ANDROID)
+            const char* p = ::getenv("TMPDIR");
+            return p && *p ? path(p) : path("/data/local/tmp");
+         #else
             return std::filesystem::temp_directory_path();
+         #endif
          }
 
          /// <summary>
@@ -162,6 +167,12 @@ namespace CppCore
             return Windows::getAppDataLocal();
          #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
             return Apple::getHomeSandbox();
+         #elif defined(CPPCORE_OS_ANDROID)
+          //#if __ANDROID_API__ <= 22
+            return path("/data/media/0");
+          //#else
+          //  return path("/storage/self/primary");
+          //#endif
          #else
             struct passwd* pw = ::getpwuid(::getuid());
             return path(pw->pw_dir);

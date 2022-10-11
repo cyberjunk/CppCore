@@ -151,7 +151,6 @@ endif
 	$(ADB) devices
 	$(ADB) push $(OUT) /data/local/tmp
 	$(ADB) shell chmod 777 /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
-	$(ADB) shell ls -la /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(ADB) -s emulator-5554 emu kill
 	$(ADB) wait-for-any-disconnect
