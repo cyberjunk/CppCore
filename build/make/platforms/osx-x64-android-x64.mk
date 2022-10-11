@@ -37,6 +37,12 @@ LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \
              -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)
 LINKLIBS   = 
 
+# SDK Tools
+AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager.sh
+SDKMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/sdkmanager.sh
+ADB        = $(ANDROID_HOME)/platform-tools/adb
+EMULATOR   = $(ANDROID_HOME)/emulator/emulator
+
 # Debug vs. Release
 ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
