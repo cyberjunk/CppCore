@@ -133,6 +133,7 @@ ifeq ($(TARGET_OS),android)
 	$(SDKMANAGER) 'emulator'
 	$(SDKMANAGER) $(ANDROID_SYSIMAGE)
 #	$(SDKMANAGER) --list_installed
+	$(SDKMANAGER) 'extras;intel;Hardware_Accelerated_Execution_Manager'
 	
 #	echo DONE
 	$(AVDMANAGER) create avd --force \
@@ -151,31 +152,24 @@ ifeq ($(TARGET_OS),android)
 #	$(AVDMANAGER) create avd --force --name testX64 --abi google_apis/x86_64 --package 'system-images;android-21;google_apis;x86_64'
 #	echo AVD
 #	$(AVDMANAGER) list avd
-ifeq ($(DETECTED_OS),osx)
 	$(ADB) start-server
+ifeq ($(DETECTED_OS),osx)
 	$(EMULATOR) -no-window -avd $(NAME)_AVD
 #	$(EMULATOR) -no-window -avd $(NAME)_AVD &
 #	sleep 20
-	$(ADB) wait-for-any-device
-	$(ADB) devices
-	$(ADB) shell ls
 endif
 ifeq ($(DETECTED_OS),win)
-	$(ADB) start-server
 	$(EMULATOR) -no-window -avd $(NAME)_AVD
 #	start "" $(EMULATOR) -no-window -avd $(NAME)_AVD
 #	ping -n 20 127.0.0.1 >NUL
+endif
 	$(ADB) wait-for-any-device
 	$(ADB) devices
 	$(ADB) shell ls
-endif
-#	start "" $(EMULATOR) -avd testAVD
-#	timeout 30
 #	$(ADB) push $(OUT) /data/local/tmp	
 #	$(ADB) shell chmod +x /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 #	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
-#	$(SDKMANAGER) --list_installed
-#	$(ADB) -shell -x ls
+
 #	$(AVDMANAGER) delete avd --name testAVD
 endif
 
