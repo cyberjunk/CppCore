@@ -58,16 +58,11 @@ jobs:
         echo $ANDROID_NDK_HOME
         ls -la $ANDROID_HOME
         echo $PATH
-
-
-    # Build
-    - name: Build
-      env:
-        ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-      run: make run
  
     # Build
- #   - name: Build
- #     env:
- #       ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
- #     run: make -j${{ env.JOBS }}
+    - name: Build
+      run: make -j${{ env.JOBS }}
+
+    # Run
+    - name: Run
+      run: make run
