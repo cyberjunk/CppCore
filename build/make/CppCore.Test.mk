@@ -135,7 +135,7 @@ ifeq ($(TARGET_OS),android)
 	$(AVDMANAGER) create avd --force \
 	  --name $(NAME)_AVD \
 	  --abi $(ANDROID_ABI) \
-	  --device pixel_5 \
+	  --device $(ANDROID_DEVICE) \
 	  --package $(ANDROID_SYSIMAGE)
 	$(AVDMANAGER) list avd
 	$(ADB) start-server
