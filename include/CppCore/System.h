@@ -168,8 +168,8 @@ namespace CppCore
          #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
             return Apple::getHomeSandbox();
          #elif defined(CPPCORE_OS_ANDROID)
-            //return path("/data/media/0");
-            return path("/storage/self/primary");
+            return path("/data/media/0");
+            //return path("/storage/self/primary");
          #else
             struct passwd* pw = ::getpwuid(::getuid());
             return path(pw->pw_dir);
