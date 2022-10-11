@@ -150,7 +150,6 @@ ifneq ($(SKIP),true)
 	  --package $(ANDROID_SYSIMAGE)
 	$(AVDMANAGER) list avd
 	$(ADB) start-server
-	
 ifeq ($(DETECTED_OS),osx)
 #	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
 	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD &
@@ -159,7 +158,6 @@ ifeq ($(DETECTED_OS),win)
 #	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
 	start "" $(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
 endif
-
 	$(ADB) wait-for-any-device
 	$(ADB) devices
 #	$(ADB) shell ls
@@ -167,7 +165,6 @@ endif
 	$(ADB) shell chmod +x /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(AVDMANAGER) delete avd --name $(NAME)_AVD
-
 endif
 endif
 
