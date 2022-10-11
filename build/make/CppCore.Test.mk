@@ -159,8 +159,8 @@ ifeq ($(DETECTED_OS),osx)
 #	sleep 20
 endif
 ifeq ($(DETECTED_OS),win)
-	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
-#	start "" $(EMULATOR) -no-window -avd $(NAME)_AVD
+#	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
+	start "" $(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
 #	ping -n 20 127.0.0.1 >NUL
 endif
 	$(ADB) wait-for-any-device
