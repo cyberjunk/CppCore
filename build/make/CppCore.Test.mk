@@ -154,13 +154,13 @@ ifeq ($(TARGET_OS),android)
 #	$(AVDMANAGER) list avd
 	$(ADB) start-server
 ifeq ($(DETECTED_OS),osx)
-	$(EMULATOR) -no-window -avd $(NAME)_AVD
-#	$(EMULATOR) -no-window -avd $(NAME)_AVD &
+#	$(EMULATOR) -no-window -avd $(NAME)_AVD
+	$(EMULATOR) -no-window -avd $(NAME)_AVD &
 #	sleep 20
 endif
 ifeq ($(DETECTED_OS),win)
-	$(EMULATOR) -no-window -avd $(NAME)_AVD
-#	start "" $(EMULATOR) -no-window -avd $(NAME)_AVD
+#	$(EMULATOR) -no-window -avd $(NAME)_AVD
+	start "" $(EMULATOR) -no-window -avd $(NAME)_AVD
 #	ping -n 20 127.0.0.1 >NUL
 endif
 	$(ADB) wait-for-any-device
