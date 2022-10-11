@@ -13,6 +13,10 @@ CppCore.Example.Server-clean:
 	@echo [CLN] CppCore.Example.Server
 	+@make -s -C ./build/make/ -f CppCore.Example.Server.mk clean
 
+CppCore.Example.Server-run:
+	@echo [RUN] CppCore.Example.Server
+	+@make -s -C ./build/make/ -f CppCore.Example.Server.mk run
+
 CppCore.Example.Server-dist:
 	@echo [DST] CppCore.Example.Server
 	+@make -s -C ./build/make/ -f CppCore.Example.Server.mk dist
@@ -24,6 +28,10 @@ CppCore.Example.Client:
 CppCore.Example.Client-clean:
 	@echo [CLN] CppCore.Example.Client
 	+@make -s -C ./build/make/ -f CppCore.Example.Client.mk clean
+
+CppCore.Example.Client-run:
+	@echo [RUN] CppCore.Example.Client
+	+@make -s -C ./build/make/ -f CppCore.Example.Client.mk run
 
 CppCore.Example.Client-dist:
 	@echo [DST] CppCore.Example.Client
@@ -37,6 +45,10 @@ CppCore.Example.UI-clean:
 	@echo [CLN] CppCore.Example.UI
 	+@make -s -C ./build/make/ -f CppCore.Example.UI.mk clean
 
+CppCore.Example.UI-run:
+	@echo [RUN] CppCore.Example.UI
+	+@make -s -C ./build/make/ -f CppCore.Example.UI.mk run
+
 CppCore.Example.UI-dist:
 	@echo [DST] CppCore.Example.UI
 	+@make -s -C ./build/make/ -f CppCore.Example.UI.mk dist
@@ -49,6 +61,10 @@ CppCore.Test-clean:
 	@echo [CLN] CppCore.Test
 	+@make -s -C ./build/make/ -f CppCore.Test.mk clean
 
+CppCore.Test-run:
+	@echo [RUN] CppCore.Test
+	+@make -s -C ./build/make/ -f CppCore.Test.mk run
+
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk
@@ -56,6 +72,10 @@ CppCore.Debug:
 CppCore.Debug-clean:
 	@echo [CLN] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk clean
+
+CppCore.Debug-run:
+	@echo [RUN] CppCore.Debug
+	+@make -s -C ./build/make/ -f CppCore.Debug.mk run
 
 ##################################################################################
 
@@ -72,6 +92,13 @@ clean: \
 	CppCore.Example.UI-clean \
 	CppCore.Test-clean \
 	CppCore.Debug-clean
+
+run: \
+	CppCore.Example.Server-run \
+	CppCore.Example.Client-run \
+	CppCore.Example.UI-run \
+	CppCore.Test-run \
+	CppCore.Debug-run
 
 dist: \
 	CppCore.Example.Server-dist \

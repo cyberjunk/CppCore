@@ -1,7 +1,8 @@
 # Requires NDK 22b or later
 
-# Replace any backlash in NDK home
+# Replace any backlash in homes
 ANDROID_NDK_HOME := $(subst \,/,$(ANDROID_NDK_HOME))
+ANDROID_HOME     := $(subst \,/,$(ANDROID_HOME))
 
 # Android Specific
 ANDROID_API         = 21
@@ -39,6 +40,10 @@ LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -static-libstdc++ -static-libg
 LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \
              -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)
 LINKLIBS   = 
+
+# SDK Tools
+AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager.bat
+SDKMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/sdkmanager.bat
 
 # Debug vs. Release
 ifeq ($(MODE),release)

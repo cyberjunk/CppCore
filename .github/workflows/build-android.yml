@@ -49,7 +49,6 @@ jobs:
         echo $env:ANDROID_HOME
         dir $env:ANDROID_HOME
         echo $env:PATH
-        adb
 
     - name: ANDROID_HOME (OSX)
       if: matrix.os == 'macos-11'
@@ -57,8 +56,14 @@ jobs:
         echo $ANDROID_HOME
         ls -la $ANDROID_HOME
         echo $PATH
-        adb
-        
+
+
+    # Build
+    - name: Build
+      env:
+        ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+      run: make run
+ 
     # Build
  #   - name: Build
  #     env:

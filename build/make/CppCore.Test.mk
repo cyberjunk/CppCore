@@ -125,6 +125,14 @@ build: $(OBJS) $(RESO)
 	@echo [LNK] $(OUT)
 	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(OUT)
 
+run:
+ifeq ($(TARGET_OS),android)
+	echo $(ANDROID_HOME)
+#	$(AVDMANAGER) create avd --force --name testAVD --abi google_apis/x86 --package 'system-images;android-29;google_apis;x86'
+#	$(AVDMANAGER) delete avd --name testAVD
+	$(SDKMANAGER) --list_installed
+endif
+
 clean:
 	$(call deletefiles,$(OBJDIR),*.o)
 	$(call deletefiles,$(OBJDIR),*.res)
