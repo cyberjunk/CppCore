@@ -133,7 +133,7 @@ ifeq ($(TARGET_OS),android)
 	$(SDKMANAGER) 'emulator'
 	$(SDKMANAGER) $(ANDROID_SYSIMAGE)
 #	$(SDKMANAGER) --list_installed
-	$(SDKMANAGER) 'extras;intel;Hardware_Accelerated_Execution_Manager'
+#	$(SDKMANAGER) 'extras;intel;Hardware_Accelerated_Execution_Manager'
 	
 #	echo DONE
 	$(AVDMANAGER) create avd --force \
@@ -155,11 +155,11 @@ ifeq ($(TARGET_OS),android)
 	$(ADB) start-server
 ifeq ($(DETECTED_OS),osx)
 #	$(EMULATOR) -no-window -avd $(NAME)_AVD
-	$(EMULATOR) -no-window -no-audio -avd $(NAME)_AVD &
+	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD &
 #	sleep 20
 endif
 ifeq ($(DETECTED_OS),win)
-	$(EMULATOR) -no-window -no-audio -avd $(NAME)_AVD
+	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
 #	start "" $(EMULATOR) -no-window -avd $(NAME)_AVD
 #	ping -n 20 127.0.0.1 >NUL
 endif
