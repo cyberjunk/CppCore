@@ -47,6 +47,7 @@ jobs:
       if: matrix.os == 'windows-2019'
       run: |
         echo $env:ANDROID_HOME
+        echo $env:ANDROID_NDK_HOME
         dir $env:ANDROID_HOME
         echo $env:PATH
 
@@ -54,6 +55,7 @@ jobs:
       if: matrix.os == 'macos-11'
       run: |
         echo $ANDROID_HOME
+        echo $ANDROID_NDK_HOME
         ls -la $ANDROID_HOME
         echo $PATH
 
