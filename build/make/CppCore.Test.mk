@@ -151,6 +151,16 @@ ifeq ($(TARGET_OS),android)
 #	$(AVDMANAGER) create avd --force --name testX64 --abi google_apis/x86_64 --package 'system-images;android-21;google_apis;x86_64'
 #	echo AVD
 #	$(AVDMANAGER) list avd
+ifeq ($(DETECTED_OS),osx)
+	$(EMULATOR) -avd $(NAME)_AVD &
+	sleep 10
+	$(ADB) shell ls
+endif
+ifeq ($(DETECTED_OS),win)
+	start "" $(EMULATOR) -avd $(NAME)_AVD
+	timeout 10
+	$(ADB) shell ls
+endif
 #	start "" $(EMULATOR) -avd testAVD
 #	timeout 30
 #	$(ADB) push $(OUT) /data/local/tmp	
