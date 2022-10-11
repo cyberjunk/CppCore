@@ -127,50 +127,48 @@ build: $(OBJS) $(RESO)
 
 run:
 ifeq ($(TARGET_OS),android)
+ifeq ($(DETECTED_OS),win)
+ifeq ($(TARGET_ARCH),x86)
+# X86 on Windows requires VT-X which is disabled in Hyper-V
+SKIP = true
+endif
+ifeq ($(TARGET_ARCH),x64)
+# X64 on Windows requires VT-X which is disabled in Hyper-V
+SKIP = true
+endif
+endif
+ifneq ($(SKIP),true)
 	echo $(ANDROID_HOME)
-	
 #	$(SDKMANAGER) --list_installed
 	$(SDKMANAGER) 'emulator'
 	$(SDKMANAGER) $(ANDROID_SYSIMAGE)
-#	$(SDKMANAGER) --list_installed
 #	$(SDKMANAGER) 'extras;intel;Hardware_Accelerated_Execution_Manager'
-	
-#	echo DONE
 	$(AVDMANAGER) create avd --force \
 	  --name $(NAME)_AVD \
 	  --abi $(ANDROID_ABI) \
 	  --device pixel_5 \
 	  --package $(ANDROID_SYSIMAGE)
-	
-#	echo AVD
 	$(AVDMANAGER) list avd
-#	echo TARGET
-#	$(AVDMANAGER) list target
-#	echo DEVICE
-#	$(AVDMANAGER) list device
-#	$(AVDMANAGER) create avd --force --name $(NAME)_AVD --abi $(ANDROID_ABI) --device pixel_5 --package $(ANDROID_SYSIMAGE)
-#	$(AVDMANAGER) create avd --force --name testX64 --abi google_apis/x86_64 --package 'system-images;android-21;google_apis;x86_64'
-#	echo AVD
-#	$(AVDMANAGER) list avd
 	$(ADB) start-server
+	
 ifeq ($(DETECTED_OS),osx)
-#	$(EMULATOR) -no-window -avd $(NAME)_AVD
+#	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
 	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD &
-#	sleep 20
 endif
 ifeq ($(DETECTED_OS),win)
 #	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
 	start "" $(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
-#	ping -n 20 127.0.0.1 >NUL
 endif
+
 	$(ADB) wait-for-any-device
 	$(ADB) devices
-	$(ADB) shell ls
-#	$(ADB) push $(OUT) /data/local/tmp	
-#	$(ADB) shell chmod +x /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
-#	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
+#	$(ADB) shell ls
+	$(ADB) push $(OUT) /data/local/tmp	
+	$(ADB) shell chmod +x /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
+	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
+	$(AVDMANAGER) delete avd --name $(NAME)_AVD
 
-#	$(AVDMANAGER) delete avd --name testAVD
+endif
 endif
 
 clean:
