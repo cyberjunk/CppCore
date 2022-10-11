@@ -140,21 +140,21 @@ ifeq ($(TARGET_OS),android)
 	$(AVDMANAGER) list avd
 	$(ADB) start-server
 ifeq ($(DETECTED_OS),osx)
-#	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
-	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD &
+#	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
+	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD &
 endif
 ifeq ($(DETECTED_OS),win)
-#	$(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
-	start "" $(EMULATOR) -no-window -no-audio -gpu guest -avd $(NAME)_AVD
+#	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
+	start "" $(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
 endif
 	$(ADB) wait-for-any-device
 	$(ADB) devices
-#	$(ADB) shell ls
 	$(ADB) push $(OUT) /data/local/tmp
 	$(ADB) shell chmod 777 /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(ADB) shell ls -la /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(ADB) -s emulator-5554 emu kill
+	$(ADB) wait-for-any-disconnect
 	$(ADB) kill-server
 	$(AVDMANAGER) delete avd --name $(NAME)_AVD
 endif
