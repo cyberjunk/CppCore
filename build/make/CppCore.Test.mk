@@ -130,7 +130,9 @@ ifeq ($(TARGET_OS),android)
 	echo $(ANDROID_HOME)
 	
 	$(SDKMANAGER) --list_installed
+	$(SDKMANAGER) 'emulator'
 	$(SDKMANAGER) 'system-images;android-21;google_apis;x86'
+	$(SDKMANAGER) --list_installed
 	
 	#echo AVD
 	#$(AVDMANAGER) list avd
