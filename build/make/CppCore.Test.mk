@@ -152,12 +152,12 @@ ifeq ($(TARGET_OS),android)
 #	echo AVD
 #	$(AVDMANAGER) list avd
 ifeq ($(DETECTED_OS),osx)
-	$(EMULATOR) -avd $(NAME)_AVD &
+	$(EMULATOR) -no-window -avd $(NAME)_AVD &
 	sleep 10
 	$(ADB) shell ls
 endif
 ifeq ($(DETECTED_OS),win)
-	start "" $(EMULATOR) -avd $(NAME)_AVD
+	start "" $(EMULATOR) -no-window -avd $(NAME)_AVD
 	timeout 10
 	$(ADB) shell ls
 endif
