@@ -131,7 +131,7 @@ ifeq ($(TARGET_OS),android)
 	
 	$(SDKMANAGER) --list_installed
 	$(SDKMANAGER) 'emulator'
-	$(SDKMANAGER) 'system-images;android-21;google_apis;x86'
+	$(SDKMANAGER) $(ANDROID_SYSIMAGE)
 	$(SDKMANAGER) --list_installed
 	
 	#echo AVD
@@ -141,7 +141,7 @@ ifeq ($(TARGET_OS),android)
 	#echo DEVICE
 	#$(AVDMANAGER) list device
 
-	$(AVDMANAGER) create avd --force --name testX86 --abi google_apis/x86 --device pixel_5 --package 'system-images;android-21;google_apis;x86'
+	$(AVDMANAGER) create avd --force --name $(NAME)-AVD --abi $(ANDROID_ABI) --device pixel_5 --package $(ANDROID_SYSIMAGE)
 #	$(AVDMANAGER) create avd --force --name testX64 --abi google_apis/x86_64 --package 'system-images;android-21;google_apis;x86_64'
 
 	echo AVD

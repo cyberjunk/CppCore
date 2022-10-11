@@ -7,6 +7,8 @@ ANDROID_HOME     := $(subst \,/,$(ANDROID_HOME))
 # Android Specific
 ANDROID_API         = 21
 ANDROID_TOOLCHAIN   = $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/windows-x86_64
+ANDROID_SYSIMAGE    = 'system-images;android-$(ANDROID_API);google_apis;armv8-a'
+ANDROID_ABI         = 'google_apis/armv8-a'
 
 # Generic
 EXTBIN     =

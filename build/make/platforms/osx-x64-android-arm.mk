@@ -3,6 +3,8 @@
 # Android Specific
 ANDROID_API         = 21
 ANDROID_TOOLCHAIN   = $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/darwin-x86_64
+ANDROID_SYSIMAGE    = 'system-images;android-$(ANDROID_API);google_apis;armv7-a'
+ANDROID_ABI         = 'google_apis/armv7-a'
 
 # Generic
 EXTBIN     =
