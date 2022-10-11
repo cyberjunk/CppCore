@@ -57,6 +57,7 @@ jobs:
         echo $ANDROID_HOME
         echo $ANDROID_NDK_HOME
         ls -la $ANDROID_HOME
+        ls -la $ANDROID_HOME/cmdline-tools/latest/bin
         echo $PATH
  
     # Build
