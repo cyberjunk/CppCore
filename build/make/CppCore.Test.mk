@@ -152,10 +152,10 @@ endif
 	$(ADB) push $(OUT) /data/local/tmp
 	$(ADB) shell chmod 777 /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
-#	$(ADB) -s emulator-5554 emu kill
-#	$(ADB) wait-for-any-disconnect
-#	$(ADB) kill-server
-#	$(AVDMANAGER) delete avd --name $(NAME)_AVD
+	$(ADB) -s emulator-5554 emu kill
+	$(ADB) wait-for-any-disconnect
+	$(ADB) kill-server
+	$(AVDMANAGER) delete avd --name $(NAME)_AVD
 endif
 
 clean:
