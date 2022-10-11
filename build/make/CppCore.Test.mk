@@ -129,31 +129,33 @@ run:
 ifeq ($(TARGET_OS),android)
 	echo $(ANDROID_HOME)
 	
-	$(SDKMANAGER) --list_installed
+#	$(SDKMANAGER) --list_installed
 	$(SDKMANAGER) 'emulator'
 	$(SDKMANAGER) $(ANDROID_SYSIMAGE)
-	$(SDKMANAGER) --list_installed
+#	$(SDKMANAGER) --list_installed
 	
-	#echo AVD
-	#$(AVDMANAGER) list avd
-	#echo TARGET
-	#$(AVDMANAGER) list target
-	#echo DEVICE
-	#$(AVDMANAGER) list device
-
-	$(AVDMANAGER) create avd --force --name $(NAME)-AVD --abi $(ANDROID_ABI) --device pixel_5 --package $(ANDROID_SYSIMAGE)
-#	$(AVDMANAGER) create avd --force --name testX64 --abi google_apis/x86_64 --package 'system-images;android-21;google_apis;x86_64'
-
-	echo AVD
+#	echo DONE
+	$(AVDMANAGER) create avd --force \
+	  --name $(NAME)_AVD \
+	  --abi $(ANDROID_ABI) \
+	  --device pixel_5 \
+	  --package $(ANDROID_SYSIMAGE)
+	
+#	echo AVD
 	$(AVDMANAGER) list avd
-	
+#	echo TARGET
+#	$(AVDMANAGER) list target
+#	echo DEVICE
+#	$(AVDMANAGER) list device
+#	$(AVDMANAGER) create avd --force --name $(NAME)_AVD --abi $(ANDROID_ABI) --device pixel_5 --package $(ANDROID_SYSIMAGE)
+#	$(AVDMANAGER) create avd --force --name testX64 --abi google_apis/x86_64 --package 'system-images;android-21;google_apis;x86_64'
+#	echo AVD
+#	$(AVDMANAGER) list avd
 #	start "" $(EMULATOR) -avd testAVD
 #	timeout 30
-	
 #	$(ADB) push $(OUT) /data/local/tmp	
 #	$(ADB) shell chmod +x /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
 #	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
-	
 #	$(SDKMANAGER) --list_installed
 #	$(ADB) -shell -x ls
 #	$(AVDMANAGER) delete avd --name testAVD
