@@ -1,7 +1,7 @@
 # Requires NDK 22b or later
 
 # Android Specific
-ANDROID_API         = 21
+ANDROID_API         = 23
 ANDROID_TOOLCHAIN   = $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/darwin-x86_64
 ANDROID_SYSIMAGE    = 'system-images;android-$(ANDROID_API);google_apis;armeabi-v7a'
 ANDROID_ABI         = 'google_apis/armeabi-v7a'
@@ -14,7 +14,7 @@ EXTPDB     = .pdb
 OBJDIR     = obj/android-arm-$(MODE)
 LIBDIR     = lib/android-arm
 BINDIR     = bin/android-arm
-DISTDIR    = ../../dist/android-21
+DISTDIR    = ../../dist/android-$(ANDROID_API)
 TARGET     = arm-linux-androideabi
 CPUFLAGS   = -march=armv7-a -mfloat-abi=softfp -mfpu=neon-fp16
 DEFINES    = -DANDROID -D__ANDROID_API__=$(ANDROID_API) -DANDROID_ARM_NEON=ON 

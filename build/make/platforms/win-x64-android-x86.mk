@@ -5,7 +5,7 @@ ANDROID_NDK_HOME := $(subst \,/,$(ANDROID_NDK_HOME))
 ANDROID_HOME     := $(subst \,/,$(ANDROID_HOME))
 
 # Android Specific
-ANDROID_API         = 21
+ANDROID_API         = 23
 ANDROID_TOOLCHAIN   = $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/windows-x86_64
 ANDROID_SYSIMAGE    = 'system-images;android-$(ANDROID_API);google_apis;x86'
 ANDROID_ABI         = 'google_apis/x86'
@@ -18,7 +18,7 @@ EXTPDB     = .pdb
 OBJDIR     = obj/android-x86-$(MODE)
 LIBDIR     = lib/android-x86
 BINDIR     = bin/android-x86
-DISTDIR    = ../../dist/android-21
+DISTDIR    = ../../dist/android-$(ANDROID_API)
 TARGET     = i686-linux-android
 CPUFLAGS   = -march=i686 -mtune=generic
 DEFINES    = -DANDROID -D__ANDROID_API__=$(ANDROID_API)
