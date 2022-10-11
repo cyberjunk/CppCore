@@ -51,6 +51,7 @@ jobs:
         echo $env:JAVA_HOME
         echo $env:ANDROID_HOME
         echo $env:ANDROID_NDK_HOME
+        dir $env:JAVA_HOME
         dir $env:ANDROID_HOME
         java -version
         echo $env:PATH
@@ -61,6 +62,7 @@ jobs:
         echo $JAVA_HOME
         echo $ANDROID_HOME
         echo $ANDROID_NDK_HOME
+        ls -la $JAVA_HOME
         ls -la $ANDROID_HOME
         java -version
         echo $PATH
