@@ -87,7 +87,7 @@ endif
 
 # JAVA JDK
 ifeq ($(DETECTED_OS),osx)
-	JAVA_HOME :=`/usr/libexec/java_home`
+JAVA_HOME := $(shell /usr/libexec/java_home)
 endif
 
 JAR   = "$(JAVA_HOME)/bin/jar$(DETECTED_EXTBIN)"

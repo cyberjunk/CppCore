@@ -1,8 +1,11 @@
 # Requires NDK 22b or later
 
 # Android Specific
-ANDROID_API         = 21
+ANDROID_API         = 23
 ANDROID_TOOLCHAIN   = $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/darwin-x86_64
+ANDROID_SYSIMAGE    = 'system-images;android-$(ANDROID_API);google_apis;x86_64'
+ANDROID_ABI         = 'google_apis/x86_64'
+ANDROID_DEVICE      = 'Nexus 5'
 
 # Generic
 EXTBIN     =
@@ -12,7 +15,7 @@ EXTPDB     = .pdb
 OBJDIR     = obj/android-x64-$(MODE)
 LIBDIR     = lib/android-x64
 BINDIR     = bin/android-x64
-DISTDIR    = ../../dist/android-21
+DISTDIR    = ../../dist/android-$(ANDROID_API)
 TARGET     = x86_64-linux-android
 CPUFLAGS   = -march=x86-64 -mtune=generic
 DEFINES    = -DANDROID -D__ANDROID_API__=$(ANDROID_API)
@@ -36,6 +39,12 @@ LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -static-libstdc++ -static-libg
 LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \
              -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)
 LINKLIBS   = 
+
+# SDK Tools
+AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager
+SDKMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/sdkmanager
+ADB        = $(ANDROID_HOME)/platform-tools/adb
+EMULATOR   = $(ANDROID_HOME)/emulator/emulator
 
 # Debug vs. Release
 ifeq ($(MODE),release)

@@ -27,16 +27,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    # Android NDK
-    - name: Android NDK
-      uses: nttld/setup-ndk@v1
-      id: setup-ndk
-      timeout-minutes: 10
-      with:
-        ndk-version: ${{ matrix.ndk }}
-
     # Build
     - name: Build
-      env:
-        ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
       run: make -j${{ env.JOBS }}
+
+    # Test
+    # Note: x64 and x86 require VT-x on Windows.
+    # But it is disabled on Github Hyper-V runners.
+    - name: Test
+      if: matrix.os != 'windows-2019' || (matrix.arch != 'x64' && matrix.arch != 'x86')
+      env:
+        ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
+      run: make test

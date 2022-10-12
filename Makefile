@@ -49,6 +49,10 @@ CppCore.Test-clean:
 	@echo [CLN] CppCore.Test
 	+@make -s -C ./build/make/ -f CppCore.Test.mk clean
 
+CppCore.Test-run:
+	@echo [RUN] CppCore.Test
+	+@make -s -C ./build/make/ -f CppCore.Test.mk run
+
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk
@@ -72,6 +76,9 @@ clean: \
 	CppCore.Example.UI-clean \
 	CppCore.Test-clean \
 	CppCore.Debug-clean
+
+test: \
+	CppCore.Test-run
 
 dist: \
 	CppCore.Example.Server-dist \

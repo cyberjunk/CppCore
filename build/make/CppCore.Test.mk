@@ -125,6 +125,40 @@ build: $(OBJS) $(RESO)
 	@echo [LNK] $(OUT)
 	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(OUT)
 
+run:
+ifeq ($(TARGET_OS),android)
+	echo [SDK] $(ANDROID_HOME)
+#	$(SDKMANAGER) --list_installed
+	$(SDKMANAGER) 'emulator'
+	$(SDKMANAGER) $(ANDROID_SYSIMAGE)
+#	$(SDKMANAGER) 'extras;intel;Hardware_Accelerated_Execution_Manager'
+	$(AVDMANAGER) create avd --force \
+	  --name $(NAME)_AVD \
+	  --abi $(ANDROID_ABI) \
+	  --device $(ANDROID_DEVICE) \
+	  --package $(ANDROID_SYSIMAGE)
+	$(AVDMANAGER) list avd
+	$(ADB) start-server
+ifeq ($(DETECTED_OS),win)
+	start "" $(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
+else
+	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD &
+endif
+	$(ADB) wait-for-any-device
+	$(ADB) devices
+	$(ADB) push $(OUT) /data/local/tmp
+	$(ADB) shell chmod 777 /data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
+	$(ADB) shell ./data/local/tmp/$(NAME)$(SUFFIX)$(EXTBIN)
+	$(ADB) -s emulator-5554 emu kill
+	$(ADB) wait-for-any-disconnect
+	$(ADB) kill-server
+	$(AVDMANAGER) delete avd --name $(NAME)_AVD
+else ifeq ($(TARGET_OS),ios)
+#	TODO: Run in emulator like on Android
+else
+	$(OUT)
+endif
+
 clean:
 	$(call deletefiles,$(OBJDIR),*.o)
 	$(call deletefiles,$(OBJDIR),*.res)
