@@ -34,11 +34,11 @@ STRIP      = $(ANDROID_TOOLCHAIN)/bin/llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
 LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -static-libstdc++ -static-libgcc -nostartfiles \
-             $(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API)/crtbegin_dynamic.o \
+             $(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API)/crtbegin_static.o \
              $(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API)/crtend_android.o
 LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \
              -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)
-LINKLIBS   = 
+LINKLIBS   = -landroid
 
 # SDK Tools
 AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager
