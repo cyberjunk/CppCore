@@ -20,7 +20,6 @@ jobs:
       matrix:
         os: [windows-2019,macos-11]
         arch: [x64,x86,arm64,arm]
-        ndk: [r25b]
     steps:
     
     # Checkout
