@@ -9,10 +9,10 @@ Open [CppCore.sln](https://github.com/cyberjunk/cppcore/blob/master/CppCore.sln)
 
 ## Compilers
 
-* CLANG (Windows, Linux, OSX)
+* CLANG (Windows, Linux, MacOS, Android, iOS)
 * MSVC (Windows)
 
-## Make / Visual Studio Code
+## GNU Make / Visual Studio Code
 
 ### Windows
 
@@ -37,12 +37,8 @@ Install from the OSX Store:
 
 Following Parameters are supported. Defaults will be used if not provided.
 
-| Parameter   | Values                      | Default    |
-| ----------- | --------------------------- | ---------- |
-| MODE        | debug, release              | debug      |
-| TARGET_OS   | win, osx, linux, android    | {host-os}  |
-| TARGET_ARCH | x86, x64, arm, arm64        | {host-cpu} |
-
-## Visual Studio
-
-Open CppCore.sln
+| Parameter   | Values                        | Default    |
+| ----------- | ----------------------------- | ---------- |
+| MODE        | debug, release                | debug      |
+| TARGET_OS   | win, osx, linux, android, ios | {host-os}  |
+| TARGET_ARCH | x86, x64, arm, arm64          | {host-cpu} |
