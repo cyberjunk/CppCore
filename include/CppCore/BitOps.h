@@ -2914,9 +2914,9 @@ namespace CppCore
       const __m256i dup256 = CppCore::bytedup256(v);
       const __m512i dup512 = CppCore::bytedup512(v);
       CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
-         *px512 = dup512;,
-         *px256 = dup256; ,
-         *px128 = dup128; ,
+         CPPCORE_CHUNK_STORE512(UINT, px512, dup512); ,
+         CPPCORE_CHUNK_STORE256(UINT, px256, dup256);,
+         CPPCORE_CHUNK_STORE128(UINT, px128, dup128);,
          *px64  = dup64; ,
          *px32  = dup32; ,
          *px16  = dup16; ,
@@ -2925,8 +2925,8 @@ namespace CppCore
       const __m128i dup128 = CppCore::bytedup128(v);
       const __m256i dup256 = CppCore::bytedup256(v);
       CPPCORE_CHUNK_PROCESS256_X(x, UINT, true,
-         *px256 = dup256; ,
-         *px128 = dup128; ,
+         CPPCORE_CHUNK_STORE256(UINT, px256, dup256); ,
+         CPPCORE_CHUNK_STORE128(UINT, px128, dup128); ,
          *px64  = dup64; ,
          *px32  = dup32; ,
          *px16  = dup16; ,
@@ -2934,7 +2934,7 @@ namespace CppCore
    #elif defined(CPPCORE_CPUFEAT_SSE2)
       const __m128i dup128 = CppCore::bytedup128(v);
       CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
-         *px128 = dup128; ,
+         CPPCORE_CHUNK_STORE128(UINT, px128, dup128); ,
          *px64  = dup64; ,
          *px32  = dup32; ,
          *px16  = dup16; ,
