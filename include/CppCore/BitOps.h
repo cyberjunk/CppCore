@@ -2868,6 +2868,37 @@ namespace CppCore
       return ((uint64_t)v) * 0x0101010101010101ULL;
    }
 
+#if defined(CPPCORE_CPUFEAT_SSE2)
+   /// <summary>
+   /// Duplicates v into all bytes of 128-Bit Integer
+   /// (e.g. 0x0F -> 0x0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F)
+   /// </summary>
+   static INLINE __m128i bytedup128(const uint8_t v)
+   {
+      return _mm_set1_epi8(v);
+   }
+#endif
+
+#if defined(CPPCORE_CPUFEAT_AVX)
+   /// <summary>
+   /// Duplicates v into all bytes of 256-Bit Integer
+   /// </summary>
+   static INLINE __m256i bytedup256(const uint8_t v)
+   {
+      return _mm256_set1_epi8(v);
+   }
+#endif
+
+#if defined(CPPCORE_CPUFEAT_AVX512F)
+   /// <summary>
+   /// Duplicates v into all bytes of 512-Bit Integer
+   /// </summary>
+   static INLINE __m512i bytedup512(const uint8_t v)
+   {
+      return _mm512_set1_epi8(v);
+   }
+#endif
+
    /// <summary>
    /// Duplicates v into all bytes of any sized Integer
    /// (e.g. 0x0F -> 0x0F0F)
@@ -2875,14 +2906,46 @@ namespace CppCore
    template<typename UINT>
    static INLINE void bytedup(const uint8_t& v, UINT& x)
    {
-      const uint64_t dup64 = CppCore::bytedup64(v);
-      const uint32_t dup32 = CppCore::bytedup32(v);
       const uint16_t dup16 = CppCore::bytedup16(v);
+      const uint32_t dup32 = CppCore::bytedup32(v);
+      const uint64_t dup64 = CppCore::bytedup64(v);
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
+      const __m128i dup128 = CppCore::bytedup128(v);
+      const __m256i dup256 = CppCore::bytedup256(v);
+      const __m512i dup512 = CppCore::bytedup512(v);
+      CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
+         *px512 = dup512;,
+         *px256 = dup256; ,
+         *px128 = dup128; ,
+         *px64  = dup64; ,
+         *px32  = dup32; ,
+         *px16  = dup16; ,
+         *px8   = v;)
+   #elif defined(CPPCORE_CPUFEAT_AVX)
+      const __m128i dup128 = CppCore::bytedup128(v);
+      const __m256i dup256 = CppCore::bytedup256(v);
+      CPPCORE_CHUNK_PROCESS256_X(x, UINT, true,
+         *px256 = dup256; ,
+         *px128 = dup128; ,
+         *px64  = dup64; ,
+         *px32  = dup32; ,
+         *px16  = dup16; ,
+         *px8   = v;)
+   #elif defined(CPPCORE_CPUFEAT_SSE2)
+      const __m128i dup128 = CppCore::bytedup128(v);
+      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+         *px128 = dup128; ,
+         *px64  = dup64; ,
+         *px32  = dup32; ,
+         *px16  = dup16; ,
+         *px8   = v;)
+   #else
       CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
          *px64 = dup64; ,
          *px32 = dup32; ,
          *px16 = dup16; ,
          *px8  = v;)
+   #endif
    }
 
    /// <summary>

@@ -38,7 +38,7 @@ namespace CppCore
       /// </summary>
       INLINE void set(const uint8_t v) 
       {
-         Memory::set8(u8, N8, v);
+         CppCore::bytedup(v, *(T*)this);
       }
 
       /// <summary>
@@ -90,23 +90,6 @@ namespace CppCore
    class Block16x : public Block<T, SIZE>
    {
       static_assert(SIZE % 2 == 0);
-
-   public:
-      /// <summary>
-      /// Sets all 16 Bit chunks to 16-Bit v.
-      /// </summary>
-      INLINE void set(const uint16_t v)
-      {
-         Memory::set16(this->u16, this->N16, v);
-      }
-
-      /// <summary>
-      /// Sets all 16 Bit chunks to duplicated 8-Bit v.
-      /// </summary>
-      INLINE void set(const uint8_t v)
-      {
-         set(CppCore::bytedup16(v));
-      }
    };
 
    /// <summary>
@@ -118,22 +101,6 @@ namespace CppCore
       static_assert(SIZE % 4 == 0);
 
    public:
-      /// <summary>
-      /// Sets all 32 Bit chunks to 32-Bit v.
-      /// </summary>
-      INLINE void set(const uint32_t v)
-      {
-         Memory::set32(this->u32, this->N32, v);
-      }
-      
-      /// <summary>
-      /// Sets all 32 Bit chunks to duplicated 8-Bit v.
-      /// </summary>
-      INLINE void set(const uint8_t v)
-      {
-         set(CppCore::bytedup32(v));
-      }
-
       /// <summary>
       /// Flips endianess of all 32-Bit chunks.
       /// </summary>
@@ -154,30 +121,6 @@ namespace CppCore
       static_assert(SIZE % 8 == 0);
 
    public:
-      /// <summary>
-      /// Sets all 64 Bit chunks to v.
-      /// </summary>
-      INLINE void set(const uint64_t v)
-      {
-         Memory::set64(this->u64, this->N64, v);
-      }
-
-      /// <summary>
-      /// Sets all 64 Bit chunks to duplicated 32-Bit v.
-      /// </summary>
-      INLINE void set(const uint32_t v)
-      {
-         set((uint64_t)v | ((uint64_t)v << 32));
-      }
-
-      /// <summary>
-      /// Sets all 64 Bit chunks to duplicated 8-Bit v.
-      /// </summary>
-      INLINE void set(const uint8_t v)
-      {
-         set(CppCore::bytedup64(v));
-      }
-
       /// <summary>
       /// Flips endianess of all 64-Bit chunks.
       /// </summary>
