@@ -517,9 +517,22 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "      CppCore::Hash::CRC32"      << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Hash::CRC32::crc32test1, "crc32test1: ", std::endl);
-   TEST(CppCore::Test::Hash::CRC32::crc32test2, "crc32test2: ", std::endl);
-   TEST(CppCore::Test::Hash::CRC32::crc32test3, "crc32test3: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32test1<CppCore::CRC32g>, "crc32gtest1: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32test2<CppCore::CRC32g>, "crc32gtest2: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32test3<CppCore::CRC32g>, "crc32gtest3: ", std::endl);
+#if defined(CPPCORE_CPUFEAT_ARM_CRC32)
+   TEST(CppCore::Test::Hash::CRC32::crc32test1<CppCore::CRC32s>, "crc32stest1: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32test2<CppCore::CRC32s>, "crc32stest2: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32test3<CppCore::CRC32s>, "crc32stest3: ", std::endl);
+#endif
+   TEST(CppCore::Test::Hash::CRC32::crc32ctest1<CppCore::CRC32Cg>, "crc32cgtest1: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32ctest2<CppCore::CRC32Cg>, "crc32cgtest2: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32ctest3<CppCore::CRC32Cg>, "crc32cgtest3: ", std::endl);
+#if defined(CPPCORE_CPUFEAT_SSE42) || defined(CPPCORE_CPUFEAT_ARM_CRC32)
+   TEST(CppCore::Test::Hash::CRC32::crc32ctest1<CppCore::CRC32Cs>, "crc32cstest1: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32ctest2<CppCore::CRC32Cs>, "crc32cstest2: ", std::endl);
+   TEST(CppCore::Test::Hash::CRC32::crc32ctest3<CppCore::CRC32Cs>, "crc32cstest3: ", std::endl);
+#endif
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "       CppCore::Hash::MD5"       << std::endl;

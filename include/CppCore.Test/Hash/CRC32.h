@@ -14,24 +14,27 @@ namespace CppCore { namespace Test { namespace Hash
       static constexpr const char STR2[] = "DgjsDheManfJH=asy;D-hF1Sj4H24kjad853kdhAdgj3lkams>weq";
       static constexpr const char STR3[] = "X";
 
+      template<typename TCRC>
       INLINE static bool crc32test1()
       {
          CppCore::CRC32::Digest hash;
-         bool ok = CppCore::CRC32::hashMem(STR1, ::strlen(STR1), hash);
+         bool ok = TCRC::hashMem(STR1, ::strlen(STR1), hash);
          if (!ok || hash != 0x0972D361U) return false;
          return true;
       }
+      template<typename TCRC>
       INLINE static bool crc32test2()
       {
          CppCore::CRC32::Digest hash;
-         bool ok = CppCore::CRC32::hashMem(STR2, ::strlen(STR2), hash);
+         bool ok = TCRC::hashMem(STR2, ::strlen(STR2), hash);
          if (!ok || hash != 0x7FCB7808U) return false;
          return true;
       }
+      template<typename TCRC>
       INLINE static bool crc32test3()
       {
          CppCore::CRC32::Digest hash;
-         bool ok = CppCore::CRC32::hashMem(STR3, ::strlen(STR3), hash);
+         bool ok = TCRC::hashMem(STR3, ::strlen(STR3), hash);
          if (!ok || hash != 0xB7B2364BU) return false;
          return true;
       }
@@ -71,9 +74,9 @@ namespace CppCore { namespace Test { namespace VS { namespace Hash
    TEST_CLASS(CRC32)
    {
    public:
-      TEST_METHOD(CRC32TEST1) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32test1()); }
-      TEST_METHOD(CRC32TEST2) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32test2()); }
-      TEST_METHOD(CRC32TEST3) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32test3()); }
+      TEST_METHOD(CRC32TEST1) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32test1<CppCore::CRC32g>()); }
+      TEST_METHOD(CRC32TEST2) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32test2<CppCore::CRC32g>()); }
+      TEST_METHOD(CRC32TEST3) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32test3<CppCore::CRC32g>()); }
       TEST_METHOD(CRC32CGTEST1) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32ctest1<CppCore::CRC32Cg>()); }
       TEST_METHOD(CRC32CGTEST2) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32ctest2<CppCore::CRC32Cg>()); }
       TEST_METHOD(CRC32CGTEST3) { Assert::AreEqual(true, CppCore::Test::Hash::CRC32::crc32ctest3<CppCore::CRC32Cg>()); }
