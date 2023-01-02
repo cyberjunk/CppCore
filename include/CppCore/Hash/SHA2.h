@@ -88,11 +88,17 @@ namespace CppCore
    };
 
    /// <summary>
-   /// SHA2 256-Bit Generic
+   /// SHA256 Base Class
    /// </summary>
-   class SHA256g : public SHA2g<Block256, Block512, SHA256g>
+   template<typename TSHA>
+   class SHA256b : public SHA2g<Block256, Block512, TSHA>
    {
-      friend SHA2g<Block256, Block512, SHA256g>;
+   public:
+      using Base = SHA2g<Block256, Block512, TSHA>;
+      using typename Base::Digest;
+
+   protected:
+      INLINE SHA256b() { }
 
    public:
       static constexpr const uint32_t K[] = {
@@ -132,6 +138,205 @@ namespace CppCore
       static constexpr const uint32_t SEED7 = 0x1f83d9ab;
       static constexpr const uint32_t SEED8 = 0x5be0cd19;
 
+      /// <summary>
+      /// Flips Endianess on Block
+      /// </summary>
+      INLINE void flipEndianBlock() { this->block.flipEndian32(); }
+
+      /// <summary>
+      /// Flips Endianess on State
+      /// </summary>
+      INLINE void flipEndianState() { this->state.flipEndian32(); }
+
+      /// <summary>
+      /// Resets to new seeds.
+      /// </summary>
+      INLINE void reset(
+         const uint32_t s0 = SEED1,
+         const uint32_t s1 = SEED2,
+         const uint32_t s2 = SEED3,
+         const uint32_t s3 = SEED4,
+         const uint32_t s4 = SEED5,
+         const uint32_t s5 = SEED6,
+         const uint32_t s6 = SEED7,
+         const uint32_t s7 = SEED8)
+      {
+         this->state.u32[0] = s0;
+         this->state.u32[1] = s1;
+         this->state.u32[2] = s2;
+         this->state.u32[3] = s3;
+         this->state.u32[4] = s4;
+         this->state.u32[5] = s5;
+         this->state.u32[6] = s6;
+         this->state.u32[7] = s7;
+         this->blockSize = 0;
+         this->totalSize = 0;
+      }
+
+      /// <summary>
+      /// Finish hash calculations.
+      /// Digest must be 32 Bytes!
+      /// </summary>
+      INLINE void finish(Digest& digest)
+      {
+         // length of the original message (before padding)
+         const uint64_t totalSize = this->totalSize * 8ULL;
+  
+         // determine padding size
+         const size_t padSize = (this->blockSize < 56U) ?
+            56U - this->blockSize :
+            sizeof(this->block) + 56U - this->blockSize;
+
+         // append padding
+         this->thiss()->step(PADDING, padSize);
+  
+         // add the 64-bit length of the original message
+         // as big endian to the end of the block
+         CppCore::storer64(&this->block.u64[Block512::N64-1], totalSize);
+
+         // calculate the message digest
+         this->thiss()->transform();
+  
+         // convert 32 bit integers to big-endian
+         this->thiss()->flipEndianState();
+
+         // copy the final digest
+         CppCore::clone(digest, this->state);
+      }
+   };
+
+   /// <summary>
+   /// SHA512 Base Class
+   /// </summary>
+   template<typename TSHA>
+   class SHA512b : public SHA2g<Block512, Block1024, TSHA>
+   {
+   public:
+      using Base = SHA2g<Block512, Block1024, TSHA>;
+      using typename Base::Digest;
+
+   public:
+      static constexpr const uint64_t K[] = {
+          0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
+          0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
+          0xd807aa98a3030242, 0x12835b0145706fbe, 0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
+          0x72be5d74f27b896f, 0x80deb1fe3b1696b1, 0x9bdc06a725c71235, 0xc19bf174cf692694,
+          0xe49b69c19ef14ad2, 0xefbe4786384f25e3, 0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65,
+          0x2de92c6f592b0275, 0x4a7484aa6ea6e483, 0x5cb0a9dcbd41fbd4, 0x76f988da831153b5,
+          0x983e5152ee66dfab, 0xa831c66d2db43210, 0xb00327c898fb213f, 0xbf597fc7beef0ee4,
+          0xc6e00bf33da88fc2, 0xd5a79147930aa725, 0x06ca6351e003826f, 0x142929670a0e6e70,
+          0x27b70a8546d22ffc, 0x2e1b21385c26c926, 0x4d2c6dfc5ac42aed, 0x53380d139d95b3df,
+          0x650a73548baf63de, 0x766a0abb3c77b2a8, 0x81c2c92e47edaee6, 0x92722c851482353b,
+          0xa2bfe8a14cf10364, 0xa81a664bbc423001, 0xc24b8b70d0f89791, 0xc76c51a30654be30,
+          0xd192e819d6ef5218, 0xd69906245565a910, 0xf40e35855771202a, 0x106aa07032bbd1b8,
+          0x19a4c116b8d2d0c8, 0x1e376c085141ab53, 0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8,
+          0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb, 0x5b9cca4f7763e373, 0x682e6ff3d6b2b8a3,
+          0x748f82ee5defb2fc, 0x78a5636f43172f60, 0x84c87814a1f0ab72, 0x8cc702081a6439ec,
+          0x90befffa23631e28, 0xa4506cebde82bde9, 0xbef9a3f7b2c67915, 0xc67178f2e372532b,
+          0xca273eceea26619c, 0xd186b8c721c0c207, 0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178,
+          0x06f067aa72176fba, 0x0a637dc5a2c898a6, 0x113f9804bef90dae, 0x1b710b35131c471b,
+          0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
+          0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
+      };
+      static constexpr const uint8_t PADDING[128] = {
+         0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+      };
+      static constexpr const uint64_t SEED1 = 0x6A09E667F3BCC908;
+      static constexpr const uint64_t SEED2 = 0xBB67AE8584CAA73B;
+      static constexpr const uint64_t SEED3 = 0x3C6EF372FE94F82B;
+      static constexpr const uint64_t SEED4 = 0xA54FF53A5F1D36F1;
+      static constexpr const uint64_t SEED5 = 0x510E527FADE682D1;
+      static constexpr const uint64_t SEED6 = 0x9B05688C2B3E6C1F;
+      static constexpr const uint64_t SEED7 = 0x1F83D9ABFB41BD6B;
+      static constexpr const uint64_t SEED8 = 0x5BE0CD19137E2179;
+
+      /// <summary>
+      /// Flip Endianess on Block
+      /// </summary>
+      INLINE void flipEndianBlock() { this->block.flipEndian64(); }
+
+      /// <summary>
+      /// Flip Endianess on State
+      /// </summary>
+      INLINE void flipEndianState() { this->state.flipEndian64(); }
+
+      /// <summary>
+      /// Resets to new seeds.
+      /// </summary>
+      INLINE void reset(
+         const uint64_t s0 = SEED1,
+         const uint64_t s1 = SEED2,
+         const uint64_t s2 = SEED3,
+         const uint64_t s3 = SEED4,
+         const uint64_t s4 = SEED5,
+         const uint64_t s5 = SEED6,
+         const uint64_t s6 = SEED7,
+         const uint64_t s7 = SEED8)
+      {
+         this->state.u64[0] = s0;
+         this->state.u64[1] = s1;
+         this->state.u64[2] = s2;
+         this->state.u64[3] = s3;
+         this->state.u64[4] = s4;
+         this->state.u64[5] = s5;
+         this->state.u64[6] = s6;
+         this->state.u64[7] = s7;
+         this->blockSize = 0;
+         this->totalSize = 0;
+      }
+
+      /// <summary>
+      /// Finish hash calculations.
+      /// Digest must be 64 Bytes!
+      /// </summary>
+      INLINE void finish(Digest& digest)
+      {
+         // length of the original message (before padding)
+         const uint64_t totalSize = this->totalSize * 8ULL;
+  
+         // determine padding size
+         const size_t padSize = (this->blockSize < 112U) ?
+            112U - this->blockSize :
+            sizeof(this->block) + 112U - this->blockSize;
+
+         // append padding
+         this->thiss()->step(PADDING, padSize);
+  
+         // add the 64-bit length of the original message
+         // as big endian to the end of the block
+         this->block.u64[Block1024::N64-2] = 0;
+         CppCore::storer64(&this->block.u64[Block1024::N64-1], totalSize);
+
+         // calculate the message digest
+         this->thiss()->transform();
+  
+         // convert 32 bit integers to big-endian
+         flipEndianState();
+
+         // copy the final digest
+         CppCore::clone(digest, this->state);
+      }
+   };
+
+   /////////////////////////////////////////////////////////////////////////////////////////////////
+   // GENERIC VERSION
+   /////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// SHA2 256-Bit Generic
+   /// </summary>
+   class SHA256g : public SHA256b<SHA256g>
+   {
+      friend SHA256b<SHA256g>;
+      friend SHA2g<Block256, Block512, SHA256g>;
+
    protected:
       INLINE static uint32_t ch (const uint32_t x, const uint32_t y, const uint32_t z) { return (x & y) | CppCore::andn32(x, z); }
       INLINE static uint32_t maj(const uint32_t x, const uint32_t y, const uint32_t z) { return (x & y) | (x & z) | (y & z); }
@@ -140,16 +345,6 @@ namespace CppCore
       INLINE static uint32_t sigma3(const uint32_t x) { return CppCore::rotr32(x, 7)  ^ CppCore::rotr32(x, 18) ^ (x >> 3); }
       INLINE static uint32_t sigma4(const uint32_t x) { return CppCore::rotr32(x, 17) ^ CppCore::rotr32(x, 19) ^ (x >> 10); }
       INLINE uint32_t& W(const uint32_t x) { return block.u32[x & 0x0F]; }
-
-      /// <summary>
-      /// Flips Endianess on Block
-      /// </summary>
-      INLINE void flipEndianBlock() { block.flipEndian32(); }
-
-      /// <summary>
-      /// Flips Endianess on State
-      /// </summary>
-      INLINE void flipEndianState() { state.flipEndian32(); }
 
       /// <summary>
       /// Transforms Block
@@ -212,116 +407,19 @@ namespace CppCore
          const uint32_t s4 = SEED5,
          const uint32_t s5 = SEED6,
          const uint32_t s6 = SEED7,
-         const uint32_t s7 = SEED8) : SHA2g() 
+         const uint32_t s7 = SEED8) : SHA256b() 
       {
-         reset(s0, s1, s2, s3, s4, s5, s6, s7);
-      }
-
-      /// <summary>
-      /// Resets to new seeds.
-      /// </summary>
-      INLINE void reset(
-         const uint32_t s0 = SEED1,
-         const uint32_t s1 = SEED2,
-         const uint32_t s2 = SEED3,
-         const uint32_t s3 = SEED4,
-         const uint32_t s4 = SEED5,
-         const uint32_t s5 = SEED6,
-         const uint32_t s6 = SEED7,
-         const uint32_t s7 = SEED8)
-      {
-         state.u32[0] = s0;
-         state.u32[1] = s1;
-         state.u32[2] = s2;
-         state.u32[3] = s3;
-         state.u32[4] = s4;
-         state.u32[5] = s5;
-         state.u32[6] = s6;
-         state.u32[7] = s7;
-         blockSize = 0;
-         totalSize = 0;
-      }
-
-      /// <summary>
-      /// Finish hash calculations.
-      /// Digest must be 32 Bytes!
-      /// </summary>
-      INLINE void finish(Digest& digest)
-      {
-         // length of the original message (before padding)
-         const uint64_t totalSize = this->totalSize * 8ULL;
-  
-         // determine padding size
-         const size_t padSize = (blockSize < 56U) ?
-            56U - blockSize :
-            sizeof(block) + 56U - blockSize;
-
-         // append padding
-         step(PADDING, padSize);
-  
-         // add the 64-bit length of the original message
-         // as big endian to the end of the block
-         CppCore::storer64(&block.u64[Block512::N64-1], totalSize);
-
-         // calculate the message digest
-         transform();
-  
-         // convert 32 bit integers to big-endian
-         flipEndianState();
-
-         // copy the final digest
-         CppCore::clone(digest, state);
+         thiss()->reset(s0, s1, s2, s3, s4, s5, s6, s7);
       }
    };
 
    /// <summary>
    /// SHA2 512-Bit Generic
    /// </summary>
-   class SHA512g : public SHA2g<Block512, Block1024, SHA512g>
+   class SHA512g : public SHA512b<SHA512g>
    {
+      friend SHA512b<SHA512g>;
       friend SHA2g<Block512, Block1024, SHA512g>;
-
-   public:
-      static constexpr const uint64_t K[] = {
-          0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
-          0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
-          0xd807aa98a3030242, 0x12835b0145706fbe, 0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
-          0x72be5d74f27b896f, 0x80deb1fe3b1696b1, 0x9bdc06a725c71235, 0xc19bf174cf692694,
-          0xe49b69c19ef14ad2, 0xefbe4786384f25e3, 0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65,
-          0x2de92c6f592b0275, 0x4a7484aa6ea6e483, 0x5cb0a9dcbd41fbd4, 0x76f988da831153b5,
-          0x983e5152ee66dfab, 0xa831c66d2db43210, 0xb00327c898fb213f, 0xbf597fc7beef0ee4,
-          0xc6e00bf33da88fc2, 0xd5a79147930aa725, 0x06ca6351e003826f, 0x142929670a0e6e70,
-          0x27b70a8546d22ffc, 0x2e1b21385c26c926, 0x4d2c6dfc5ac42aed, 0x53380d139d95b3df,
-          0x650a73548baf63de, 0x766a0abb3c77b2a8, 0x81c2c92e47edaee6, 0x92722c851482353b,
-          0xa2bfe8a14cf10364, 0xa81a664bbc423001, 0xc24b8b70d0f89791, 0xc76c51a30654be30,
-          0xd192e819d6ef5218, 0xd69906245565a910, 0xf40e35855771202a, 0x106aa07032bbd1b8,
-          0x19a4c116b8d2d0c8, 0x1e376c085141ab53, 0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8,
-          0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb, 0x5b9cca4f7763e373, 0x682e6ff3d6b2b8a3,
-          0x748f82ee5defb2fc, 0x78a5636f43172f60, 0x84c87814a1f0ab72, 0x8cc702081a6439ec,
-          0x90befffa23631e28, 0xa4506cebde82bde9, 0xbef9a3f7b2c67915, 0xc67178f2e372532b,
-          0xca273eceea26619c, 0xd186b8c721c0c207, 0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178,
-          0x06f067aa72176fba, 0x0a637dc5a2c898a6, 0x113f9804bef90dae, 0x1b710b35131c471b,
-          0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
-          0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
-      };
-      static constexpr const uint8_t PADDING[128] = {
-         0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-      };
-      static constexpr const uint64_t SEED1 = 0x6A09E667F3BCC908;
-      static constexpr const uint64_t SEED2 = 0xBB67AE8584CAA73B;
-      static constexpr const uint64_t SEED3 = 0x3C6EF372FE94F82B;
-      static constexpr const uint64_t SEED4 = 0xA54FF53A5F1D36F1;
-      static constexpr const uint64_t SEED5 = 0x510E527FADE682D1;
-      static constexpr const uint64_t SEED6 = 0x9B05688C2B3E6C1F;
-      static constexpr const uint64_t SEED7 = 0x1F83D9ABFB41BD6B;
-      static constexpr const uint64_t SEED8 = 0x5BE0CD19137E2179;
 
    protected:
       INLINE static uint64_t ch (const uint64_t x, const uint64_t y, const uint64_t z) { return (x & y) | CppCore::andn64(x, z); }
@@ -331,16 +429,6 @@ namespace CppCore
       INLINE static uint64_t sigma3(const uint64_t x) { return CppCore::rotr64(x, 1)  ^ CppCore::rotr64(x, 8)  ^ (x >> 7); }
       INLINE static uint64_t sigma4(const uint64_t x) { return CppCore::rotr64(x, 19) ^ CppCore::rotr64(x, 61) ^ (x >> 6); }
       INLINE uint64_t& W(const uint64_t x) { return block.u64[x & 0x0F]; }
-
-      /// <summary>
-      /// Flip Endianess on Block
-      /// </summary>
-      INLINE void flipEndianBlock() { block.flipEndian64(); }
-
-      /// <summary>
-      /// Flip Endianess on State
-      /// </summary>
-      INLINE void flipEndianState() { state.flipEndian64(); }
 
       /// <summary>
       /// Transform Block
@@ -403,72 +491,21 @@ namespace CppCore
          const uint64_t s4 = SEED5,
          const uint64_t s5 = SEED6,
          const uint64_t s6 = SEED7,
-         const uint64_t s7 = SEED8) : SHA2g()
+         const uint64_t s7 = SEED8) : SHA512b()
       {
          reset(s0, s1, s2, s3, s4, s5, s6, s7);
-      }
-
-      /// <summary>
-      /// Resets to new seeds.
-      /// </summary>
-      INLINE void reset(
-         const uint64_t s0 = SEED1,
-         const uint64_t s1 = SEED2,
-         const uint64_t s2 = SEED3,
-         const uint64_t s3 = SEED4,
-         const uint64_t s4 = SEED5,
-         const uint64_t s5 = SEED6,
-         const uint64_t s6 = SEED7,
-         const uint64_t s7 = SEED8)
-      {
-         state.u64[0] = s0;
-         state.u64[1] = s1;
-         state.u64[2] = s2;
-         state.u64[3] = s3;
-         state.u64[4] = s4;
-         state.u64[5] = s5;
-         state.u64[6] = s6;
-         state.u64[7] = s7;
-         blockSize = 0;
-         totalSize = 0;
-      }
-
-      /// <summary>
-      /// Finish hash calculations.
-      /// Digest must be 64 Bytes!
-      /// </summary>
-      INLINE void finish(Digest& digest)
-      {
-         // length of the original message (before padding)
-         const uint64_t totalSize = this->totalSize * 8ULL;
-  
-         // determine padding size
-         const size_t padSize = (blockSize < 112U) ?
-            112U - blockSize :
-            sizeof(block) + 112U - blockSize;
-
-         // append padding
-         step(PADDING, padSize);
-  
-         // add the 64-bit length of the original message
-         // as big endian to the end of the block
-         block.u64[Block1024::N64-2] = 0;
-         CppCore::storer64(&block.u64[Block1024::N64-1], totalSize);
-
-         // calculate the message digest
-         transform();
-  
-         // convert 32 bit integers to big-endian
-         flipEndianState();
-
-         // copy the final digest
-         CppCore::clone(digest, state);
       }
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
    // OPTIMIZED VERSION (SHA INSTRUCTIONS, TODO: NOT SUPPORTED ON MY CURRENT CPU)
    /////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /*class SHA256s : public SHA2g<Block256, Block512, SHA256s>
+   {
+      friend SHA2g<Block256, Block512, SHA256s>;
+
+   };*/
 
    using SHA256s = SHA256g;
    using SHA512s = SHA512g;
