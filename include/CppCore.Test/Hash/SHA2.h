@@ -75,6 +75,9 @@ namespace CppCore { namespace Test { namespace VS { namespace Hash
    public:
       TEST_METHOD(SHA256G) { Assert::AreEqual(true, CppCore::Test::Hash::SHA2::sha256<CppCore::SHA256g>()); }
       TEST_METHOD(SHA512G) { Assert::AreEqual(true, CppCore::Test::Hash::SHA2::sha512<CppCore::SHA512g>()); }
+
+      TEST_METHOD(SHA256S) { Assert::AreEqual(true, CppCore::Test::Hash::SHA2::sha256<CppCore::SHA256s>()); }
+      TEST_METHOD(SHA512S) { Assert::AreEqual(true, CppCore::Test::Hash::SHA2::sha512<CppCore::SHA512s>()); }
    };
 }}}}
 #endif

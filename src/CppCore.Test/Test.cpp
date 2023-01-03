@@ -545,8 +545,10 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "       CppCore::Hash::SHA2"       << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Hash::SHA2::sha256<CppCore::SHA256g>, "sha256: ", std::endl);
-   TEST(CppCore::Test::Hash::SHA2::sha512<CppCore::SHA512g>, "sha512: ", std::endl);
+   TEST(CppCore::Test::Hash::SHA2::sha256<CppCore::SHA256g>, "sha256g: ", std::endl);
+   TEST(CppCore::Test::Hash::SHA2::sha512<CppCore::SHA512g>, "sha512g: ", std::endl);
+   TEST(CppCore::Test::Hash::SHA2::sha256<CppCore::SHA256s>, "sha256s: ", std::endl);
+   TEST(CppCore::Test::Hash::SHA2::sha512<CppCore::SHA512s>, "sha512s: ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "    CppCore::Hash::Murmur3"     << std::endl;
