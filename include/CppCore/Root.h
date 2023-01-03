@@ -534,6 +534,12 @@
 #if defined(__ARM_FEATURE_CRC32) && !defined(CPPCORE_CPUFEAT_ARM_CRC32)
 #define CPPCORE_CPUFEAT_ARM_CRC32
 #endif
+#if defined(__ARM_FEATURE_SHA2) && !defined(CPPCORE_CPUFEAT_ARM_SHA2)
+#define CPPCORE_CPUFEAT_ARM_SHA2
+#endif
+#if defined(__ARM_FEATURE_SHA512) && !defined(CPPCORE_CPUFEAT_ARM_SHA512)
+#define CPPCORE_CPUFEAT_ARM_SHA512
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

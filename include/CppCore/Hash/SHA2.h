@@ -5,34 +5,21 @@
 
 namespace CppCore
 {
-   /// <summary>
-   /// Base Class for SHA2
-   /// </summary>
-   template<typename TSHA, typename DIGEST>
-   class SHA2 : public Hash<TSHA, DIGEST>
-   {
-   protected:
-      INLINE SHA2() { }
-   public:
-      using Hash<TSHA, DIGEST>::step;
-      using Hash<TSHA, DIGEST>::hash;
-   };
-
    /////////////////////////////////////////////////////////////////////////////////////////////////
-   // GENERIC
+   // BASE CLASSES
    /////////////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
-   /// SHA2 Generic
+   /// SHA2 Base Class
    /// </summary>
    template<typename TSTATE, typename TBLOCK, typename TSHA>
-   class SHA2g : public SHA2<TSHA, TSTATE>
+   class SHA2b : public Hash<TSHA, TSTATE>
    {
    public:
       using Block = TBLOCK;
       using State = TSTATE;
-      using SHA2<TSHA, TSTATE>::step;
-      using SHA2<TSHA, TSTATE>::hash;
+      using Hash<TSHA, TSTATE>::step;
+      using Hash<TSHA, TSTATE>::hash;
 
    protected:
       CPPCORE_ALIGN16 State    state;     // current state/hash
@@ -43,7 +30,7 @@ namespace CppCore
       INLINE TSHA*       thiss()       { return (TSHA*)this; }
       INLINE const TSHA* thiss() const { return (TSHA*)this; }
 
-      INLINE SHA2g() { }
+      INLINE SHA2b() { }
 
    public:
       /// <summary>
@@ -88,13 +75,13 @@ namespace CppCore
    };
 
    /// <summary>
-   /// SHA256 Base Class
+   /// SHA2 256-Bit Base Class
    /// </summary>
    template<typename TSHA>
-   class SHA256b : public SHA2g<Block256, Block512, TSHA>
+   class SHA256b : public SHA2b<Block256, Block512, TSHA>
    {
    public:
-      using Base = SHA2g<Block256, Block512, TSHA>;
+      using Base = SHA2b<Block256, Block512, TSHA>;
       using typename Base::Digest;
 
    protected:
@@ -206,13 +193,13 @@ namespace CppCore
    };
 
    /// <summary>
-   /// SHA512 Base Class
+   /// SHA2 512-Bit Base Class
    /// </summary>
    template<typename TSHA>
-   class SHA512b : public SHA2g<Block512, Block1024, TSHA>
+   class SHA512b : public SHA2b<Block512, Block1024, TSHA>
    {
    public:
-      using Base = SHA2g<Block512, Block1024, TSHA>;
+      using Base = SHA2b<Block512, Block1024, TSHA>;
       using typename Base::Digest;
 
    public:
@@ -326,7 +313,7 @@ namespace CppCore
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
-   // GENERIC VERSION
+   // GENERIC VERSIONS
    /////////////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
@@ -335,7 +322,7 @@ namespace CppCore
    class SHA256g : public SHA256b<SHA256g>
    {
       friend SHA256b<SHA256g>;
-      friend SHA2g<Block256, Block512, SHA256g>;
+      friend SHA2b<Block256, Block512, SHA256g>;
 
    protected:
       INLINE static uint32_t ch (const uint32_t x, const uint32_t y, const uint32_t z) { return (x & y) | CppCore::andn32(x, z); }
@@ -419,7 +406,7 @@ namespace CppCore
    class SHA512g : public SHA512b<SHA512g>
    {
       friend SHA512b<SHA512g>;
-      friend SHA2g<Block512, Block1024, SHA512g>;
+      friend SHA2b<Block512, Block1024, SHA512g>;
 
    protected:
       INLINE static uint64_t ch (const uint64_t x, const uint64_t y, const uint64_t z) { return (x & y) | CppCore::andn64(x, z); }
@@ -498,17 +485,208 @@ namespace CppCore
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
-   // OPTIMIZED VERSION (SHA INSTRUCTIONS, TODO: NOT SUPPORTED ON MY CURRENT CPU)
+   // OPTIMIZED VERSIONS (INTEL+ARM)
    /////////////////////////////////////////////////////////////////////////////////////////////////
 
-   /*class SHA256s : public SHA2g<Block256, Block512, SHA256s>
-   {
-      friend SHA2g<Block256, Block512, SHA256s>;
-
-   };*/
-
+#if defined(CPPCORE_CPUFEAT_SHA)
+   // TODO
    using SHA256s = SHA256g;
    using SHA512s = SHA512g;
+#elif defined(CPPCORE_CPUFEAT_ARM_SHA2)
+   /// <summary>
+   /// SHA2 256-Bit using ARM Instructions
+   /// </summary>
+   class SHA256s : public SHA256b<SHA256s>
+   {
+      friend SHA256b<SHA256s>;
+      friend SHA2b<Block256, Block512, SHA256s>;
+
+   protected:
+      /// <summary>
+      /// Transforms Block
+      /// </summary>
+      INLINE void transform()
+      {
+         // adapted from:
+         // https://github.com/noloader/SHA-Intrinsics/blob/master/sha256-arm.c
+
+         uint32x4_t STATE0, STATE1, ABEF_SAVE, CDGH_SAVE;
+         uint32x4_t MSG0, MSG1, MSG2, MSG3;
+         uint32x4_t TMP0, TMP1, TMP2;
+
+         STATE0 = vld1q_u32(&state.u32[0]);
+         STATE1 = vld1q_u32(&state.u32[4]);
+
+         /* Save state */
+         ABEF_SAVE = STATE0;
+         CDGH_SAVE = STATE1;
+
+         /* Load message */
+         MSG0 = vld1q_u32(&block.u32[0]);
+         MSG1 = vld1q_u32(&block.u32[4]);
+         MSG2 = vld1q_u32(&block.u32[8]);
+         MSG3 = vld1q_u32(&block.u32[12]);
+
+         /* Reverse for little endian */
+         MSG0 = vreinterpretq_u32_u8(vrev32q_u8(vreinterpretq_u8_u32(MSG0)));
+         MSG1 = vreinterpretq_u32_u8(vrev32q_u8(vreinterpretq_u8_u32(MSG1)));
+         MSG2 = vreinterpretq_u32_u8(vrev32q_u8(vreinterpretq_u8_u32(MSG2)));
+         MSG3 = vreinterpretq_u32_u8(vrev32q_u8(vreinterpretq_u8_u32(MSG3)));
+
+         TMP0 = vaddq_u32(MSG0, vld1q_u32(&K[0x00]));
+
+         /* Rounds 0-3 */
+         MSG0 = vsha256su0q_u32(MSG0, MSG1);
+         TMP2 = STATE0;
+         TMP1 = vaddq_u32(MSG1, vld1q_u32(&K[0x04]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP0);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP0);
+         MSG0 = vsha256su1q_u32(MSG0, MSG2, MSG3);
+
+         /* Rounds 4-7 */
+         MSG1 = vsha256su0q_u32(MSG1, MSG2);
+         TMP2 = STATE0;
+         TMP0 = vaddq_u32(MSG2, vld1q_u32(&K[0x08]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP1);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP1);
+         MSG1 = vsha256su1q_u32(MSG1, MSG3, MSG0);
+
+         /* Rounds 8-11 */
+         MSG2 = vsha256su0q_u32(MSG2, MSG3);
+         TMP2 = STATE0;
+         TMP1 = vaddq_u32(MSG3, vld1q_u32(&K[0x0c]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP0);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP0);
+         MSG2 = vsha256su1q_u32(MSG2, MSG0, MSG1);
+
+         /* Rounds 12-15 */
+         MSG3 = vsha256su0q_u32(MSG3, MSG0);
+         TMP2 = STATE0;
+         TMP0 = vaddq_u32(MSG0, vld1q_u32(&K[0x10]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP1);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP1);
+         MSG3 = vsha256su1q_u32(MSG3, MSG1, MSG2);
+
+         /* Rounds 16-19 */
+         MSG0 = vsha256su0q_u32(MSG0, MSG1);
+         TMP2 = STATE0;
+         TMP1 = vaddq_u32(MSG1, vld1q_u32(&K[0x14]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP0);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP0);
+         MSG0 = vsha256su1q_u32(MSG0, MSG2, MSG3);
+
+         /* Rounds 20-23 */
+         MSG1 = vsha256su0q_u32(MSG1, MSG2);
+         TMP2 = STATE0;
+         TMP0 = vaddq_u32(MSG2, vld1q_u32(&K[0x18]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP1);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP1);
+         MSG1 = vsha256su1q_u32(MSG1, MSG3, MSG0);
+
+         /* Rounds 24-27 */
+         MSG2 = vsha256su0q_u32(MSG2, MSG3);
+         TMP2 = STATE0;
+         TMP1 = vaddq_u32(MSG3, vld1q_u32(&K[0x1c]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP0);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP0);
+         MSG2 = vsha256su1q_u32(MSG2, MSG0, MSG1);
+
+         /* Rounds 28-31 */
+         MSG3 = vsha256su0q_u32(MSG3, MSG0);
+         TMP2 = STATE0;
+         TMP0 = vaddq_u32(MSG0, vld1q_u32(&K[0x20]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP1);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP1);
+         MSG3 = vsha256su1q_u32(MSG3, MSG1, MSG2);
+
+         /* Rounds 32-35 */
+         MSG0 = vsha256su0q_u32(MSG0, MSG1);
+         TMP2 = STATE0;
+         TMP1 = vaddq_u32(MSG1, vld1q_u32(&K[0x24]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP0);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP0);
+         MSG0 = vsha256su1q_u32(MSG0, MSG2, MSG3);
+
+         /* Rounds 36-39 */
+         MSG1 = vsha256su0q_u32(MSG1, MSG2);
+         TMP2 = STATE0;
+         TMP0 = vaddq_u32(MSG2, vld1q_u32(&K[0x28]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP1);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP1);
+         MSG1 = vsha256su1q_u32(MSG1, MSG3, MSG0);
+
+         /* Rounds 40-43 */
+         MSG2 = vsha256su0q_u32(MSG2, MSG3);
+         TMP2 = STATE0;
+         TMP1 = vaddq_u32(MSG3, vld1q_u32(&K[0x2c]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP0);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP0);
+         MSG2 = vsha256su1q_u32(MSG2, MSG0, MSG1);
+
+         /* Rounds 44-47 */
+         MSG3 = vsha256su0q_u32(MSG3, MSG0);
+         TMP2 = STATE0;
+         TMP0 = vaddq_u32(MSG0, vld1q_u32(&K[0x30]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP1);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP1);
+         MSG3 = vsha256su1q_u32(MSG3, MSG1, MSG2);
+
+         /* Rounds 48-51 */
+         TMP2 = STATE0;
+         TMP1 = vaddq_u32(MSG1, vld1q_u32(&K[0x34]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP0);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP0);
+
+         /* Rounds 52-55 */
+         TMP2 = STATE0;
+         TMP0 = vaddq_u32(MSG2, vld1q_u32(&K[0x38]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP1);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP1);
+
+         /* Rounds 56-59 */
+         TMP2 = STATE0;
+         TMP1 = vaddq_u32(MSG3, vld1q_u32(&K[0x3c]));
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP0);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP0);
+
+         /* Rounds 60-63 */
+         TMP2 = STATE0;
+         STATE0 = vsha256hq_u32(STATE0, STATE1, TMP1);
+         STATE1 = vsha256h2q_u32(STATE1, TMP2, TMP1);
+
+         /* Combine state */
+         STATE0 = vaddq_u32(STATE0, ABEF_SAVE);
+         STATE1 = vaddq_u32(STATE1, CDGH_SAVE);
+
+         /* Save state */
+         vst1q_u32(&state.u32[0], STATE0);
+         vst1q_u32(&state.u32[4], STATE1);
+      }
+
+   public:
+      /// <summary>
+      /// Constructor
+      /// </summary>
+      INLINE SHA256s(
+         const uint32_t s0 = SEED1,
+         const uint32_t s1 = SEED2,
+         const uint32_t s2 = SEED3,
+         const uint32_t s3 = SEED4,
+         const uint32_t s4 = SEED5,
+         const uint32_t s5 = SEED6,
+         const uint32_t s6 = SEED7,
+         const uint32_t s7 = SEED8) : SHA256b() 
+      {
+         thiss()->reset(s0, s1, s2, s3, s4, s5, s6, s7);
+      }
+   };
+
+   // TODO
+   using SHA512s = SHA512g;
+#else
+   using SHA256s = SHA256g;
+   using SHA512s = SHA512g;
+#endif
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
    // DEFAULT SELECTION
