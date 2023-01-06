@@ -531,6 +531,9 @@
 // ARM CPU
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if (defined(__ARM_NEON) || defined(__ARM_NEON__)) && !defined(CPPCORE_CPUFEAT_ARM_NEON)
+#define CPPCORE_CPUFEAT_ARM_NEON
+#endif
 #if defined(__ARM_FEATURE_CRC32) && !defined(CPPCORE_CPUFEAT_ARM_CRC32)
 #define CPPCORE_CPUFEAT_ARM_CRC32
 #endif
