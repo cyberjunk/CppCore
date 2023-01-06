@@ -160,11 +160,11 @@ namespace CppCore
             ifstream stream(data.native(), ifstream::binary | ifstream::in);
             if (!stream.is_open()) CPPCORE_UNLIKELY
                return;
-            thiss().step<ifstream>(stream);
+            thiss().template step<ifstream>(stream);
             stream.close();
          }
          else
-            thiss().step<const path>(data);
+            thiss().template step<const path>(data);
       }
 
       //////////////////////////////////////////////////////////////////////
