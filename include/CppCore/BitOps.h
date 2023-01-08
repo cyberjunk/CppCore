@@ -2193,7 +2193,7 @@ namespace CppCore
    {
    #if defined(CPPCORE_CPUFEAT_POPCNT)
       return _mm_popcnt_u32(v);
-   #elif defined(CPPCORE_COMPILER_MSVC)
+   #elif defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
       return __popcnt(v);
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_popcountl)
       return __builtin_popcountl(v);
