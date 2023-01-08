@@ -153,9 +153,10 @@ namespace CppCore
       /// <summary>
       /// Step on path or file path contents.
       /// </summary>
-      INLINE void step(const path& data, const bool contents = false)
+      template<bool CONTENTS = false>
+      INLINE void step(const path& data)
       {
-         if (contents)
+         if constexpr (CONTENTS)
          {
             ifstream stream(data.native(), ifstream::binary | ifstream::in);
             if (!stream.is_open()) CPPCORE_UNLIKELY
@@ -311,10 +312,11 @@ namespace CppCore
       /// <summary>
       /// Hash of path or file path contents
       /// </summary>
-      INLINE void hash(const path& data, Digest& digest, const bool contents = false)
+      template<bool CONTENTS = false>
+      INLINE void hash(const path& data, Digest& digest)
       {
          thiss().reset();
-         thiss().step(data, contents);
+         thiss().step<CONTENTS>(data);
          thiss().finish(digest);
       }
 
