@@ -138,7 +138,7 @@ namespace CppCore
             stream.read(buf, sizeof(buf));
             const std::streamsize read = stream.gcount();
             if (read)
-               thiss().step(buf, read);
+               thiss().step(buf, (size_t)read);
          }
       }
 
