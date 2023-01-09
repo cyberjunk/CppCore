@@ -157,7 +157,7 @@ namespace CppCore
          /// This appends to the existing string.
          /// </summary>
          template<typename UINT, typename S>
-         INLINE static void tostringu(UINT v, S& s, const uint32_t base, const char* alphabet)
+         INLINE static void tostringu(const UINT& v, S& s, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2U);
             assert(::strlen(alphabet) == base);
@@ -165,12 +165,14 @@ namespace CppCore
             {
                uint32_t r;
                uint32_t n = 0U;
+               UINT t;
+               CppCore::clone(t, v);
                do
                {
-                  CppCore::udivmod(v, base, v, r);
+                  CppCore::udivmod(t, base, t, r);
                   s += alphabet[r];
                   n++;
-               } while (!CppCore::testzero(v));
+               } while (!CppCore::testzero(t));
                Memory::reverse(s.data()+s.length()-n, n);
             }
             else CPPCORE_UNLIKELY
@@ -182,7 +184,7 @@ namespace CppCore
          /// This appends to the existing string.
          /// </summary>
          template<typename SINT, typename UINT, typename S>
-         INLINE static void tostrings(SINT v, S& s, const uint32_t base, const char* alphabet)
+         INLINE static void tostrings(const SINT& v, S& s, const uint32_t base, const char* alphabet)
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
@@ -196,11 +198,12 @@ namespace CppCore
             }
             else if (v < 0)
             {
-               SINT rs;
+               SINT rs, t;
                s += '-';
-               CppCore::divmod(v, (SINT)base, v, rs);
+               CppCore::clone(t, v);
+               CppCore::divmod(t, (SINT)base, t, rs);
                s += alphabet[-rs];
-               u = (UINT)-v;
+               u = (UINT)-t;
             }
             else CPPCORE_UNLIKELY
             {
