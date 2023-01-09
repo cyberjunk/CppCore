@@ -131,7 +131,12 @@ namespace CppCore
          uint8_t* mem = (uint8_t*)data;
          uint8_t* end = mem + len;
          uint32_t t32 = mState;
-         while (mem + 8U <= end)
+         while (mem + 16U <= end)
+         {
+            t32 = __crc32d(t32, *(uint64_t*)mem); mem += 8U;
+            t32 = __crc32d(t32, *(uint64_t*)mem); mem += 8U;
+         }
+         if (mem + 8U <= end)
          {
             t32 = __crc32d(t32, *(uint64_t*)mem);
             mem += 8U;
@@ -273,19 +278,35 @@ namespace CppCore
          uint8_t* mem = (uint8_t*)data;
          uint8_t* end = mem + len;
       #if defined(CPPCORE_CPU_64BIT)
-         uint32_t t32;
          uint64_t t64 = mState;
-         while (mem + 8U <= end)
-         {
-            t64 = _mm_crc32_u64(t64, *(uint64_t*)mem);
-            mem += 8U;
-         }
-         t32 = (uint32_t)t64;
-         if (mem + 4U <= end)
       #else
          uint32_t t32 = mState;
-         while (mem + 4U <= end)
       #endif
+         while (mem + 16U <= end)
+         {
+         #if defined(CPPCORE_CPU_64BIT)
+            t64 = _mm_crc32_u64(t64, *(uint64_t*)mem); mem += 8U;
+            t64 = _mm_crc32_u64(t64, *(uint64_t*)mem); mem += 8U;
+         #else
+            t32 = _mm_crc32_u32(t32, *(uint32_t*)mem); mem += 4U;
+            t32 = _mm_crc32_u32(t32, *(uint32_t*)mem); mem += 4U;
+            t32 = _mm_crc32_u32(t32, *(uint32_t*)mem); mem += 4U;
+            t32 = _mm_crc32_u32(t32, *(uint32_t*)mem); mem += 4U;
+         #endif
+         }
+         if (mem + 8U <= end)
+         {
+         #if defined(CPPCORE_CPU_64BIT)
+            t64 = _mm_crc32_u64(t64, *(uint64_t*)mem); mem += 8U;
+         #else
+            t32 = _mm_crc32_u32(t32, *(uint32_t*)mem); mem += 4U;
+            t32 = _mm_crc32_u32(t32, *(uint32_t*)mem); mem += 4U;
+         #endif
+         }
+      #if defined(CPPCORE_CPU_64BIT)
+         uint32_t t32 = (uint32_t)t64;
+      #endif
+         if (mem + 4U <= end)
          {
             t32 = _mm_crc32_u32(t32, *(uint32_t*)mem);
             mem += 4U;
@@ -382,7 +403,12 @@ namespace CppCore
          uint8_t* mem = (uint8_t*)data;
          uint8_t* end = mem + len;
          uint32_t t32 = mState;
-         while (mem + 8U <= end)
+         while (mem + 16U <= end)
+         {
+            t32 = __crc32cd(t32, *(uint64_t*)mem); mem += 8U;
+            t32 = __crc32cd(t32, *(uint64_t*)mem); mem += 8U;
+         }
+         if (mem + 8U <= end)
          {
             t32 = __crc32cd(t32, *(uint64_t*)mem);
             mem += 8U;
