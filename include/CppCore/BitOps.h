@@ -99,6 +99,40 @@
          px += 16U; py += 16U; pz += 16U;               \
       }                                                 \
    }
+#elif defined(CPPCORE_CPUFEAT_ARM_NEON)
+#define CPPCORE_CHUNK_LOAD128(t,p)    vld1q_u32 ((uint32_t*)p)
+#define CPPCORE_CHUNK_STORE128(t,p,v) vst1q_u32((uint32_t*)p, v)
+#define CPPCORE_CHUNK_STEP128_X(forward, p128, type)    \
+   CPPCORE_UNROLL                                       \
+   for (size_t i = 0; i < N128; i++) {                  \
+      if constexpr (!forward) { px -= 16U; }            \
+      uint32x4_t* px128 = (uint32x4_t*)px;              \
+      p128;                                             \
+      if constexpr (forward) { px += 16U; }             \
+   }
+#define CPPCORE_CHUNK_STEP128_XY(forward, p128, type)   \
+   CPPCORE_UNROLL                                       \
+   for (size_t i = 0; i < N128; i++) {                  \
+      if constexpr (!forward) { px -= 16U; py -= 16U; } \
+      uint32x4_t* px128 = (uint32x4_t*)px;              \
+      uint32x4_t* py128 = (uint32x4_t*)py;              \
+      p128;                                             \
+      if constexpr (forward) { px += 16U; py += 16U; }  \
+   }
+#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)  \
+   CPPCORE_UNROLL                                       \
+   for (size_t i = 0; i < N128; i++) {                  \
+      if constexpr (!forward) {                         \
+         px -= 16U; py -= 16U; pz -= 16U;               \
+      }                                                 \
+      uint32x4_t* px128 = (uint32x4_t*)px;              \
+      uint32x4_t* py128 = (uint32x4_t*)py;              \
+      uint32x4_t* pz128 = (uint32x4_t*)pz;              \
+      p128;                                             \
+      if constexpr (forward) {                          \
+         px += 16U; py += 16U; pz += 16U;               \
+      }                                                 \
+   }
 #else
 #define CPPCORE_CHUNK_STEP128_X(forward, p128, type)
 #define CPPCORE_CHUNK_STEP128_XY(forward, p128, type)
@@ -936,7 +970,7 @@ namespace CppCore
          CppCore::clone32 (*px32, *py32);,
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
-   #elif defined(CPPCORE_CPUFEAT_SSE2)
+   #elif defined(CPPCORE_CPUFEAT_SSE2) || defined(CPPCORE_CPUFEAT_ARM_NEON)
       CPPCORE_CHUNK_PROCESS128_XY(x, y, UINT, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
@@ -2195,6 +2229,8 @@ namespace CppCore
       return _mm_popcnt_u32(v);
    #elif defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
       return __popcnt(v);
+   #elif defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_ARMORARM64)
+      return _CountOneBits(v);
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_popcountl)
       return __builtin_popcountl(v);
    #else
@@ -2210,9 +2246,11 @@ namespace CppCore
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_POPCNT)
       return (uint32_t)_mm_popcnt_u64(v);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
+   #elif defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X64)
       return (uint32_t)__popcnt64(v);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_popcountll)
+   #elif defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_ARM64)
+      return _CountOneBits64(v);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_popcountll)
       return (uint32_t)__builtin_popcountll(v);
    #else
       return popcnt64_generic(v);
