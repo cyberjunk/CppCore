@@ -47,11 +47,11 @@
 #define CPPCORE_CPU_X86
 #define CPPCORE_CPU_X86ORX64
 #define CPPCORE_CPU_32BIT
-#elif defined(__aarch64__)
+#elif defined(_M_ARM64) || defined(__aarch64__)
 #define CPPCORE_CPU_ARM64
 #define CPPCORE_CPU_ARMORARM64
 #define CPPCORE_CPU_64BIT
-#elif defined(__arm__)
+#elif defined (_M_ARM) || defined(__arm__)
 #define CPPCORE_CPU_ARM
 #define CPPCORE_CPU_ARMORARM64
 #define CPPCORE_CPU_32BIT
@@ -60,6 +60,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+// INTEL CPU
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Set intrinsics macros from /arch setting for x86 on MSVC
@@ -83,9 +84,6 @@
 #endif
 #endif
 #endif
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Processor Features From Build Settings
 #if defined(__MMX__) && !defined(CPPCORE_CPUFEAT_MMX)
@@ -224,9 +222,6 @@
 #define CPPCORE_CPUFEAT_AVX512VPOPCNTDQ
 #endif
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 // MSVC does not define a lot of them so let's
 // set them based on MVSC setting for AVX/AVX2/AVX512
 #if defined(CPPCORE_COMPILER_MSVC)
@@ -304,7 +299,6 @@
 #endif
 #endif
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef CPPCORE_CPUFEAT_MMX
@@ -534,6 +528,23 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ARM CPU
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if (defined(__ARM_NEON) || defined(__ARM_NEON__)) && !defined(CPPCORE_CPUFEAT_ARM_NEON)
+#define CPPCORE_CPUFEAT_ARM_NEON
+#endif
+#if defined(__ARM_FEATURE_CRC32) && !defined(CPPCORE_CPUFEAT_ARM_CRC32)
+#define CPPCORE_CPUFEAT_ARM_CRC32
+#endif
+#if defined(__ARM_FEATURE_SHA2) && !defined(CPPCORE_CPUFEAT_ARM_SHA2)
+#define CPPCORE_CPUFEAT_ARM_SHA2
+#endif
+#if defined(__ARM_FEATURE_SHA512) && !defined(CPPCORE_CPUFEAT_ARM_SHA512)
+#define CPPCORE_CPUFEAT_ARM_SHA512
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Enable/Disable use of optimized classes
@@ -586,15 +597,29 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Intrinsics Includes
-#if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_MSVC)
-#include <intrin.h>
-#elif defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
-#include <x86intrin.h>
-#include <cpuid.h>
-#elif defined(CPPCORE_CPU_ARMORARM64) && defined(CPPCORE_COMPILER_CLANG)
-#include <arm_acle.h>
-#include <arm_neon.h>
+// INTEL Intrinsics
+#if defined(CPPCORE_CPU_X86ORX64)
+ #if defined(CPPCORE_COMPILER_MSVC)
+  #include <intrin.h>
+ #elif defined(CPPCORE_COMPILER_CLANG)
+  #include <x86intrin.h>
+  #include <cpuid.h>
+ #endif
+
+// ARM Intrinsics
+#elif defined(CPPCORE_CPU_ARMORARM64)
+ #if defined(CPPCORE_COMPILER_MSVC)
+  #if defined(CPPCORE_CPU_ARM64)
+    #include <arm64intr.h>
+    #include <arm64_neon.h>
+  #else
+    #include <armintr.h>
+    #include <arm_neon.h>
+  #endif
+ #elif defined(CPPCORE_COMPILER_CLANG)
+  #include <arm_acle.h>
+  #include <arm_neon.h>
+ #endif
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

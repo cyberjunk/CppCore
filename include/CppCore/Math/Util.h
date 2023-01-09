@@ -3327,12 +3327,14 @@ namespace CppCore
    /// GCD for any size
    /// </summary>
    template<typename UINT>
-   INLINE static UINT gcd(UINT a, UINT b)
+   INLINE static UINT gcd(const UINT& x, const UINT& y)
    {
-      UINT r;
+      UINT a, b, r;
       UINT un[2];
-      if (CppCore::testzero(a))
-         return b;
+      if (CppCore::testzero(x))
+         return y;
+      CppCore::clone<UINT>(a, x);
+      CppCore::clone<UINT>(b, y);
       while (!CppCore::testzero(b))
       {
          CppCore::umod<UINT, UINT>(r, a, b, un);

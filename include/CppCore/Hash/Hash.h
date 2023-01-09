@@ -110,6 +110,22 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Specialization: Step on path
+      /// </summary>
+      template<> INLINE void step<path>(path& data)
+      {
+         thiss().step(data.native());
+      }
+
+      /// <summary>
+      /// Specialization: Step on const path
+      /// </summary>
+      template<> INLINE void step<const path>(const path& data)
+      {
+         thiss().step(data.native());
+      }
+
+      /// <summary>
       /// Specialization: Step on istream
       /// </summary>
       template<> INLINE void step<istream>(istream& stream)
@@ -122,7 +138,7 @@ namespace CppCore
             stream.read(buf, sizeof(buf));
             const std::streamsize read = stream.gcount();
             if (read)
-               thiss().step(buf, read);
+               thiss().step(buf, (size_t)read);
          }
       }
 
@@ -132,6 +148,24 @@ namespace CppCore
       template<> INLINE void step<ifstream>(ifstream& stream)
       {
          thiss().template step<istream>(stream);
+      }
+
+      /// <summary>
+      /// Step on path or file path contents.
+      /// </summary>
+      template<bool CONTENTS = false>
+      INLINE void step(const path& data)
+      {
+         if constexpr (CONTENTS)
+         {
+            ifstream stream(data.native(), ifstream::binary | ifstream::in);
+            if (!stream.is_open()) CPPCORE_UNLIKELY
+               return;
+            thiss().template step<ifstream>(stream);
+            stream.close();
+         }
+         else
+            thiss().template step<const path>(data);
       }
 
       //////////////////////////////////////////////////////////////////////
@@ -253,6 +287,37 @@ namespace CppCore
       template<> INLINE void hash<ifstream>(ifstream& stream, Digest& digest)
       {
          thiss().template hash<istream>(stream, digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of path
+      /// </summary>
+      template<> INLINE void hash<path>(path& path, Digest& digest)
+      {
+         thiss().reset();
+         thiss().step(path);
+         thiss().finish(digest);
+      }
+
+      /// <summary>
+      /// Specialization: Hash of const path
+      /// </summary>
+      template<> INLINE void hash<const path>(const path& path, Digest& digest)
+      {
+         thiss().reset();
+         thiss().step(path);
+         thiss().finish(digest);
+      }
+
+      /// <summary>
+      /// Hash of path or file path contents
+      /// </summary>
+      template<bool CONTENTS = false>
+      INLINE void hash(const path& data, Digest& digest)
+      {
+         thiss().reset();
+         thiss().step<CONTENTS>(data);
+         thiss().finish(digest);
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////////
