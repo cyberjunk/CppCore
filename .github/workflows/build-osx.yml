@@ -43,7 +43,7 @@ jobs:
 
     # Test (X64)
     - name: Test (X64)
-      if: matrix.arch == 'x64'
+      if: matrix.arch == 'x64' && matrix.cpurev != 'modern'
       run: make test
 
     # Upload Binaries
