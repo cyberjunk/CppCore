@@ -53,7 +53,7 @@ CPUFLAGS   = -mtune=generic -march=x86-64-v2 \
 endif
 ifeq ($(TARGET_CPUREV),modern)
 CPUFLAGS   = -mtune=generic -march=x86-64-v3 \
-             -mpclmul -mfsgsbase -mrdrnd -maes
+             -mpclmul -maes -mfsgsbase -mrdrand -mrdseed -madx
 endif
 
 # Debug vs. Release

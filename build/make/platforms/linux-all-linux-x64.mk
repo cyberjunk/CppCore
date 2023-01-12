@@ -41,9 +41,11 @@ ifeq ($(TARGET_CPUREV),modern)
 ifeq ($(LSBREL),20.04)
 CPUFLAGS   = -mtune=generic -march=x86-64 \
              -msse3 -mssse3 -msahf -mcx16 -msse4.1 -msse4.2 -mpopcnt \
-             -mavx -mxsave -mf16c -mfma -mlzcnt -mbmi -mbmi2 -mmovbe -mavx2
+             -mavx -mxsave -mf16c -mfma -mlzcnt -mbmi -mbmi2 -mmovbe -mavx2 \
+             -mpclmul -maes -mfsgsbase -mrdrand -mrdseed -madx
 else
-CPUFLAGS   = -mtune=generic -march=x86-64-v3 
+CPUFLAGS   = -mtune=generic -march=x86-64-v3 \
+             -mpclmul -maes -mfsgsbase -mrdrand -mrdseed -madx
 endif
 endif
 

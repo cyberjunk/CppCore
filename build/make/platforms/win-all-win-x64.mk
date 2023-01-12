@@ -29,13 +29,14 @@ RCFLAGS    = -L0x0409 -NOLOGO
 
 # CPU Flags
 ifeq ($(TARGET_CPUREV),legacy)
-CPUFLAGS   = -march=x86-64 -mtune=generic
+CPUFLAGS   = -mtune=generic -march=x86-64
 endif
 ifeq ($(TARGET_CPUREV),default)
-CPUFLAGS   = -march=x86-64-v2 -mtune=generic
+CPUFLAGS   = -mtune=generic -march=x86-64-v2
 endif
 ifeq ($(TARGET_CPUREV),modern)
-CPUFLAGS   = -march=x86-64-v3 -mtune=generic
+CPUFLAGS   = -mtune=generic -march=x86-64-v3 \
+             -mpclmul -maes -mfsgsbase -mrdrand -mrdseed -madx
 endif
 
 # Debug vs. Release
