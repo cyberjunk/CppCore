@@ -14,12 +14,14 @@ jobs:
       MODE: release
       TARGET_OS: android
       TARGET_ARCH: ${{ matrix.arch }}
+      TARGET_CPUREV: ${{ matrix.cpurev }}
       JOBS: 4
     strategy:
       fail-fast: false
       matrix:
         os: [windows-2019,macos-11]
         arch: [x64,x86,arm64,arm]
+        cpurev: [default]
     steps:
     
     # Checkout

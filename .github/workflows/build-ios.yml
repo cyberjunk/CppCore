@@ -14,12 +14,14 @@ jobs:
       MODE: release
       TARGET_OS: ios
       TARGET_ARCH: ${{ matrix.arch }}
+      TARGET_CPUREV: ${{ matrix.cpurev }}
       JOBS: 4
     strategy:
       fail-fast: false
       matrix:
         os: [macos-11,macos-12]
         arch: [arm64]
+        cpurev: [default]
     steps:
 
     # Checkout

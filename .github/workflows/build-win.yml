@@ -15,12 +15,14 @@ jobs:
       MODE: release
       TARGET_OS: win
       TARGET_ARCH: ${{ matrix.arch }}
+      TARGET_CPUREV: ${{ matrix.cpurev }}
       JOBS: 4
     strategy:
       fail-fast: false
       matrix:
         os: [windows-2019,windows-2022]
         arch: [x64,x86,arm64]
+        cpurev: [legacy, default, modern]
     steps:
 
     # Checkout
@@ -84,7 +86,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v3
       with:
-        name: Binaries (${{ matrix.os }}-${{ matrix.arch }})
+        name: Binaries (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
         path: |
           ./build/make/bin/win-${{ matrix.arch }}/*.exe
           ./build/make/bin/win-${{ matrix.arch }}/*.dll
@@ -110,21 +112,21 @@ jobs:
     - name: Download X64 Build
       uses: actions/download-artifact@v2
       with:
-        name: Binaries (${{ matrix.os }}-x64)
+        name: Binaries (${{ matrix.os }}-x64-default)
         path: ./build/make/bin/win-x64/
 
     # Download X86 Build
     - name: Download X86 Build
       uses: actions/download-artifact@v2
       with:
-        name: Binaries (${{ matrix.os }}-x86)
+        name: Binaries (${{ matrix.os }}-x86-default)
         path: ./build/make/bin/win-x86/
 
     # Download ARM64 Build
     - name: Download ARM64 Build
       uses: actions/download-artifact@v2
       with:
-        name: Binaries (${{ matrix.os }}-arm64)
+        name: Binaries (${{ matrix.os }}-arm64-default)
         path: ./build/make/bin/win-arm64/
 
     # Developer Console (X64)
