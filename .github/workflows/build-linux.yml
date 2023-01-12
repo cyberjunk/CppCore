@@ -14,14 +14,14 @@ jobs:
       MODE: release
       TARGET_OS: linux
       ARCH: ${{ matrix.arch }}
-      CPU: ${{ matrix.cpu }}
+      TARGET_CPUREV: ${{ matrix.cpurev }}
       JOBS: 4
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04]
         arch: [amd64, i386, arm64, armhf]
-        cpu: [legacy, default, modern]
+        cpurev: [legacy, default, modern]
     steps:
 
     # Checkout
@@ -50,9 +50,6 @@ jobs:
         if [ $ARCH == amd64 ]; then \
           echo "TARGET_ARCH=x64" >> $GITHUB_ENV; \
           echo "TARGET=x86_64-linux-gnu" >> $GITHUB_ENV; \
-          if [ $CPU == modern ]; then \
-            echo "CPUFLAGS=-march=x86-64-v3 -mtune=generic" >> $GITHUB_ENV; \
-          fi
         fi
         if [ $ARCH == i386 ]; then \
           echo "TARGET_ARCH=x86" >> $GITHUB_ENV; \
@@ -77,7 +74,7 @@ jobs:
         echo TARGET_ARCH: $TARGET_ARCH
         clang++ --target=$TARGET -v
         make -v
-        make -j${{ env.JOBS }}
+        make CPUFLAGS=$CPUFLAGS -j${{ env.JOBS }}
 
     # Binary Info
     - name: Binary Info
