@@ -69,12 +69,12 @@ jobs:
       run: |
         echo MODE: $MODE
         echo ARCH: $ARCH
-        echo CPUFLAGS: $CPUFLAGS
         echo TARGET: $TARGET
         echo TARGET_ARCH: $TARGET_ARCH
+        echo TARGET_CPUREV: $TARGET_CPUREV
         clang++ --target=$TARGET -v
         make -v
-        make CPUFLAGS=$CPUFLAGS -j${{ env.JOBS }}
+        make -j${{ env.JOBS }}
 
     # Binary Info
     - name: Binary Info
