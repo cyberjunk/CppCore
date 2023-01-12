@@ -37,8 +37,9 @@ Install from the OSX Store:
 
 Following Parameters are supported. Defaults will be used if not provided.
 
-| Parameter   | Values                        | Default    |
-| ----------- | ----------------------------- | ---------- |
-| MODE        | debug, release                | debug      |
-| TARGET_OS   | win, osx, linux, android, ios | {host-os}  |
-| TARGET_ARCH | x86, x64, arm, arm64          | {host-cpu} |
+| Parameter     | Values                        | Default    |
+| ------------- | ----------------------------- | ---------- |
+| MODE          | debug, release                | debug      |
+| TARGET_OS     | win, osx, linux, android, ios | {host-os}  |
+| TARGET_ARCH   | x86, x64, arm, arm64          | {host-cpu} |
+| TARGET_CPUREV | legacy, default, modern       | default    |
