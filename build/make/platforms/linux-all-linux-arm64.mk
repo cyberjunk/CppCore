@@ -7,8 +7,7 @@ OBJDIR     = obj/linux-arm64-$(MODE)
 LIBDIR     = lib/linux-arm64
 BINDIR     = bin/linux-arm64
 TARGET     = aarch64-linux-gnu
-CPUFLAGS   = -march=armv8-a -mtune=generic
-DEFINES    = 
+DEFINES    =
 INCLUDES   = -I/usr/$(TARGET)/include
 CXX        = clang++
 CXXFLAGS   = -target $(TARGET) -fPIC -static
@@ -25,6 +24,17 @@ LINKLIBS   =
 DEBARCH    = arm64
 LSBREL     = $(shell lsb_release -r -s)
 DISTDIR    = ../../dist/ubuntu-$(LSBREL)
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
+endif
 
 # Debug vs. Release
 ifeq ($(MODE),release)

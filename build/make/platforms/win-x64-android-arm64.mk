@@ -21,7 +21,6 @@ LIBDIR     = lib/android-arm64
 BINDIR     = bin/android-arm64
 DISTDIR    = ../../dist/android-$(ANDROID_API)
 TARGET     = aarch64-linux-android
-CPUFLAGS   = -march=armv8-a -mtune=generic
 DEFINES    = -DANDROID -D__ANDROID_API__=$(ANDROID_API) -DANDROID_ARM_NEON=ON 
 INCLUDES   = -I$(ANDROID_NDK_HOME)/sources/android/cpufeatures
 CXX        = $(ANDROID_TOOLCHAIN)/bin/$(TARGET)$(ANDROID_API)-clang++.cmd
@@ -43,6 +42,17 @@ LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -static-libstdc++ -static-libg
 LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \
              -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)
 LINKLIBS   = -landroid
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
+endif
 
 # SDK Tools
 AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager.bat

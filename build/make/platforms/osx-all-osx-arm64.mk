@@ -9,7 +9,6 @@ BINDIR     = bin/osx-arm64
 DISTDIR    = ../../dist/osx-10.15
 TARGET     = arm64-apple-darwin19.6.0
 MINVER     = -mmacosx-version-min=10.15
-CPUFLAGS   = -march=armv8-a -mtune=generic
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
@@ -24,6 +23,17 @@ LINK       = $(CXX)
 LINKFLAGS  = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk macosx --show-sdk-path)
 LINKPATH   =
 LINKLIBS   = 
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
+endif
 
 # Debug vs. Release
 ifeq ($(MODE),release)

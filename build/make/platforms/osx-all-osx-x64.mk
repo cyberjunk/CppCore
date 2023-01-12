@@ -16,15 +16,6 @@
 # |-------------|------------|--------------------|--------------|
 OSXMINVERSION = 10.15
 
-# For Ivy Bridge (based on table above)
-# x86-64-v2 requires CLANG 12+ and is close to Nehalem
-CPUFLAGS = -march=x86-64-v2 -mtune=generic
-
-# Not or not sure if covered by x86-64-v2
-CPUFLAGS := $(CPUFLAGS) \
-	-mcx16 -mavx -mxsave -mpclmul \
-	-mfsgsbase -mrdrnd -mf16c -maes    
-
 # Generic
 EXTBIN     = 
 EXTLIB     = .a
@@ -50,6 +41,20 @@ LINK       = $(CXX)
 LINKFLAGS  = $(MINVER) -target $(TARGET)
 LINKPATH   =
 LINKLIBS   = 
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -march=x86-64 -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -march=x86-64-v2 -mtune=generic
+CPUFLAGS  := $(CPUFLAGS) \
+	-mcx16 -mavx -mxsave -mpclmul \
+	-mfsgsbase -mrdrnd -mf16c -maes    
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -march=x86-64-v3 -mtune=generic
+endif
 
 # Debug vs. Release
 ifeq ($(MODE),release)
