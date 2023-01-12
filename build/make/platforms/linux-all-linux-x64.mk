@@ -27,20 +27,23 @@ DISTDIR    = ../../dist/ubuntu-$(LSBREL)
 
 # CPU Flags
 ifeq ($(TARGET_CPUREV),legacy)
-CPUFLAGS   = -march=x86-64 -mtune=generic
+CPUFLAGS   = -mtune=generic -march=x86-64
 endif
 ifeq ($(TARGET_CPUREV),default)
 ifeq ($(LSBREL),20.04)
-CPUFLAGS   = -march=x86-64 -mtune=generic
+CPUFLAGS   = -mtune=generic -march=x86-64 \
+             -msse3 -mssse3 -msahf -mcx16 -msse4.1 -msse4.2 -mpopcnt 
 else
-CPUFLAGS   = -march=x86-64-v2 -mtune=generic
+CPUFLAGS   = -mtune=generic -march=x86-64-v2 
 endif
 endif
 ifeq ($(TARGET_CPUREV),modern)
 ifeq ($(LSBREL),20.04)
-CPUFLAGS   = -march=x86-64 -mtune=generic
+CPUFLAGS   = -mtune=generic -march=x86-64 \
+             -msse3 -mssse3 -msahf -mcx16 -msse4.1 -msse4.2 -mpopcnt \
+             -mavx -mxsave -mf16c -mfma -mlzcnt -mbmi -mbmi2 -mmovbe -mavx2
 else
-CPUFLAGS   = -march=x86-64-v3 -mtune=generic
+CPUFLAGS   = -mtune=generic -march=x86-64-v3 
 endif
 endif
 

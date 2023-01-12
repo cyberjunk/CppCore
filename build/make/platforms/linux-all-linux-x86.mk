@@ -30,10 +30,10 @@ ifeq ($(TARGET_CPUREV),legacy)
 CPUFLAGS   = -march=i686 -mtune=generic
 endif
 ifeq ($(TARGET_CPUREV),default)
-CPUFLAGS   = -march=i686 -msse -msse2 -mtune=generic
+CPUFLAGS   = -march=i686 -mtune=generic -msse -msse2 
 endif
 ifeq ($(TARGET_CPUREV),modern)
-CPUFLAGS   = -march=i686 -msse -msse2 -mtune=generic
+CPUFLAGS   = -march=i686 -mtune=generic -msse -msse2 -msse3 -mssse3 
 endif
 
 # Debug vs. Release

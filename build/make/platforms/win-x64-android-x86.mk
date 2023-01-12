@@ -51,7 +51,7 @@ ifeq ($(TARGET_CPUREV),default)
 CPUFLAGS   = -march=i686 -mtune=generic -msse -msse2
 endif
 ifeq ($(TARGET_CPUREV),modern)
-CPUFLAGS   = -march=i686 -mtune=generic -msse -msse2
+CPUFLAGS   = -march=i686 -mtune=generic -msse -msse2 -msse3 -mssse3
 endif
 
 # SDK Tools
