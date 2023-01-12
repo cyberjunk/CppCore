@@ -8,7 +8,6 @@ LIBDIR     = lib/win-x64
 BINDIR     = bin/win-x64
 DISTDIR    = ../../dist/win-10
 TARGET     = x86_64-pc-windows-msvc
-CPUFLAGS   = -march=x86-64-v2 -mtune=generic
 DEFINES    = -DWIN32 -DWIN64 -D_MT
 INCLUDES   = 
 CXX        = clang++
@@ -27,6 +26,18 @@ LINKLIBS   =
 # MSVC Resource Compiler
 RC         = llvm-rc
 RCFLAGS    = -L0x0409 -NOLOGO
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -mtune=generic -march=x86-64
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -mtune=generic -march=x86-64-v2
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -mtune=generic -march=x86-64-v3 \
+             -mpclmul -maes -mfsgsbase -mrdrnd -mrdseed -madx
+endif
 
 # Debug vs. Release
 ifeq ($(MODE),release)

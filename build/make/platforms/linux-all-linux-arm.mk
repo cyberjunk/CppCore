@@ -7,7 +7,6 @@ OBJDIR     = obj/linux-arm-$(MODE)
 LIBDIR     = lib/linux-arm
 BINDIR     = bin/linux-arm
 TARGET     = arm-linux-gnueabihf
-CPUFLAGS   = -march=armv7-a -mfloat-abi=hard -mfpu=neon-fp16
 DEFINES    = 
 INCLUDES   = -I/usr/$(TARGET)/include
 CXX        = clang++
@@ -25,6 +24,17 @@ LINKLIBS   =
 DEBARCH    = armhf
 LSBREL     = $(shell lsb_release -r -s)
 DISTDIR    = ../../dist/ubuntu-$(LSBREL)
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -march=armv7-a -mfloat-abi=hard -mfpu=neon-fp16
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -march=armv7-a -mfloat-abi=hard -mfpu=neon-fp16
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -march=armv7-a -mfloat-abi=hard -mfpu=neon-fp16
+endif
 
 # Debug vs. Release
 ifeq ($(MODE),release)

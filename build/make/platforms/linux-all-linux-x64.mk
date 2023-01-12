@@ -7,7 +7,6 @@ OBJDIR     = obj/linux-x64-$(MODE)
 LIBDIR     = lib/linux-x64
 BINDIR     = bin/linux-x64
 TARGET     = x86_64-linux-gnu
-CPUFLAGS   = -march=x86-64 -mtune=generic
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
@@ -25,6 +24,30 @@ LINKLIBS   =
 DEBARCH    = amd64
 LSBREL     = $(shell lsb_release -r -s)
 DISTDIR    = ../../dist/ubuntu-$(LSBREL)
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -mtune=generic -march=x86-64
+endif
+ifeq ($(TARGET_CPUREV),default)
+ifeq ($(LSBREL),20.04)
+CPUFLAGS   = -mtune=generic -march=x86-64 \
+             -msse3 -mssse3 -msahf -mcx16 -msse4.1 -msse4.2 -mpopcnt 
+else
+CPUFLAGS   = -mtune=generic -march=x86-64-v2 
+endif
+endif
+ifeq ($(TARGET_CPUREV),modern)
+ifeq ($(LSBREL),20.04)
+CPUFLAGS   = -mtune=generic -march=x86-64 \
+             -msse3 -mssse3 -msahf -mcx16 -msse4.1 -msse4.2 -mpopcnt \
+             -mavx -mxsave -mf16c -mfma -mlzcnt -mbmi -mbmi2 -mmovbe -mavx2 \
+             -mpclmul -maes -mfsgsbase -mrdrnd -mrdseed -madx
+else
+CPUFLAGS   = -mtune=generic -march=x86-64-v3 \
+             -mpclmul -maes -mfsgsbase -mrdrnd -mrdseed -madx
+endif
+endif
 
 # Debug vs. Release
 ifeq ($(MODE),release)

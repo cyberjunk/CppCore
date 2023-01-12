@@ -8,7 +8,6 @@ LIBDIR     = lib/win-arm64
 BINDIR     = bin/win-arm64
 DISTDIR    = ../../dist/win-10
 TARGET     = aarch64-pc-windows-msvc
-CPUFLAGS   = -march=armv8-a -mtune=generic
 DEFINES    = -DWIN32 -DWIN64 -D_MT
 INCLUDES   = 
 CXX        = clang++
@@ -27,6 +26,17 @@ LINKLIBS   =
 # MSVC Resource Compiler
 RC         = llvm-rc
 RCFLAGS    = -L0x0409 -NOLOGO
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
+endif
 
 # Debug vs. Release
 ifeq ($(MODE),release)

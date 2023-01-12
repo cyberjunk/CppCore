@@ -17,7 +17,6 @@ LIBDIR     = lib/android-arm
 BINDIR     = bin/android-arm
 DISTDIR    = ../../dist/android-$(ANDROID_API)
 TARGET     = arm-linux-androideabi
-CPUFLAGS   = -march=armv7-a -mfloat-abi=softfp -mfpu=neon-fp16
 DEFINES    = -DANDROID -D__ANDROID_API__=$(ANDROID_API) -DANDROID_ARM_NEON=ON 
 INCLUDES   = -I$(ANDROID_NDK_HOME)/sources/android/cpufeatures
 CXX        = $(ANDROID_TOOLCHAIN)/bin/armv7a-linux-androideabi$(ANDROID_API)-clang++
@@ -39,6 +38,17 @@ LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -static-libstdc++ -static-libg
 LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \
              -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)
 LINKLIBS   = -landroid
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -march=armv7-a -mfloat-abi=softfp -mfpu=neon-fp16
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -march=armv7-a -mfloat-abi=softfp -mfpu=neon-fp16
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -march=armv7-a -mfloat-abi=softfp -mfpu=neon-fp16
+endif
 
 # SDK Tools
 AVDMANAGER = $(ANDROID_HOME)/cmdline-tools/latest/bin/avdmanager

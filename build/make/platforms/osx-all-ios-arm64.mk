@@ -9,7 +9,6 @@ BINDIR     = bin/ios-arm64
 DISTDIR    = ../../dist/ios-13.0
 TARGET     = arm64-apple-ios13.0
 MINVER     = -miphoneos-version-min=13.0
-CPUFLAGS   = -march=armv8-a -mtune=generic
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
@@ -24,6 +23,17 @@ LINK       = $(CXX)
 LINKFLAGS  = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path)
 LINKPATH   =
 LINKLIBS   = 
+
+# CPU Flags
+ifeq ($(TARGET_CPUREV),legacy)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),default)
+CPUFLAGS   = -march=armv8-a -mtune=generic
+endif
+ifeq ($(TARGET_CPUREV),modern)
+CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
+endif
 
 # Debug vs. Release
 ifeq ($(MODE),release)
