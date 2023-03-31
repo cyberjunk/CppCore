@@ -293,8 +293,8 @@ namespace CppCore
          }
 
          /// <summary>
-         /// Pops n elements from the end of the array.
-         /// Returns number of elements popped.
+         /// Pops n elements from the end of the array. Returns number of elements popped.
+         /// Iterate popped items backwards for same order as in multiple single popBack().
          /// </summary>
          template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
          INLINE size_t popBack(T* items, size_t n)
@@ -705,6 +705,14 @@ namespace CppCore
                CPPCORE_MUTEX_UNLOCK(mLock);
                return ret;
             }
+            template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+            INLINE size_t pushBack(const T* items, size_t n)
+            {
+               CPPCORE_MUTEX_LOCK(mLock);
+               size_t ret = ST<T, SIZE>::template pushBack<FLATCOPY>(items, n);
+               CPPCORE_MUTEX_UNLOCK(mLock);
+               return ret;
+            }
             INLINE bool pushFront(const T& item)
             {
                CPPCORE_MUTEX_LOCK(mLock);
@@ -716,6 +724,14 @@ namespace CppCore
             {
                CPPCORE_MUTEX_LOCK(mLock);
                bool ret = ST<T, SIZE>::popBack(item);
+               CPPCORE_MUTEX_UNLOCK(mLock);
+               return ret;
+            }
+            template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+            INLINE size_t popBack(T* items, size_t n)
+            {
+               CPPCORE_MUTEX_LOCK(mLock);
+               size_t ret = ST<T, SIZE>::template popBack<FLATCOPY>(items, n);
                CPPCORE_MUTEX_UNLOCK(mLock);
                return ret;
             }

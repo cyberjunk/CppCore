@@ -285,6 +285,38 @@ namespace CppCore { namespace Test { namespace Containers
 
          return true;
       }
+
+      template<bool BULK>
+      INLINE static bool multithreaded()
+      {
+         resetModels();
+         Model* m;
+         // FIXED SIZE
+         Model::Array::Fix::MT<MAXMODELS> arr;
+         if (BULK)
+         {
+            if (arr.pushBack(modelptrs, MAXMODELS) != MAXMODELS)
+               return false;
+
+            if (arr.popBack(modelptrs, MAXMODELS) != MAXMODELS)
+               return false;
+
+            for (size_t i = 0; i < MAXMODELS; i++)
+               if (modelptrs[i] != &models[i])
+                  return false;
+         }
+         else
+         {
+            for (size_t i = 0; i < MAXMODELS; i++)
+               if (!arr.pushBack(&models[i]))
+                  return false;
+
+            for (size_t i = 0; i < MAXMODELS; i++)
+               if (!arr.popBack(m) || m != &models[MAXMODELS-1-i])
+                  return false;
+         }
+         return true;
+      }
    };
 }}}
 
@@ -306,6 +338,10 @@ namespace CppCore { namespace Test { namespace VS { namespace Containers
 
       TEST_METHOD(INTEGER_BULK)   { Assert::AreEqual(true, CppCore::Test::Containers::Array::integerbulk()); }
       TEST_METHOD(ITERATOR)       { Assert::AreEqual(true, CppCore::Test::Containers::Array::iterator()); }
+
+      TEST_METHOD(MULTITHREADED)  { Assert::AreEqual(true, CppCore::Test::Containers::Array::multithreaded<false>()); }
+      TEST_METHOD(MULTITHREADED_BULK) { Assert::AreEqual(true, CppCore::Test::Containers::Array::multithreaded<true>()); }
+
    };
 }}}}
 #endif
