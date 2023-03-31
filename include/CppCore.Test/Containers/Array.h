@@ -39,6 +39,19 @@ namespace CppCore { namespace Test { namespace Containers
          if (arr[2]->getId() != MODEL3_ID) return false;
          if (arr[3]->getId() != MODEL4_ID) return false;
 
+         // removeAt check
+         if (!arr.removeAt(model, 2)) return false;
+         if (arr[0]->getId() != MODEL1_ID) return false;
+         if (arr[1]->getId() != MODEL2_ID) return false;
+         if (arr[2]->getId() != MODEL4_ID) return false;
+
+         // insertAt check
+         if (!arr.insertAt(model, 2)) return false;
+         if (arr[0]->getId() != MODEL1_ID) return false;
+         if (arr[1]->getId() != MODEL2_ID) return false;
+         if (arr[2]->getId() != MODEL3_ID) return false;
+         if (arr[3]->getId() != MODEL4_ID) return false;
+
          // unsorted lookup
          if (!arr.findIdxUnsortedById(MODEL3_ID, idx)) return false;
          if (idx != (size_t)2U) return false;

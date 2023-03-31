@@ -94,6 +94,51 @@ namespace CppCore
          }
 
          //////////////////////////////////////////////////////////////////////
+         // SHIFT OPS
+         
+         /// <summary>
+         /// Tries to shift all elements starting at idx leftwards by n slots.
+         /// </summary>
+         INLINE bool shiftleft(const size_t idx, const size_t n)
+         {
+            const size_t LEN  = mLength;
+            const size_t NLEN = LEN-n;
+            if (idx < LEN && n <= idx)
+            {
+               mLength = NLEN;
+               T* psrc = &thiss().mData[idx];
+               T* pdst = &thiss().mData[idx-n];
+               T* pend = &thiss().mData[LEN];
+               while (psrc < pend)
+                  *pdst++ = *psrc++;
+               return true;
+            }
+            else
+               return false;
+         }
+
+         /// <summary>
+         /// Tries to shift all elements starting at idx rightwards by n slots.
+         /// </summary>
+         INLINE bool shiftright(const size_t idx, const size_t n)
+         {
+            const size_t LEN  = mLength;
+            const size_t NLEN = LEN+n;
+            if (idx < LEN && NLEN <= thiss().size())
+            {
+               mLength = NLEN;
+               T* psrc = &thiss().mData[LEN-1];
+               T* pdst = &thiss().mData[NLEN-1];
+               T* pend = &thiss().mData[idx];
+               while (psrc >= pend)
+                  *pdst-- = *psrc--;
+               return true;
+            }
+            else
+               return false;
+         }
+
+         //////////////////////////////////////////////////////////////////////
          // INDEX OPS
 
          /// <summary>
@@ -107,14 +152,15 @@ namespace CppCore
                // return removed item at index
                item = thiss().mData[idx];
 
-               // swap the item to remove to the last item
-               for (; idx < LEN - 1; idx++)
-                  swap(idx, idx + 1);
+               // removed not last entry, shift in place
+               if (idx < LEN-1)
+                  return shiftleft(idx+1, 1);
 
-               // decrease length
-               mLength = LEN - 1;
-
-               return true;
+               // removed last entry
+               else {
+                  mLength = LEN - 1;
+                  return true;
+               }
             }
             else
                return false;
@@ -125,19 +171,13 @@ namespace CppCore
          /// </summary>
          INLINE bool insertAt(const T& item, size_t idx)
          {
-            const size_t LEN = mLength;
-            if (idx <= LEN && LEN < thiss().size())
+            if (idx == mLength)
             {
-               // swap the first unused slot to idx slot
-               for (size_t k = LEN; k > idx; k--)
-                  swap(k, k - 1);
-
-               // save new item at idx
+               return pushBack(item);
+            }
+            else if (shiftright(idx, 1))
+            {
                thiss().mData[idx] = item;
-
-               // save incremented size
-               mLength = LEN + 1;
-
                return true;
             }
             else
