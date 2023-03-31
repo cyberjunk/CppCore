@@ -10,6 +10,7 @@ namespace CppCore { namespace Test { namespace Containers
    class Array
    {
    public:
+      template<bool BULK>
       INLINE static bool modelid()
       {
          Model::Array::Fix::ST<MAXMODELS> arr;
@@ -19,8 +20,15 @@ namespace CppCore { namespace Test { namespace Containers
 
          resetModels();
 
-         for(size_t i = 0; i < MAXMODELS; i++)
-            arr.pushBack(&models[i]);
+         if (BULK)
+         {
+            if (arr.pushBack(modelptrs, MAXMODELS) != MAXMODELS)
+               return false;
+         }
+         else
+            for (size_t i = 0; i < MAXMODELS; i++)
+               if (!arr.pushBack(&models[i]))
+                  return false;
 
          // unordered: coded check
          if (arr.validateSorted<Model::ComparerId::OP2OP>()) return false;
@@ -69,6 +77,7 @@ namespace CppCore { namespace Test { namespace Containers
          return true;
       }
 
+      template<bool BULK>
       INLINE static bool modelname()
       {
          Model::Array::Fix::ST<MAXMODELS> arr;
@@ -78,8 +87,15 @@ namespace CppCore { namespace Test { namespace Containers
 
          resetModels();
 
-         for (size_t i = 0; i < MAXMODELS; i++)
-            arr.pushBack(&models[i]);
+         if (BULK)
+         {
+            if (arr.pushBack(modelptrs, MAXMODELS) != MAXMODELS)
+               return false;
+         }
+         else
+            for (size_t i = 0; i < MAXMODELS; i++)
+               if (!arr.pushBack(&models[i]))
+                  return false;
 
          // unordered: coded check
          if (arr.validateSorted<Model::ComparerName::OP2OP>()) return false;
@@ -209,6 +225,20 @@ namespace CppCore { namespace Test { namespace Containers
          return true;
       }
 
+      INLINE static bool integerbulk()
+      {
+         CppCore::Array::Dyn::ST<uint32_t, false> arr(4);
+         uint32_t d[] = { 1, 2, 3, 4 };
+         uint32_t r[] = { 0, 0, 0, 0 };
+         if (arr.pushBack(d, 4) != 4) return false;
+         for (size_t i = 0; i < 4; i++)
+            if (arr[i] != d[i]) return false;
+         if (arr.popBack(r, 4) != 4) return false;
+         for (size_t i = 0; i < 4; i++)
+            if (r[i] != d[i]) return false;
+         return true;
+      }
+
       INLINE static bool iterator()
       {
          size_t i = 0;
@@ -254,11 +284,15 @@ namespace CppCore { namespace Test { namespace VS { namespace Containers
    TEST_CLASS(Array)
    {
    public:
-      TEST_METHOD(MODELID)     { Assert::AreEqual(true, CppCore::Test::Containers::Array::modelid()); }
-      TEST_METHOD(MODELNAME)   { Assert::AreEqual(true, CppCore::Test::Containers::Array::modelname()); }
-      TEST_METHOD(MODELRESIZE) { Assert::AreEqual(true, CppCore::Test::Containers::Array::modelresize()); }
-      TEST_METHOD(RESIZE)      { Assert::AreEqual(true, CppCore::Test::Containers::Array::integerresize()); }
-      TEST_METHOD(ITERATOR)    { Assert::AreEqual(true, CppCore::Test::Containers::Array::iterator()); }
+      TEST_METHOD(MODELID)        { Assert::AreEqual(true, CppCore::Test::Containers::Array::modelid<false>()); }
+      TEST_METHOD(MODELID_BULK)   { Assert::AreEqual(true, CppCore::Test::Containers::Array::modelid<true>()); }
+      TEST_METHOD(MODELNAME)      { Assert::AreEqual(true, CppCore::Test::Containers::Array::modelname<false>()); }
+      TEST_METHOD(MODELNAME_BULK) { Assert::AreEqual(true, CppCore::Test::Containers::Array::modelname<true>()); }
+      TEST_METHOD(MODELRESIZE)    { Assert::AreEqual(true, CppCore::Test::Containers::Array::modelresize()); }
+      TEST_METHOD(INTEGERRESIZE)  { Assert::AreEqual(true, CppCore::Test::Containers::Array::integerresize()); }
+
+      TEST_METHOD(INTEGER_BULK)   { Assert::AreEqual(true, CppCore::Test::Containers::Array::integerbulk()); }
+      TEST_METHOD(ITERATOR)       { Assert::AreEqual(true, CppCore::Test::Containers::Array::iterator()); }
    };
 }}}}
 #endif

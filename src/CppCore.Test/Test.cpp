@@ -2,7 +2,8 @@
 #include <CppCore.Test/Precompiled.h>
 
 // test model instances
-Model models[MAXMODELS];
+Model  models[MAXMODELS];
+Model* modelptrs[MAXMODELS];
 
 // help macro
 #define TEST(f, n, nl)       \
@@ -618,8 +619,13 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "  CppCore::Containers::Array"    << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Containers::Array::modelid,   "modelid:   ", std::endl);
-   TEST(CppCore::Test::Containers::Array::modelname, "modelname: ", std::endl);
+   TEST(CppCore::Test::Containers::Array::modelid<false>,   "modelid:       ", std::endl);
+   TEST(CppCore::Test::Containers::Array::modelid<true>,    "modelid_b:     ", std::endl);
+   TEST(CppCore::Test::Containers::Array::modelname<false>, "modelname:     ", std::endl);
+   TEST(CppCore::Test::Containers::Array::modelname<true>,  "modelname_b:   ", std::endl);
+   TEST(CppCore::Test::Containers::Array::integerbulk,      "integerbulk:   ", std::endl);
+   TEST(CppCore::Test::Containers::Array::integerresize,    "integerresize: ", std::endl);
+   TEST(CppCore::Test::Containers::Array::iterator,         "iterator: ",      std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "  CppCore::Containers::Queue"    << std::endl;

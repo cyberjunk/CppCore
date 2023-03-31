@@ -162,7 +162,7 @@ namespace CppCore
             else
                return false;
          }
-         
+
          /// <summary>
          /// Complexity: O(n)
          /// </summary>
@@ -187,7 +187,7 @@ namespace CppCore
             else
                return false;
          }
-         
+
          /// <summary>
          /// Complexity: O(n)
          /// </summary>
@@ -224,7 +224,59 @@ namespace CppCore
             else
                return false;
          }
-         
+
+         //////////////////////////////////////////////////////////////////////
+         // FRONT/BACK OPTIMIZED BULK OPS
+
+         /// <summary>
+         /// Pushes n elements to the end of the array.
+         /// Returns number of elements pushed.
+         /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+         INLINE size_t pushBack(const T* items, size_t n)
+         {
+            size_t len = mLength;
+            size_t siz = thiss().size();
+            n = MIN(n, siz-len);
+            if constexpr (FLATCOPY)
+            {
+               Memory::copy(&thiss().mData[len], items, n*sizeof(T));
+               mLength = len + n;
+            }
+            else
+            {
+               for (size_t i = 0U; i < n; i++)
+                  thiss().mData[len++] = items[i];
+               mLength = len;
+            }
+            return n;
+         }
+
+         /// <summary>
+         /// Pops n elements from the end of the array.
+         /// Returns number of elements popped.
+         /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+         INLINE size_t popBack(T* items, size_t n)
+         {
+            size_t len = mLength;
+            n = MIN(n, len);
+            if constexpr (FLATCOPY)
+            {
+               len -= n;
+               Memory::copy(items, &thiss().mData[len], n*sizeof(T));
+               mLength = len;
+            }
+            else
+            {
+               len -= n;
+               mLength = len;
+               for (size_t i = 0U; i < n; i++)
+                  items[i] = thiss().mData[len++];
+            }
+            return n;
+         }
+
          //////////////////////////////////////////////////////////////////////
          // FIX ORDER OPS
 

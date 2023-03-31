@@ -61,7 +61,8 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 using namespace CppCore;
 
-extern Model models[MAXMODELS];
+extern Model  models[MAXMODELS];
+extern Model* modelptrs[MAXMODELS];
 
 INLINE void resetModels()
 {
@@ -76,4 +77,7 @@ INLINE void resetModels()
 
    models[3].setId(MODEL4_ID);
    models[3].setName(MODEL4_NAME);
+
+   for (size_t i = 0; i < MAXMODELS; i++)
+      modelptrs[i] = &models[i];
 }
