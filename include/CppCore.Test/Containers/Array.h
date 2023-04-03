@@ -315,8 +315,35 @@ namespace CppCore { namespace Test { namespace Containers
                if (!arr.popBack(m) || m != &models[MAXMODELS-1-i])
                   return false;
          }
+
+          // DYN SIZE
+         Model::Array::Dyn::MT<> dyn(MAXMODELS);
+         if (BULK)
+         {
+            if (dyn.pushBack(modelptrs, MAXMODELS) != MAXMODELS)
+               return false;
+
+            if (dyn.popBack(modelptrs, MAXMODELS) != MAXMODELS)
+               return false;
+
+            for (size_t i = 0; i < MAXMODELS; i++)
+               if (modelptrs[i] != &models[i])
+                  return false;
+         }
+         else
+         {
+            for (size_t i = 0; i < MAXMODELS; i++)
+               if (!dyn.pushBack(&models[i]))
+                  return false;
+
+            for (size_t i = 0; i < MAXMODELS; i++)
+               if (!dyn.popBack(m) || m != &models[MAXMODELS-1-i])
+                  return false;
+         }
+
          return true;
       }
+
    };
 }}}
 

@@ -30,7 +30,6 @@ namespace CppCore
          /// </summary>
          INLINE TARRAY& thiss() { return *((TARRAY*)this); }
 
-
       public:
          /// <summary>
          /// Constructor
@@ -217,7 +216,7 @@ namespace CppCore
          INLINE bool popBack(T& item)
          {
             size_t len = mLength;
-            if (len > 0)
+            if (len)
             {
                len--;
                item = thiss().mData[len];
@@ -242,9 +241,9 @@ namespace CppCore
          INLINE bool peekBack(T& item)
          {
             const size_t len = mLength;
-            if (len > 0)
+            if (len)
             {
-               item = thiss().mData[len - 1];
+               item = thiss().mData[len-1];
                return true;
             }
             else
@@ -256,7 +255,7 @@ namespace CppCore
          /// </summary>
          INLINE bool peekFront(T& item)
          {
-            if (mLength > 0)
+            if (mLength)
             {
                item = thiss().mData[0];
                return true;
@@ -553,11 +552,13 @@ namespace CppCore
       class MT : ARR
       {
          friend Array::Base<T, ARR>;
-
+      public:
+         using Base = ARR;
       protected:
          CPPCORE_MUTEX_TYPE mLock;
       public:
          INLINE MT() : ARR() { CPPCORE_MUTEX_INIT(mLock); }
+         INLINE MT(const size_t size) : ARR(size) { CPPCORE_MUTEX_INIT(mLock); }
          INLINE ~MT() { CPPCORE_MUTEX_DELETE(mLock); }
          INLINE bool pushBack(const T& item)
          {
@@ -616,9 +617,19 @@ namespace CppCore
             CPPCORE_MUTEX_UNLOCK(mLock);
             return ret;
          }
-
-         // TODO: Several function wrapping missing, e.g. sort/find/insertSorted..
-
+         INLINE size_t size()
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            size_t ret = ARR::size();
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         INLINE void resize(const size_t newSize)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            ARR::resize(newSize);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+         }
          template<typename KEY = T, typename COMPARER = Comparer<T, KEY>>
          INLINE bool removeOneSorted(const KEY& key, T& item, size_t& idx)
          {
@@ -643,8 +654,8 @@ namespace CppCore
             CPPCORE_MUTEX_UNLOCK(mLock);
             return ret;
          }
+         // TODO: Several more missing here
       };
-
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -746,10 +757,23 @@ namespace CppCore
             /// <summary>
             /// Returns memory consumption of dynamic heap allocation
             /// </summary>
-            INLINE size_t memOnHeap()
+            INLINE size_t memOnHeap() const
             {
                return mSize * sizeof(T);
             }
+         };
+
+         /// <summary>
+         /// Fixed Size Array for Multi Thread Access
+         /// </summary>
+         template<class T, bool CONSTRUCT = !::std::is_trivially_constructible<T>::value>
+         class MT : public Array::MT<T, ST<T, CONSTRUCT>>
+         {
+            using Base = Array::MT<T, ST<T, CONSTRUCT>>;
+            friend Base;
+
+         public:
+            INLINE MT(const size_t size = 0) : Base(size) { }
          };
       };
 
@@ -777,7 +801,7 @@ namespace CppCore
 
          public:
             INLINE ST() : Base() { }
-            INLINE size_t size() { return SIZE; }
+            INLINE size_t size() const { return SIZE; }
          };
 
          /// <summary>
@@ -791,7 +815,7 @@ namespace CppCore
 
          public:
             INLINE MT() : Base() { }
-            INLINE size_t size() { return SIZE; }
+            INLINE size_t size() const { return SIZE; }
          };
       };
    };

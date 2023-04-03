@@ -128,6 +128,16 @@ namespace CppCore
                }
                ////////////////////////////////////////////////////////////////////////////////////
             };
+
+            /// <summary>
+            /// Dynamic Sized Model Pointer Array for Multi Threaded Access
+            /// </summary>
+            template<typename T = Model*, bool CONSTRUCT = !::std::is_trivially_constructible<T>::value>
+            class MT : public CppCore::Array::Dyn::MT<T, CONSTRUCT>
+            {
+            public:
+               INLINE MT(const size_t size = 0) : ::CppCore::Array::Dyn::MT<T, CONSTRUCT>(size) { }
+            };
          };
          class Fix
          {
