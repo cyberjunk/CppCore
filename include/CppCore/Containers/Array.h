@@ -98,12 +98,14 @@ namespace CppCore
          /// <summary>
          /// Tries to shift all elements starting at idx leftwards by n slots.
          /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
          INLINE bool shiftleft(const size_t idx, const size_t n)
          {
             const size_t LEN  = mLength;
             const size_t NLEN = LEN-n;
             if (idx < LEN && n <= idx)
             {
+               // TODO: Implement FLATCOPY
                mLength = NLEN;
                T* psrc = &thiss().mData[idx];
                T* pdst = &thiss().mData[idx-n];
@@ -119,12 +121,14 @@ namespace CppCore
          /// <summary>
          /// Tries to shift all elements starting at idx rightwards by n slots.
          /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
          INLINE bool shiftright(const size_t idx, const size_t n)
          {
             const size_t LEN  = mLength;
             const size_t NLEN = LEN+n;
             if (idx < LEN && NLEN <= thiss().size())
             {
+               // TODO: Implement FLATCOPY
                mLength = NLEN;
                T* psrc = &thiss().mData[LEN-1];
                T* pdst = &thiss().mData[NLEN-1];
@@ -143,6 +147,7 @@ namespace CppCore
          /// <summary>
          /// Complexity: O(n)
          /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
          INLINE bool removeAt(T& item, size_t idx)
          {
             const size_t LEN = mLength;
@@ -153,7 +158,7 @@ namespace CppCore
 
                // removed not last entry, shift in place
                if (idx < LEN-1)
-                  return shiftleft(idx+1, 1);
+                  return shiftleft<FLATCOPY>(idx+1, 1);
 
                // removed last entry
                else {
@@ -168,13 +173,14 @@ namespace CppCore
          /// <summary>
          /// Complexity: O(n)
          /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
          INLINE bool insertAt(const T& item, size_t idx)
          {
             if (idx == mLength)
             {
                return pushBack(item);
             }
-            else if (shiftright(idx, 1))
+            else if (shiftright<FLATCOPY>(idx, 1))
             {
                thiss().mData[idx] = item;
                return true;

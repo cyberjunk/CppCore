@@ -619,13 +619,15 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "  CppCore::Containers::Array"    << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Containers::Array::modelid<false>,   "modelid:       ", std::endl);
-   TEST(CppCore::Test::Containers::Array::modelid<true>,    "modelid_b:     ", std::endl);
-   TEST(CppCore::Test::Containers::Array::modelname<false>, "modelname:     ", std::endl);
-   TEST(CppCore::Test::Containers::Array::modelname<true>,  "modelname_b:   ", std::endl);
-   TEST(CppCore::Test::Containers::Array::integerbulk,      "integerbulk:   ", std::endl);
-   TEST(CppCore::Test::Containers::Array::integerresize,    "integerresize: ", std::endl);
-   TEST(CppCore::Test::Containers::Array::iterator,         "iterator: ",      std::endl);
+   TEST(CppCore::Test::Containers::Array::modelid<false>,       "modelid:         ", std::endl);
+   TEST(CppCore::Test::Containers::Array::modelid<true>,        "modelid_b:       ", std::endl);
+   TEST(CppCore::Test::Containers::Array::modelname<false>,     "modelname:       ", std::endl);
+   TEST(CppCore::Test::Containers::Array::modelname<true>,      "modelname_b:     ", std::endl);
+   TEST(CppCore::Test::Containers::Array::integerbulk,          "integerbulk:     ", std::endl);
+   TEST(CppCore::Test::Containers::Array::integerresize,        "integerresize:   ", std::endl);
+   TEST(CppCore::Test::Containers::Array::iterator,             "iterator:        ", std::endl);
+   TEST(CppCore::Test::Containers::Array::multithreaded<false>, "multithreaded:   ", std::endl);
+   TEST(CppCore::Test::Containers::Array::multithreaded<true>,  "multithreaded_b: ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "  CppCore::Containers::Queue"    << std::endl;
