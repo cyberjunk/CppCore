@@ -30,7 +30,6 @@ namespace CppCore
          /// </summary>
          INLINE TARRAY& thiss() { return *((TARRAY*)this); }
 
-
       public:
          /// <summary>
          /// Constructor
@@ -94,11 +93,61 @@ namespace CppCore
          }
 
          //////////////////////////////////////////////////////////////////////
+         // SHIFT OPS
+         
+         /// <summary>
+         /// Tries to shift all elements starting at idx leftwards by n slots.
+         /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+         INLINE bool shiftleft(const size_t idx, const size_t n)
+         {
+            const size_t LEN  = mLength;
+            const size_t NLEN = LEN-n;
+            if (idx < LEN && n <= idx)
+            {
+               // TODO: Implement FLATCOPY
+               mLength = NLEN;
+               T* psrc = &thiss().mData[idx];
+               T* pdst = &thiss().mData[idx-n];
+               T* pend = &thiss().mData[LEN];
+               while (psrc < pend)
+                  *pdst++ = *psrc++;
+               return true;
+            }
+            else
+               return false;
+         }
+
+         /// <summary>
+         /// Tries to shift all elements starting at idx rightwards by n slots.
+         /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+         INLINE bool shiftright(const size_t idx, const size_t n)
+         {
+            const size_t LEN  = mLength;
+            const size_t NLEN = LEN+n;
+            if (idx < LEN && NLEN <= thiss().size())
+            {
+               // TODO: Implement FLATCOPY
+               mLength = NLEN;
+               T* psrc = &thiss().mData[LEN-1];
+               T* pdst = &thiss().mData[NLEN-1];
+               T* pend = &thiss().mData[idx];
+               while (psrc >= pend)
+                  *pdst-- = *psrc--;
+               return true;
+            }
+            else
+               return false;
+         }
+
+         //////////////////////////////////////////////////////////////////////
          // INDEX OPS
 
          /// <summary>
          /// Complexity: O(n)
          /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
          INLINE bool removeAt(T& item, size_t idx)
          {
             const size_t LEN = mLength;
@@ -107,14 +156,15 @@ namespace CppCore
                // return removed item at index
                item = thiss().mData[idx];
 
-               // swap the item to remove to the last item
-               for (; idx < LEN - 1; idx++)
-                  swap(idx, idx + 1);
+               // removed not last entry, shift in place
+               if (idx < LEN-1)
+                  return shiftleft<FLATCOPY>(idx+1, 1);
 
-               // decrease length
-               mLength = LEN - 1;
-
-               return true;
+               // removed last entry
+               else {
+                  mLength = LEN - 1;
+                  return true;
+               }
             }
             else
                return false;
@@ -123,21 +173,16 @@ namespace CppCore
          /// <summary>
          /// Complexity: O(n)
          /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
          INLINE bool insertAt(const T& item, size_t idx)
          {
-            const size_t LEN = mLength;
-            if (idx <= LEN && LEN < thiss().size())
+            if (idx == mLength)
             {
-               // swap the first unused slot to idx slot
-               for (size_t k = LEN; k > idx; k--)
-                  swap(k, k - 1);
-
-               // save new item at idx
+               return pushBack(item);
+            }
+            else if (shiftright<FLATCOPY>(idx, 1))
+            {
                thiss().mData[idx] = item;
-
-               // save incremented size
-               mLength = LEN + 1;
-
                return true;
             }
             else
@@ -162,7 +207,7 @@ namespace CppCore
             else
                return false;
          }
-         
+
          /// <summary>
          /// Complexity: O(n)
          /// </summary>
@@ -177,7 +222,7 @@ namespace CppCore
          INLINE bool popBack(T& item)
          {
             size_t len = mLength;
-            if (len > 0)
+            if (len)
             {
                len--;
                item = thiss().mData[len];
@@ -187,7 +232,7 @@ namespace CppCore
             else
                return false;
          }
-         
+
          /// <summary>
          /// Complexity: O(n)
          /// </summary>
@@ -202,9 +247,9 @@ namespace CppCore
          INLINE bool peekBack(T& item)
          {
             const size_t len = mLength;
-            if (len > 0)
+            if (len)
             {
-               item = thiss().mData[len - 1];
+               item = thiss().mData[len-1];
                return true;
             }
             else
@@ -216,7 +261,7 @@ namespace CppCore
          /// </summary>
          INLINE bool peekFront(T& item)
          {
-            if (mLength > 0)
+            if (mLength)
             {
                item = thiss().mData[0];
                return true;
@@ -224,7 +269,59 @@ namespace CppCore
             else
                return false;
          }
-         
+
+         //////////////////////////////////////////////////////////////////////
+         // FRONT/BACK OPTIMIZED BULK OPS
+
+         /// <summary>
+         /// Pushes n elements to the end of the array.
+         /// Returns number of elements pushed.
+         /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+         INLINE size_t pushBack(const T* items, size_t n)
+         {
+            size_t len = mLength;
+            size_t siz = thiss().size();
+            n = MIN(n, siz-len);
+            if constexpr (FLATCOPY)
+            {
+               Memory::copy(&thiss().mData[len], items, n*sizeof(T));
+               mLength = len + n;
+            }
+            else
+            {
+               for (size_t i = 0U; i < n; i++)
+                  thiss().mData[len++] = items[i];
+               mLength = len;
+            }
+            return n;
+         }
+
+         /// <summary>
+         /// Pops n elements from the end of the array. Returns number of elements popped.
+         /// Iterate popped items backwards for same order as in multiple single popBack().
+         /// </summary>
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+         INLINE size_t popBack(T* items, size_t n)
+         {
+            size_t len = mLength;
+            n = MIN(n, len);
+            if constexpr (FLATCOPY)
+            {
+               len -= n;
+               Memory::copy(items, &thiss().mData[len], n*sizeof(T));
+               mLength = len;
+            }
+            else
+            {
+               len -= n;
+               mLength = len;
+               for (size_t i = 0U; i < n; i++)
+                  items[i] = thiss().mData[len++];
+            }
+            return n;
+         }
+
          //////////////////////////////////////////////////////////////////////
          // FIX ORDER OPS
 
@@ -451,7 +548,121 @@ namespace CppCore
             return true;
          }
       };
-      
+
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      /// <summary>
+      /// Base class for multithreaded variants
+      /// </summary>
+      template<typename T, typename ARR>
+      class MT : ARR
+      {
+         friend Array::Base<T, ARR>;
+      public:
+         using Base = ARR;
+      protected:
+         CPPCORE_MUTEX_TYPE mLock;
+      public:
+         INLINE MT() : ARR() { CPPCORE_MUTEX_INIT(mLock); }
+         INLINE MT(const size_t size) : ARR(size) { CPPCORE_MUTEX_INIT(mLock); }
+         INLINE ~MT() { CPPCORE_MUTEX_DELETE(mLock); }
+         INLINE bool pushBack(const T& item)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            bool ret = ARR::pushBack(item);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+         INLINE size_t pushBack(const T* items, size_t n)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            size_t ret = ARR::template pushBack<FLATCOPY>(items, n);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         INLINE bool pushFront(const T& item)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            bool ret = ARR::pushFront(item);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         INLINE bool popBack(T& item)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            bool ret = ARR::popBack(item);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         template<bool FLATCOPY = ::std::is_trivially_constructible<T>::value>
+         INLINE size_t popBack(T* items, size_t n)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            size_t ret = ARR::template popBack<FLATCOPY>(items, n);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         INLINE bool popFront(T& item)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            bool ret = ARR::popFront(item);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         INLINE void clear()
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            ARR::clear();
+            CPPCORE_MUTEX_UNLOCK(mLock);
+         }
+         INLINE size_t length()
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            size_t ret = ARR::length();
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         INLINE size_t size()
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            size_t ret = ARR::size();
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         INLINE void resize(const size_t newSize)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            ARR::resize(newSize);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+         }
+         template<typename KEY = T, typename COMPARER = Comparer<T, KEY>>
+         INLINE bool removeOneSorted(const KEY& key, T& item, size_t& idx)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            bool ret = ARR::template removeOneSorted<KEY, COMPARER>(key, item, idx);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         template<typename KEY = T, typename COMPARER = Comparer<T, KEY>>
+         INLINE bool removeOneUnsorted(const KEY& key, T& item, size_t& idx)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            bool ret = ARR::template removeOneUnsorted<KEY, COMPARER>(key, item, idx);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         template<typename KEY = T, typename COMPARER = Comparer<T, KEY>>
+         INLINE size_t removeAll(const KEY& key)
+         {
+            CPPCORE_MUTEX_LOCK(mLock);
+            size_t ret = ARR::template removeAll<KEY, COMPARER>(key);
+            CPPCORE_MUTEX_UNLOCK(mLock);
+            return ret;
+         }
+         // TODO: Several more missing here
+      };
+
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
@@ -552,10 +763,23 @@ namespace CppCore
             /// <summary>
             /// Returns memory consumption of dynamic heap allocation
             /// </summary>
-            INLINE size_t memOnHeap()
+            INLINE size_t memOnHeap() const
             {
                return mSize * sizeof(T);
             }
+         };
+
+         /// <summary>
+         /// Fixed Size Array for Multi Thread Access
+         /// </summary>
+         template<class T, bool CONSTRUCT = !::std::is_trivially_constructible<T>::value>
+         class MT : public Array::MT<T, ST<T, CONSTRUCT>>
+         {
+            using Base = Array::MT<T, ST<T, CONSTRUCT>>;
+            friend Base;
+
+         public:
+            INLINE MT(const size_t size = 0) : Base(size) { }
          };
       };
 
@@ -575,109 +799,29 @@ namespace CppCore
          template<class T, size_t SIZE>
          class ST : public Array::Base<T, ST<T, SIZE>>
          {
-            friend Array::Base<T, ST<T, SIZE>>;
+            using Base = Array::Base<T, ST<T, SIZE>>;
+            friend Base;
 
          protected:
             T mData[SIZE];
 
          public:
-            /// <summary>
-            /// Constructor
-            /// </summary>
-            INLINE ST() : Array::Base<T, ST<T, SIZE>>() { }
-
-            /// <summary>
-            /// Complexity: O(1)
-            /// </summary>
-            INLINE size_t size() { return SIZE; }
+            INLINE ST() : Base() { }
+            INLINE size_t size() const { return SIZE; }
          };
 
          /// <summary>
          /// Fixed Size Array for Multi Thread Access
          /// </summary>
-         template<typename T, size_t SIZE>
-         class MT : ST<T, SIZE>
+         template<class T, size_t SIZE>
+         class MT : public Array::MT<T, ST<T, SIZE>>
          {
-            friend Array::Base<T, ST<T, SIZE>>;
+            using Base = Array::MT<T, ST<T, SIZE>>;
+            friend Base;
 
-         protected:
-            CPPCORE_MUTEX_TYPE mLock;
          public:
-            INLINE MT() : ST<T, SIZE>() { CPPCORE_MUTEX_INIT(mLock); }
-            INLINE ~MT() { CPPCORE_MUTEX_DELETE(mLock); }
-            INLINE size_t size() { return SIZE; }
-            INLINE bool pushBack(const T& item)
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               bool ret = ST<T, SIZE>::pushBack(item);
-               CPPCORE_MUTEX_UNLOCK(mLock);
-               return ret;
-            }
-            INLINE bool pushFront(const T& item)
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               bool ret = ST<T, SIZE>::pushFront(item);
-               CPPCORE_MUTEX_UNLOCK(mLock);
-               return ret;
-            }
-            INLINE bool popBack(T& item)
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               bool ret = ST<T, SIZE>::popBack(item);
-               CPPCORE_MUTEX_UNLOCK(mLock);
-               return ret;
-            }
-            INLINE bool popFront(T& item)
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               bool ret = ST<T, SIZE>::popFront(item);
-               CPPCORE_MUTEX_UNLOCK(mLock);
-               return ret;
-            }
-            INLINE void clear()
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               ST<T, SIZE>::clear();
-               CPPCORE_MUTEX_UNLOCK(mLock);
-            }
-            /// <summary>
-            /// BEWARE: You must consider the returned value already outdated/invalid.
-            /// This is for e.g. monitoring usage only.
-            /// </summary>
-            INLINE size_t length()
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               size_t ret = ST<T, SIZE>::length();
-               CPPCORE_MUTEX_UNLOCK(mLock);
-               return ret;
-            }
-
-            // TODO: Several function wrapping missing, e.g. sort/find/insertSorted..
-
-            template<typename KEY = T, typename COMPARER = Comparer<T, KEY>>
-            INLINE bool removeOneSorted(const KEY& key, T& item, size_t& idx)
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               bool ret = ST<T, SIZE>::template removeOneSorted<KEY, COMPARER>(key, item, idx);
-               CPPCORE_MUTEX_UNLOCK(mLock);
-               return ret;
-            }
-            template<typename KEY = T, typename COMPARER = Comparer<T, KEY>>
-            INLINE bool removeOneUnsorted(const KEY& key, T& item, size_t& idx)
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               bool ret = ST<T, SIZE>::template removeOneUnsorted<KEY, COMPARER>(key, item, idx);
-               CPPCORE_MUTEX_UNLOCK(mLock);
-               return ret;
-            }
-            template<typename KEY = T, typename COMPARER = Comparer<T, KEY>>
-            INLINE size_t removeAll(const KEY& key)
-            {
-               CPPCORE_MUTEX_LOCK(mLock);
-               size_t ret = ST<T, SIZE>::template removeAll<KEY, COMPARER>(key);
-               CPPCORE_MUTEX_UNLOCK(mLock);
-               return ret;
-            }
+            INLINE MT() : Base() { }
+            INLINE size_t size() const { return SIZE; }
          };
       };
    };
