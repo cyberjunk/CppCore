@@ -1265,7 +1265,7 @@ namespace CppCore
 #endif
 
       /// <summary>
-      /// Copies any sized memory with any alignment.
+      /// Copies any sized memory with any alignment starting from front.
       /// Consider using optimized copyXY() or streamcopyXY() for special cases instead.
       /// </summary>
       INLINE static void copy(void* dstmem, const void* srcmem, size_t len)
@@ -1302,6 +1302,46 @@ namespace CppCore
             *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
             *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
+      #endif
+      }
+
+      /// <summary>
+      /// Copies any sized memory with any alignment starting from back.
+      /// </summary>
+      INLINE static void copybackwards(void* dstmem, const void* srcmem, size_t len)
+      {
+         char* memd = (char*)dstmem + len;
+         char* mems = (char*)srcmem + len;
+      #if defined(CPPCORE_CPUFEAT_AVX512F)
+         CPPCORE_MEMORY_PROCESS_512(len,
+            memd -= 64U; mems -= 64U; _mm512_storeu_si512((__m512i*)memd, _mm512_loadu_si512((__m512i*)mems));,
+            memd -= 32U; mems -= 32U; _mm256_storeu_si256((__m256i*)memd, _mm256_loadu_si256((__m256i*)mems));,
+            memd -= 16U; mems -= 16U; _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems));,
+            memd -=  8U; mems -=  8U; *((uint64_t*)memd) = *((uint64_t*)mems);,
+            memd -=  4U; mems -=  4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
+            memd -=  2U; mems -=  2U; *((uint16_t*)memd) = *((uint16_t*)mems);, 
+            memd -=  1U; mems -=  1U; *((uint8_t*) memd) = *((uint8_t*) mems);)
+      #elif defined(CPPCORE_CPUFEAT_AVX)
+         CPPCORE_MEMORY_PROCESS_256X2(len, 
+            memd -= 32U; mems -= 32U; _mm256_storeu_si256((__m256i*)memd, _mm256_loadu_si256((__m256i*)mems));,
+            memd -= 16U; mems -= 16U; _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems));,
+            memd -=  8U; mems -=  8U; *((uint64_t*)memd) = *((uint64_t*)mems);,
+            memd -=  4U; mems -=  4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
+            memd -=  2U; mems -=  2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
+            memd -=  1U; mems -=  1U; *((uint8_t*) memd) = *((uint8_t*) mems);)
+      #elif defined(CPPCORE_CPUFEAT_SSE2)
+         CPPCORE_MEMORY_PROCESS_128X4(len, 
+            memd -= 16U; mems -= 16U; _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems));,
+            memd -=  8U; mems -=  8U; *((uint64_t*)memd) = *((uint64_t*)mems);,
+            memd -=  4U; mems -=  4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
+            memd -=  2U; mems -=  2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
+            memd -=  1U; mems -=  1U; *((uint8_t*) memd) = *((uint8_t*) mems);)
+      #else
+         CPPCORE_MEMORY_PROCESS_64X8(len, 
+            memd -= 8U; mems -= 8U; *((uint64_t*)memd) = *((uint64_t*)mems);,
+            memd -= 4U; mems -= 4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
+            memd -= 2U; mems -= 2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
+            memd -= 1U; mems -= 1U; *((uint8_t*) memd) = *((uint8_t*) mems);)
       #endif
       }
 
