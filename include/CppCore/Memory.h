@@ -3,6 +3,8 @@
 #include <CppCore/Root.h>
 #include <CppCore/Math/Util.h>
 
+// switch statement for 0-15 byte length executing according
+// combination of provided 64,32,16 and 8-bit operation(s)
 #define CPPCORE_MEMORY_SWITCH_LEN15(len, op64, op32, op16, op8) \
   switch ((len)) {                                           \
   case 15: { { op64; } { op32; } { op16; } { op8; } } break; \
@@ -23,6 +25,8 @@
   default:                                            break; \
   };
 
+// decreases len in 64 byte steps executing one op512 each time
+// then handles the 0-63 remaining bytes using op256 to op8
 #define CPPCORE_MEMORY_PROCESS_512(len, op512, op256, op128, op64, op32, op16, op8) \
   while (len >= 64U) { \
     len -= 64U;        \
@@ -38,13 +42,22 @@
   }                    \
   CPPCORE_MEMORY_SWITCH_LEN15(len, op64, op32, op16, op8)
 
-#define CPPCORE_MEMORY_PROCESS_256(len,                                           op256,                op128,      op64, op32, op16, op8) \
-        CPPCORE_MEMORY_PROCESS_512(len, op256;op256;,                             op256,                op128,      op64, op32, op16, op8)
-#define CPPCORE_MEMORY_PROCESS_128(len,                                                                 op128,      op64, op32, op16, op8) \
-        CPPCORE_MEMORY_PROCESS_512(len, op128;op128;op128;op128;,                 op128;op128;,         op128,      op64, op32, op16, op8)
-#define CPPCORE_MEMORY_PROCESS_64( len,                                                                             op64, op32, op16, op8) \
-        CPPCORE_MEMORY_PROCESS_512(len, op64;op64;op64;op64;op64;op64;op64;op64;, op64;op64;op64;op64;, op64;op64;, op64, op32, op16, op8)
+// decreases len in 64 byte steps executing two op256 each time
+// then handles the 0-63 remaining bytes using op256 to op8
+#define CPPCORE_MEMORY_PROCESS_256X2(len,               op256, op128, op64, op32, op16, op8) \
+        CPPCORE_MEMORY_PROCESS_512(  len, op256;op256;, op256, op128, op64, op32, op16, op8)
 
+// decreases len in 64 byte steps executing four op128 each time
+// then handles the 0-63 remaining bytes using op128 to op8
+#define CPPCORE_MEMORY_PROCESS_128X4(len,                                         op128, op64, op32, op16, op8) \
+        CPPCORE_MEMORY_PROCESS_512(  len, op128;op128;op128;op128;, op128;op128;, op128, op64, op32, op16, op8)
+
+// decreases len in 64 byte steps executing eight op64 each time
+// then handles the 0-63 remaining bytes using op64 to op8
+#define CPPCORE_MEMORY_PROCESS_64X8( len,                                                                             op64, op32, op16, op8) \
+        CPPCORE_MEMORY_PROCESS_512(  len, op64;op64;op64;op64;op64;op64;op64;op64;, op64;op64;op64;op64;, op64;op64;, op64, op32, op16, op8)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace CppCore
 {
@@ -1269,7 +1282,7 @@ namespace CppCore
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
             *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
       #elif defined(CPPCORE_CPUFEAT_AVX)
-         CPPCORE_MEMORY_PROCESS_256(len, 
+         CPPCORE_MEMORY_PROCESS_256X2(len, 
             _mm256_storeu_si256((__m256i*)memd, _mm256_loadu_si256((__m256i*)mems)); memd += 32U; mems += 32U; , 
             _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;, 
             *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;, 
@@ -1277,14 +1290,14 @@ namespace CppCore
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
             *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
       #elif defined(CPPCORE_CPUFEAT_SSE2)
-         CPPCORE_MEMORY_PROCESS_128(len, 
+         CPPCORE_MEMORY_PROCESS_128X4(len, 
             _mm_storeu_si128((__m128i*)memd, _mm_loadu_si128((__m128i*)mems)); memd += 16U; mems += 16U;, 
             *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;, 
             *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
             *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
       #else
-         CPPCORE_MEMORY_PROCESS_64(len, 
+         CPPCORE_MEMORY_PROCESS_64X8(len, 
             *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;, 
             *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
