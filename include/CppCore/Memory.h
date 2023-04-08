@@ -28,18 +28,9 @@
 // decreases len in 64 byte steps executing one op512 each time
 // then handles the 0-63 remaining bytes using op256 to op8
 #define CPPCORE_MEMORY_PROCESS_512(len, op512, op256, op128, op64, op32, op16, op8) \
-  while (len >= 64U) { \
-    len -= 64U;        \
-    op512;             \
-  }                    \
-  if (len >= 32U) {    \
-    len -= 32U;        \
-    op256;             \
-  }                    \
-  if (len >= 16U) {    \
-    len -= 16U;        \
-    op128;             \
-  }                    \
+  while (len >= 64U) { len -= 64U; op512; }               \
+  if    (len >= 32U) { len -= 32U; op256; }               \
+  if    (len >= 16U) { len -= 16U; op128; }               \
   CPPCORE_MEMORY_SWITCH_LEN15(len, op64, op32, op16, op8)
 
 // decreases len in 64 byte steps executing two op256 each time
