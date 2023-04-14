@@ -643,6 +643,26 @@ namespace CppCore { namespace Test
             return false;
          return true;
       }
+      INLINE static bool copybackwards()
+      {
+         const size_t n512 = 4;
+         const size_t n256 = 1;
+         const size_t n128 = 1;
+         const size_t n64  = 1;
+         const size_t n32  = 1;
+         const size_t n16  = 1;
+         const size_t n8   = 1;
+         const size_t num  = n512*64 + n256*32 + n128*16 + n64*8 + n32*4 + n16*2 + n8;
+         CPPCORE_ALIGN64 char src[num];
+         CPPCORE_ALIGN64 char dst[num];
+         Random::Std::Int32 rnd;
+         for (size_t i = 0; i < num; i++)
+            src[i] = rnd.next() & 0xFF;
+         CppCore::Memory::copybackwards(dst, src, num);
+         if (0 != ::memcmp(src, dst, num))
+            return false;
+         return true;
+      }
       INLINE static bool streamcopy128()
       {
       #if defined(CPPCORE_CPUFEAT_SSE2)
@@ -2361,6 +2381,7 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(COPY256)              { Assert::AreEqual(true, CppCore::Test::Memory::copy256()); }
       TEST_METHOD(COPY512)              { Assert::AreEqual(true, CppCore::Test::Memory::copy512()); }
       TEST_METHOD(COPY)                 { Assert::AreEqual(true, CppCore::Test::Memory::copy()); }
+      TEST_METHOD(COPYBACKWARDS)        { Assert::AreEqual(true, CppCore::Test::Memory::copybackwards()); }
       TEST_METHOD(STREAMCOPY128)        { Assert::AreEqual(true, CppCore::Test::Memory::streamcopy128()); }
       TEST_METHOD(STREAMCOPY128x1)      { Assert::AreEqual(true, CppCore::Test::Memory::streamcopy128x1()); }
       TEST_METHOD(STREAMCOPY128x2)      { Assert::AreEqual(true, CppCore::Test::Memory::streamcopy128x2()); }

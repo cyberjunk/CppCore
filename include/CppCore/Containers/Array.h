@@ -105,13 +105,16 @@ namespace CppCore
             const size_t NLEN = LEN-n;
             if (idx < LEN && n <= idx)
             {
-               // TODO: Implement FLATCOPY
                mLength = NLEN;
                T* psrc = &thiss().mData[idx];
                T* pdst = &thiss().mData[idx-n];
-               T* pend = &thiss().mData[LEN];
-               while (psrc < pend)
-                  *pdst++ = *psrc++;
+               if constexpr (FLATCOPY)
+                  Memory::copy(pdst, psrc, (LEN-idx)*sizeof(T));
+               else {
+                  const T* pend = &thiss().mData[LEN];
+                  while (psrc < pend)
+                     *pdst++ = *psrc++;
+               }
                return true;
             }
             else
@@ -128,13 +131,19 @@ namespace CppCore
             const size_t NLEN = LEN+n;
             if (idx < LEN && NLEN <= thiss().size())
             {
-               // TODO: Implement FLATCOPY
                mLength = NLEN;
-               T* psrc = &thiss().mData[LEN-1];
-               T* pdst = &thiss().mData[NLEN-1];
-               T* pend = &thiss().mData[idx];
-               while (psrc >= pend)
-                  *pdst-- = *psrc--;
+               if constexpr (FLATCOPY) {
+                  T* psrc = &thiss().mData[idx];
+                  T* pdst = &thiss().mData[idx+n];
+                  Memory::copybackwards(pdst, psrc, (LEN-idx)*sizeof(T));
+               }
+               else {
+                  T* psrc = &thiss().mData[LEN-1];
+                  T* pdst = &thiss().mData[NLEN-1];
+                  T* pend = &thiss().mData[idx];
+                  while (psrc >= pend)
+                     *pdst-- = *psrc--;
+               }
                return true;
             }
             else
