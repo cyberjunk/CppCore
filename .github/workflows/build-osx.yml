@@ -83,28 +83,28 @@ jobs:
 
     # Download X64 Build
     - name: Download X64 Build
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-x64-default)
         path: ./build/make/bin/osx-x64/
 
     # Download X64 lto.o
     - name: Download X64 lto.o
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: lto.o (${{ matrix.os }}-x64-default)
         path: ./build/make/obj/osx-x64-release/
 
     # Download ARM64 Build
     - name: Download ARM64 Build
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-arm64-default)
         path: ./build/make/bin/osx-arm64/
 
     # Download ARM64 lto.o
     - name: Download ARM64 lto.o
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: lto.o (${{ matrix.os }}-arm64-default)
         path: ./build/make/obj/osx-arm64-release/
@@ -135,7 +135,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Packages (${{ matrix.os }})
-        path: ./dist/osx-10.15/*.pkg
+        path: ./dist/osx-10.15/*-universal.pkg
 
     # Upload to Github Release
     - name: Upload to Github Release
@@ -216,4 +216,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Packages Store (${{ matrix.os }})
-        path: ./dist/osx-10.15/*.pkg
+        path: ./dist/osx-10.15/*-universal.pkg
