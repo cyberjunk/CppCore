@@ -151,7 +151,7 @@ dist-prep:
 	@-rm -rf $(DISTDIR)/$(NAME)
 	@-rm -rf $(DISTDIR)/$(NAME).dSYM
 	@-rm -rf $(DISTDIR)/$(NAME).symbols
-	@-rm -rf $(DISTDIR)/*.pkg
+	@-rm -rf $(DISTDIR)/$(NAME)*.pkg
 	@-security delete-keychain $(KEYCHAIN)
 	@security create-keychain -p "$(SIGN_PFX_PASS)" $(KEYCHAIN)
 	@security set-keychain-settings -lut 21600 $(KEYCHAIN)
