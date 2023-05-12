@@ -17,6 +17,7 @@ endif
 #APPLE_TEAM_ID      = see https://developer.apple.com/account/#!/membership/
 #APPLE_APPSPEC_PASS = app-specific-password-for someone@somwhere.com
 #APPLE_DIST_STORE   = true if building packages for macOS store
+#APPLE_UPLOAD_STORE = true if package should be uploaded to macOS store
 
 # default key if not specified
 ifeq ($(SIGN_PFX_FILE),)
@@ -50,6 +51,7 @@ VERSIONPATCH = $(shell powershell -command "& {\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROPATCH)'; }")
 VERSION3 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
 VERSION4 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
+ZIPPER   = $(DISTDIR)/7za.exe a -y -aoa -mx6 -bd -bb0
 dist-prep:
 	echo [VER] $(VERSION4)
 	echo [CPG] CodePage 1252
@@ -58,9 +60,16 @@ dist-prep:
 	echo [PFX] $(SIGN_PFX_FILE)
 	echo [MKD] $(DISTDIR)/$(NAME)
 	$(call rmdir,$(DISTDIR)/$(NAME))
+	$(call deletefiles,$(DISTDIR),$(NAME)*.zip)
+	$(call deletefiles,$(DISTDIR),$(NAME)*.appx)
+	$(call deletefiles,$(DISTDIR),$(NAME)*.appxbundle)
+	$(call deletefiles,$(DISTDIR),$(NAME)*.appxupload)
 	$(call mkdir,$(DISTDIR)/$(NAME))
 	$(call mkdir,$(DISTDIR)/$(NAME)/resources)
 	$(call mkdir,$(DISTDIR)/$(NAME)/upload)
+	$(call mkdir,$(DISTDIR)/$(NAME)/x64)
+	$(call mkdir,$(DISTDIR)/$(NAME)/x86)
+	$(call mkdir,$(DISTDIR)/$(NAME)/arm64)
 	$(call copyfiles,$(DISTDIR)/$(NAME).appxmanifest,$(DISTDIR)/$(NAME)/AppxManifest.xml)
 	$(call replace,$(DISTDIR)/$(NAME)/AppxManifest.xml,{PUBLISHER},$(PUBLISHER),$(DISTDIR)/$(NAME)/AppxManifest.xml)
 	$(call replace,$(DISTDIR)/$(NAME)/AppxManifest.xml,{PUBLISHERID},$(PUBLISHERID),$(DISTDIR)/$(NAME)/AppxManifest.xml)
@@ -87,12 +96,12 @@ else
 	$(call signp,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTBIN),$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 endif
 	echo [SYM] $(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym
-	$(call makezip,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTPDB),$(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym.zip)
+	$(ZIPPER) $(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym.zip $(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTPDB)	
 	$(call move,$(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym.zip,$(DISTDIR)/$(NAME)/upload/$(NAME)-$*.appxsym)
 dist: dist-prep dist-x64 dist-x86 dist-arm64
-	echo [BDL] $(DISTDIR)/$(NAME).appxbundle
+	echo [BDL] $(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxbundle
 	$(call makepkg,$(DISTDIR)/$(NAME)/Layout.xml,$(DISTDIR))
-	echo [SIG] $(DISTDIR)/$(NAME).appxbundle
+	echo [SIG] $(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxbundle
 ifeq ($(SIGN_PFX_PASS),)
 	$(call sign,$(DISTDIR)/$(NAME).appxbundle,$(SIGN_PFX_FILE))
 	$(call sign,$(DISTDIR)/$(NAME)-x64.appx,$(SIGN_PFX_FILE))
@@ -106,10 +115,11 @@ else
 	$(call signp,$(DISTDIR)/$(NAME)-arm64.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 	$(call signp,$(DISTDIR)/$(NAME)-res.appx,$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 endif
-	echo [APU] $(DISTDIR)/$(NAME).appxupload
+	echo [APU] $(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxupload
 	$(call copyfiles,$(DISTDIR)/$(NAME).appxbundle,$(DISTDIR)/$(NAME)/upload/$(NAME).appxbundle)
-	$(call makezip,$(DISTDIR)/$(NAME)/upload/*,$(DISTDIR)/$(NAME).appxupload.zip)
-	$(call move,$(DISTDIR)/$(NAME).appxupload.zip,$(DISTDIR)/$(NAME).appxupload)
+	$(ZIPPER) $(DISTDIR)/$(NAME).appxupload.zip $(DISTDIR)/$(NAME)/upload/*
+	$(call move,$(DISTDIR)/$(NAME).appxupload.zip,$(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxupload)	
+	$(call move,$(DISTDIR)/$(NAME).appxbundle,$(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxbundle)
 endif
 
 ##############################################################################################################
@@ -130,12 +140,18 @@ OSXSDKVER    = $(shell xcrun --show-sdk-version)
 OSXSDKBUILDV = $(shell xcrun --show-sdk-build-version)
 XCODEVER     = $(shell xcodebuild -version | grep -E -m1 'Xcode' | sed 's/Xcode //g')
 XCODEBUILDV  = $(shell xcodebuild -version | grep -E -m1 'Build version' | sed 's/Build version //g')
+PKGSIGNED    = $(NAME)-$(VERSION3)-macOS-10.15-universal.pkg
+PKGUNSIGNED  = $(NAME)-$(VERSION3)-macOS-10.15-universal-unsigned.pkg
 dist-prep:
 	@echo [VER] $(VERSION3)
 	@echo [OSX] $(OSXVER) - ${OSXBUILDV}
 	@echo [SDK] $(OSXSDKVER) - ${OSXSDKBUILDV}
 	@echo [XCO] $(XCODEVER) - ${XCODEBUILDV}
 	@echo [KCH] $(KEYCHAIN)
+	@-rm -rf $(DISTDIR)/$(NAME)
+	@-rm -rf $(DISTDIR)/$(NAME).dSYM
+	@-rm -rf $(DISTDIR)/$(NAME).symbols
+	@-rm -rf $(DISTDIR)/*.pkg
 	@-security delete-keychain $(KEYCHAIN)
 	@security create-keychain -p "$(SIGN_PFX_PASS)" $(KEYCHAIN)
 	@security set-keychain-settings -lut 21600 $(KEYCHAIN)
@@ -158,10 +174,6 @@ dist-prep:
 dist-%: dist-prep
 	@echo [DST] $(NAME)-$*
 dist: dist-prep dist-x64 dist-arm64
-	@-rm -rf $(DISTDIRAPP)
-	@-rm -rf $(DISTDIR)/$(NAME).dSYM
-	@-rm -rf $(DISTDIR)/$(NAME).symbols
-	@-rm -rf $(DISTDIR)/$(NAME)*.pkg
 	@echo [MKD] $(APPNAME).app/Contents/MacOS
 	@mkdir -p $(DISTDIRAPP)/Contents/MacOS
 	@echo [LIP] $(NAME)$(EXTBIN)
@@ -207,12 +219,12 @@ ifeq ($(APPLE_DIST_STORE),true)
 	  $(DISTDIRAPP)
 	@echo [VFY] $(APPNAME).app
 	@codesign --verify -vvvd $(DISTDIRAPP)
-	@echo [PKG] $(NAME)-$(VERSION3)-unsigned.pkg
+	@echo [PKG] $(PKGUNSIGNED)
 	@productbuild \
 	  --version $(VERSION3) \
 	  --symbolication $(DISTDIR)/$(NAME).symbols \
 	  --component $(DISTDIRAPP) /Applications \
-	  $(DISTDIR)/$(NAME)-$(VERSION3)-unsigned.pkg
+	  $(DISTDIR)/$(PKGUNSIGNED)
 else
 	@echo [SIG] $(APPNAME).app
 	@codesign --verbose \
@@ -224,37 +236,45 @@ else
 	  $(DISTDIRAPP)
 	@echo [VFY] $(APPNAME).app
 	@codesign --verify -vvvd $(DISTDIRAPP)
-	@echo [PKG] $(NAME)-$(VERSION3)-unsigned.pkg
+	@echo [PKG] $(PKGUNSIGNED)
 	@pkgbuild \
 	  --version $(VERSION3) \
 	  --root $(DISTDIR)/$(NAME) \
 	  --install-location /Applications \
 	  --component-plist $(DISTDIR)/$(NAME).Component.plist \
-	  $(DISTDIR)/$(NAME)-$(VERSION3)-unsigned.pkg
+	  $(DISTDIR)/$(PKGUNSIGNED)
 endif
-	@echo [FIL] $(NAME)-$(VERSION3)-unsigned.pkg
-	@pkgutil --payload-files $(DISTDIR)/$(NAME)-$(VERSION3)-unsigned.pkg
+	@echo [FIL] $(PKGUNSIGNED)
+	@pkgutil --payload-files $(DISTDIR)/$(PKGUNSIGNED)
 ifneq ($(PRODUCTSIGNCN),)
-	@echo [SIG] $(NAME)-$(VERSION3).pkg
+	@echo [SIG] $(PKGSIGNED)
 	@productsign \
 	  --sign "$(PRODUCTSIGNCN)" \
 	  --keychain $(KEYCHAIN) \
 	  --timestamp \
-	  $(DISTDIR)/$(NAME)-$(VERSION3)-unsigned.pkg \
-	  $(DISTDIR)/$(NAME)-$(VERSION3).pkg
-	@echo [VFY] $(NAME)-$(VERSION3).pkg
-	@pkgutil --check-signature $(DISTDIR)/$(NAME)-$(VERSION3).pkg
+	  $(DISTDIR)/$(PKGUNSIGNED) \
+	  $(DISTDIR)/$(PKGSIGNED)
+	@echo [VFY] $(PKGSIGNED)
+	@pkgutil --check-signature $(DISTDIR)/$(PKGSIGNED)
 ifneq ($(APPLE_ID),)
 ifeq ($(APPLE_DIST_STORE),true)
-	@echo [VAL] $(NAME)-$(VERSION3).pkg
+	@echo [VAL] $(PKGSIGNED)
 	@xcrun altool --validate-app \
-	  -f $(DISTDIR)/$(NAME)-$(VERSION3).pkg \
+	  -f $(DISTDIR)/$(PKGSIGNED) \
 	  -t macOS \
 	  -u $(APPLE_ID) \
 	  -p $(APPLE_APPSPEC_PASS)
+ifeq ($(APPLE_UPLOAD_STORE),true)
+	@echo [UPL] $(PKGSIGNED)
+	@xcrun altool --upload-app \
+	  -f $(DISTDIR)/$(PKGSIGNED) \
+	  -t macOS \
+	  -u $(APPLE_ID) \
+	  -p $(APPLE_APPSPEC_PASS)
+endif
 else
-	@echo [VAL] $(NAME)-$(VERSION3).pkg
-	@xcrun notarytool submit $(DISTDIR)/$(NAME)-$(VERSION3).pkg \
+	@echo [VAL] $(PKGSIGNED)
+	@xcrun notarytool submit $(DISTDIR)/$(PKGSIGNED) \
 	  --apple-id=$(APPLE_ID) \
 	  --team-id=$(APPLE_TEAM_ID) \
 	  --password=$(APPLE_APPSPEC_PASS) \

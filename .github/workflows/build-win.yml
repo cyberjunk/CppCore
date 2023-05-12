@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - 'master'
+    tags:
+      - '*'
 jobs:
 ###########################################################################
   build:
@@ -110,21 +112,21 @@ jobs:
 
     # Download X64 Build
     - name: Download X64 Build
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-x64-default)
         path: ./build/make/bin/win-x64/
 
     # Download X86 Build
     - name: Download X86 Build
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-x86-default)
         path: ./build/make/bin/win-x86/
 
     # Download ARM64 Build
     - name: Download ARM64 Build
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-arm64-default)
         path: ./build/make/bin/win-arm64/
@@ -163,3 +165,11 @@ jobs:
           ./dist/win-10/*.appx
           ./dist/win-10/*.appxbundle
           ./dist/win-10/*.appxupload
+
+    # Upload to Github Release
+    - name: Upload to Github Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/') && (matrix.cpurev == 'default')
+      with:
+        token: ${{ secrets.PAT_GITHUB_ACTIONS }}
+        files: ./dist/win-10/*.appxbundle
