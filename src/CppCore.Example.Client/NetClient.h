@@ -229,7 +229,7 @@ namespace CppCore { namespace Example
          mPingSentTcp(nanoseconds(0)),
          mPingSentUdp(nanoseconds(0)),
          mRTT(nanoseconds(0)),
-         mRunnablePing([this]() { runPing(); }, true, PINGINTERVAL)
+         mRunnablePing([this]() { runPing(); }, PINGINTERVAL)
       {
       }
 

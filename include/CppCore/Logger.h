@@ -167,7 +167,7 @@ namespace CppCore
          mLogToConsole(logToConsole),
          mLogToFile(logToFile),
          mLocale(std::locale("C")),
-         mRunnableLog([this]() { writer(); }, true, logInterval)
+         mRunnableLog([this]() { writer(); }, logInterval)
       {
          // init logfile stream
          if (logToFile)

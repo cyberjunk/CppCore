@@ -123,7 +123,7 @@ namespace CppCore
          mSystemInfo(appname),
          mCPUID(),
          mThreadPool(),
-         mRunMessagePump([this] { runMessagePump(); }, true, messagePumpInterval),
+         mRunMessagePump([this] { runMessagePump(); }, messagePumpInterval),
          mLogger(mThreadPool, logToConsole, logToFile, mSystemInfo.getLogFile()),
          mResources(thiss(), mThreadPool, mLogger, thiss(), appname)
       {
