@@ -269,6 +269,11 @@ namespace CppCore
          }
 
          /// <summary>
+         /// Tries to schedule a Runnable for execution in the Runnable used by this Pool.
+         /// </summary>
+         using Handler::schedule;
+
+         /// <summary>
          /// Tries to remove a Runnable from this Schedule
          /// </summary>
          INLINE bool cancel(Runnable& runnable) override
