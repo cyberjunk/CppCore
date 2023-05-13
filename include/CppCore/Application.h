@@ -249,10 +249,15 @@ namespace CppCore
       /// <summary>
       /// Tries to schedule a Runnable for execution in the mainthread.
       /// </summary>
-      INLINE bool schedule(Runnable& runnable, TimePointHR executeAt = TimePointHR(nanoseconds(0))) override
+      INLINE bool schedule(Runnable& runnable, TimePointHR executeAt) override
       {
          return mSchedule.schedule(runnable, executeAt);
       }
+
+      /// <summary>
+      /// Integrate schedule() of Handler
+      /// </summary>
+      using Handler::schedule;
 
       /// <summary>
       /// Tries to remove a Runnable from the schedule of the mainthread.

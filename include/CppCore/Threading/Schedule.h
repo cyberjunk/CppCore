@@ -77,7 +77,7 @@ namespace CppCore
       /// <summary>
       /// Tries to add a Runnable to this Schedule executing at given absolute timepoint.
       /// </summary>
-      INLINE bool schedule(Runnable& runnable, const TimePointHR executeAt = TimePointHR(DurationHR::zero()))
+      INLINE virtual bool schedule(Runnable& runnable, const TimePointHR executeAt) override
       {
          bool ok = false;                    // default return
          runnable.lock();                    // first lock runnable (lower scope)
@@ -121,17 +121,14 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Tries to add a Runnable to this Schedule executing after given duration from now.
+      /// Integrate schedule() from Handler class
       /// </summary>
-      INLINE bool schedule(Runnable& runnable, const DurationHR executeIn)
-      {
-         return schedule(runnable, ClockHR::now() + executeIn);
-      }
+      using Handler::schedule;
 
       /// <summary>
       /// Tries to remove a Runnable from this Schedule
       /// </summary>
-      INLINE bool cancel(Runnable& runnable)
+      INLINE virtual bool cancel(Runnable& runnable) override
       {
          bool ok = false;                    // default return
          runnable.lock();                    // first lock runnable (lower scope)

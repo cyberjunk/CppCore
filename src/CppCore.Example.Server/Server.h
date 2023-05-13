@@ -90,7 +90,7 @@ namespace CppCore { namespace Example
          mNetServer(port, *this, mThreadPool, mThreadPool, mLogger, *this),
          mEpochTimer([this]() { runEpochTimer(); }, true, EPOCHLENGTH)
       {
-         schedule(mEpochTimer, ClockHR::now() + mEpochTimer.getInterval());
+         schedule(mEpochTimer);
       }
    };
 }}

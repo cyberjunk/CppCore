@@ -108,7 +108,7 @@ namespace CppCore
       /// <summary>
       /// Tries to schedule a Runnable for execution in the Schedule used by this Thread.
       /// </summary>
-      INLINE bool schedule(Runnable& runnable, TimePointHR executeAt = TimePointHR(nanoseconds(0))) override
+      INLINE bool schedule(Runnable& runnable, TimePointHR executeAt) override
       {
          return mSchedule.schedule(runnable, executeAt);;
       }
@@ -263,7 +263,7 @@ namespace CppCore
          /// <summary>
          /// Tries to schedule a Runnable for execution in the Runnable used by this Pool.
          /// </summary>
-         INLINE bool schedule(Runnable& runnable, const TimePointHR executeAt = TimePointHR(nanoseconds(0))) override
+         INLINE bool schedule(Runnable& runnable, const TimePointHR executeAt) override
          {
             return mSchedule.schedule(runnable, executeAt);;
          }
