@@ -36,13 +36,13 @@ namespace CppCore
       static constexpr DurationHR DEFAULTMESSAGEPUMPINTERVAL = milliseconds(16);
 
    protected:
-      const System::Info   mSystemInfo;     // basic system info from operating system
-      const CPUID          mCPUID;          // cpu info directly from cpu
-      Thread::Pool<Thread> mThreadPool;     // threadpool for background tasks
-      Schedule<>           mSchedule;       // schedule of the mainthread
-      LOGGER               mLogger;         // logger module
-      RESOURCES            mResources;      // access to resources on disk
-      Runnable             mRunMessagePump; // runnable executing message pump on mainthread
+      const System::Info mSystemInfo;     // basic system info from operating system
+      const CPUID        mCPUID;          // cpu info directly from cpu
+      Thread::Pool<>     mThreadPool;     // threadpool for background tasks
+      Schedule<>         mSchedule;       // schedule of the mainthread
+      LOGGER             mLogger;         // logger module
+      RESOURCES          mResources;      // access to resources on disk
+      Runnable           mRunMessagePump; // runnable executing message pump on mainthread
 
       /// <summary>
       /// Helper for casting this from template to final instance type.

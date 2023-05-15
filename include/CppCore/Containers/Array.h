@@ -496,8 +496,8 @@ namespace CppCore
             size_t removed = 0;
 
             // backwards for removal!
-            const size_t beg = mLength - 1;
-            const size_t end = numeric_limits<size_t>::max();
+            const     size_t beg = mLength - 1;
+            constexpr size_t end = numeric_limits<size_t>::max();
 
             for (size_t i = beg; i != end; i--)
             {

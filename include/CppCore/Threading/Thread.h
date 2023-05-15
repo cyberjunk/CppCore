@@ -1,15 +1,12 @@
 #pragma once
 
-#ifndef CPPCORE_DEFAULT_THREADPOOL_SIZE
-#define CPPCORE_DEFAULT_THREADPOOL_SIZE 8
-#endif
-
 #include <CppCore/Root.h>
 #include <CppCore/Containers/Array.h>
 #include <CppCore/Threading/Handler.h>
 #include <CppCore/Threading/Schedule.h>
 #include <CppCore/Threading/Looper.h>
 #include <CppCore/Logger.h>
+#include <CppCore/System.h>
 
 #ifdef CPPCORE_OS_WINDOWS
 #include <processthreadsapi.h>
@@ -178,14 +175,14 @@ namespace CppCore
          /// Constructor
          /// </summary>
          INLINE Pool(
-            const size_t numthreads = CPPCORE_DEFAULT_THREADPOOL_SIZE,
+            const size_t numthreads = 0,
             const bool   autoStart  = true) : 
             mSchedule(),
             mAllocator(),
             mIsRunning(false),
             mMutexStartStop(),
-            mNumThreads(numthreads),
-            mThreads(AllocatorTraits::allocate(mAllocator, numthreads))
+            mNumThreads(numthreads ? numthreads : System::getCpuCoresLogical() ? System::getCpuCoresLogical() : 1),
+            mThreads(AllocatorTraits::allocate(mAllocator, mNumThreads))
          {
             // construct threads
             for (size_t i = 0; i < mNumThreads; i++)
