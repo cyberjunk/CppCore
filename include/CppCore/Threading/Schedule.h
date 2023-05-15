@@ -75,9 +75,9 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Tries to add a Runnable to this Schedule
+      /// Tries to add a Runnable to this Schedule executing at given absolute timepoint.
       /// </summary>
-      INLINE bool schedule(Runnable& runnable, const TimePointHR executeAt = TimePointHR(DurationHR::zero()))
+      INLINE virtual bool schedule(Runnable& runnable, const TimePointHR executeAt) override
       {
          bool ok = false;                    // default return
          runnable.lock();                    // first lock runnable (lower scope)
@@ -121,9 +121,14 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Integrate schedule() from Handler class
+      /// </summary>
+      using Handler::schedule;
+
+      /// <summary>
       /// Tries to remove a Runnable from this Schedule
       /// </summary>
-      INLINE bool cancel(Runnable& runnable)
+      INLINE virtual bool cancel(Runnable& runnable) override
       {
          bool ok = false;                    // default return
          runnable.lock();                    // first lock runnable (lower scope)
@@ -154,23 +159,21 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Execute the next elapsed timer or instant runnable.
-      /// Or sleeps until it is time to run the next timer or woken up.
+      /// Executes the next elapsed timer or instant runnable on the calling thread.
+      /// Returns true if one was executed else false.
       /// </summary>
-      template<typename TLOOPER>
-      INLINE void execute(TLOOPER& looper)
+      INLINE bool execute()
       {
-         looper.setExecuting(true);
          Runnable* runnable = nullptr;
 
          ///////////////////////////////////////////////////////////////////////////////////////////
-         // (1) Get a Runnable to execute (locked)
+         // (1) Get a Runnable to execute (locked schedule)
 
          // lock schedule
          unique_lock<mutex> l(mMutexTimers);
 
          // try to get an instant runnable first, otherwise try to get a normal runnable
-         bool ok = mTimersInstant.popFront(runnable) ||
+         const bool ok = mTimersInstant.popFront(runnable) ||
             (mTimers.peek(runnable) && runnable->isTimeToExecute() && mTimers.pop(runnable));
 
          if (ok)
@@ -180,7 +183,7 @@ namespace CppCore
          l.unlock();
 
          ///////////////////////////////////////////////////////////////////////////////////////////
-         // (2) Execute the Runnable if any (unlocked)
+         // (2) Execute the Runnable if any (unlocked schedule)
 
          if (ok)
          {
@@ -219,13 +222,30 @@ namespace CppCore
                runnable->unlock();
          }
 
+         return ok;
+      }
+
+      /// <summary>
+      /// Execute the next elapsed timer or instant runnable on the calling thread and
+      /// sleeps until it is time to run the next timer or until woken up.
+      /// </summary>
+      template<typename TLOOPER>
+      INLINE void execute(TLOOPER& looper)
+      {
+         looper.setExecuting(true);
+         Runnable* runnable = nullptr;
+
          ///////////////////////////////////////////////////////////////////////////////////////////
-         // (3) See how long we can sleep/wait (locked)
+         // (1) Execute next runnable if any
+         execute();
 
-         // lock schedule again
-         l.lock();
+         ///////////////////////////////////////////////////////////////////////////////////////////
+         // (2) See how long we can sleep/wait (locked)
 
-         // 1) Based on next Runnable to execute
+         // lock schedule
+         unique_lock<mutex> l(mMutexTimers);
+
+         // a) Based on next Runnable to execute
          if (mTimersInstant.peekFront(runnable) || mTimers.peek(runnable))
          {
             const DurationHR& timeLeft = runnable->getRemainingTime();
@@ -252,7 +272,7 @@ namespace CppCore
             else { }
          }
 
-         // 2) Default Sleep (no Runnable)
+         // b) Default Sleep (no Runnable)
          else
          {
             looper.setExecuting(false);

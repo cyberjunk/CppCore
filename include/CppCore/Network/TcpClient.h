@@ -126,7 +126,7 @@ namespace CppCore
          mRunnableConnect([this]() { runConnect(); }),
          mRunnableDisconnect([this]() { runDisconnect(); }),
          mRunnableSend([this]() { runSend(); }),
-         mRunnableRecv([this]() { runReceive(); }, true, milliseconds(0)),
+         mRunnableRecv([this]() { runReceive(); }, milliseconds(0)),
          mHost(""),
          mPort(0)
       {

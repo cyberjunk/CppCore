@@ -88,9 +88,9 @@ namespace CppCore { namespace Example
       INLINE Server(const uint16_t port = DEFAULTPORT) :
          Application(true, true, APPNAME),
          mNetServer(port, *this, mThreadPool, mThreadPool, mLogger, *this),
-         mEpochTimer([this]() { runEpochTimer(); }, true, EPOCHLENGTH)
+         mEpochTimer([this]() { runEpochTimer(); }, EPOCHLENGTH)
       {
-         schedule(mEpochTimer, ClockHR::now() + mEpochTimer.getInterval());
+         schedule(mEpochTimer);
       }
    };
 }}

@@ -156,7 +156,7 @@ namespace CppCore
          const DurationHR& timeoutReceive = seconds(5)) :
          Base(port, handler, threadPool, messageHandler, logger, callBack, timeoutReceive),
          mSocketUdp(),
-         mRunnablePollUdp([this]() { runPollUdp(); }, true, milliseconds(0))
+         mRunnablePollUdp([this]() { runPollUdp(); }, milliseconds(0))
       {
          // create udp socket
          this->log("Creating UDP socket and binding to port " + std::to_string(this->mPort));

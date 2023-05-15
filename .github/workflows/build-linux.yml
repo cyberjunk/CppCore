@@ -30,6 +30,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    # Purge PPA
+    - name: Purge PPA
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ppa-purge aptitude
+        sudo ppa-purge -y ppa:ubuntu-toolchain-r/test
+
     # Cross-Compile Support
     - name: Cross-Compile Support
       uses: cyberjunk/gha-ubuntu-cross@v3

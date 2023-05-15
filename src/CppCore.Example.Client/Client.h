@@ -44,7 +44,7 @@ namespace CppCore { namespace Example
       {
          // try again
          logError("Connection lost. Retry in 3s.");
-         schedule(mRunnableConnect, ClockHR::now() + seconds(3));
+         schedule(mRunnableConnect, seconds(3));
       }
 
       /// <summary>
@@ -61,7 +61,7 @@ namespace CppCore { namespace Example
       {
          // try again
          logError("Connection failed. Retry in 3s.");
-         schedule(mRunnableConnect, ClockHR::now() + seconds(3));
+         schedule(mRunnableConnect, seconds(3));
       }
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

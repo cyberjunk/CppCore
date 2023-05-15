@@ -46,15 +46,27 @@ namespace CppCore
          mReschedule(false) { CPPCORE_MUTEX_INIT(mMutex); }
 
       /// <summary>
-      /// Constructor
+      /// Runnable Constructor
       /// </summary>
-      INLINE Runnable(RunnableFunction func, bool repeat = false, DurationHR interval = DurationHR::zero()) :
+      INLINE Runnable(RunnableFunction func) :
          mExecutionTime(TimePointHR(DurationHR::zero())),
          mState(State::Idle),
          mFunc(func),
-         mRepeat(repeat),
+         mRepeat(false),
+         mInterval(DurationHR::zero()),
+         mReschedule(false) { CPPCORE_MUTEX_INIT(mMutex); }
+
+      /// <summary>
+      /// Timer Constructor
+      /// </summary>
+      INLINE Runnable(RunnableFunction func, const DurationHR& interval) :
+         mExecutionTime(TimePointHR(DurationHR::zero())),
+         mState(State::Idle),
+         mFunc(func),
+         mRepeat(true),
          mInterval(interval),
          mReschedule(false) { CPPCORE_MUTEX_INIT(mMutex); }
+
 
       /// <summary>
       /// Destructor
