@@ -13,11 +13,11 @@ namespace CppCore
    /// </summary>
    class Looper
    {
-      friend Schedule<>;
+      friend Schedule;
 
    protected:
       atomic<bool> mIsRunning;
-      Schedule<>&  mSchedule;
+      Schedule&    mSchedule;
       thread::id   mThreadId;
       TimePointHR  mExecutionStarted;
       TimePointHR  mExecutionStopped;
@@ -63,7 +63,7 @@ namespace CppCore
       /// <summary>
       /// Constructor
       /// </summary>
-      INLINE Looper(Schedule<>& schedule) :
+      INLINE Looper(Schedule& schedule) :
          mIsRunning(false),
          mSchedule(schedule),
          mThreadId(::std::this_thread::get_id()),

@@ -32,13 +32,10 @@ namespace CppCore
    /// <summary>
    /// Multi-Thread Safe Schedule for Runnables
    /// </summary>
-   template<
-      size_t TIMERCOUNT        = CPPCORE_DEFAULT_TIMERCOUNT, 
-      size_t INSTANTTIMERCOUNT = CPPCORE_DEFAULT_INSTANTTIMERCOUNT>
    class CPPCORE_ALIGN64 Schedule : public Handler
    {
-      typedef Runnable::MinHeap<TIMERCOUNT>           RunnablePriorityQueue;
-      typedef Queue::ST<Runnable*, INSTANTTIMERCOUNT> RunnableQueue;
+      typedef Runnable::MinHeap<CPPCORE_DEFAULT_TIMERCOUNT>           RunnablePriorityQueue;
+      typedef Queue::ST<Runnable*, CPPCORE_DEFAULT_INSTANTTIMERCOUNT> RunnableQueue;
 
    protected:
       CPPCORE_ALIGN64 RunnablePriorityQueue  mTimers;

@@ -39,7 +39,7 @@ namespace CppCore
       const System::Info mSystemInfo;     // basic system info from operating system
       const CPUID        mCPUID;          // cpu info directly from cpu
       Thread::Pool<>     mThreadPool;     // threadpool for background tasks
-      Schedule<>         mSchedule;       // schedule of the mainthread
+      Schedule           mSchedule;       // schedule of the mainthread
       LOGGER             mLogger;         // logger module
       RESOURCES          mResources;      // access to resources on disk
       Runnable           mRunMessagePump; // runnable executing message pump on mainthread

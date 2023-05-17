@@ -13,11 +13,18 @@ namespace CppCore
    typedef ::std::function<void(void)> RunnableFunction;
 
    /// <summary>
+   /// Forward Declaration
+   /// </summary>
+   class Schedule;
+
+   /// <summary>
    /// Runnables are used to execute a function in a looper at a given time.
    /// They can also repeat themself in intervals like a timer.
    /// </summary>
    class CPPCORE_ALIGN16 Runnable
    {
+      friend Schedule;
+
    public:
       /// <summary>
       /// Possible States of a Runnable
@@ -32,6 +39,37 @@ namespace CppCore
       CPPCORE_MUTEX_TYPE mMutex;
       bool               mRepeat;
       bool               mReschedule;
+
+      
+      /// <summary>
+      /// Sets the time when to execute this runnable in the schedule
+      /// </summary>
+      INLINE void setExecutionTime(const TimePointHR& time) { mExecutionTime = time; }
+
+      /// <summary>
+      /// Sets the current state of the Runnable.
+      /// </summary>
+      INLINE void setState(State state)
+      {
+         mState = state;
+      }
+
+      /// <summary>
+      /// 
+      /// </summary>
+      INLINE void setReschedule(bool reschedule)
+      {
+         mReschedule = reschedule;
+      }
+
+      /// <summary>
+      /// Called by the Looper when executing this Runnable.
+      /// </summary>
+      INLINE void execute()
+      {
+         if (mFunc)
+            mFunc();
+      }
 
    public:
       /// <summary>
@@ -67,7 +105,6 @@ namespace CppCore
          mInterval(interval),
          mReschedule(false) { CPPCORE_MUTEX_INIT(mMutex); }
 
-
       /// <summary>
       /// Destructor
       /// </summary>
@@ -77,23 +114,15 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Called by the Looper when executing this Runnable.
-      /// </summary>
-      INLINE void execute()
-      {
-         if (mFunc)
-            mFunc();
-      }
-
-      /// <summary>
       /// Gets the time when to execute this runnable in the schedule
       /// </summary>
       INLINE const TimePointHR& getExecutionTime() const { return mExecutionTime; }
 
       /// <summary>
-      /// Sets the time when to execute this runnable in the schedule
+      /// Returns the remaining time until 'ExecutionTime'.
+      /// Can be negative if 'ExecutionTime' is in the past
       /// </summary>
-      INLINE void setExecutionTime(const TimePointHR& time) { mExecutionTime = time; }
+      INLINE const DurationHR getRemainingTime() const { return mExecutionTime - ClockHR::now(); }
 
       /// <summary>
       /// Sets the function that should be executed
@@ -109,20 +138,6 @@ namespace CppCore
       /// Unlock the Runnable
       /// </summary>
       INLINE void unlock() { CPPCORE_MUTEX_UNLOCK(mMutex); }
-
-      /// <summary>
-      /// Returns the remaining time until 'ExecutionTime'.
-      /// Can be negative if 'ExecutionTime' is in the past
-      /// </summary>
-      INLINE const DurationHR getRemainingTime() const { return mExecutionTime - ClockHR::now(); }
-
-      /// <summary>
-      /// Sets the current state of the Runnable.
-      /// </summary>
-      INLINE void setState(State state)
-      {
-         mState = state;
-      }
 
       /// <summary>
       /// Returns the current state of the Runnable.
@@ -219,14 +234,6 @@ namespace CppCore
       INLINE bool isReschedule() const
       {
          return mReschedule;
-      }
-
-      /// <summary>
-      /// 
-      /// </summary>
-      INLINE void setReschedule(bool reschedule)
-      {
-         mReschedule = reschedule;
       }
 
       /////////////////////////////////////////////////////////////////////////////////

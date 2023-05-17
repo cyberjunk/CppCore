@@ -20,7 +20,7 @@ namespace CppCore
    class Thread : public Looper, public Handler
    {
    protected:
-      Schedule<>&        mSchedule;
+      Schedule&          mSchedule;
       thread             mThread;
       mutex              mMutexStartStop;
       mutex              mMutexWait;
@@ -34,7 +34,7 @@ namespace CppCore
       /// <summary>
       /// Constructor
       /// </summary>
-      INLINE Thread(Schedule<>& schedule) :
+      INLINE Thread(Schedule& schedule) :
          Looper(schedule),
          mSchedule(schedule) { }
 
@@ -111,6 +111,11 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Add other schedule operations of handler
+      /// </summary>
+      using Handler::schedule;
+
+      /// <summary>
       /// Tries to remove a Runnable from this Schedule
       /// </summary>
       INLINE bool cancel(Runnable& runnable) override
@@ -158,7 +163,7 @@ namespace CppCore
          using AllocatorTraits = allocator_traits<Allocator>;
 
       protected:
-         Schedule<>   mSchedule;
+         Schedule     mSchedule;
          Allocator    mAllocator;
          atomic<bool> mIsRunning;
          mutex        mMutexStartStop;
