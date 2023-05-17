@@ -20,12 +20,10 @@ namespace CppCore
    class Thread : public Looper, public Handler
    {
    protected:
-      Schedule&          mSchedule;
       thread             mThread;
       mutex              mMutexStartStop;
       mutex              mMutexWait;
       condition_variable mWait;
-      thread::id         mId;
 
       virtual void init() { }
       virtual void shutdown() { }
@@ -34,9 +32,7 @@ namespace CppCore
       /// <summary>
       /// Constructor
       /// </summary>
-      INLINE Thread(Schedule& schedule) :
-         Looper(schedule),
-         mSchedule(schedule) { }
+      INLINE Thread(Schedule& schedule) : Looper(schedule) { }
 
       /// <summary>
       /// Destructor
@@ -46,7 +42,7 @@ namespace CppCore
       /// <summary>
       /// Returns the internal Id of the thread
       /// </summary>
-      INLINE const thread::id& getId() const { return mId; }
+      INLINE const thread::id& getId() const { return this->mThreadId; }
 
       /// <summary>
       /// Start the thread
@@ -107,7 +103,7 @@ namespace CppCore
       /// </summary>
       INLINE bool schedule(Runnable& runnable, TimePointHR executeAt) override
       {
-         return mSchedule.schedule(runnable, executeAt);;
+         return this->mSchedule.schedule(runnable, executeAt);;
       }
 
       /// <summary>
@@ -127,7 +123,7 @@ namespace CppCore
       void threadProc()
       {
          // set id of thread
-         mId = ::std::this_thread::get_id();
+         this->mThreadId = ::std::this_thread::get_id();
 
          // lock / wait until 'mWait.wait()' is called
          // and starter is ready for our notification
