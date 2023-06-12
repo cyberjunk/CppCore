@@ -7,22 +7,22 @@ endef
 
 # Copy Files between Folders by Pattern
 define copyfiles
-	-$(shell copy /Y $(subst /,\,$(1)) $(subst /,\,$(2)) >nul 2>&1)
+	$(shell copy /Y $(subst /,\,$(1)) $(subst /,\,$(2)) >nul 2>&1)
 endef
 
 # Copy Files recursively
 define copyfilesrecursive
-	-$(shell xcopy /Y /E /H $(subst /,\,$(1)) $(subst /,\,$(2)) >nul 2>&1)
+	$(shell xcopy /Y /E /H $(subst /,\,$(1)) $(subst /,\,$(2)) >nul 2>&1)
 endef
 
 # Recursively remove folder
 define rmdir	
-	-$(shell if exist $(subst /,\,$(1)) rd /s /q $(subst /,\,$(1)) >nul 2>&1)
+	$(shell if exist $(subst /,\,$(1)) rd /s /q $(subst /,\,$(1)) >nul 2>&1)
 endef
 
 # Create folder and all sub folders
 define mkdir
-	-$(shell if not exist $(subst /,\,$(1)) mkdir $(subst /,\,$(1)) >nul 2>&1)
+	$(shell if not exist $(subst /,\,$(1)) mkdir $(subst /,\,$(1)) >nul 2>&1)
 endef
 
 # Replace string occurrences in file
