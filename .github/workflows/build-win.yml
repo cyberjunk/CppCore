@@ -24,7 +24,7 @@ jobs:
       matrix:
         os: [windows-2019,windows-2022]
         arch: [x64,x86,arm64]
-        cpurev: [default]
+        cpurev: [legacy, default, modern]
     steps:
 
     # Checkout
@@ -153,7 +153,8 @@ jobs:
         SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
         PUBLISHERCN: Clint Banzhaf
         PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
-      run: make dist
+      run: |
+        make dist -j${{ env.JOBS }}
 
     # Upload
     - name: Upload
