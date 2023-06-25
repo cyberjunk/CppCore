@@ -111,7 +111,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4E2A74EF-4332-4540-8010-A5218487ADB9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Meridian59</RootNamespace>
+    <RootNamespace>CppCore</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

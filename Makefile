@@ -53,6 +53,18 @@ CppCore.Test-run:
 	@echo [RUN] CppCore.Test
 	+@make -s -C ./build/make/ -f CppCore.Test.mk run
 
+CppCore.Interface.C:
+	@echo [BLD] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk
+
+CppCore.Interface.C-clean:
+	@echo [CLN] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk clean
+
+CppCore.Interface.C-dist:
+	@echo [DST] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk dist
+
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk
@@ -68,6 +80,7 @@ all: \
 	CppCore.Example.Client \
 	CppCore.Example.UI \
 	CppCore.Test \
+	CppCore.Interface.C \
 	CppCore.Debug
 
 clean: \
@@ -75,6 +88,7 @@ clean: \
 	CppCore.Example.Client-clean \
 	CppCore.Example.UI-clean \
 	CppCore.Test-clean \
+	CppCore.Interface.C-clean \
 	CppCore.Debug-clean
 
 test: \
