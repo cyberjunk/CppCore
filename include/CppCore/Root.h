@@ -555,6 +555,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef __cplusplus
 // Standard C++ Includes
 #define _USE_MATH_DEFINES
 #include <algorithm>
@@ -584,6 +585,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -723,22 +725,40 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// signed/unsigned integer types for C
+#ifndef __cplusplus
+typedef unsigned char      uint8_t;
+typedef unsigned short     uint16_t;
+typedef unsigned int       uint32_t;
+typedef unsigned long long uint64_t;
+
+typedef char               int8_t;
+typedef short              int16_t;
+typedef int                int32_t;
+typedef long long          int64_t;
+#else
 // make sure c++ 2017 features are enabled
 /*#if !defined(_HAS_CXX17) || _HAS_CXX17 == 0
 #error C++ 2017 Support Required
 #endif*/
+#endif
 
 // validate integer sizes
-static_assert(sizeof(uint8_t)  == 1U);
-static_assert(sizeof(uint16_t) == 2U);
-static_assert(sizeof(uint32_t) == 4U);
-static_assert(sizeof(uint64_t) == 8U);
+static_assert(sizeof(uint8_t)  == 1U, "uint8_t not 1 byte");
+static_assert(sizeof(uint16_t) == 2U, "uint16_t not 2 bytes");
+static_assert(sizeof(uint32_t) == 4U, "uint32_t not 4 bytes");
+static_assert(sizeof(uint64_t) == 8U, "uint64_t not 8 bytes");
+
+static_assert(sizeof(int8_t)  == 1U, "int8_t not 1 byte");
+static_assert(sizeof(int16_t) == 2U, "int16_t not 2 bytes");
+static_assert(sizeof(int32_t) == 4U, "int32_t not 4 bytes");
+static_assert(sizeof(int64_t) == 8U, "int64_t not 8 bytes");
 
 // validate floating point sizes
-static_assert(sizeof(float)  == 4U);
-static_assert(sizeof(double) == 8U);
+static_assert(sizeof(float)  == 4U, "float not 4 bytes");
+static_assert(sizeof(double) == 8U, "double not 8 bytes");
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Inline Macro
@@ -765,6 +785,14 @@ static_assert(sizeof(double) == 8U);
 #else
 #define CONSTEXPR 
 #endif
+
+// Export macro
+#if defined(CPPCORE_OS_WINDOWS)
+#define CPPCORE_EXPORT __declspec(dllexport)
+#else
+#define CPPCORE_EXPORT __attribute__((visibility("default")))
+#endif
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -868,6 +896,8 @@ static_assert(sizeof(double) == 8U);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef __cplusplus
+
 namespace CppCore
 {
    // from std::chrono
@@ -942,3 +972,4 @@ namespace CppCore
    // deprecated: to be removed
    typedef ::std::string StdString;
 }
+#endif
