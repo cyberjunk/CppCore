@@ -120,12 +120,14 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ConformanceMode />
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>CppCore.Interface.C_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>bin\x86</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
@@ -145,12 +147,14 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <OmitFramePointers>false</OmitFramePointers>
+      <ConformanceMode />
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>CppCore.Interface.C_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>bin\x64</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
     <ResourceCompile>
@@ -174,14 +178,16 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ConformanceMode />
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>CppCore.Interface.C.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>bin\x86</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
       <SetChecksum>true</SetChecksum>
     </Link>
@@ -206,14 +212,16 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ConformanceMode />
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>CppCore.Interface.C.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>bin\x64</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
       <SetChecksum>true</SetChecksum>
     </Link>
