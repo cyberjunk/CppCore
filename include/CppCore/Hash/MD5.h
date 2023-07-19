@@ -172,6 +172,30 @@ namespace CppCore
          mState.u32[3] += d;
       }
 
+      /// <summary>
+      /// Finish hash calculations.
+      /// </summary>
+      INLINE void finish()
+      {
+          // length of the original message (before padding)
+          const uint64_t totalSize = this->totalSize * 8ULL;
+
+          // determine padding size
+          const size_t padSize = (blockSize < 56U) ?
+              56U - blockSize :
+              64U + 56U - blockSize;
+
+          // append padding
+          step(PADDING, padSize);
+
+          // add the 64-bit length of the original message
+          // to the end of the block
+          mBlock.u64[7] = totalSize;
+
+          // calculate the message digest
+          transform();
+      }
+
    public:
       /// <summary>
       /// Digest/Hash Output Size in Bytes
@@ -244,30 +268,43 @@ namespace CppCore
 
       /// <summary>
       /// Finish hash calculations.
-      /// Digest must be 16 Bytes!
       /// </summary>
       INLINE void finish(Digest& digest)
       {
-         // length of the original message (before padding)
-         const uint64_t totalSize = this->totalSize * 8ULL;
-
-         // determine padding size
-         const size_t padSize = (blockSize < 56U) ?
-            56U - blockSize :
-            64U + 56U - blockSize;
-
-         // append padding
-         step(PADDING, padSize);
-
-         // add the 64-bit length of the original message
-         // to the end of the block
-         mBlock.u64[7] = totalSize;
-
-         // calculate the message digest
-         transform();
+         finish();
 
          // copy the final digest
          CppCore::clone(digest, mState);
+      }
+
+      /// <summary>
+      /// Finish hash calculations.
+      /// Writes 16 bytes to digest!
+      /// </summary>
+      INLINE void finish(void* digest)
+      {
+         finish();
+
+         // copy the final digest
+      #if defined(CPPCORE_CPUFEAT_SSE2)
+         _mm_storeu_si128((__m128i*)digest, _mm_load_si128((__m128i*)&mState));
+      #else
+         uint64_t* p = (uint64_t*)digest;
+         p[0] = mState.u64[0];
+         p[1] = mState.u64[1];
+      #endif
+      }
+
+      /// <summary>
+      /// Finish hash calculations.
+      /// </summary>
+      INLINE void finish(uint64_t& l, uint64_t& h)
+      {
+         finish();
+
+         // copy the final digest
+         l = mState.u64[0];
+         h = mState.u64[1];
       }
    };
 }

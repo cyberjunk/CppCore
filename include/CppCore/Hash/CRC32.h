@@ -29,7 +29,11 @@ namespace CppCore
       }
       INLINE void finish(uint32_t& digest, const uint32_t xorout = XOROUT)
       {
-         digest = mState ^ xorout;;
+         digest = mState ^ xorout;
+      }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      {
+         *(uint32_t*)digest = mState ^ xorout;
       }
    };
 
@@ -95,6 +99,10 @@ namespace CppCore
       {
          CRC32b::finish(digest, xorout);
       }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      {
+         CRC32b::finish(digest, xorout);
+      }
       INLINE void step(const void* data, size_t len)
       {
          uint8_t* mem = (uint8_t*)data;
@@ -123,6 +131,10 @@ namespace CppCore
          CRC32b::reset(init);
       }
       INLINE void finish(Digest& digest, const uint32_t xorout = XOROUT)
+      {
+         CRC32b::finish(digest, xorout);
+      }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
       {
          CRC32b::finish(digest, xorout);
       }
@@ -223,6 +235,10 @@ namespace CppCore
       {
          CRC32b::finish(digest, xorout);
       }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
+      {
+         CRC32b::finish(digest, xorout);
+      }
       INLINE void step(const void* data, size_t len)
       {
          uint8_t* mem = (uint8_t*)data;
@@ -270,6 +286,10 @@ namespace CppCore
          CRC32b::reset(init);
       }
       INLINE void finish(Digest& digest, const uint32_t xorout = XOROUT)
+      {
+         CRC32b::finish(digest, xorout);
+      }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
       {
          CRC32b::finish(digest, xorout);
       }
@@ -395,6 +415,10 @@ namespace CppCore
          CRC32b::reset(init);
       }
       INLINE void finish(Digest& digest, const uint32_t xorout = XOROUT)
+      {
+         CRC32b::finish(digest, xorout);
+      }
+      INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
       {
          CRC32b::finish(digest, xorout);
       }

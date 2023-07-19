@@ -117,6 +117,15 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Finish hash computation.
+      /// Writes 4 bytes to digest!
+      /// </summary>
+      INLINE void finish(void* digest)
+      {
+          *(uint32_t*)digest = finish();
+      }
+
+      /// <summary>
       /// Hash of uint32_t
       /// </summary>
       INLINE void hash(uint32_t data, Digest& digest, uint32_t seed = 0)
