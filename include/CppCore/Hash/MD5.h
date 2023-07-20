@@ -11,7 +11,7 @@ namespace CppCore
    class MD5 : public Hash<MD5, Block128>
    {
    public:
-      static constexpr const uint8_t PADDING[64] = {
+      CPPCORE_ALIGN64 static constexpr const uint8_t PADDING[64] = {
          0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -284,15 +284,7 @@ namespace CppCore
       INLINE void finish(void* digest)
       {
          finish();
-
-         // copy the final digest
-      #if defined(CPPCORE_CPUFEAT_SSE2)
-         _mm_storeu_si128((__m128i*)digest, _mm_load_si128((__m128i*)&mState));
-      #else
-         uint64_t* p = (uint64_t*)digest;
-         p[0] = mState.u64[0];
-         p[1] = mState.u64[1];
-      #endif
+         Memory::singlecopy128<1,16>(digest, &mState);
       }
 
       /// <summary>

@@ -205,20 +205,7 @@ namespace CppCore
       INLINE void finish(void* digest)
       {
          this->thiss()->finish();
-
-         // copy the final digest
-      #if defined(CPPCORE_CPUFEAT_AVX)
-         _mm256_storeu_si256((__m256i*)digest, _mm256_loadu_si256((__m256i*)&this->state));
-      #elif defined(CPPCORE_CPUFEAT_SSE2)
-         _mm_storeu_si128(&((__m128i*)digest)[0], _mm_load_si128(&((__m128i*)&this->state)[0]));
-         _mm_storeu_si128(&((__m128i*)digest)[1], _mm_load_si128(&((__m128i*)&this->state)[1]));
-      #else
-         uint64_t* p = (uint64_t*)digest;
-         p[0] = this->state.u64[0];
-         p[1] = this->state.u64[1];
-         p[2] = this->state.u64[2];
-         p[3] = this->state.u64[3];
-      #endif
+         Memory::singlecopy256<1,16>(digest, &this->state);
       }
    };
 
@@ -358,29 +345,7 @@ namespace CppCore
       INLINE void finish(void* digest)
       {
          this->thiss()->finish();
-
-         // copy the final digest
-      #if defined(CPPCORE_CPUFEAT_AVX512)
-         _mm512_storeu_si512((__m512i*)digest, _mm512_loadu_si512((__m512i*)&this->state));
-      #elif defined(CPPCORE_CPUFEAT_AVX)
-         _mm256_storeu_si256(&((__m256i*)digest)[0], _mm256_loadu_si256(&((__m256i*)&this->state)[0]));
-         _mm256_storeu_si256(&((__m256i*)digest)[1], _mm256_loadu_si256(&((__m256i*)&this->state)[1]));
-      #elif defined(CPPCORE_CPUFEAT_SSE2)
-         _mm_storeu_si128(&((__m128i*)digest)[0], _mm_load_si128(&((__m128i*)&this->state)[0]));
-         _mm_storeu_si128(&((__m128i*)digest)[1], _mm_load_si128(&((__m128i*)&this->state)[1]));
-         _mm_storeu_si128(&((__m128i*)digest)[2], _mm_load_si128(&((__m128i*)&this->state)[2]));
-         _mm_storeu_si128(&((__m128i*)digest)[3], _mm_load_si128(&((__m128i*)&this->state)[3]));
-      #else
-         uint64_t* p = (uint64_t*)digest;
-         p[0] = this->state.u64[0];
-         p[1] = this->state.u64[1];
-         p[2] = this->state.u64[2];
-         p[3] = this->state.u64[3];
-         p[4] = this->state.u64[4];
-         p[5] = this->state.u64[5];
-         p[6] = this->state.u64[6];
-         p[7] = this->state.u64[7];
-      #endif
+         Memory::singlecopy512<1,16>(digest, &this->state);
       }
    };
 
