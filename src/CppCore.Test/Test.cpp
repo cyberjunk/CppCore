@@ -386,6 +386,9 @@ int main()
    TEST(CppCore::Test::Memory::streamset128x4,         "streamset128x4:         ", std::endl);
    TEST(CppCore::Test::Memory::streamset256x4,         "streamset256x4:         ", std::endl);
    TEST(CppCore::Test::Memory::streamset512x4,         "streamset512x4:         ", std::endl);
+   TEST(CppCore::Test::Memory::singlecopy128,          "singlecopy128:          ", std::endl);
+   TEST(CppCore::Test::Memory::singlecopy256,          "singlecopy256:          ", std::endl);
+   TEST(CppCore::Test::Memory::singlecopy512,          "singlecopy512:          ", std::endl);
    TEST(CppCore::Test::Memory::copy32,                 "copy32:                 ", std::endl);
    TEST(CppCore::Test::Memory::copy64,                 "copy64:                 ", std::endl);
    TEST(CppCore::Test::Memory::copy128,                "copy128:                ", std::endl);
