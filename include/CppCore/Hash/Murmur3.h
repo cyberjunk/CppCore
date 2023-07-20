@@ -122,7 +122,7 @@ namespace CppCore
       /// </summary>
       INLINE void finish(void* digest)
       {
-          *(uint32_t*)digest = finish();
+         *(uint32_t*)digest = finish();
       }
 
       /// <summary>
