@@ -547,6 +547,69 @@ namespace CppCore { namespace Test
       #endif
          return true;
       }
+      INLINE static bool singlecopy128()
+      {
+         CPPCORE_ALIGN16 char src[16];
+         CPPCORE_ALIGN16 char dst[16];
+         Random::Default32 rnd;
+         for (size_t i = 0; i < 16; i++)
+            src[i] = (char)rnd.next();
+         CppCore::Memory::singlecopy128<1, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 16))
+            return false;
+         CppCore::Memory::singlecopy128<1, 16>(dst, src);
+         if (0 != ::memcmp(src, dst, 16))
+            return false;
+         CppCore::Memory::singlecopy128<16, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 16))
+            return false;
+         CppCore::Memory::singlecopy128<16, 16>(dst, src);
+         if (0 != ::memcmp(src, dst, 16))
+            return false;
+         return true;
+      }
+      INLINE static bool singlecopy256()
+      {
+         CPPCORE_ALIGN32 char src[32];
+         CPPCORE_ALIGN32 char dst[32];
+         Random::Default32 rnd;
+         for (size_t i = 0; i < 32; i++)
+            src[i] = (char)rnd.next();
+         CppCore::Memory::singlecopy256<1, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 32))
+            return false;
+         CppCore::Memory::singlecopy256<1, 32>(dst, src);
+         if (0 != ::memcmp(src, dst, 32))
+            return false;
+         CppCore::Memory::singlecopy256<32, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 32))
+            return false;
+         CppCore::Memory::singlecopy256<32, 32>(dst, src);
+         if (0 != ::memcmp(src, dst, 32))
+            return false;
+         return true;
+      }
+      INLINE static bool singlecopy512()
+      {
+         CPPCORE_ALIGN64 char src[64];
+         CPPCORE_ALIGN64 char dst[64];
+         Random::Default32 rnd;
+         for (size_t i = 0; i < 64; i++)
+            src[i] = (char)rnd.next();
+         CppCore::Memory::singlecopy512<1, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 64))
+            return false;
+         CppCore::Memory::singlecopy512<1, 64>(dst, src);
+         if (0 != ::memcmp(src, dst, 64))
+            return false;
+         CppCore::Memory::singlecopy512<64, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 64))
+            return false;
+         CppCore::Memory::singlecopy512<64, 64>(dst, src);
+         if (0 != ::memcmp(src, dst, 64))
+            return false;
+         return true;
+      }
       INLINE static bool copy32()
       {
          const size_t       n32 = 16;
@@ -2375,6 +2438,9 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(STREAMSET128x4)       { Assert::AreEqual(true, CppCore::Test::Memory::streamset128x4()); }
       TEST_METHOD(STREAMSET256x4)       { Assert::AreEqual(true, CppCore::Test::Memory::streamset256x4()); }
       TEST_METHOD(STREAMSET512x4)       { Assert::AreEqual(true, CppCore::Test::Memory::streamset512x4()); }
+      TEST_METHOD(SINGLECOPY128)        { Assert::AreEqual(true, CppCore::Test::Memory::singlecopy128()); }
+      TEST_METHOD(SINGLECOPY256)        { Assert::AreEqual(true, CppCore::Test::Memory::singlecopy256()); }
+      TEST_METHOD(SINGLECOPY512)        { Assert::AreEqual(true, CppCore::Test::Memory::singlecopy512()); }
       TEST_METHOD(COPY32)               { Assert::AreEqual(true, CppCore::Test::Memory::copy32()); }
       TEST_METHOD(COPY64)               { Assert::AreEqual(true, CppCore::Test::Memory::copy64()); }
       TEST_METHOD(COPY128)              { Assert::AreEqual(true, CppCore::Test::Memory::copy128()); }
