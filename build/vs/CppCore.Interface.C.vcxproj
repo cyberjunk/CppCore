@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\CppCore.Interface.C\Hash.cpp" />
     <ClCompile Include="..\..\src\CppCore.Interface.C\main.cpp" />
   </ItemGroup>
   <ItemGroup>
