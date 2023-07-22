@@ -3,26 +3,23 @@
 #include <CppCore.Interface.C/Hash.h>
 
 // PRIVATE CPP IMPLEMENTATIONS
-#include <CppCore/Root.h>
 #include <CppCore/Hash/MD5.h>
 #include <CppCore/Hash/SHA2.h>
+#include <CppCore/Hash/CRC32.h>
 
-/////////////////////////////////////////////////////////////////////////////////////
-// MD5
-/////////////////////////////////////////////////////////////////////////////////////
+// macro for function implementations
+#define CPPCORE_HASH_IMPLEMENTATION(name, classname)                                                               \
+  name* name ## _init   ()                                  { return (name*) new classname();     } \
+  void  name ## _destroy(name* hsh)                         { delete (classname*)hsh;             } \
+  void  name ## _reset  (name* hsh)                         { ((classname*)hsh)->reset();         } \
+  void  name ## _step   (name* hsh, void* data, size_t len) { ((classname*)hsh)->step(data, len); } \
+  void  name ## _finish (name* hsh, void* digest)           { ((classname*)hsh)->finish(digest);  }
 
-cppcore_md5* cppcore_md5_init()                                            { return (cppcore_md5*) new CppCore::MD5(); }
-void         cppcore_md5_destroy(cppcore_md5* md5)                         { delete (CppCore::MD5*)md5;                }
-void         cppcore_md5_reset  (cppcore_md5* md5)                         { ((CppCore::MD5*)md5)->reset();            }
-void         cppcore_md5_step   (cppcore_md5* md5, void* data, size_t len) { ((CppCore::MD5*)md5)->step(data, len);    }
-void         cppcore_md5_finish (cppcore_md5* md5, void* hash)             { ((CppCore::MD5*)md5)->finish(hash);       }
+// generate generic function implementations
 
-/////////////////////////////////////////////////////////////////////////////////////
-// SHA256
-/////////////////////////////////////////////////////////////////////////////////////
+CPPCORE_HASH_IMPLEMENTATION(cppcore_md5,    CppCore::MD5)
+CPPCORE_HASH_IMPLEMENTATION(cppcore_sha256, CppCore::SHA256)
+CPPCORE_HASH_IMPLEMENTATION(cppcore_sha512, CppCore::SHA512)
 
-cppcore_sha256* cppcore_sha256_init()                                                  { return (cppcore_sha256*) new CppCore::SHA256(); }
-void            cppcore_sha256_destroy(cppcore_sha256* sha256)                         { delete (CppCore::SHA256*)sha256;                }
-void            cppcore_sha256_reset  (cppcore_sha256* sha256)                         { ((CppCore::SHA256*)sha256)->reset();            }
-void            cppcore_sha256_step   (cppcore_sha256* sha256, void* data, size_t len) { ((CppCore::SHA256*)sha256)->step(data, len);    }
-void            cppcore_sha256_finish (cppcore_sha256* sha256, void* hash)             { ((CppCore::SHA256*)sha256)->finish(hash);       }
+CPPCORE_HASH_IMPLEMENTATION(cppcore_crc32,  CppCore::CRC32)
+CPPCORE_HASH_IMPLEMENTATION(cppcore_crc32c, CppCore::CRC32C)

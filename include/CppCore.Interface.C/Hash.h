@@ -1,6 +1,6 @@
 #pragma once
 
-// Export macro
+// export macro
 #ifndef CPPCORE_EXPORT
 #if defined(_WIN64) || defined(_WIN32)
 #define CPPCORE_EXPORT __declspec(dllexport)
@@ -9,32 +9,27 @@
 #endif
 #endif
 
+// macro for function declarations
+#define CPPCORE_HASH_DECLARATION(name)                       \
+  typedef struct _ ## name name; \
+  CPPCORE_EXPORT name* name ## _init   ();                                  \
+  CPPCORE_EXPORT void  name ## _destroy(name* hsh);                         \
+  CPPCORE_EXPORT void  name ## _reset  (name* hsh);                         \
+  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, size_t len); \
+  CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-   /////////////////////////////////////////////////////////////////////////////////////
-   // MD5
-   /////////////////////////////////////////////////////////////////////////////////////
-   typedef struct _cppcore_md5 cppcore_md5;
+   // generate generic function declarations
 
-   CPPCORE_EXPORT cppcore_md5* cppcore_md5_init();
-   CPPCORE_EXPORT void         cppcore_md5_destroy(cppcore_md5* md5);
-   CPPCORE_EXPORT void         cppcore_md5_reset  (cppcore_md5* md5);
-   CPPCORE_EXPORT void         cppcore_md5_step   (cppcore_md5* md5, void* data, size_t len);
-   CPPCORE_EXPORT void         cppcore_md5_finish (cppcore_md5* md5, void* hash);
+   CPPCORE_HASH_DECLARATION(cppcore_md5)
+   CPPCORE_HASH_DECLARATION(cppcore_sha256)
+   CPPCORE_HASH_DECLARATION(cppcore_sha512)
 
-
-   /////////////////////////////////////////////////////////////////////////////////////
-   // SHA256
-   /////////////////////////////////////////////////////////////////////////////////////
-   typedef struct _cppcore_sha256 cppcore_sha256;
-
-   CPPCORE_EXPORT cppcore_sha256* cppcore_sha256_init();
-   CPPCORE_EXPORT void            cppcore_sha256_destroy(cppcore_sha256* sha256);
-   CPPCORE_EXPORT void            cppcore_sha256_reset  (cppcore_sha256* sha256);
-   CPPCORE_EXPORT void            cppcore_sha256_step   (cppcore_sha256* sha256, void* data, size_t len);
-   CPPCORE_EXPORT void            cppcore_sha256_finish (cppcore_sha256* sha256, void* hash);
+   CPPCORE_HASH_DECLARATION(cppcore_crc32)
+   CPPCORE_HASH_DECLARATION(cppcore_crc32c)
 
 #ifdef __cplusplus
 }
