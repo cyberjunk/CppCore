@@ -15,7 +15,7 @@ CXXFLAGS  := $(CXXFLAGS) \
 LINKFLAGS := $(LINKFLAGS) -shared
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
-OBJS       = main.o
+OBJS       = main.o Hash.o
 
 ################################################################################################
 # CPU Specific
