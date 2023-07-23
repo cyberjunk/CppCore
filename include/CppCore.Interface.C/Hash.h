@@ -27,9 +27,9 @@ extern "C" {
    CPPCORE_HASH_DECLARATION(cppcore_md5)
    CPPCORE_HASH_DECLARATION(cppcore_sha256)
    CPPCORE_HASH_DECLARATION(cppcore_sha512)
-
    CPPCORE_HASH_DECLARATION(cppcore_crc32)
    CPPCORE_HASH_DECLARATION(cppcore_crc32c)
+   CPPCORE_HASH_DECLARATION(cppcore_murmur3)
 
 #ifdef __cplusplus
 }
