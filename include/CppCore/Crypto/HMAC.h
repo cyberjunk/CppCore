@@ -9,14 +9,14 @@ namespace CppCore
    /// <summary>
    /// Keyed-Hash Message Authentication Code
    /// </summary>
-   template<typename THASH, typename TBLOCK, typename TSTATE>
+   template<typename THASH>
    class HMAC
    {
-      static_assert(sizeof(TBLOCK) % 4 == 0);
+      static_assert(sizeof(typename THASH::Block) % 4 == 0);
 
    protected:
-      THASH  hsh;
-      TBLOCK pad;
+      THASH                 hsh;
+      typename THASH::Block pad;
 
    public:
       static constexpr const uint8_t INPAD  = (uint8_t)0x36;
@@ -30,7 +30,8 @@ namespace CppCore
          const uint8_t inpad  = INPAD, 
          const uint8_t outpad = OUTPAD)
       {
-         TSTATE b;
+         typename THASH::State b;
+
          hsh.reset();
 
          // use hash of key if too large
@@ -85,7 +86,7 @@ namespace CppCore
 
    ////////////////////////////////////////////////////////////////////////////
 
-   using HMACMD5    = HMAC<MD5,    MD5::Block,     MD5::State>;
-   using HMACSHA256 = HMAC<SHA256, SHA256::Block,  SHA256::State>;
-   using HMACSHA512 = HMAC<SHA512, SHA512::Block,  SHA512::State>;
+   using HMACMD5    = HMAC<MD5>;
+   using HMACSHA256 = HMAC<SHA256>;
+   using HMACSHA512 = HMAC<SHA512>;
 }
