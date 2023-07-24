@@ -30,7 +30,7 @@ namespace CppCore
          const uint8_t inpad  = INPAD, 
          const uint8_t outpad = OUTPAD)
       {
-         typename THASH::State b;
+         typename THASH::Digest b;
 
          hsh.reset();
 
@@ -80,6 +80,18 @@ namespace CppCore
          hsh.reset();
          hsh.step(pad);
          hsh.step(digest);
+         hsh.finish(digest);
+      }
+
+      /// <summary>
+      /// Finish HMAC calculation into digest.
+      /// </summary>
+      INLINE void finish(void* digest)
+      {
+         hsh.finish(digest);
+         hsh.reset();
+         hsh.step(pad);
+         hsh.step(digest, sizeof(typename THASH::Digest));
          hsh.finish(digest);
       }
    };
