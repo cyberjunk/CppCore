@@ -50,11 +50,11 @@ namespace CppCore
       {
          while (length)
          {
-            // block can hold at most 64 bytes
-            const size_t n = MIN(length, sizeof(TBLOCK) - blockSize);
+            // copy up to max. blocksize
+            const size_t n = MIN(length, sizeof(Block) - blockSize);
             
             // copy data to current block
-            Memory::copy(&block.u8[0] + blockSize, data, n);
+            Memory::copy(&block.u8[blockSize], data, n);
 
             // update sizes
             blockSize += n;
@@ -65,7 +65,7 @@ namespace CppCore
             length -= n;
 
             // process block if complete
-            if (blockSize == sizeof(TBLOCK))
+            if (blockSize == sizeof(Block))
             {
                thiss()->transform();
                blockSize = 0;

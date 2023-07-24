@@ -181,16 +181,16 @@ namespace CppCore
           const uint64_t totalSize = this->totalSize * 8ULL;
 
           // determine padding size
-          const size_t padSize = (blockSize < 56U) ?
-              56U - blockSize :
-              64U + 56U - blockSize;
+          const size_t padSize = (this->blockSize < 56U) ?
+             56U - this->blockSize :
+             sizeof(this->mBlock) + 56U - this->blockSize;
 
           // append padding
           step(PADDING, padSize);
 
           // add the 64-bit length of the original message
           // to the end of the block
-          mBlock.u64[7] = totalSize;
+          mBlock.u64[Block::N64-1] = totalSize;
 
           // calculate the message digest
           transform();
@@ -200,12 +200,12 @@ namespace CppCore
       /// <summary>
       /// Digest/Hash Output Size in Bytes
       /// </summary>
-      static constexpr const size_t DIGESTSIZE = sizeof(Block128);
+      static constexpr const size_t DIGESTSIZE = sizeof(Digest);
 
       /// <summary>
       /// Size of the internal Work Block in Bytes
       /// </summary>
-      static constexpr const size_t BLOCKSIZE  = sizeof(Block512);
+      static constexpr const size_t BLOCKSIZE  = sizeof(Block);
 
       /// <summary>
       /// Constructor
@@ -243,11 +243,11 @@ namespace CppCore
       {
          while (length)
          {
-            // block can hold at most 64 bytes
-            const size_t n = MIN(length, (size_t)64U - blockSize);
+            // copy up to max.blocksize
+            const size_t n = MIN(length, sizeof(Block) - blockSize);
 
             // copy data to current block
-            Memory::copy(&mBlock.u8[0] + blockSize, data, n);
+            Memory::copy(&mBlock.u8[blockSize], data, n);
 
             // update sizes
             blockSize += n;
@@ -258,7 +258,7 @@ namespace CppCore
             length -= n;
 
             // process block if complete
-            if (blockSize == (size_t)64U)
+            if (blockSize == sizeof(Block))
             {
                transform();
                blockSize = 0;
