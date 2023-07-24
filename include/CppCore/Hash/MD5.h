@@ -10,6 +10,8 @@ namespace CppCore
    /// </summary>
    class MD5 : public Hash<MD5, Block128>
    {
+      friend Hash;
+
    public:
       CPPCORE_ALIGN64 static constexpr const uint8_t PADDING[64] = {
          0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -72,10 +74,10 @@ namespace CppCore
       }
 
    protected:
-      CPPCORE_ALIGN16 State    mState;    // current state
-      CPPCORE_ALIGN16 Block    mBlock;    // current block
-      CPPCORE_ALIGN8  size_t   blockSize; // byte size used in current block
-      CPPCORE_ALIGN8  uint64_t totalSize; // byte size totally hashed
+      CPPCORE_ALIGN16 State    mState;     // current state
+      CPPCORE_ALIGN16 Block    mBlock;     // current block
+      CPPCORE_ALIGN8  size_t   mBlockSize; // byte size used in current block
+      CPPCORE_ALIGN8  uint64_t mTotalSize; // byte size totally hashed
 
       /// <summary>
       /// Transform current block
@@ -178,12 +180,12 @@ namespace CppCore
       INLINE void finish()
       {
           // length of the original message (before padding)
-          const uint64_t totalSize = this->totalSize * 8ULL;
+          const uint64_t totalSize = this->mTotalSize * 8ULL;
 
           // determine padding size
-          const size_t padSize = (this->blockSize < 56U) ?
-             56U - this->blockSize :
-             sizeof(this->mBlock) + 56U - this->blockSize;
+          const size_t padSize = (this->mBlockSize < 56U) ?
+             56U - this->mBlockSize :
+             sizeof(this->mBlock) + 56U - this->mBlockSize;
 
           // append padding
           step(PADDING, padSize);
@@ -228,8 +230,8 @@ namespace CppCore
          const uint32_t s2 = SEED3,
          const uint32_t s3 = SEED4)
       {
-         totalSize = 0;
-         blockSize = 0;
+         mTotalSize = 0;
+         mBlockSize = 0;
          mState.u32[0] = s0;
          mState.u32[1] = s1;
          mState.u32[2] = s2;
@@ -241,29 +243,10 @@ namespace CppCore
       /// </summary>
       INLINE void step(const void* data, size_t length)
       {
-         while (length)
-         {
-            // copy up to max.blocksize
-            const size_t n = MIN(length, sizeof(Block) - blockSize);
-
-            // copy data to current block
-            Memory::copy(&mBlock.u8[blockSize], data, n);
-
-            // update sizes
-            blockSize += n;
-            totalSize += n;
-
-            // advance pointer, decrease length
-            data = (uint8_t*)data + n;
-            length -= n;
-
-            // process block if complete
-            if (blockSize == sizeof(Block))
-            {
-               transform();
-               blockSize = 0;
-            }
-         }
+         this->step(data, length, 
+            this->mBlock, 
+            this->mBlockSize, 
+            this->mTotalSize);
       }
 
       /// <summary>
@@ -271,9 +254,7 @@ namespace CppCore
       /// </summary>
       INLINE void finish(Digest& digest)
       {
-         finish();
-
-         // copy the final digest
+         this->thiss().finish();
          CppCore::clone(digest, mState);
       }
 
@@ -283,7 +264,7 @@ namespace CppCore
       /// </summary>
       INLINE void finish(void* digest)
       {
-         finish();
+         this->thiss().finish();
          Memory::singlecopy128<1,16>(digest, &mState);
       }
 
@@ -292,7 +273,7 @@ namespace CppCore
       /// </summary>
       INLINE void finish(uint64_t& l, uint64_t& h)
       {
-         finish();
+         this->thiss().finish();
 
          // copy the final digest
          l = mState.u64[0];

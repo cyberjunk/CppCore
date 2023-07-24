@@ -17,6 +17,45 @@ namespace CppCore
       INLINE Hash() { }
       INLINE HASHER& thiss() { return *(HASHER*)this; }
 
+      /// <summary>
+      /// Shared Helper
+      /// </summary>
+      template<
+         typename BLOCK, 
+         typename BLOCKSIZE, 
+         typename TOTALSIZE>
+      INLINE void step(
+         const void* data, 
+         size_t      length, 
+         BLOCK&      block, 
+         BLOCKSIZE&  blockSize, 
+         TOTALSIZE&  totalSize)
+      {
+         while (length)
+         {
+            // copy up to max.blocksize
+            const size_t n = MIN(length, sizeof(BLOCK) - blockSize);
+
+            // copy data to current block
+            Memory::copy(&block.u8[blockSize], data, n);
+
+            // update sizes
+            blockSize += n;
+            totalSize += n;
+
+            // advance pointer, decrease length
+            data = (uint8_t*)data + n;
+            length -= n;
+
+            // process block if complete
+            if (blockSize == sizeof(BLOCK))
+            {
+               thiss().transform();
+               blockSize = 0;
+            }
+         }
+      }
+
    public:
       using Digest = DIGEST;
 
