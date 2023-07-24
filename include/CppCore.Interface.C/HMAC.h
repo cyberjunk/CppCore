@@ -12,11 +12,11 @@
 #include <stddef.h>
 
 // macro for function declarations
-#define CPPCORE_HASH_DECLARATION(name)                       \
-  typedef struct _ ## name name; \
+#define CPPCORE_HMAC_DECLARATION(name)                                      \
+  typedef struct _ ## name name;                                            \
   CPPCORE_EXPORT name* name ## _init   ();                                  \
   CPPCORE_EXPORT void  name ## _destroy(name* hsh);                         \
-  CPPCORE_EXPORT void  name ## _reset  (name* hsh);                         \
+  CPPCORE_EXPORT void  name ## _reset  (name* hsh, void* key,  size_t len); \
   CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, size_t len); \
   CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
 
@@ -26,12 +26,9 @@ extern "C" {
 
    // generate generic function declarations
 
-   CPPCORE_HASH_DECLARATION(cppcore_md5)
-   CPPCORE_HASH_DECLARATION(cppcore_sha256)
-   CPPCORE_HASH_DECLARATION(cppcore_sha512)
-   CPPCORE_HASH_DECLARATION(cppcore_crc32)
-   CPPCORE_HASH_DECLARATION(cppcore_crc32c)
-   CPPCORE_HASH_DECLARATION(cppcore_murmur3)
+   CPPCORE_HMAC_DECLARATION(cppcore_hmac_md5)
+   CPPCORE_HMAC_DECLARATION(cppcore_hmac_sha256)
+   CPPCORE_HMAC_DECLARATION(cppcore_hmac_sha512)
 
 #ifdef __cplusplus
 }

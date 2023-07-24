@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\CppCore.Interface.C\Hash.cpp" />
+    <ClCompile Include="..\..\src\CppCore.Interface.C\HMAC.cpp" />
     <ClCompile Include="..\..\src\CppCore.Interface.C\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\CppCore.Interface.C\Hash.h" />
+    <ClInclude Include="..\..\include\CppCore.Interface.C\HMAC.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7c1a57cb-ae78-4c01-bd43-442314f5638b}</ProjectGuid>
