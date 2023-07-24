@@ -8,7 +8,7 @@ namespace CppCore
    /// <summary>
    /// PKCS5 PBKDF2
    /// </summary>
-   template<typename HMAC, typename TBLOCK>
+   template<typename HMAC>
    class PBKDF2
    {
    protected:
@@ -24,8 +24,8 @@ namespace CppCore
          const size_t iterations, 
          void* digest, size_t lendigest)
       {
-         TBLOCK md1;
-         TBLOCK mdx;
+         typename HMAC::Digest md1;
+         typename HMAC::Digest mdx;
 
          uint8_t* pdigest = (uint8_t*)digest;
          uint32_t ctrle = 1U;
@@ -61,10 +61,10 @@ namespace CppCore
    /// <summary>
    /// PBKDF2 with HMAC-SHA256
    /// </summary>
-   using PBKDF2SHA256 = PBKDF2<HMACSHA256, Block256>;
+   using PBKDF2SHA256 = PBKDF2<HMACSHA256>;
 
    /// <summary>
    /// PBKDF2 with HMAC-SHA512
    /// </summary>
-   using PBKDF2SHA512 = PBKDF2<HMACSHA512, Block512>;
+   using PBKDF2SHA512 = PBKDF2<HMACSHA512>;
 }

@@ -12,16 +12,19 @@ namespace CppCore
    template<typename THASH>
    class HMAC
    {
-      static_assert(sizeof(typename THASH::Block) % 4 == 0);
-
-   protected:
-      THASH                 hsh;
-      typename THASH::Block pad;
-
    public:
       static constexpr const uint8_t INPAD  = (uint8_t)0x36;
       static constexpr const uint8_t OUTPAD = (uint8_t)0x5c;
 
+      using Hash   = THASH;
+      using Block  = typename THASH::Block;
+      using Digest = typename THASH::Digest;
+
+   protected:
+      Hash  hsh;
+      Block pad;
+
+   public:
       /// <summary>
       /// Reset HMAC.
       /// </summary>
@@ -30,7 +33,7 @@ namespace CppCore
          const uint8_t inpad  = INPAD, 
          const uint8_t outpad = OUTPAD)
       {
-         typename THASH::Digest b;
+         Digest b;
 
          hsh.reset();
 
@@ -74,7 +77,7 @@ namespace CppCore
       /// <summary>
       /// Finish HMAC calculation into digest.
       /// </summary>
-      INLINE void finish(typename THASH::Digest& digest)
+      INLINE void finish(Digest& digest)
       {
          hsh.finish(digest);
          hsh.reset();
@@ -91,7 +94,7 @@ namespace CppCore
          hsh.finish(digest);
          hsh.reset();
          hsh.step(pad);
-         hsh.step(digest, sizeof(typename THASH::Digest));
+         hsh.step(digest, sizeof(Digest));
          hsh.finish(digest);
       }
    };
