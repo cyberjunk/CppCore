@@ -9,19 +9,22 @@ namespace CppCore
    /// <summary>
    /// Keyed-Hash Message Authentication Code
    /// </summary>
-   template<typename THASH, typename TBLOCK, typename TSTATE>
+   template<typename THASH>
    class HMAC
    {
-      static_assert(sizeof(TBLOCK) % 4 == 0);
-
-   protected:
-      THASH  hsh;
-      TBLOCK pad;
-
    public:
       static constexpr const uint8_t INPAD  = (uint8_t)0x36;
       static constexpr const uint8_t OUTPAD = (uint8_t)0x5c;
 
+      using Hash   = THASH;
+      using Block  = typename THASH::Block;
+      using Digest = typename THASH::Digest;
+
+   protected:
+      Hash  hsh;
+      Block pad;
+
+   public:
       /// <summary>
       /// Reset HMAC.
       /// </summary>
@@ -30,7 +33,8 @@ namespace CppCore
          const uint8_t inpad  = INPAD, 
          const uint8_t outpad = OUTPAD)
       {
-         TSTATE b;
+         Digest b;
+
          hsh.reset();
 
          // use hash of key if too large
@@ -73,7 +77,7 @@ namespace CppCore
       /// <summary>
       /// Finish HMAC calculation into digest.
       /// </summary>
-      INLINE void finish(typename THASH::Digest& digest)
+      INLINE void finish(Digest& digest)
       {
          hsh.finish(digest);
          hsh.reset();
@@ -81,11 +85,23 @@ namespace CppCore
          hsh.step(digest);
          hsh.finish(digest);
       }
+
+      /// <summary>
+      /// Finish HMAC calculation into digest.
+      /// </summary>
+      INLINE void finish(void* digest)
+      {
+         hsh.finish(digest);
+         hsh.reset();
+         hsh.step(pad);
+         hsh.step(digest, sizeof(Digest));
+         hsh.finish(digest);
+      }
    };
 
    ////////////////////////////////////////////////////////////////////////////
 
-   using HMACMD5    = HMAC<MD5,    MD5::Block,     MD5::State>;
-   using HMACSHA256 = HMAC<SHA256, SHA256::Block,  SHA256::State>;
-   using HMACSHA512 = HMAC<SHA512, SHA512::Block,  SHA512::State>;
+   using HMACMD5    = HMAC<MD5>;
+   using HMACSHA256 = HMAC<SHA256>;
+   using HMACSHA512 = HMAC<SHA512>;
 }
