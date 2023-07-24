@@ -1253,7 +1253,7 @@ namespace CppCore
       template<size_t DSTALIGN=1, size_t SRCALIGN=1>
       INLINE static void singlecopy512(void* dst, const void* src)
       {
-      #if defined(CPPCORE_CPUFEAT_AVX512)
+      #if defined(CPPCORE_CPUFEAT_AVX512F)
          constexpr bool DSTALIGN64 = DSTALIGN % 64 == 0;
          constexpr bool SRCALIGN64 = SRCALIGN % 64 == 0;
          __m512i* pdst = (__m512i*)dst;
