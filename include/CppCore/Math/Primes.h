@@ -371,10 +371,10 @@ namespace CppCore
          a = 29U; if (!Primes::sprp(n,a,t,s,d,r,m))         return Primes::Composite; // 8
          a = 31U; if (!Primes::sprp(n,a,t,s,d,r,m))         return Primes::Composite; // 9
          a = 37U; if (!Primes::sprp(n,a,t,s,d,r,m))         return Primes::Composite; // 10
-         static const UINT C1(0xE92817F9FC85B7E5ULL, 0x000000000000437AULL);  // DEC: 318665857834031151167461
+         const UINT C1(0xE92817F9FC85B7E5ULL, 0x000000000000437AULL);  // DEC: 318665857834031151167461
                   if (n < C1)                               return Primes::Prime;
          a = 41U; if (!Primes::sprp(n,a,t,s,d,r,m))         return Primes::Composite; // 11
-         static const UINT C2(0x51ADC5B22410A5FDULL, 0x000000000002BE69ULL);  // DEC:3317044064679887385961981
+         const UINT C2(0x51ADC5B22410A5FDULL, 0x000000000002BE69ULL);  // DEC:3317044064679887385961981
                   if (n < C2)                               return Primes::Prime;
 
          // miller-rabin test on up to remaining 244 odd primes for base a
