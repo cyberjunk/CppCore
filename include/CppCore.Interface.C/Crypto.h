@@ -23,7 +23,7 @@
   CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, size_t len); \
   CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
 
-// macro for hmach function declarations
+// macro for hmac function declarations
 #define CPPCORE_HMAC_DECLARATION(name)                                      \
   typedef struct _ ## name name;                                            \
   CPPCORE_EXPORT name* name ## _init   ();                                  \
@@ -31,6 +31,11 @@
   CPPCORE_EXPORT void  name ## _reset  (name* hsh, void* key,  size_t len); \
   CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, size_t len); \
   CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
+
+// macro for prime declarations
+#define CPPCORE_PRIME_DECLARATION(name)                                 \
+  CPPCORE_EXPORT int  name ## _test     (void* data, size_t certainty); \
+  CPPCORE_EXPORT void name ## _generate (void* data, size_t certainty);
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +58,14 @@ extern "C" {
    CPPCORE_HMAC_DECLARATION(cppcore_hmac_md5)
    CPPCORE_HMAC_DECLARATION(cppcore_hmac_sha256)
    CPPCORE_HMAC_DECLARATION(cppcore_hmac_sha512)
+
+   // primes function declarations
+
+   CPPCORE_PRIME_DECLARATION(cppcore_prime128)
+   CPPCORE_PRIME_DECLARATION(cppcore_prime256)
+   CPPCORE_PRIME_DECLARATION(cppcore_prime512)
+   CPPCORE_PRIME_DECLARATION(cppcore_prime1024)
+   CPPCORE_PRIME_DECLARATION(cppcore_prime2048)
 
 #ifdef __cplusplus
 }

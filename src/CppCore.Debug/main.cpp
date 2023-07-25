@@ -2,7 +2,6 @@
 #include <CppCore/Root.h>
 
 #include <CppCore.Interface.C/Crypto.h>
-#include <CppCore.Interface.C/Primes.h>
 
 uint64_t d[2];
 
