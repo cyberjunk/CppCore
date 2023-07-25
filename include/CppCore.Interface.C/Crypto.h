@@ -32,6 +32,14 @@
   CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, size_t len); \
   CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
 
+// macro for pbkdf2 declarations
+#define CPPCORE_PBKDF2_DECLARATION(name) \
+  CPPCORE_EXPORT void  name ## _create(  \
+    void*  pw,     size_t lenpw,         \
+    void*  salt,   size_t lensalt,       \
+    void*  digest, size_t lendigest,     \
+    size_t iterations);
+
 // macro for prime declarations
 #define CPPCORE_PRIME_DECLARATION(name)                                 \
   CPPCORE_EXPORT int  name ## _test     (void* data, size_t certainty); \
@@ -44,7 +52,7 @@
 extern "C" {
 #endif
 
-   // hash function declarations
+   // hash
 
    CPPCORE_HASH_DECLARATION(cppcore_md5)
    CPPCORE_HASH_DECLARATION(cppcore_sha256)
@@ -53,13 +61,18 @@ extern "C" {
    CPPCORE_HASH_DECLARATION(cppcore_crc32c)
    CPPCORE_HASH_DECLARATION(cppcore_murmur3)
 
-   // hmac function declarations
+   // hmac
 
    CPPCORE_HMAC_DECLARATION(cppcore_hmac_md5)
    CPPCORE_HMAC_DECLARATION(cppcore_hmac_sha256)
    CPPCORE_HMAC_DECLARATION(cppcore_hmac_sha512)
 
-   // primes function declarations
+   // pbkdf2
+
+   CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_sha256)
+   CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_sha512)
+
+   // primes
 
    CPPCORE_PRIME_DECLARATION(cppcore_prime128)
    CPPCORE_PRIME_DECLARATION(cppcore_prime256)
