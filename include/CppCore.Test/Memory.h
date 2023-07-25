@@ -610,6 +610,48 @@ namespace CppCore { namespace Test
             return false;
          return true;
       }
+      INLINE static bool singlecopy1024()
+      {
+         CPPCORE_ALIGN64 char src[128];
+         CPPCORE_ALIGN64 char dst[128];
+         Random::Default32 rnd;
+         for (size_t i = 0; i < 128; i++)
+            src[i] = (char)rnd.next();
+         CppCore::Memory::singlecopy1024<1, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 128))
+            return false;
+         CppCore::Memory::singlecopy1024<1, 64>(dst, src);
+         if (0 != ::memcmp(src, dst, 128))
+            return false;
+         CppCore::Memory::singlecopy1024<64, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 128))
+            return false;
+         CppCore::Memory::singlecopy1024<64, 64>(dst, src);
+         if (0 != ::memcmp(src, dst, 128))
+            return false;
+         return true;
+      }
+      INLINE static bool singlecopy2048()
+      {
+         CPPCORE_ALIGN64 char src[256];
+         CPPCORE_ALIGN64 char dst[256];
+         Random::Default32 rnd;
+         for (size_t i = 0; i < 256; i++)
+            src[i] = (char)rnd.next();
+         CppCore::Memory::singlecopy2048<1, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 256))
+            return false;
+         CppCore::Memory::singlecopy2048<1, 64>(dst, src);
+         if (0 != ::memcmp(src, dst, 256))
+            return false;
+         CppCore::Memory::singlecopy2048<64, 1>(dst, src);
+         if (0 != ::memcmp(src, dst, 256))
+            return false;
+         CppCore::Memory::singlecopy2048<64, 64>(dst, src);
+         if (0 != ::memcmp(src, dst, 256))
+            return false;
+         return true;
+      }
       INLINE static bool copy32()
       {
          const size_t       n32 = 16;
@@ -2441,6 +2483,8 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(SINGLECOPY128)        { Assert::AreEqual(true, CppCore::Test::Memory::singlecopy128()); }
       TEST_METHOD(SINGLECOPY256)        { Assert::AreEqual(true, CppCore::Test::Memory::singlecopy256()); }
       TEST_METHOD(SINGLECOPY512)        { Assert::AreEqual(true, CppCore::Test::Memory::singlecopy512()); }
+      TEST_METHOD(SINGLECOPY1024)       { Assert::AreEqual(true, CppCore::Test::Memory::singlecopy1024()); }
+      TEST_METHOD(SINGLECOPY2048)       { Assert::AreEqual(true, CppCore::Test::Memory::singlecopy2048()); }
       TEST_METHOD(COPY32)               { Assert::AreEqual(true, CppCore::Test::Memory::copy32()); }
       TEST_METHOD(COPY64)               { Assert::AreEqual(true, CppCore::Test::Memory::copy64()); }
       TEST_METHOD(COPY128)              { Assert::AreEqual(true, CppCore::Test::Memory::copy128()); }
