@@ -1,6 +1,8 @@
 #pragma once
 
 #include <CppCore/Root.h>
+#include <CppCore/BitOps.h>
+#include <CppCore/Math/Util.h>
 
 namespace CppCore
 {
