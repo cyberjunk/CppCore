@@ -1452,7 +1452,7 @@ namespace CppCore
 
       /// <summary>
       /// Copies exactly 2048 bit using four 512 bit op, eight 256 bit op, 
-      /// sixteen 128 bit ops or thirtythree 64 bit ops.
+      /// sixteen 128 bit ops or thirtytwo 64 bit ops.
       /// </summary>
       template<size_t DSTALIGN=1, size_t SRCALIGN=1>
       INLINE static void singlecopy2048(void* dst, const void* src)
