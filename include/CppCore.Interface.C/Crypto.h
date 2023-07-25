@@ -40,6 +40,15 @@
     void*  digest, size_t lendigest,     \
     size_t iterations);
 
+// macro for aes function declarations
+#define CPPCORE_AES_DECLARATION(name)                                                  \
+  typedef struct _ ## name name;                                                       \
+  CPPCORE_EXPORT name* name ## _init       ();                                         \
+  CPPCORE_EXPORT void  name ## _destroy    (name* aes);                                \
+  CPPCORE_EXPORT void  name ## _reset      (name* aes, void* key);                     \
+  CPPCORE_EXPORT void  name ## _encrypt_ecb(name* aes, void* in, void* out, size_t n); \
+  CPPCORE_EXPORT void  name ## _decrypt_ecb(name* aes, void* in, void* out, size_t n);
+
 // macro for prime declarations
 #define CPPCORE_PRIME_DECLARATION(name)                                 \
   CPPCORE_EXPORT int  name ## _test     (void* data, size_t certainty); \
@@ -71,6 +80,12 @@ extern "C" {
 
    CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_sha256)
    CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_sha512)
+
+   // aes
+
+   CPPCORE_AES_DECLARATION(cppcore_aes128)
+   CPPCORE_AES_DECLARATION(cppcore_aes192)
+   CPPCORE_AES_DECLARATION(cppcore_aes256)
 
    // primes
 

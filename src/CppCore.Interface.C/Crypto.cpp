@@ -89,6 +89,23 @@ CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha256, CppCore::PBKDF2SHA256)
 CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha512, CppCore::PBKDF2SHA512)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// AES
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <CppCore/Crypto/AES.h>
+
+#define CPPCORE_AES_IMPLEMENTATION(name, classname)                                                                   \
+  name* name ## _init       ()                                         { return (name*) new classname();            } \
+  void  name ## _destroy    (name* aes)                                { delete (classname*)aes;                    } \
+  void  name ## _reset      (name* aes, void* key)                     { ((classname*)aes)->reset(key);             } \
+  void  name ## _encrypt_ecb(name* aes, void* in, void* out, size_t n) { ((classname*)aes)->encryptECB(in, out, n); } \
+  void  name ## _decrypt_ecb(name* aes, void* in, void* out, size_t n) { ((classname*)aes)->decryptECB(in, out, n); }
+
+CPPCORE_AES_IMPLEMENTATION(cppcore_aes128, CppCore::AES128)
+CPPCORE_AES_IMPLEMENTATION(cppcore_aes192, CppCore::AES192)
+CPPCORE_AES_IMPLEMENTATION(cppcore_aes256, CppCore::AES256)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PRIMES
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
