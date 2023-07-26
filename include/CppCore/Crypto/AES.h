@@ -11,7 +11,7 @@
 namespace CppCore
 {
    /// <summary>
-   /// AES Base
+   /// AES Base Class
    /// </summary>
    template<uint32_t ROUNDS>
    class AES
@@ -23,7 +23,40 @@ namespace CppCore
          ROUNDS == CPPCORE_AES_ROUNDS_256);
 
    protected:
-      INLINE AES() { }
+      /// <summary>
+      /// Tail Helper. Does out=in^enc with 0-15 bytes.
+      /// TODO: Not the right place.
+      /// </summary>
+      INLINE static void xor0to15(void* out, const void* in, const void* enc, size_t len)
+      {
+         uint8_t* cin  = (uint8_t*)in;
+         uint8_t* cout = (uint8_t*)out;
+         uint8_t* cend = (uint8_t*)in + len;
+         uint8_t* cenc = (uint8_t*)enc;
+         if (cin + 8U <= cend)
+         {
+            *(uint64_t*)cout = *(uint64_t*)cenc ^ *(uint64_t*)cin;
+            cin  += 8U;
+            cout += 8U;
+            cenc += 8U;
+         }
+         if (cin + 4U <= cend)
+         {
+            *(uint32_t*)cout = *(uint32_t*)cenc ^ *(uint32_t*)cin;
+            cin  += 4U;
+            cout += 4U;
+            cenc += 4U;
+         }
+         if (cin + 2U <= cend)
+         {
+            *(uint16_t*)cout = *(uint16_t*)cenc ^ *(uint16_t*)cin;
+            cin  += 2U;
+            cout += 2U;
+            cenc += 2U;
+         }
+         if (cin < cend) 
+            *cout = *cenc ^ *cin;
+      }
 
    public:
       /// <summary>
@@ -455,38 +488,38 @@ namespace CppCore
       /// <summary>
       /// Encrypts n Blocks of 16 Bytes in CBC mode
       /// </summary>
-      INLINE void encryptCBC(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void encryptCBC(const void* in, void* out, void* ivec, const size_t n)
       {
          Block* bin  = (Block*)in;
          Block* bout = (Block*)out;
-         Block  iv = *(Block*)ivec;
+         Block* iv   = (Block*)ivec;
          CPPCORE_UNROLL
          for (size_t i = 0; i < n; i++)
-            encrypt(bin[i], bout[i], iv);
+            encrypt(bin[i], bout[i], *iv);
       }
 
       /// <summary>
       /// Decrypts n Blocks of 16 Bytes in CBC mode
       /// </summary>
-      INLINE void decryptCBC(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void decryptCBC(const void* in, void* out, void* ivec, const size_t n)
       {
          Block* bin  = (Block*)in;
          Block* bout = (Block*)out;
-         Block  iv = *(Block*)ivec;
+         Block* iv   = (Block*)ivec;
          CPPCORE_UNROLL
          for (size_t i = 0; i < n; i++)
-            decrypt(bin[i], bout[i], iv);
+            decrypt(bin[i], bout[i], *iv);
       }
 
       /// <summary>
-      /// Encrypts n Blocks of 16 Bytes in CTR mode.
+      /// Encrypts n Bytes in CTR mode.
       /// Performs 64-Bit increment on the counter part of ivec.
       /// </summary>
-      INLINE void encryptCTR(const void* in, void* out, const void* ivec, size_t len)
+      INLINE void encryptCTR(const void* in, void* out, void* ivec, size_t len)
       {
          Block* bin  = (Block*)in;
          Block* bout = (Block*)out;
-         Block  iv = *((Block*)ivec);
+         Block& iv   = *(Block*)ivec;
          Block  enc;
 
          while (len)
@@ -521,41 +554,16 @@ namespace CppCore
             }
             else
             {
-               uint8_t* cin  = (uint8_t*)bin;
-               uint8_t* cout = (uint8_t*)bout;
-               uint8_t* cend = (uint8_t*)cin + len;
-               uint8_t* cenc = (uint8_t*)&enc;
-               if (cin + 8U <= cend)
-               {
-                  *(uint64_t*)cout = *(uint64_t*)cenc ^ *(uint64_t*)cin;
-                  cin  += 8U;
-                  cout += 8U;
-                  cenc += 8U;
-               }
-               if (cin + 4U <= cend)
-               {
-                  *(uint32_t*)cout = *(uint32_t*)cenc ^ *(uint32_t*)cin;
-                  cin  += 4U;
-                  cout += 4U;
-                  cenc += 4U;
-               }
-               if (cin + 2U <= cend)
-               {
-                  *(uint16_t*)cout = *(uint16_t*)cenc ^ *(uint16_t*)cin;
-                  cin  += 2U;
-                  cout += 2U;
-                  cenc += 2U;
-               }
-               if (cin < cend) *cout = *cenc ^ *cin;
+               this->xor0to15(bout, bin, &enc, len);
                return;
             }
          }
       }
 
       /// <summary>
-      /// Decrypts n Blocks of 16 Bytes in CTR mode.
+      /// Decrypts n Bytes in CTR mode.
       /// </summary>
-      INLINE void decryptCTR(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void decryptCTR(const void* in, void* out, void* ivec, const size_t n)
       {
          encryptCTR(in, out, ivec, n);
       }
@@ -759,7 +767,7 @@ namespace CppCore
       /// Encrypts n Blocks of 16 Bytes in CBC mode
       /// </summary>
       template<bool ALIGNED = false>
-      INLINE void encryptCBC(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void encryptCBC(const void* in, void* out, void* ivec, const size_t n)
       {
          __m128i  iv   = load<ALIGNED>(ivec);
          __m128i* bin  = (__m128i*)in;
@@ -772,13 +780,14 @@ namespace CppCore
             encrypt(m, iv);
             store<ALIGNED>(bout++, m);
          }
+         store<ALIGNED>(ivec, iv);
       }
 
       /// <summary>
       /// Decrypts n Blocks of 16 Bytes in CBC mode
       /// </summary>
       template<bool ALIGNED = false>
-      INLINE void decryptCBC(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void decryptCBC(const void* in, void* out, void* ivec, const size_t n)
       {
          __m128i  iv   = load<ALIGNED>(ivec);
          __m128i* bin  = (__m128i*)in;
@@ -791,6 +800,7 @@ namespace CppCore
             decrypt(m, iv);
             store<ALIGNED>(bout++, m);
          }
+         store<ALIGNED>(ivec, iv);
       }
 
       /// <summary>
@@ -798,7 +808,7 @@ namespace CppCore
       /// Performs 64-Bit increment on the counter part of ivec.
       /// </summary>
       template<bool ALIGNED = false>
-      INLINE void encryptCTR(const void* in, void* out, const void* ivec, size_t len)
+      INLINE void encryptCTR(const void* in, void* out, void* ivec, size_t len)
       {
          const __m128i& ONE   = _mm_set_epi32(0,1,0,0);
          const __m128i& BSWAP = _mm_setr_epi8(7,6,5,4,3,2,1,0,15,14,13,12,11,10,9,8);
@@ -821,42 +831,18 @@ namespace CppCore
             }
             else
             {
-               uint8_t* cin  = (uint8_t*)bin;
-               uint8_t* cout = (uint8_t*)bout;
-               uint8_t* cend = (uint8_t*)cin + len;
-               uint8_t* cenc  = (uint8_t*)&enc;
-               if (cin + 8U <= cend)
-               {
-                  *(uint64_t*)cout = *(uint64_t*)cenc ^ *(uint64_t*)cin;
-                  cin  += 8U;
-                  cout += 8U;
-                  cenc += 8U;
-               }
-               if (cin + 4U <= cend)
-               {
-                  *(uint32_t*)cout = *(uint32_t*)cenc ^ *(uint32_t*)cin;
-                  cin  += 4U;
-                  cout += 4U;
-                  cenc += 4U;
-               }
-               if (cin + 2U <= cend)
-               {
-                  *(uint16_t*)cout = *(uint16_t*)cenc ^ *(uint16_t*)cin;
-                  cin  += 2U;
-                  cout += 2U;
-                  cenc += 2U;
-               }
-               if (cin < cend) *cout = *cenc ^ *cin;
-               return;
+               this->xor0to15(bout, bin, &enc, len);
+               break;
             }
          }
+         store<ALIGNED>(ivec, _mm_shuffle_epi8(ctr, BSWAP));
       }
 
       /// <summary>
       /// Decrypts len Bytes in CTR mode
       /// </summary>
       template<bool ALIGNED = false>
-      INLINE void decryptCTR(const void* in, void* out, const void* ivec, const size_t len)
+      INLINE void decryptCTR(const void* in, void* out, void* ivec, const size_t len)
       {
          encryptCTR<ALIGNED>(in, out, ivec, len);
       }
