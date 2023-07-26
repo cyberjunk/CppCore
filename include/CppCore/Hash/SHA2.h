@@ -123,10 +123,10 @@ namespace CppCore
       {
          const     size_t CURRENTLEN = this->mBlockSize;
          constexpr size_t SIZEOFLEN  = 8U;
-         constexpr size_t BSIZENOLEN = sizeof(Block) - SIZEOFLEN;
+         constexpr size_t BSIZENOLEN = sizeof(this->mBlock) - SIZEOFLEN;
          return (CURRENTLEN < BSIZENOLEN) ?
             BSIZENOLEN - CURRENTLEN :
-            sizeof(Block) + BSIZENOLEN - CURRENTLEN;
+            sizeof(this->mBlock) + BSIZENOLEN - CURRENTLEN;
       }
 
       /// <summary>
@@ -261,10 +261,10 @@ namespace CppCore
       {
          const     size_t CURRENTLEN = this->mBlockSize;
          constexpr size_t SIZEOFLEN  = 16U;
-         constexpr size_t BSIZENOLEN = sizeof(Block) - SIZEOFLEN;
+         constexpr size_t BSIZENOLEN = sizeof(this->mBlock) - SIZEOFLEN;
          return (CURRENTLEN < BSIZENOLEN) ?
             BSIZENOLEN - CURRENTLEN :
-            sizeof(Block) + BSIZENOLEN - CURRENTLEN;
+            sizeof(this->mBlock) + BSIZENOLEN - CURRENTLEN;
       }
 
       /// <summary>
