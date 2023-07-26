@@ -10,7 +10,16 @@ namespace CppCore
    /// </summary>
    class MD5 : public Hash<MD5, Block128>
    {
-      friend Hash;
+   public:
+      using Base  = Hash<MD5, Block128>;
+      using Block = Block512;
+      using State = Block128;
+      using Base::step;
+      using Base::hash;
+      using Base::thiss;
+
+   private:
+      friend Base;
 
    public:
       CPPCORE_ALIGN64 static constexpr const uint8_t PADDING[64] = {
@@ -27,13 +36,6 @@ namespace CppCore
       static constexpr const uint32_t SEED2 = 0xefcdab89;
       static constexpr const uint32_t SEED3 = 0x98badcfe;
       static constexpr const uint32_t SEED4 = 0x10325476;
-
-   public:
-      using Block = Block512;
-      using State = Block128;
-      using Hash::step;
-      using Hash::hash;
-      using Hash::thiss;
 
    protected:
       INLINE static uint32_t MD5_F(const uint32_t x, const uint32_t y, const uint32_t z) {
@@ -238,12 +240,12 @@ namespace CppCore
          const uint32_t s2 = SEED3,
          const uint32_t s3 = SEED4)
       {
-         mTotalSize = 0;
-         mBlockSize = 0;
          mState.u32[0] = s0;
          mState.u32[1] = s1;
          mState.u32[2] = s2;
          mState.u32[3] = s3;
+         mTotalSize = 0;
+         mBlockSize = 0;
       }
 
       /// <summary>

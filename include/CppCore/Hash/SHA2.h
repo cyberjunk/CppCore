@@ -16,18 +16,21 @@ namespace CppCore
    class SHA2b : public Hash<TSHA, TSTATE>
    {
    public:
+      using Base  = Hash<TSHA, TSTATE>;
       using Block = TBLOCK;
       using State = TSTATE;
-      using Hash<TSHA, TSTATE>::step;
-      using Hash<TSHA, TSTATE>::hash;
+      using Base::step;
+      using Base::hash;
+      using Base::thiss;
+
+   private:
+      friend Base;
 
    protected:
       CPPCORE_ALIGN32 State    mState;     // current state/hash
       CPPCORE_ALIGN32 Block    mBlock;     // current block
       CPPCORE_ALIGN8  size_t   mBlockSize; // byte size used in current block
       CPPCORE_ALIGN8  uint64_t mTotalSize; // byte size totally hashed
-      
-      INLINE SHA2b() { }
 
    public:
       /// <summary>
@@ -61,6 +64,8 @@ namespace CppCore
    public:
       using Base = SHA2b<Block256, Block512, TSHA>;
       using typename Base::Digest;
+      using typename Base::Block;
+      using typename Base::State;
 
    public:
       CPPCORE_ALIGN64 static constexpr const uint32_t K[] = {
@@ -193,6 +198,8 @@ namespace CppCore
    public:
       using Base = SHA2b<Block512, Block1024, TSHA>;
       using typename Base::Digest;
+      using typename Base::Block;
+      using typename Base::State;
 
    public:
       CPPCORE_ALIGN64 static constexpr const uint64_t K[] = {
@@ -330,9 +337,13 @@ namespace CppCore
    /// </summary>
    class SHA256g : public SHA256b<SHA256g>
    {
-      friend Hash;
-      friend SHA2b;
-      friend SHA256b;
+   public:
+      using Base = SHA256b<SHA256g>;
+
+   private:
+      friend Base;
+      friend Base::Base;
+      friend Base::Base::Base;
 
    protected:
       INLINE static uint32_t ch (const uint32_t x, const uint32_t y, const uint32_t z) { return (x & y) | CppCore::andn32(x, z); }
@@ -411,9 +422,13 @@ namespace CppCore
    /// </summary>
    class SHA512g : public SHA512b<SHA512g>
    {
-      friend Hash;
-      friend SHA2b;
-      friend SHA512b;
+   public:
+      using Base = SHA512b<SHA512g>;
+
+   private:
+      friend Base;
+      friend Base::Base;
+      friend Base::Base::Base;
 
    protected:
       INLINE static uint64_t ch (const uint64_t x, const uint64_t y, const uint64_t z) { return (x & y) | CppCore::andn64(x, z); }
@@ -500,9 +515,13 @@ namespace CppCore
    /// </summary>
    class SHA256s : public SHA256b<SHA256s>
    {
-      friend Hash;
-      friend SHA2b;
-      friend SHA256b;
+   public:
+      using Base = SHA256b<SHA256s>;
+
+   private:
+      friend Base;
+      friend Base::Base;
+      friend Base::Base::Base;
 
    protected:
       /// <summary>
