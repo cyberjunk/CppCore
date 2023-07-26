@@ -334,18 +334,23 @@ namespace CppCore { namespace Test { namespace Crypto
 
          uint8_t out_plain[32];
          uint8_t out_cipher[32];
+         uint8_t inout_ivec[16];
 
          // init
          TAES aes;
          aes.reset(key, false);
 
          // test encrypt multiple 16
-         aes.encryptCTR(plain, out_cipher, iv, 32);
+         ::memcpy(inout_ivec, iv, 16);
+         aes.encryptCTR(plain,    out_cipher,    inout_ivec, 16);
+         aes.encryptCTR(plain+16, out_cipher+16, inout_ivec, 16);
          if (!(::memcmp(cipher, out_cipher, 32) == 0))
             return false;
 
          // test decrypt multiple 16
-         aes.decryptCTR(cipher, out_plain, iv, 32);
+         ::memcpy(inout_ivec, iv, 16);
+         aes.decryptCTR(cipher,    out_plain,    inout_ivec, 16);
+         aes.decryptCTR(cipher+16, out_plain+16, inout_ivec, 16);
          if (!(::memcmp(plain, out_plain, 32) == 0))
             return false;
 
@@ -353,12 +358,14 @@ namespace CppCore { namespace Test { namespace Crypto
          for (size_t i = 1; i < 16; i++)
          {
             // test encrypt tail
-            aes.encryptCTR(plain, out_cipher, iv, i);
+            ::memcpy(inout_ivec, iv, 16);
+            aes.encryptCTR(plain, out_cipher, inout_ivec, i);
             if (!(::memcmp(cipher, out_cipher, i) == 0))
                return false;
 
             // test decrypt tail
-            aes.decryptCTR(cipher, out_plain, iv, i);
+            ::memcpy(inout_ivec, iv, 16);
+            aes.decryptCTR(cipher, out_plain, inout_ivec, i);
             if (!(::memcmp(plain, out_plain, i) == 0))
                return false;
          }
@@ -402,18 +409,23 @@ namespace CppCore { namespace Test { namespace Crypto
 
          uint8_t out_plain[32];
          uint8_t out_cipher[32];
+         uint8_t inout_ivec[16];
 
          // init
          TAES aes;
          aes.reset(key, false);
 
          // test encrypt multiple 16
-         aes.encryptCTR(plain, out_cipher, iv, 32);
+         ::memcpy(inout_ivec, iv, 16);
+         aes.encryptCTR(plain,    out_cipher,    inout_ivec, 16);
+         aes.encryptCTR(plain+16, out_cipher+16, inout_ivec, 16);
          if (!(::memcmp(cipher, out_cipher, 32) == 0))
             return false;
 
          // test decrypt multiple 16
-         aes.decryptCTR(cipher, out_plain, iv, 32);
+         ::memcpy(inout_ivec, iv, 16);
+         aes.decryptCTR(cipher,    out_plain,    inout_ivec, 16);
+         aes.decryptCTR(cipher+16, out_plain+16, inout_ivec, 16);
          if (!(::memcmp(plain, out_plain, 32) == 0))
             return false;
 
@@ -421,12 +433,14 @@ namespace CppCore { namespace Test { namespace Crypto
          for (size_t i = 1; i < 16; i++)
          {
             // test encrypt tail
-            aes.encryptCTR(plain, out_cipher, iv, i);
+            ::memcpy(inout_ivec, iv, 16);
+            aes.encryptCTR(plain, out_cipher, inout_ivec, i);
             if (!(::memcmp(cipher, out_cipher, i) == 0))
                return false;
 
             // test decrypt tail
-            aes.decryptCTR(cipher, out_plain, iv, i);
+            ::memcpy(inout_ivec, iv, 16);
+            aes.decryptCTR(cipher, out_plain, inout_ivec, i);
             if (!(::memcmp(plain, out_plain, i) == 0))
                return false;
          }
@@ -472,18 +486,23 @@ namespace CppCore { namespace Test { namespace Crypto
 
          uint8_t out_plain[32];
          uint8_t out_cipher[32];
+         uint8_t inout_ivec[16];
 
          // init
          TAES aes;
          aes.reset(key, false);
 
          // test encrypt multiple 16
-         aes.encryptCTR(plain, out_cipher, iv, 32);
+         ::memcpy(inout_ivec, iv, 16);
+         aes.encryptCTR(plain,    out_cipher,    inout_ivec, 16);
+         aes.encryptCTR(plain+16, out_cipher+16, inout_ivec, 16);
          if (!(::memcmp(cipher, out_cipher, 32) == 0))
             return false;
 
          // test decrypt multiple 16
-         aes.decryptCTR(cipher, out_plain, iv, 32);
+         ::memcpy(inout_ivec, iv, 16);
+         aes.decryptCTR(cipher,    out_plain,    inout_ivec, 16);
+         aes.decryptCTR(cipher+16, out_plain+16, inout_ivec, 16);
          if (!(::memcmp(plain, out_plain, 32) == 0))
             return false;
 
@@ -491,12 +510,14 @@ namespace CppCore { namespace Test { namespace Crypto
          for (size_t i = 1; i < 16; i++)
          {
             // test encrypt tail
-            aes.encryptCTR(plain, out_cipher, iv, i);
+            ::memcpy(inout_ivec, iv, 16);
+            aes.encryptCTR(plain, out_cipher, inout_ivec, i);
             if (!(::memcmp(cipher, out_cipher, i) == 0))
                return false;
 
             // test decrypt tail
-            aes.decryptCTR(cipher, out_plain, iv, i);
+            ::memcpy(inout_ivec, iv, 16);
+            aes.decryptCTR(cipher, out_plain, inout_ivec, i);
             if (!(::memcmp(plain, out_plain, i) == 0))
                return false;
          }

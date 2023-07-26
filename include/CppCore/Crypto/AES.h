@@ -479,14 +479,14 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Encrypts n Blocks of 16 Bytes in CTR mode.
+      /// Encrypts n Bytes in CTR mode.
       /// Performs 64-Bit increment on the counter part of ivec.
       /// </summary>
-      INLINE void encryptCTR(const void* in, void* out, const void* ivec, size_t len)
+      INLINE void encryptCTR(const void* in, void* out, void* ivec, size_t len)
       {
          Block* bin  = (Block*)in;
          Block* bout = (Block*)out;
-         Block  iv = *((Block*)ivec);
+         Block& iv   = *(Block*)ivec;
          Block  enc;
 
          while (len)
@@ -553,9 +553,9 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Decrypts n Blocks of 16 Bytes in CTR mode.
+      /// Decrypts n Bytes in CTR mode.
       /// </summary>
-      INLINE void decryptCTR(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void decryptCTR(const void* in, void* out, void* ivec, const size_t n)
       {
          encryptCTR(in, out, ivec, n);
       }
@@ -800,7 +800,7 @@ namespace CppCore
       /// Performs 64-Bit increment on the counter part of ivec.
       /// </summary>
       template<bool ALIGNED = false>
-      INLINE void encryptCTR(const void* in, void* out, const void* ivec, size_t len)
+      INLINE void encryptCTR(const void* in, void* out, void* ivec, size_t len)
       {
          const __m128i& ONE   = _mm_set_epi32(0,1,0,0);
          const __m128i& BSWAP = _mm_setr_epi8(7,6,5,4,3,2,1,0,15,14,13,12,11,10,9,8);
@@ -849,16 +849,17 @@ namespace CppCore
                   cenc += 2U;
                }
                if (cin < cend) *cout = *cenc ^ *cin;
-               return;
+               break;
             }
          }
+         store<ALIGNED>(ivec, _mm_shuffle_epi8(ctr, BSWAP));
       }
 
       /// <summary>
       /// Decrypts len Bytes in CTR mode
       /// </summary>
       template<bool ALIGNED = false>
-      INLINE void decryptCTR(const void* in, void* out, const void* ivec, const size_t len)
+      INLINE void decryptCTR(const void* in, void* out, void* ivec, const size_t len)
       {
          encryptCTR<ALIGNED>(in, out, ivec, len);
       }
