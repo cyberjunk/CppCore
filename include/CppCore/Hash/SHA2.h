@@ -212,7 +212,7 @@ namespace CppCore
             sizeof(this->mBlock) + 112U - this->mBlockSize;
 
          // append padding
-         thiss().step(PADDING, padSize);
+         this->thiss().step(PADDING, padSize);
 
          // add the 64-bit length of the original message
          // as big endian to the end of the block
@@ -220,7 +220,7 @@ namespace CppCore
          CppCore::storer64(&this->mBlock.u64[Block1024::N64-1], totalSize);
 
          // calculate the message digest
-         thiss().transform();
+         this->thiss().transform();
 
          // convert 32 bit integers to big-endian
          flipEndianState();
