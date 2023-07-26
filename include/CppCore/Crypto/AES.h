@@ -11,7 +11,7 @@
 namespace CppCore
 {
    /// <summary>
-   /// AES Base
+   /// AES Base Class
    /// </summary>
    template<uint32_t ROUNDS>
    class AES
@@ -23,7 +23,40 @@ namespace CppCore
          ROUNDS == CPPCORE_AES_ROUNDS_256);
 
    protected:
-      INLINE AES() { }
+      /// <summary>
+      /// Tail Helper. Does out=in^enc with 0-15 bytes.
+      /// TODO: Not the right place.
+      /// </summary>
+      INLINE static void xor0to15(void* out, const void* in, const void* enc, size_t len)
+      {
+         uint8_t* cin  = (uint8_t*)in;
+         uint8_t* cout = (uint8_t*)out;
+         uint8_t* cend = (uint8_t*)in + len;
+         uint8_t* cenc = (uint8_t*)enc;
+         if (cin + 8U <= cend)
+         {
+            *(uint64_t*)cout = *(uint64_t*)cenc ^ *(uint64_t*)cin;
+            cin  += 8U;
+            cout += 8U;
+            cenc += 8U;
+         }
+         if (cin + 4U <= cend)
+         {
+            *(uint32_t*)cout = *(uint32_t*)cenc ^ *(uint32_t*)cin;
+            cin  += 4U;
+            cout += 4U;
+            cenc += 4U;
+         }
+         if (cin + 2U <= cend)
+         {
+            *(uint16_t*)cout = *(uint16_t*)cenc ^ *(uint16_t*)cin;
+            cin  += 2U;
+            cout += 2U;
+            cenc += 2U;
+         }
+         if (cin < cend) 
+            *cout = *cenc ^ *cin;
+      }
 
    public:
       /// <summary>
@@ -521,32 +554,7 @@ namespace CppCore
             }
             else
             {
-               uint8_t* cin  = (uint8_t*)bin;
-               uint8_t* cout = (uint8_t*)bout;
-               uint8_t* cend = (uint8_t*)cin + len;
-               uint8_t* cenc = (uint8_t*)&enc;
-               if (cin + 8U <= cend)
-               {
-                  *(uint64_t*)cout = *(uint64_t*)cenc ^ *(uint64_t*)cin;
-                  cin  += 8U;
-                  cout += 8U;
-                  cenc += 8U;
-               }
-               if (cin + 4U <= cend)
-               {
-                  *(uint32_t*)cout = *(uint32_t*)cenc ^ *(uint32_t*)cin;
-                  cin  += 4U;
-                  cout += 4U;
-                  cenc += 4U;
-               }
-               if (cin + 2U <= cend)
-               {
-                  *(uint16_t*)cout = *(uint16_t*)cenc ^ *(uint16_t*)cin;
-                  cin  += 2U;
-                  cout += 2U;
-                  cenc += 2U;
-               }
-               if (cin < cend) *cout = *cenc ^ *cin;
+               xor0to15(bout, bin, &enc, len);
                return;
             }
          }
@@ -823,32 +831,7 @@ namespace CppCore
             }
             else
             {
-               uint8_t* cin  = (uint8_t*)bin;
-               uint8_t* cout = (uint8_t*)bout;
-               uint8_t* cend = (uint8_t*)cin + len;
-               uint8_t* cenc  = (uint8_t*)&enc;
-               if (cin + 8U <= cend)
-               {
-                  *(uint64_t*)cout = *(uint64_t*)cenc ^ *(uint64_t*)cin;
-                  cin  += 8U;
-                  cout += 8U;
-                  cenc += 8U;
-               }
-               if (cin + 4U <= cend)
-               {
-                  *(uint32_t*)cout = *(uint32_t*)cenc ^ *(uint32_t*)cin;
-                  cin  += 4U;
-                  cout += 4U;
-                  cenc += 4U;
-               }
-               if (cin + 2U <= cend)
-               {
-                  *(uint16_t*)cout = *(uint16_t*)cenc ^ *(uint16_t*)cin;
-                  cin  += 2U;
-                  cout += 2U;
-                  cenc += 2U;
-               }
-               if (cin < cend) *cout = *cenc ^ *cin;
+               xor0to15(bout, bin, &enc, len);
                break;
             }
          }
