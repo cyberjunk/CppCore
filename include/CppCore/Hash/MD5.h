@@ -33,6 +33,7 @@ namespace CppCore
       using State = Block128;
       using Hash::step;
       using Hash::hash;
+      using Hash::thiss;
 
    protected:
       INLINE static uint32_t MD5_F(const uint32_t x, const uint32_t y, const uint32_t z) {
@@ -175,27 +176,34 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Calculates amount of padding bytes for current block
+      /// </summary>
+      INLINE size_t padSize() const
+      {
+         const     size_t CURRENTLEN = this->mBlockSize;
+         constexpr size_t SIZEOFLEN  = 8U;
+         constexpr size_t BSIZENOLEN = sizeof(Block) - SIZEOFLEN;
+         return (CURRENTLEN < BSIZENOLEN) ?
+            BSIZENOLEN - CURRENTLEN :
+            sizeof(Block) + BSIZENOLEN - CURRENTLEN;
+      }
+
+      /// <summary>
       /// Finish hash calculations.
       /// </summary>
       INLINE void finish()
       {
-          // length of the original message (before padding)
-          const uint64_t totalSize = this->mTotalSize * 8ULL;
+         // length of the overall hashed data in bits
+         const uint64_t bitlength = this->mTotalSize * 8ULL;
 
-          // determine padding size
-          const size_t padSize = (this->mBlockSize < 56U) ?
-             56U - this->mBlockSize :
-             sizeof(this->mBlock) + 56U - this->mBlockSize;
+         // append padding
+         step(PADDING, padSize());
 
-          // append padding
-          step(PADDING, padSize);
+         // write 64-bit length to the end of final block
+         mBlock.u64[Block::N64-1] = bitlength;
 
-          // add the 64-bit length of the original message
-          // to the end of the block
-          mBlock.u64[Block::N64-1] = totalSize;
-
-          // calculate the message digest
-          transform();
+         // calculate the message digest
+         transform();
       }
 
    public:

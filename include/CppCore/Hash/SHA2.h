@@ -62,36 +62,6 @@ namespace CppCore
       using Base = SHA2b<Block256, Block512, TSHA>;
       using typename Base::Digest;
 
-   protected:
-      INLINE SHA256b() { }
-
-      /// <summary>
-      /// Finish hash calculations.
-      /// </summary>
-      INLINE void finish()
-      {
-         // length of the original message (before padding)
-         const uint64_t totalSize = this->mTotalSize * 8ULL;
-
-         // determine padding size
-         const size_t padSize = (this->mBlockSize < 56U) ?
-            56U - this->mBlockSize :
-            sizeof(this->mBlock) + 56U - this->mBlockSize;
-
-         // append padding
-         this->thiss().step(PADDING, padSize);
-
-         // add the 64-bit length of the original message
-         // as big endian to the end of the block
-         CppCore::storer64(&this->mBlock.u64[Block512::N64-1], totalSize);
-
-         // calculate the message digest
-         this->thiss().transform();
-
-         // convert 32 bit integers to big-endian
-         this->thiss().flipEndianState();
-      }
-
    public:
       CPPCORE_ALIGN64 static constexpr const uint32_t K[] = {
          0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5,
@@ -130,6 +100,7 @@ namespace CppCore
       static constexpr const uint32_t SEED7 = 0x1f83d9ab;
       static constexpr const uint32_t SEED8 = 0x5be0cd19;
 
+   protected:
       /// <summary>
       /// Flips Endianess on Block
       /// </summary>
@@ -141,26 +112,54 @@ namespace CppCore
       INLINE void flipEndianState() { this->mState.flipEndian32(); }
 
       /// <summary>
+      /// Calculates amount of padding bytes for current block
+      /// </summary>
+      INLINE size_t padSize() const
+      {
+         const     size_t CURRENTLEN = this->mBlockSize;
+         constexpr size_t SIZEOFLEN  = 8U;
+         constexpr size_t BSIZENOLEN = sizeof(Block) - SIZEOFLEN;
+         return (CURRENTLEN < BSIZENOLEN) ?
+            BSIZENOLEN - CURRENTLEN :
+            sizeof(Block) + BSIZENOLEN - CURRENTLEN;
+      }
+
+      /// <summary>
+      /// Finish hash calculations.
+      /// </summary>
+      INLINE void finish()
+      {
+         // length of the overall hashed data in bits
+         const uint64_t bitlength = this->mTotalSize * 8ULL;
+
+         // append padding
+         this->thiss().step(PADDING, padSize());
+
+         // add the 64-bit length of the original message
+         // as big endian to the end of the block
+         CppCore::storer64(&this->mBlock.u64[Block512::N64-1], bitlength);
+
+         // calculate the message digest
+         this->thiss().transform();
+
+         // convert 32 bit integers to big-endian
+         this->thiss().flipEndianState();
+      }
+
+   public:
+      /// <summary>
       /// Resets to new seeds.
       /// </summary>
       INLINE void reset(
-         const uint32_t s0 = SEED1,
-         const uint32_t s1 = SEED2,
-         const uint32_t s2 = SEED3,
-         const uint32_t s3 = SEED4,
-         const uint32_t s4 = SEED5,
-         const uint32_t s5 = SEED6,
-         const uint32_t s6 = SEED7,
-         const uint32_t s7 = SEED8)
+         const uint32_t s0 = SEED1, const uint32_t s1 = SEED2,
+         const uint32_t s2 = SEED3, const uint32_t s3 = SEED4,
+         const uint32_t s4 = SEED5, const uint32_t s5 = SEED6,
+         const uint32_t s6 = SEED7, const uint32_t s7 = SEED8)
       {
-         this->mState.u32[0] = s0;
-         this->mState.u32[1] = s1;
-         this->mState.u32[2] = s2;
-         this->mState.u32[3] = s3;
-         this->mState.u32[4] = s4;
-         this->mState.u32[5] = s5;
-         this->mState.u32[6] = s6;
-         this->mState.u32[7] = s7;
+         this->mState.u32[0] = s0; this->mState.u32[1] = s1;
+         this->mState.u32[2] = s2; this->mState.u32[3] = s3;
+         this->mState.u32[4] = s4; this->mState.u32[5] = s5;
+         this->mState.u32[6] = s6; this->mState.u32[7] = s7;
          this->mBlockSize = 0;
          this->mTotalSize = 0;
       }
@@ -194,37 +193,6 @@ namespace CppCore
    public:
       using Base = SHA2b<Block512, Block1024, TSHA>;
       using typename Base::Digest;
-
-   protected:
-      INLINE SHA512b() { }
-
-      /// <summary>
-      /// Finish hash calculations.
-      /// </summary>
-      INLINE void finish()
-      {
-         // length of the original message (before padding)
-         const uint64_t totalSize = this->mTotalSize * 8ULL;
-
-         // determine padding size
-         const size_t padSize = (this->mBlockSize < 112U) ?
-            112U - this->mBlockSize :
-            sizeof(this->mBlock) + 112U - this->mBlockSize;
-
-         // append padding
-         this->thiss().step(PADDING, padSize);
-
-         // add the 64-bit length of the original message
-         // as big endian to the end of the block
-         this->mBlock.u64[Block1024::N64-2] = 0;
-         CppCore::storer64(&this->mBlock.u64[Block1024::N64-1], totalSize);
-
-         // calculate the message digest
-         this->thiss().transform();
-
-         // convert 32 bit integers to big-endian
-         flipEndianState();
-      }
 
    public:
       CPPCORE_ALIGN64 static constexpr const uint64_t K[] = {
@@ -268,6 +236,7 @@ namespace CppCore
       static constexpr const uint64_t SEED7 = 0x1F83D9ABFB41BD6B;
       static constexpr const uint64_t SEED8 = 0x5BE0CD19137E2179;
 
+   protected:
       /// <summary>
       /// Flip Endianess on Block
       /// </summary>
@@ -279,27 +248,56 @@ namespace CppCore
       INLINE void flipEndianState() { this->mState.flipEndian64(); }
 
       /// <summary>
+      /// Calculates amount of padding bytes for current block
+      /// </summary>
+      INLINE size_t padSize() const
+      {
+         const     size_t CURRENTLEN = this->mBlockSize;
+         constexpr size_t SIZEOFLEN  = 16U;
+         constexpr size_t BSIZENOLEN = sizeof(Block) - SIZEOFLEN;
+         return (CURRENTLEN < BSIZENOLEN) ?
+            BSIZENOLEN - CURRENTLEN :
+            sizeof(Block) + BSIZENOLEN - CURRENTLEN;
+      }
+
+      /// <summary>
+      /// Finish hash calculations.
+      /// </summary>
+      INLINE void finish()
+      {
+         // length of the overall hashed data in bits
+         const uint64_t bitlength = this->mTotalSize * 8ULL;
+
+         // append padding
+         this->thiss().step(PADDING, padSize());
+
+         // add the 64-bit length of the original message
+         // as big endian to the end of the block
+         this->mBlock.u64[Block1024::N64-2] = 0;
+         CppCore::storer64(&this->mBlock.u64[Block1024::N64-1], bitlength);
+
+         // calculate the message digest
+         this->thiss().transform();
+
+         // convert 32 bit integers to big-endian
+         flipEndianState();
+      }
+
+   public:
+      /// <summary>
       /// Resets to new seeds.
       /// </summary>
       INLINE void reset(
-         const uint64_t s0 = SEED1,
-         const uint64_t s1 = SEED2,
-         const uint64_t s2 = SEED3,
-         const uint64_t s3 = SEED4,
-         const uint64_t s4 = SEED5,
-         const uint64_t s5 = SEED6,
-         const uint64_t s6 = SEED7,
-         const uint64_t s7 = SEED8)
+         const uint64_t s0 = SEED1, const uint64_t s1 = SEED2,
+         const uint64_t s2 = SEED3, const uint64_t s3 = SEED4,
+         const uint64_t s4 = SEED5, const uint64_t s5 = SEED6,
+         const uint64_t s6 = SEED7, const uint64_t s7 = SEED8)
       {
-         this->mState.u64[0] = s0;
-         this->mState.u64[1] = s1;
-         this->mState.u64[2] = s2;
-         this->mState.u64[3] = s3;
-         this->mState.u64[4] = s4;
-         this->mState.u64[5] = s5;
-         this->mState.u64[6] = s6;
-         this->mState.u64[7] = s7;
-         this->mBlockSize = 0;
+         this->mState.u64[0] = s0; this->mState.u64[1] = s1;
+         this->mState.u64[2] = s2; this->mState.u64[3] = s3;
+         this->mState.u64[4] = s4; this->mState.u64[5] = s5;
+         this->mState.u64[6] = s6; this->mState.u64[7] = s7;
+         this->mBlockSize = 0; 
          this->mTotalSize = 0;
       }
 
@@ -333,8 +331,8 @@ namespace CppCore
    class SHA256g : public SHA256b<SHA256g>
    {
       friend Hash;
-      friend SHA256b<SHA256g>;
-      friend SHA2b<Block256, Block512, SHA256g>;
+      friend SHA2b;
+      friend SHA256b;
 
    protected:
       INLINE static uint32_t ch (const uint32_t x, const uint32_t y, const uint32_t z) { return (x & y) | CppCore::andn32(x, z); }
@@ -346,7 +344,7 @@ namespace CppCore
       INLINE uint32_t& W(const uint32_t x) { return mBlock.u32[x & 0x0F]; }
 
       /// <summary>
-      /// Transforms Block
+      /// Transform Block
       /// </summary>
       INLINE void transform()
       {
@@ -399,14 +397,10 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE SHA256g(
-         const uint32_t s0 = SEED1,
-         const uint32_t s1 = SEED2,
-         const uint32_t s2 = SEED3,
-         const uint32_t s3 = SEED4,
-         const uint32_t s4 = SEED5,
-         const uint32_t s5 = SEED6,
-         const uint32_t s6 = SEED7,
-         const uint32_t s7 = SEED8) : SHA256b() 
+         const uint32_t s0 = SEED1, const uint32_t s1 = SEED2,
+         const uint32_t s2 = SEED3, const uint32_t s3 = SEED4,
+         const uint32_t s4 = SEED5, const uint32_t s5 = SEED6,
+         const uint32_t s6 = SEED7, const uint32_t s7 = SEED8) : SHA256b() 
       {
          thiss().reset(s0, s1, s2, s3, s4, s5, s6, s7);
       }
@@ -418,8 +412,8 @@ namespace CppCore
    class SHA512g : public SHA512b<SHA512g>
    {
       friend Hash;
-      friend SHA512b<SHA512g>;
-      friend SHA2b<Block512, Block1024, SHA512g>;
+      friend SHA2b;
+      friend SHA512b;
 
    protected:
       INLINE static uint64_t ch (const uint64_t x, const uint64_t y, const uint64_t z) { return (x & y) | CppCore::andn64(x, z); }
@@ -484,14 +478,10 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE SHA512g(
-         const uint64_t s0 = SEED1,
-         const uint64_t s1 = SEED2,
-         const uint64_t s2 = SEED3,
-         const uint64_t s3 = SEED4,
-         const uint64_t s4 = SEED5,
-         const uint64_t s5 = SEED6,
-         const uint64_t s6 = SEED7,
-         const uint64_t s7 = SEED8) : SHA512b()
+         const uint64_t s0 = SEED1, const uint64_t s1 = SEED2,
+         const uint64_t s2 = SEED3, const uint64_t s3 = SEED4,
+         const uint64_t s4 = SEED5, const uint64_t s5 = SEED6,
+         const uint64_t s6 = SEED7, const uint64_t s7 = SEED8) : SHA512b()
       {
          thiss().reset(s0, s1, s2, s3, s4, s5, s6, s7);
       }
@@ -502,7 +492,6 @@ namespace CppCore
    /////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if defined(CPPCORE_CPUFEAT_SHA)
-   // TODO
    using SHA256s = SHA256g;
    using SHA512s = SHA512g;
 #elif defined(CPPCORE_CPUFEAT_ARM_SHA2)
@@ -512,8 +501,8 @@ namespace CppCore
    class SHA256s : public SHA256b<SHA256s>
    {
       friend Hash;
-      friend SHA256b<SHA256s>;
-      friend SHA2b<Block256, Block512, SHA256s>;
+      friend SHA2b;
+      friend SHA256b;
 
    protected:
       /// <summary>
@@ -528,18 +517,18 @@ namespace CppCore
          uint32x4_t MSG0, MSG1, MSG2, MSG3;
          uint32x4_t TMP0, TMP1, TMP2;
 
-         STATE0 = vld1q_u32(&state.u32[0]);
-         STATE1 = vld1q_u32(&state.u32[4]);
+         STATE0 = vld1q_u32(&mState.u32[0]);
+         STATE1 = vld1q_u32(&mState.u32[4]);
 
          /* Save state */
          ABEF_SAVE = STATE0;
          CDGH_SAVE = STATE1;
 
          /* Load message */
-         MSG0 = vld1q_u32(&block.u32[0]);
-         MSG1 = vld1q_u32(&block.u32[4]);
-         MSG2 = vld1q_u32(&block.u32[8]);
-         MSG3 = vld1q_u32(&block.u32[12]);
+         MSG0 = vld1q_u32(&mBlock.u32[0]);
+         MSG1 = vld1q_u32(&mBlock.u32[4]);
+         MSG2 = vld1q_u32(&mBlock.u32[8]);
+         MSG3 = vld1q_u32(&mBlock.u32[12]);
 
          /* Reverse for little endian */
          MSG0 = vreinterpretq_u32_u8(vrev32q_u8(vreinterpretq_u8_u32(MSG0)));
@@ -673,8 +662,8 @@ namespace CppCore
          STATE1 = vaddq_u32(STATE1, CDGH_SAVE);
 
          /* Save state */
-         vst1q_u32(&state.u32[0], STATE0);
-         vst1q_u32(&state.u32[4], STATE1);
+         vst1q_u32(&mState.u32[0], STATE0);
+         vst1q_u32(&mState.u32[4], STATE1);
       }
 
    public:
@@ -682,30 +671,23 @@ namespace CppCore
       /// Constructor
       /// </summary>
       INLINE SHA256s(
-         const uint32_t s0 = SEED1,
-         const uint32_t s1 = SEED2,
-         const uint32_t s2 = SEED3,
-         const uint32_t s3 = SEED4,
-         const uint32_t s4 = SEED5,
-         const uint32_t s5 = SEED6,
-         const uint32_t s6 = SEED7,
-         const uint32_t s7 = SEED8) : SHA256b() 
+         const uint32_t s0 = SEED1, const uint32_t s1 = SEED2,
+         const uint32_t s2 = SEED3, const uint32_t s3 = SEED4,
+         const uint32_t s4 = SEED5, const uint32_t s5 = SEED6,
+         const uint32_t s6 = SEED7, const uint32_t s7 = SEED8) : SHA256b() 
       {
-         thiss()->reset(s0, s1, s2, s3, s4, s5, s6, s7);
+         thiss().reset(s0, s1, s2, s3, s4, s5, s6, s7);
       }
    };
 
-   // TODO
+   // TODO: Implement
    using SHA512s = SHA512g;
 #else
    using SHA256s = SHA256g;
    using SHA512s = SHA512g;
 #endif
 
-   /////////////////////////////////////////////////////////////////////////////////////////////////
-   // DEFAULT SELECTION
-   /////////////////////////////////////////////////////////////////////////////////////////////////
-
-   using SHA256 = SHA256g;
-   using SHA512 = SHA512g;
+   // USE OPTIMIZED BY DEFAULT IF ENABLED
+   using SHA256 = SHA256s;
+   using SHA512 = SHA512s;
 }
