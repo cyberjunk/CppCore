@@ -554,7 +554,7 @@ namespace CppCore
             }
             else
             {
-               xor0to15(bout, bin, &enc, len);
+               this->xor0to15(bout, bin, &enc, len);
                return;
             }
          }
@@ -831,7 +831,7 @@ namespace CppCore
             }
             else
             {
-               xor0to15(bout, bin, &enc, len);
+               this->xor0to15(bout, bin, &enc, len);
                break;
             }
          }
