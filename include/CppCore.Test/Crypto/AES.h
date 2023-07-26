@@ -175,17 +175,22 @@ namespace CppCore { namespace Test { namespace Crypto
 
          uint8_t out_plain[64];
          uint8_t out_cipher[64];
+         uint8_t inout_ivec[16];
 
          // init
          TAES aes(key);
 
-         // test encrypt
-         aes.encryptCBC(plain, out_cipher, ivec, 4U);
+         // reset ivec and test encrypt
+         ::memcpy(inout_ivec, ivec, 16);
+         aes.encryptCBC(plain,    out_cipher,    inout_ivec, 2U);
+         aes.encryptCBC(plain+32, out_cipher+32, inout_ivec, 2U);
          if (!(::memcmp(cipher, out_cipher, 64) == 0))
             return false;
 
-         // test decrypt
-         aes.decryptCBC(cipher, out_plain, ivec, 4U);
+         // reset ivec and test decrypt
+         ::memcpy(inout_ivec, ivec, 16);
+         aes.decryptCBC(cipher,    out_plain,    inout_ivec, 2U);
+         aes.decryptCBC(cipher+32, out_plain+32, inout_ivec, 2U);
          if (!(::memcmp(plain, out_plain, 64) == 0))
             return false;
 
@@ -213,17 +218,22 @@ namespace CppCore { namespace Test { namespace Crypto
 
          uint8_t out_plain[64];
          uint8_t out_cipher[64];
+         uint8_t inout_ivec[16];
 
          // init
          TAES aes(key);
 
-         // test encrypt
-         aes.encryptCBC(plain, out_cipher, ivec, 4U);
+         // reset ivec and test encrypt
+         ::memcpy(inout_ivec, ivec, 16);
+         aes.encryptCBC(plain,    out_cipher,    inout_ivec, 2U);
+         aes.encryptCBC(plain+32, out_cipher+32, inout_ivec, 2U);
          if (!(::memcmp(cipher, out_cipher, 64) == 0))
             return false;
 
-         // test decrypt
-         aes.decryptCBC(cipher, out_plain, ivec, 4U);
+         // reset ivec and test decrypt
+         ::memcpy(inout_ivec, ivec, 16);
+         aes.decryptCBC(cipher,    out_plain,    inout_ivec, 2U);
+         aes.decryptCBC(cipher+32, out_plain+32, inout_ivec, 2U);
          if (!(::memcmp(plain, out_plain, 64) == 0))
             return false;
 
@@ -252,17 +262,22 @@ namespace CppCore { namespace Test { namespace Crypto
 
          uint8_t out_plain[64];
          uint8_t out_cipher[64];
+         uint8_t inout_ivec[16];
 
          // init
          TAES aes(key);
 
-         // test encrypt
-         aes.encryptCBC(plain, out_cipher, ivec, 4U);
+         // reset ivec and test encrypt
+         ::memcpy(inout_ivec, ivec, 16);
+         aes.encryptCBC(plain,    out_cipher,    inout_ivec, 2U);
+         aes.encryptCBC(plain+32, out_cipher+32, inout_ivec, 2U);
          if (!(::memcmp(cipher, out_cipher, 64) == 0))
             return false;
 
-         // test decrypt
-         aes.decryptCBC(cipher, out_plain, ivec, 4U);
+         // reset ivec and test decrypt
+         ::memcpy(inout_ivec, ivec, 16);
+         aes.decryptCBC(cipher,    out_plain,    inout_ivec, 2U);
+         aes.decryptCBC(cipher+32, out_plain+32, inout_ivec, 2U);
          if (!(::memcmp(plain, out_plain, 64) == 0))
             return false;
 

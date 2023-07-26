@@ -455,27 +455,27 @@ namespace CppCore
       /// <summary>
       /// Encrypts n Blocks of 16 Bytes in CBC mode
       /// </summary>
-      INLINE void encryptCBC(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void encryptCBC(const void* in, void* out, void* ivec, const size_t n)
       {
          Block* bin  = (Block*)in;
          Block* bout = (Block*)out;
-         Block  iv = *(Block*)ivec;
+         Block* iv   = (Block*)ivec;
          CPPCORE_UNROLL
          for (size_t i = 0; i < n; i++)
-            encrypt(bin[i], bout[i], iv);
+            encrypt(bin[i], bout[i], *iv);
       }
 
       /// <summary>
       /// Decrypts n Blocks of 16 Bytes in CBC mode
       /// </summary>
-      INLINE void decryptCBC(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void decryptCBC(const void* in, void* out, void* ivec, const size_t n)
       {
          Block* bin  = (Block*)in;
          Block* bout = (Block*)out;
-         Block  iv = *(Block*)ivec;
+         Block* iv   = (Block*)ivec;
          CPPCORE_UNROLL
          for (size_t i = 0; i < n; i++)
-            decrypt(bin[i], bout[i], iv);
+            decrypt(bin[i], bout[i], *iv);
       }
 
       /// <summary>
@@ -759,7 +759,7 @@ namespace CppCore
       /// Encrypts n Blocks of 16 Bytes in CBC mode
       /// </summary>
       template<bool ALIGNED = false>
-      INLINE void encryptCBC(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void encryptCBC(const void* in, void* out, void* ivec, const size_t n)
       {
          __m128i  iv   = load<ALIGNED>(ivec);
          __m128i* bin  = (__m128i*)in;
@@ -772,13 +772,14 @@ namespace CppCore
             encrypt(m, iv);
             store<ALIGNED>(bout++, m);
          }
+         store<ALIGNED>(ivec, iv);
       }
 
       /// <summary>
       /// Decrypts n Blocks of 16 Bytes in CBC mode
       /// </summary>
       template<bool ALIGNED = false>
-      INLINE void decryptCBC(const void* in, void* out, const void* ivec, const size_t n)
+      INLINE void decryptCBC(const void* in, void* out, void* ivec, const size_t n)
       {
          __m128i  iv   = load<ALIGNED>(ivec);
          __m128i* bin  = (__m128i*)in;
@@ -791,6 +792,7 @@ namespace CppCore
             decrypt(m, iv);
             store<ALIGNED>(bout++, m);
          }
+         store<ALIGNED>(ivec, iv);
       }
 
       /// <summary>
