@@ -121,12 +121,7 @@ namespace CppCore
       /// </summary>
       INLINE size_t padSize() const
       {
-         const     size_t CURRENTLEN = this->mBlockSize;
-         constexpr size_t SIZEOFLEN  = 8U;
-         constexpr size_t BSIZENOLEN = sizeof(this->mBlock) - SIZEOFLEN;
-         return (CURRENTLEN < BSIZENOLEN) ?
-            BSIZENOLEN - CURRENTLEN :
-            sizeof(this->mBlock) + BSIZENOLEN - CURRENTLEN;
+         return Base::padSize(sizeof(this->mBlock), this->mBlockSize, 8U);
       }
 
       /// <summary>
@@ -140,14 +135,14 @@ namespace CppCore
          // append padding
          this->thiss().step(PADDING, padSize());
 
-         // add the 64-bit length of the original message
+         // write the 64-bit length of the original message
          // as big endian to the end of the block
-         CppCore::storer64(&this->mBlock.u64[Block512::N64-1], bitlength);
+         CppCore::storer64(&this->mBlock.u64[Block::N64-1], bitlength);
 
          // calculate the message digest
          this->thiss().transform();
 
-         // convert 32 bit integers to big-endian
+         // convert integers to big-endian
          this->thiss().flipEndianState();
       }
 
@@ -259,12 +254,7 @@ namespace CppCore
       /// </summary>
       INLINE size_t padSize() const
       {
-         const     size_t CURRENTLEN = this->mBlockSize;
-         constexpr size_t SIZEOFLEN  = 16U;
-         constexpr size_t BSIZENOLEN = sizeof(this->mBlock) - SIZEOFLEN;
-         return (CURRENTLEN < BSIZENOLEN) ?
-            BSIZENOLEN - CURRENTLEN :
-            sizeof(this->mBlock) + BSIZENOLEN - CURRENTLEN;
+         return Base::padSize(sizeof(this->mBlock), this->mBlockSize, 16U);
       }
 
       /// <summary>
@@ -278,15 +268,15 @@ namespace CppCore
          // append padding
          this->thiss().step(PADDING, padSize());
 
-         // add the 64-bit length of the original message
+         // write the 128-bit length of the original message
          // as big endian to the end of the block
-         this->mBlock.u64[Block1024::N64-2] = 0;
-         CppCore::storer64(&this->mBlock.u64[Block1024::N64-1], bitlength);
+         this->mBlock.u64[Block::N64-2] = 0;
+         CppCore::storer64(&this->mBlock.u64[Block::N64-1], bitlength);
 
          // calculate the message digest
          this->thiss().transform();
 
-         // convert 32 bit integers to big-endian
+         // convert integers to big-endian
          flipEndianState();
       }
 

@@ -56,6 +56,17 @@ namespace CppCore
          }
       }
 
+      /// <summary>
+      /// Calculates amount of padding bytes.
+      /// </summary>
+      INLINE static size_t padSize(size_t blocksize, size_t usedsize, size_t lensize)
+      {
+         const size_t BSIZENOLEN = blocksize - lensize;
+         return (usedsize < BSIZENOLEN) ?
+            BSIZENOLEN - usedsize :
+            blocksize + BSIZENOLEN - usedsize;
+      }
+
    public:
       using Digest = DIGEST;
 
