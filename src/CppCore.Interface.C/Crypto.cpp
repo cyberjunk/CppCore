@@ -60,9 +60,9 @@ CPPCORE_HASH_IMPLEMENTATION(cppcore_murmur3, CppCore::Murmur3)
   void  name ## _step   (name* hsh, void* data, size_t len) { ((classname*)hsh)->step(data, len); } \
   void  name ## _finish (name* hsh, void* digest)           { ((classname*)hsh)->finish(digest);  }
 
-CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_md5,     CppCore::HMACMD5)
-CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_sha256,  CppCore::HMACSHA256)
-CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_sha512,  CppCore::HMACSHA512)
+CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_md5,    CppCore::HMACMD5)
+CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_sha256, CppCore::HMACSHA256)
+CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_sha512, CppCore::HMACSHA512)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PBKDF2
@@ -94,12 +94,16 @@ CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha512, CppCore::PBKDF2SHA512)
 
 #include <CppCore/Crypto/AES.h>
 
-#define CPPCORE_AES_IMPLEMENTATION(name, classname)                                                                   \
-  name* name ## _init       ()                                         { return (name*) new classname();            } \
-  void  name ## _destroy    (name* aes)                                { delete (classname*)aes;                    } \
-  void  name ## _reset      (name* aes, void* key)                     { ((classname*)aes)->reset(key);             } \
-  void  name ## _encrypt_ecb(name* aes, void* in, void* out, size_t n) { ((classname*)aes)->encryptECB(in, out, n); } \
-  void  name ## _decrypt_ecb(name* aes, void* in, void* out, size_t n) { ((classname*)aes)->decryptECB(in, out, n); }
+#define CPPCORE_AES_IMPLEMENTATION(name, classname)                                                                             \
+  name* name ## _init       ()                                               { return (name*) new classname();                } \
+  void  name ## _destroy    (name* aes)                                      { delete (classname*)aes;                        } \
+  void  name ## _reset      (name* aes,void* key)                            { ((classname*)aes)->reset(key);                 } \
+  void  name ## _encrypt_ecb(name* aes,void* in,void* out,size_t n)          { ((classname*)aes)->encryptECB(in, out, n);     } \
+  void  name ## _decrypt_ecb(name* aes,void* in,void* out,size_t n)          { ((classname*)aes)->decryptECB(in, out, n);     } \
+  void  name ## _encrypt_cbc(name* aes,void* in,void* out,void* iv,size_t n) { ((classname*)aes)->encryptCBC(in, out, iv, n); } \
+  void  name ## _decrypt_cbc(name* aes,void* in,void* out,void* iv,size_t n) { ((classname*)aes)->decryptCBC(in, out, iv, n); } \
+  void  name ## _encrypt_ctr(name* aes,void* in,void* out,void* iv,size_t n) { ((classname*)aes)->encryptCTR(in, out, iv, n); } \
+  void  name ## _decrypt_ctr(name* aes,void* in,void* out,void* iv,size_t n) { ((classname*)aes)->decryptCTR(in, out, iv, n); }
 
 CPPCORE_AES_IMPLEMENTATION(cppcore_aes128, CppCore::AES128)
 CPPCORE_AES_IMPLEMENTATION(cppcore_aes192, CppCore::AES192)

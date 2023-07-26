@@ -41,13 +41,17 @@
     size_t iterations);
 
 // macro for aes function declarations
-#define CPPCORE_AES_DECLARATION(name)                                                  \
-  typedef struct _ ## name name;                                                       \
-  CPPCORE_EXPORT name* name ## _init       ();                                         \
-  CPPCORE_EXPORT void  name ## _destroy    (name* aes);                                \
-  CPPCORE_EXPORT void  name ## _reset      (name* aes, void* key);                     \
-  CPPCORE_EXPORT void  name ## _encrypt_ecb(name* aes, void* in, void* out, size_t n); \
-  CPPCORE_EXPORT void  name ## _decrypt_ecb(name* aes, void* in, void* out, size_t n);
+#define CPPCORE_AES_DECLARATION(name)                                                            \
+  typedef struct _ ## name name;                                                                 \
+  CPPCORE_EXPORT name* name ## _init       ();                                                   \
+  CPPCORE_EXPORT void  name ## _destroy    (name* aes);                                          \
+  CPPCORE_EXPORT void  name ## _reset      (name* aes, void* key);                               \
+  CPPCORE_EXPORT void  name ## _encrypt_ecb(name* aes, void* in, void* out, size_t n);           \
+  CPPCORE_EXPORT void  name ## _decrypt_ecb(name* aes, void* in, void* out, size_t n);           \
+  CPPCORE_EXPORT void  name ## _encrypt_cbc(name* aes, void* in, void* out, void* iv, size_t n); \
+  CPPCORE_EXPORT void  name ## _decrypt_cbc(name* aes, void* in, void* out, void* iv, size_t n); \
+  CPPCORE_EXPORT void  name ## _encrypt_ctr(name* aes, void* in, void* out, void* iv, size_t n); \
+  CPPCORE_EXPORT void  name ## _decrypt_ctr(name* aes, void* in, void* out, void* iv, size_t n);
 
 // macro for prime declarations
 #define CPPCORE_PRIME_DECLARATION(name)                                 \
