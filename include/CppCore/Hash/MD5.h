@@ -11,6 +11,17 @@ namespace CppCore
    class MD5 : public Hash<MD5, Block128>
    {
    public:
+      using Base  = Hash<MD5, Block128>;
+      using Block = Block512;
+      using State = Block128;
+      using Base::step;
+      using Base::hash;
+      using Base::thiss;
+
+   private:
+      friend Base;
+
+   public:
       CPPCORE_ALIGN64 static constexpr const uint8_t PADDING[64] = {
          0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -25,12 +36,6 @@ namespace CppCore
       static constexpr const uint32_t SEED2 = 0xefcdab89;
       static constexpr const uint32_t SEED3 = 0x98badcfe;
       static constexpr const uint32_t SEED4 = 0x10325476;
-
-   public:
-      using Block = Block512;
-      using State = Block128;
-      using Hash::step;
-      using Hash::hash;
 
    protected:
       INLINE static uint32_t MD5_F(const uint32_t x, const uint32_t y, const uint32_t z) {
@@ -72,10 +77,10 @@ namespace CppCore
       }
 
    protected:
-      CPPCORE_ALIGN16 State    mState;    // current state
-      CPPCORE_ALIGN16 Block    mBlock;    // current block
-      CPPCORE_ALIGN8  size_t   blockSize; // byte size used in current block
-      CPPCORE_ALIGN8  uint64_t totalSize; // byte size totally hashed
+      CPPCORE_ALIGN16 State    mState;     // current state
+      CPPCORE_ALIGN16 Block    mBlock;     // current block
+      CPPCORE_ALIGN8  size_t   mBlockSize; // byte size used in current block
+      CPPCORE_ALIGN8  uint64_t mTotalSize; // byte size totally hashed
 
       /// <summary>
       /// Transform current block
@@ -173,39 +178,41 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Calculates amount of padding bytes for current block
+      /// </summary>
+      INLINE size_t padSize() const
+      {
+         return Base::padSize(sizeof(this->mBlock), this->mBlockSize, 8U);
+      }
+
+      /// <summary>
       /// Finish hash calculations.
       /// </summary>
       INLINE void finish()
       {
-          // length of the original message (before padding)
-          const uint64_t totalSize = this->totalSize * 8ULL;
+         // length of the overall hashed data in bits
+         const uint64_t bitlength = this->mTotalSize * 8ULL;
 
-          // determine padding size
-          const size_t padSize = (blockSize < 56U) ?
-              56U - blockSize :
-              64U + 56U - blockSize;
+         // append padding
+         step(PADDING, padSize());
 
-          // append padding
-          step(PADDING, padSize);
+         // write 64-bit length to the end of final block
+         mBlock.u64[Block::N64-1] = bitlength;
 
-          // add the 64-bit length of the original message
-          // to the end of the block
-          mBlock.u64[7] = totalSize;
-
-          // calculate the message digest
-          transform();
+         // calculate the message digest
+         transform();
       }
 
    public:
       /// <summary>
       /// Digest/Hash Output Size in Bytes
       /// </summary>
-      static constexpr const size_t DIGESTSIZE = sizeof(Block128);
+      static constexpr const size_t DIGESTSIZE = sizeof(Digest);
 
       /// <summary>
       /// Size of the internal Work Block in Bytes
       /// </summary>
-      static constexpr const size_t BLOCKSIZE  = sizeof(Block512);
+      static constexpr const size_t BLOCKSIZE  = sizeof(Block);
 
       /// <summary>
       /// Constructor
@@ -228,12 +235,12 @@ namespace CppCore
          const uint32_t s2 = SEED3,
          const uint32_t s3 = SEED4)
       {
-         totalSize = 0;
-         blockSize = 0;
          mState.u32[0] = s0;
          mState.u32[1] = s1;
          mState.u32[2] = s2;
          mState.u32[3] = s3;
+         mTotalSize = 0;
+         mBlockSize = 0;
       }
 
       /// <summary>
@@ -241,29 +248,10 @@ namespace CppCore
       /// </summary>
       INLINE void step(const void* data, size_t length)
       {
-         while (length)
-         {
-            // block can hold at most 64 bytes
-            const size_t n = MIN(length, (size_t)64U - blockSize);
-
-            // copy data to current block
-            Memory::copy(&mBlock.u8[0] + blockSize, data, n);
-
-            // update sizes
-            blockSize += n;
-            totalSize += n;
-
-            // advance pointer, decrease length
-            data = (uint8_t*)data + n;
-            length -= n;
-
-            // process block if complete
-            if (blockSize == (size_t)64U)
-            {
-               transform();
-               blockSize = 0;
-            }
-         }
+         this->step(data, length, 
+            this->mBlock, 
+            this->mBlockSize, 
+            this->mTotalSize);
       }
 
       /// <summary>
@@ -271,9 +259,7 @@ namespace CppCore
       /// </summary>
       INLINE void finish(Digest& digest)
       {
-         finish();
-
-         // copy the final digest
+         this->thiss().finish();
          CppCore::clone(digest, mState);
       }
 
@@ -283,7 +269,7 @@ namespace CppCore
       /// </summary>
       INLINE void finish(void* digest)
       {
-         finish();
+         this->thiss().finish();
          Memory::singlecopy128<1,16>(digest, &mState);
       }
 
@@ -292,7 +278,7 @@ namespace CppCore
       /// </summary>
       INLINE void finish(uint64_t& l, uint64_t& h)
       {
-         finish();
+         this->thiss().finish();
 
          // copy the final digest
          l = mState.u64[0];
