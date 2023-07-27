@@ -2262,7 +2262,7 @@ namespace CppCore
       INLINE string toString(const uint32_t base, const char* alphabet) const
       {
          string s;
-         CppCore::BaseX::Util::tostringu(*thiss(), s, base, alphabet);
+         CppCore::BaseX::tostring(*thiss(), s, base, alphabet);
          return s;
       }
 
@@ -2314,35 +2314,9 @@ namespace CppCore
       /// </summary>
       constexpr INLINE static bool tryParse(const string& input, TC& r, const string& alphabet = CPPCORE_ALPHABET_B10)
       {
-         r = 0ULL;
-         const size_t b = alphabet.length();
-         const size_t l = input.length();
-         if ((b > 1U) && (l > 0))
-         {
-            struct { TC v; uint64_t of; } t;
-            for (size_t i = 0; i < l; i++)
-            {
-               const char c = input[i];
-               const size_t idx = alphabet.find(c, 0);
-               if (idx != string::npos)
-               {
-                  CppCore::umul(r, b, t);
-                  if (t.of != 0U) // mul overflow
-                     return false;
-                  r = t.v;
-                  uint8_t carry = 0;
-                  CppCore::addcarry(r, idx, r, carry);
-                  if (carry != 0) // add overflow
-                     return false;
-               }
-               else // invalid symbol in input
-                  return false;
-            }
-            // success
-            return true;
-         }
-         else // invalid alphabet or empty input
-            return false;
+         return 
+            alphabet.length() >= 2 && 
+            BaseX::tryparse(input.c_str(), r, (uint32_t)alphabet.length(), alphabet.c_str());
       }
 
       /// <summary>
