@@ -69,6 +69,15 @@ namespace CppCore { namespace Test
             ss.clear(); CppCore::BaseX::tostring(uint8_t(0xFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("255"  ) != ss) return false;
             ss.clear(); CppCore::BaseX::tostring(uint8_t(0x0F), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("15"   ) != ss) return false;
             ss.clear(); CppCore::BaseX::tostring(uint8_t(0xBC), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("188"  ) != ss) return false;
+            char s[64]; constexpr size_t S = sizeof(s);
+            if (S-1  != CppCore::BaseX::tostring(uint8_t(0x00), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "0",   1)) return false;
+            if (S-1  != CppCore::BaseX::tostring(uint8_t(0x01), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "1",   1)) return false;
+            if (S-3  != CppCore::BaseX::tostring(uint8_t(0xFF), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "255", 3)) return false;
+            if (S-2  != CppCore::BaseX::tostring(uint8_t(0x0F), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "15",  2)) return false;
+            if (S-3  != CppCore::BaseX::tostring(uint8_t(0xBC), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "188", 3)) return false;
+            if (0    != CppCore::BaseX::tostring(uint8_t(0xBC), s, 3,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "188", 3)) return false;
+            if (-1   != CppCore::BaseX::tostring(uint8_t(0xFF), s, 2,  10U, CPPCORE_ALPHABET_B10, true)) return false;
+            if (-3   != CppCore::BaseX::tostring(uint8_t(0xFF), s, 0,  10U, CPPCORE_ALPHABET_B10, true)) return false;
             // TODO: More than Base10
             return true;
          }
@@ -80,17 +89,35 @@ namespace CppCore { namespace Test
             ss.clear(); CppCore::BaseX::tostring(uint16_t(0xFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("65535") != ss) return false;
             ss.clear(); CppCore::BaseX::tostring(uint16_t(0x0FFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("4095" ) != ss) return false;
             ss.clear(); CppCore::BaseX::tostring(uint16_t(0xBC3A), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("48186") != ss) return false;
+            char s[64]; constexpr size_t S = sizeof(s);
+            if (S-1  != CppCore::BaseX::tostring(uint16_t(0x0000), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "0",     1)) return false;
+            if (S-1  != CppCore::BaseX::tostring(uint16_t(0x0001), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "1",     1)) return false;
+            if (S-5  != CppCore::BaseX::tostring(uint16_t(0xFFFF), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "65535", 5)) return false;
+            if (S-4  != CppCore::BaseX::tostring(uint16_t(0x0FFF), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "4095",  4)) return false;
+            if (S-5  != CppCore::BaseX::tostring(uint16_t(0xBC3A), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "48186", 5)) return false;
+            if (0    != CppCore::BaseX::tostring(uint16_t(0xBC3A), s, 5,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "48186", 5)) return false;
+            if (-1   != CppCore::BaseX::tostring(uint16_t(0xFFFF), s, 4,  10U, CPPCORE_ALPHABET_B10, true)) return false;
+            if (-5   != CppCore::BaseX::tostring(uint16_t(0xFFFF), s, 0,  10U, CPPCORE_ALPHABET_B10, true)) return false;
             // TODO: More than Base10
             return true;
          }
          INLINE static bool tostring32()
          {
-            std::string s;
-            s.clear(); CppCore::BaseX::tostring(0x00000000U, s, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"         ) != s) return false;
-            s.clear(); CppCore::BaseX::tostring(0x00000001U, s, 10U, CPPCORE_ALPHABET_B10); if (std::string("1"         ) != s) return false;
-            s.clear(); CppCore::BaseX::tostring(0xFFFFFFFFU, s, 10U, CPPCORE_ALPHABET_B10); if (std::string("4294967295") != s) return false;
-            s.clear(); CppCore::BaseX::tostring(0x0FFFFFFFU, s, 10U, CPPCORE_ALPHABET_B10); if (std::string("268435455" ) != s) return false;
-            s.clear(); CppCore::BaseX::tostring(0xBC3A19FAU, s, 10U, CPPCORE_ALPHABET_B10); if (std::string("3157924346") != s) return false;
+            std::string ss;
+            ss.clear(); CppCore::BaseX::tostring(0x00000000U, ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"         ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(0x00000001U, ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("1"         ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(0xFFFFFFFFU, ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("4294967295") != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(0x0FFFFFFFU, ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("268435455" ) != ss) return false;
+            ss.clear(); CppCore::BaseX::tostring(0xBC3A19FAU, ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("3157924346") != ss) return false;
+            char s[64]; constexpr size_t S = sizeof(s);
+            if (S-1  != CppCore::BaseX::tostring(uint32_t(0x00000000U), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "0",           1)) return false;
+            if (S-1  != CppCore::BaseX::tostring(uint32_t(0x00000001U), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "1",           1)) return false;
+            if (S-10 != CppCore::BaseX::tostring(uint32_t(0xFFFFFFFFU), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "4294967295", 10)) return false;
+            if (S-9  != CppCore::BaseX::tostring(uint32_t(0x0FFFFFFFU), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "268435455",   9)) return false;
+            if (S-10 != CppCore::BaseX::tostring(uint32_t(0xBC3A19FAU), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "3157924346", 10)) return false;
+            if (0    != CppCore::BaseX::tostring(uint32_t(0xBC3A19FAU), s, 10, 10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "3157924346", 10)) return false;
+            if (-1   != CppCore::BaseX::tostring(uint32_t(0xFFFFFFFFU), s, 9,  10U, CPPCORE_ALPHABET_B10, true)) return false;
+            if (-10  != CppCore::BaseX::tostring(uint32_t(0xFFFFFFFFU), s, 0,  10U, CPPCORE_ALPHABET_B10, true)) return false;
             // TODO: More than Base10
             return true;
          }
