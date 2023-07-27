@@ -2142,8 +2142,11 @@ namespace CppCore
                *rp = k;
          }
       }
-      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
+      else if
+   #else
+      if
    #endif
+         constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
       {
          // 32/64-Bit CPU and Multiples of 32-Bit
          constexpr size_t NA = sizeof(UINT1) / 4;
