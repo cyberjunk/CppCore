@@ -226,9 +226,13 @@ namespace CppCore
          {
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
-            T r = 0U;
+            T r;
+            CppCore::clear(r);
             while (const char c = *input++)
-               r = CppCore::madd<T>(r, (T)base, (T)Memory::byteidxf(alphabet, base, c));
+            {
+               CppCore::umul(r, base, r);
+               CppCore::uadd(r, Memory::byteidxf(alphabet, base, c), r);
+            }
             return r;
          }
 
@@ -260,8 +264,8 @@ namespace CppCore
          /// Template function for parsing unsigned integer from zero terminated string using alphabet.
          /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
          /// </summary>
-         template<typename T>
-         INLINE static bool tryparseu(const char* input, T& r, const uint32_t base, const char* alphabet)
+         template<typename UINT>
+         INLINE static bool tryparseu(const char* input, UINT& r, const uint32_t base, const char* alphabet)
          {
             char c;
             assert(base >= 2);
@@ -274,7 +278,7 @@ namespace CppCore
                   CppCore::uadd(r, idx, r); // only add required first
                else CPPCORE_UNLIKELY
                   return false; // invalid first symbol
-               struct { T v; uint64_t of; } t;
+               struct { UINT v; uint64_t of; } t;
                while ((c = *input++))
                {
                   idx = Memory::byteidxf(alphabet, base, c);
