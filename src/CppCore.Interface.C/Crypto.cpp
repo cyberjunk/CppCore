@@ -25,6 +25,29 @@ int main(int argc, char* argv[])
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ENCODING
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <CppCore/Encoding.h>
+#include <CppCore/Block.h>
+
+#define CPPCORE_BASEX_IMPLEMENTATION(size,block)                                                \
+  intptr_t cppcore_basex_encode##size(void* in, char* out, intptr_t len, size_t base, char* alphabet, int writeterm) { \
+    return CppCore::BaseX::tostring(*(block*)in, out, len, base, alphabet, writeterm != 0);   \
+  }                                                                                           \
+  unsigned int cppcore_basex_decode##size(char* in, void* out, size_t base, char* alphabet) { \
+    return CppCore::BaseX::tryparse(in, *(block*)out, base, alphabet);\
+  }
+
+CPPCORE_BASEX_IMPLEMENTATION(128,  CppCore::Block128)
+CPPCORE_BASEX_IMPLEMENTATION(256,  CppCore::Block256)
+CPPCORE_BASEX_IMPLEMENTATION(512,  CppCore::Block512)
+CPPCORE_BASEX_IMPLEMENTATION(1024, CppCore::Block1024)
+CPPCORE_BASEX_IMPLEMENTATION(2048, CppCore::Block2048)
+CPPCORE_BASEX_IMPLEMENTATION(4096, CppCore::Block4096)
+CPPCORE_BASEX_IMPLEMENTATION(8192, CppCore::Block8192)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HASH
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
