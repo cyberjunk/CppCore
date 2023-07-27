@@ -32,7 +32,9 @@ jobs:
 
     # Build
     - name: Build
-      run: make -j${{ env.JOBS }}
+      run: |
+        make CppCore.Interface.C -j${{ env.JOBS }}
+        make -j${{ env.JOBS }}
 
     # Binary Info
     - name: Binary Info
