@@ -263,25 +263,31 @@ namespace CppCore
          template<typename T>
          INLINE static bool tryparseu(const char* input, T& r, const uint32_t base, const char* alphabet)
          {
+            char c;
             assert(base >= 2);
             assert(::strlen(alphabet) == base);
-            r = 0U;
-            char c;
-            size_t idx;
+            CppCore::clear(r);
             if (input && (c = *input++)) CPPCORE_LIKELY
             {
-               idx = Memory::byteidxf(alphabet, base, c);
+               size_t idx = Memory::byteidxf(alphabet, base, c);
                if (idx != std::numeric_limits<size_t>::max()) CPPCORE_LIKELY
-                  r += (T)idx; // only add required here
+                  CppCore::uadd(r, idx, r); // only add required first
                else CPPCORE_UNLIKELY
                   return false; // invalid first symbol
+               struct { T v; uint64_t of; } t;
                while ((c = *input++))
                {
                   idx = Memory::byteidxf(alphabet, base, c);
                   if (idx == std::numeric_limits<size_t>::max()) CPPCORE_UNLIKELY
                      return false; // invalid symbol
-                  if (CppCore::overflowmadd((T&)r, (T)r, (T)base, (T)idx)) CPPCORE_UNLIKELY
-                     return false; // overflow
+                  CppCore::umul(r, base, t);
+                  if (t.of != 0U) // mul overflow
+                     return false;
+                  r = t.v;
+                  uint8_t carry = 0;
+                  CppCore::addcarry(r, idx, r, carry);
+                  if (carry != 0) // add overflow
+                     return false;
                }
                return true;
             }

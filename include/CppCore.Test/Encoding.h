@@ -464,7 +464,7 @@ namespace CppCore { namespace Test
             ss.clear(); CppCore::Decimal::tostring(uint8_t(0xBC), ss); if (std::string("188") != ss) return false;
             return true;
          }
-            INLINE static bool tostring8s()
+         INLINE static bool tostring8s()
          {
             char s[CPPCORE_MAXLENGTH_B10_8S+1];
             CppCore::Decimal::tostring(int8_t(0x00), s); if (std::string( "0"  ) != s) return false;
@@ -621,7 +621,7 @@ namespace CppCore { namespace Test
 
             return true;
          }
-          INLINE static bool parse8s()
+         INLINE static bool parse8s()
          {
             int8_t r;
 
