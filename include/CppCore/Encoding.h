@@ -145,303 +145,85 @@ namespace CppCore
       INLINE BaseX() { }
    public:
       /// <summary>
-      /// BaseX Helper Functions
+      /// Encodes unsigned integer v into string s using alphabet.
+      /// This appends to the existing string.
       /// </summary>
-      class Util
+      template<typename UINT, typename STRING>
+      INLINE static void tostring(UINT v, STRING& s, const uint32_t base, const char* alphabet)
       {
-      private:
-         INLINE Util() { }
-      public:
-         /// <summary>
-         /// Encodes unsigned integer v into string s using alphabet.
-         /// This appends to the existing string.
-         /// </summary>
-         template<typename UINT, typename S>
-         INLINE static void tostringu(UINT v, S& s, const uint32_t base, const char* alphabet)
+         assert(base >= 2U);
+         assert(::strlen(alphabet) == base);
+         if (!CppCore::testzero(v)) CPPCORE_LIKELY
          {
-            assert(base >= 2U);
-            assert(::strlen(alphabet) == base);
-            if (!CppCore::testzero(v)) CPPCORE_LIKELY
-            {
-               uint32_t r;
-               uint32_t n = 0U;
-               do
-               {
-                  CppCore::udivmod(v, base, v, r);
-                  s += alphabet[r];
-                  n++;
-               } while (!CppCore::testzero(v));
-               Memory::reverse(s.data()+s.length()-n, n);
-            }
-            else CPPCORE_UNLIKELY
-               s += '0';
-         }
-
-         /// <summary>
-         /// Encodes signed integer v into string s using alphabet.
-         /// This appends to the existing string.
-         /// </summary>
-         template<typename SINT, typename UINT, typename S>
-         INLINE static void tostrings(SINT v, S& s, const uint32_t base, const char* alphabet)
-         {
-            assert(base >= 2);
-            assert(::strlen(alphabet) == base);
-            UINT u;
             uint32_t r;
-            if (v > 0)
+            uint32_t n = 0U;
+            do
             {
-               u = (UINT)v;
-               CppCore::udivmod(u, base, u, r);
-               s += alphabet[r];
-            }
-            else if (v < 0)
-            {
-               SINT rs;
-               s += '-';
-               CppCore::divmod(v, (SINT)base, v, rs);
-               s += alphabet[-rs];
-               u = (UINT)-v;
-            }
-            else CPPCORE_UNLIKELY
-            {
-               s += '0';
-               return;
-            }
-            uint32_t n = 1U;
-            while (!CppCore::testzero(u))
-            {
-               CppCore::udivmod(u, base, u, r);
+               CppCore::udivmod(v, base, v, r);
                s += alphabet[r];
                n++;
-            }
+            } while (!CppCore::testzero(v));
             Memory::reverse(s.data()+s.length()-n, n);
          }
+         else
+            s += '0';
+      }
 
-         /// <summary>
-         /// Template function for parsing unsigned integer from zero terminated string using alphabet.
-         /// No overflow or invalid symbol check!
-         /// </summary>
-         template<typename T>
-         INLINE static T parseu(const char* input, const uint32_t base, const char* alphabet)
+      /// <summary>
+      /// Template function for parsing unsigned integer from zero terminated string using alphabet.
+      /// No overflow or invalid symbol check!
+      /// </summary>
+      template<typename UINT>
+      INLINE static void parse(const char* input, UINT& r, const uint32_t base, const char* alphabet)
+      {
+         assert(base >= 2);
+         assert(::strlen(alphabet) == base);
+         CppCore::clear(r);
+         while (const char c = *input++)
          {
-            assert(base >= 2);
-            assert(::strlen(alphabet) == base);
-            T r;
-            CppCore::clear(r);
-            while (const char c = *input++)
-            {
-               CppCore::umul(r, base, r);
-               CppCore::uadd(r, Memory::byteidxf(alphabet, base, c), r);
-            }
-            return r;
+            CppCore::umul(r, base, r);
+            CppCore::uadd(r, Memory::byteidxf(alphabet, base, c), r);
          }
+      }
 
-         /// <summary>
-         /// Template function for parsing signed integer from zero terminated string using alphabet.
-         /// No overflow or invalid symbol check! First symbol can be '-' or '+' to indicate sign.
-         /// </summary>
-         template<typename T>
-         INLINE static T parses(const char* input, const uint32_t base, const char* alphabet)
+      /// <summary>
+      /// Template function for parsing unsigned integer from zero terminated string using alphabet.
+      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
+      /// </summary>
+      template<typename UINT>
+      INLINE static bool tryparse(const char* input, UINT& r, const uint32_t base, const char* alphabet)
+      {
+         assert(base >= 2);
+         assert(::strlen(alphabet) == base);
+         CppCore::clear(r);
+         char c;
+         if (input && (c = *input++)) CPPCORE_LIKELY
          {
-            assert(base >= 2);
-            assert(::strlen(alphabet) == base);
-            T r = 0;
-            char c;
-            if ((c = *input++)) CPPCORE_LIKELY
+            size_t idx = Memory::byteidxf(alphabet, base, c);
+            if (idx != std::numeric_limits<size_t>::max()) CPPCORE_LIKELY
+               CppCore::uadd(r, idx, r); // only add required first
+            else CPPCORE_UNLIKELY
+               return false; // invalid first symbol
+            struct { UINT v; uint64_t of; } t;
+            while ((c = *input++))
             {
-               T sign = 1;
-               if (c == '-') sign = -sign; 
-               else if (c == '+') CPPCORE_UNLIKELY { }
-               else r += (T)Memory::byteidxf(alphabet, base, c);
-               while ((c = *input++))
-                  r = CppCore::madd<T>(r, (T)base, (T)Memory::byteidxf(alphabet, base, c));
-               r *= sign;
-            }
-            return r;
-         }
-
-         /// <summary>
-         /// Template function for parsing unsigned integer from zero terminated string using alphabet.
-         /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-         /// </summary>
-         template<typename UINT>
-         INLINE static bool tryparseu(const char* input, UINT& r, const uint32_t base, const char* alphabet)
-         {
-            char c;
-            assert(base >= 2);
-            assert(::strlen(alphabet) == base);
-            CppCore::clear(r);
-            if (input && (c = *input++)) CPPCORE_LIKELY
-            {
-               size_t idx = Memory::byteidxf(alphabet, base, c);
-               if (idx != std::numeric_limits<size_t>::max()) CPPCORE_LIKELY
-                  CppCore::uadd(r, idx, r); // only add required first
-               else CPPCORE_UNLIKELY
-                  return false; // invalid first symbol
-               struct { UINT v; uint64_t of; } t;
-               while ((c = *input++))
-               {
-                  idx = Memory::byteidxf(alphabet, base, c);
-                  if (idx == std::numeric_limits<size_t>::max()) CPPCORE_UNLIKELY
-                     return false; // invalid symbol
-                  CppCore::umul(r, base, t);
-                  if (t.of != 0U) // mul overflow
-                     return false;
-                  r = t.v;
-                  uint8_t carry = 0;
-                  CppCore::addcarry(r, idx, r, carry);
-                  if (carry != 0) // add overflow
-                     return false;
-               }
-               return true;
-            }
-            else CPPCORE_UNLIKELY // null pointer or empty string
-               return false;
-         }
-
-         /// <summary>
-         /// Template function for parsing signed integer from zero terminated string using alphabet.
-         /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-         /// </summary>
-         template<typename T>
-         INLINE static bool tryparses(const char* input, T& r, const uint32_t base, const char* alphabet)
-         {
-            assert(base >= 2);
-            assert(::strlen(alphabet) == base);
-            r = 0;
-            char c;
-            size_t idx;
-            if (input && (c = *input++)) CPPCORE_LIKELY
-            {
-               // POSITIVE
                idx = Memory::byteidxf(alphabet, base, c);
-               if (idx != std::numeric_limits<size_t>::max() || c == '+')
-               {
-                  if (c != '+') CPPCORE_LIKELY
-                     r += (T)idx;
-                  else if ((c = *input++))
-                  {
-                     idx = Memory::byteidxf(alphabet, base, c);
-                     if (idx != std::numeric_limits<size_t>::max()) CPPCORE_LIKELY
-                        r += (T)idx;  // only add required here
-                     else CPPCORE_UNLIKELY
-                        return false; // plus with invalid symbol
-                  }
-                  else CPPCORE_UNLIKELY
-                     return false; // single +
-                  while ((c = *input++))
-                  {
-                     idx = Memory::byteidxf(alphabet, base, c);
-                     if (idx == std::numeric_limits<size_t>::max()) CPPCORE_UNLIKELY
-                        return false; // invalid symbol
-                     if (CppCore::overflowmadd((T&)r, (T)r, (T)base, (T)idx)) CPPCORE_UNLIKELY
-                        return false; // overflow
-                  }
-                  return true;
-               }
-               // NEGATIVE
-               else if (c == '-' && (c = *input++))
-               {
-                  idx = Memory::byteidxf(alphabet, base, c);
-                  if (idx != std::numeric_limits<size_t>::max()) CPPCORE_LIKELY
-                     r -= (T)idx;  // only sub required here
-                  else CPPCORE_UNLIKELY
-                     return false; // minus with invalid symbol
-                  while ((c = *input++))
-                  {
-                     idx = Memory::byteidxf(alphabet, base, c);
-                     if (idx == std::numeric_limits<size_t>::max()) CPPCORE_UNLIKELY
-                        return false; // invalid symbol
-                     if (CppCore::overflowmsub((T&)r, (T)r, (T)base, (T)idx)) CPPCORE_UNLIKELY
-                        return false; // overflow
-                  }
-                  return true;
-               }
-               else CPPCORE_UNLIKELY // invalid first symbol or single minus
+               if (idx == std::numeric_limits<size_t>::max()) CPPCORE_UNLIKELY
+                  return false; // invalid symbol
+               CppCore::umul(r, base, t);
+               if (t.of != 0U) // mul overflow
+                  return false;
+               r = t.v;
+               uint8_t carry = 0;
+               CppCore::addcarry(r, idx, r, carry);
+               if (carry != 0) // add overflow
                   return false;
             }
-            else CPPCORE_UNLIKELY // null pointer or empty string
-               return false;
+            return true;
          }
-      };
-
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Appends 8-bit unsigned integer v to string s with encoding in base using alphabet
-      /// </summary>
-      template<typename S>
-      INLINE static void tostring(const uint8_t v, S& s, const uint32_t base, const char* alphabet)
-      {
-         Util::tostringu<uint8_t, S>(v, s, base, alphabet);
+         else CPPCORE_UNLIKELY // null pointer or empty string
+            return false;
       }
-
-      /// <summary>
-      /// Appends 16-bit unsigned integer v to string s with encoding in base using alphabet
-      /// </summary>
-      template<typename S>
-      INLINE static void tostring(const uint16_t v, S& s, const uint32_t base, const char* alphabet)
-      {
-         Util::tostringu<uint16_t, S>(v, s, base, alphabet);
-      }
-
-      /// <summary>
-      /// Appends 32-bit unsigned integer v to string s with encoding in base using alphabet
-      /// </summary>
-      template<typename S>
-      INLINE static void tostring(const uint32_t v, S& s, const uint32_t base, const char* alphabet)
-      {
-         Util::tostringu<uint32_t, S>(v, s, base, alphabet);
-      }
-
-      /// <summary>
-      /// Appends 64-bit unsigned integer v to string s with encoding in base using alphabet
-      /// </summary>
-      template<typename S>
-      INLINE static void tostring(const uint64_t v, S& s, const uint32_t base, const char* alphabet)
-      {
-         Util::tostringu<uint64_t, S>(v, s, base, alphabet);
-      }
-
-      /// <summary>
-      /// Appends 8-bit signed integer v to string s with encoding in base using alphabet
-      /// </summary>
-      template<typename S>
-      INLINE static void tostring(const int8_t v, S& s, const uint32_t base, const char* alphabet)
-      {
-         Util::tostrings<int8_t, uint16_t, S>(v, s, base, alphabet);
-      }
-
-      /// <summary>
-      /// Appends 16-bit signed integer v to string s with encoding in base using alphabet
-      /// </summary>
-      template<typename S>
-      INLINE static void tostring(const int16_t v, S& s, const uint32_t base, const char* alphabet)
-      {
-         Util::tostrings<int16_t, uint16_t, S>(v, s, base, alphabet);
-      }
-
-      /// <summary>
-      /// Appends 32-bit signed integer v to string s with encoding in base using alphabet
-      /// </summary>
-      template<typename S>
-      INLINE static void tostring(const int32_t v, S& s, const uint32_t base, const char* alphabet)
-      {
-         Util::tostrings<int32_t, uint32_t, S>(v, s, base, alphabet);
-      }
-
-      /// <summary>
-      /// Appends 64-bit signed integer v to string s with encoding in base using alphabet
-      /// </summary>
-      template<typename S>
-      INLINE static void tostring(const int64_t v, S& s, const uint32_t base, const char* alphabet)
-      {
-         Util::tostrings<int64_t, uint64_t, S>(v, s, base, alphabet);
-      }
-
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      //TODO: parse/tryparse
    };
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

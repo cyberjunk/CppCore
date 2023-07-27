@@ -2262,7 +2262,7 @@ namespace CppCore
       INLINE string toString(const uint32_t base, const char* alphabet) const
       {
          string s;
-         CppCore::BaseX::Util::tostringu(*thiss(), s, base, alphabet);
+         CppCore::BaseX::tostring(*thiss(), s, base, alphabet);
          return s;
       }
 
@@ -2316,7 +2316,7 @@ namespace CppCore
       {
          return 
             alphabet.length() >= 2 && 
-            BaseX::Util::tryparseu(input.c_str(), r, (uint32_t)alphabet.length(), alphabet.c_str());
+            BaseX::tryparse(input.c_str(), r, (uint32_t)alphabet.length(), alphabet.c_str());
       }
 
       /// <summary>

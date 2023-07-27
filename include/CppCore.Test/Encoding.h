@@ -61,7 +61,7 @@ namespace CppCore { namespace Test
       class BaseX
       {
       public:
-         INLINE static bool tostring8u()
+         INLINE static bool tostring8()
          {
             std::string ss;
             ss.clear(); CppCore::BaseX::tostring(uint8_t(0x00), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"    ) != ss) return false;
@@ -72,19 +72,7 @@ namespace CppCore { namespace Test
             // TODO: More than Base10
             return true;
          }
-         INLINE static bool tostring8s()
-         {
-            std::string ss;
-            ss.clear(); CppCore::BaseX::tostring(int8_t(0x00), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"    ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int8_t(0x01), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("1"    ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int8_t(0xFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-1"   ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int8_t(0x0F), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("15"   ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int8_t(0xBC), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-68"  ) != ss) return false;
-            // TODO: More than Base10
-            return true;
-         }
-
-         INLINE static bool tostring16u()
+         INLINE static bool tostring16()
          {
             std::string ss;
             ss.clear(); CppCore::BaseX::tostring(uint16_t(0x0000), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"    ) != ss) return false;
@@ -95,20 +83,7 @@ namespace CppCore { namespace Test
             // TODO: More than Base10
             return true;
          }
-         INLINE static bool tostring16s()
-         {
-            std::string ss;
-            ss.clear(); CppCore::BaseX::tostring(int16_t(0x0000), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string( "0"    ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int16_t(0x0001), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string( "1"    ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int16_t(0x7FFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string( "32767") != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int16_t(0x8000), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-32768") != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int16_t(0xFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-1"    ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int16_t(0x0FFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string( "4095" ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int16_t(0xBC3A), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-17350") != ss) return false;
-            // TODO: More than Base10
-            return true;
-         }
-         INLINE static bool tostring32u()
+         INLINE static bool tostring32()
          {
             std::string s;
             s.clear(); CppCore::BaseX::tostring(0x00000000U, s, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"         ) != s) return false;
@@ -119,20 +94,7 @@ namespace CppCore { namespace Test
             // TODO: More than Base10
             return true;
          }
-         INLINE static bool tostring32s()
-         {
-            std::string s;
-            s.clear(); CppCore::BaseX::tostring(int32_t(0x00000000), s, 10U, CPPCORE_ALPHABET_B10); if (std::string( "0"         ) != s) return false;
-            s.clear(); CppCore::BaseX::tostring(int32_t(0x00000001), s, 10U, CPPCORE_ALPHABET_B10); if (std::string( "1"         ) != s) return false;
-            s.clear(); CppCore::BaseX::tostring(int32_t(0x7FFFFFFF), s, 10U, CPPCORE_ALPHABET_B10); if (std::string( "2147483647") != s) return false;
-            s.clear(); CppCore::BaseX::tostring(int32_t(0x80000000), s, 10U, CPPCORE_ALPHABET_B10); if (std::string("-2147483648") != s) return false;
-            s.clear(); CppCore::BaseX::tostring(int32_t(0xFFFFFFFF), s, 10U, CPPCORE_ALPHABET_B10); if (std::string("-1"         ) != s) return false;
-            s.clear(); CppCore::BaseX::tostring(int32_t(0x0FFFFFFF), s, 10U, CPPCORE_ALPHABET_B10); if (std::string( "268435455" ) != s) return false;
-            s.clear(); CppCore::BaseX::tostring(int32_t(0xBC3A19FA), s, 10U, CPPCORE_ALPHABET_B10); if (std::string("-1137042950") != s) return false;
-            // TODO: More than Base10
-            return true;
-         }
-         INLINE static bool tostring64u()
+         INLINE static bool tostring64()
          {
             std::string ss;
             ss.clear(); CppCore::BaseX::tostring(uint64_t(0x0000000000000000), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("0"                   ) != ss) return false;
@@ -140,19 +102,6 @@ namespace CppCore { namespace Test
             ss.clear(); CppCore::BaseX::tostring(uint64_t(0xFFFFFFFFFFFFFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("18446744073709551615") != ss) return false;
             ss.clear(); CppCore::BaseX::tostring(uint64_t(0x0FFFFFFFFFFFFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("1152921504606846975" ) != ss) return false;
             ss.clear(); CppCore::BaseX::tostring(uint64_t(0xBC3A19FABC3A19FA), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("13563181792470112762") != ss) return false;
-            // TODO: More than Base10
-            return true;
-         }
-         INLINE static bool tostring64s()
-         {
-            std::string ss;
-            ss.clear(); CppCore::BaseX::tostring(int64_t(0x0000000000000000), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string( "0"                  ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int64_t(0x0000000000000001), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string( "1"                  ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int64_t(0x7FFFFFFFFFFFFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string( "9223372036854775807") != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int64_t(0x8000000000000000), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-9223372036854775808") != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int64_t(0xFFFFFFFFFFFFFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-1"                  ) != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int64_t(0x0FFFFFFFFFFFFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string( "1152921504606846975") != ss) return false;
-            ss.clear(); CppCore::BaseX::tostring(int64_t(0xBC3A19FABC3A19FA), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("-4883562281239438854") != ss) return false;
             // TODO: More than Base10
             return true;
          }
@@ -921,14 +870,10 @@ namespace CppCore { namespace Test { namespace VS
    public:
       TEST_METHOD(ISDIGIT)          { Assert::AreEqual(true, CppCore::Test::Encoding::isdigit()); }
       TEST_METHOD(ISXDIGIT)         { Assert::AreEqual(true, CppCore::Test::Encoding::isxdigit()); }
-      TEST_METHOD(BASEX_TOSTRING8U) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring8u()); }
-      TEST_METHOD(BASEX_TOSTRING8S) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring8s()); }
-      TEST_METHOD(BASEX_TOSTRING16U){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring16u()); }
-      TEST_METHOD(BASEX_TOSTRING16S){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring16s()); }
-      TEST_METHOD(BASEX_TOSTRING32U){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring32u()); }
-      TEST_METHOD(BASEX_TOSTRING32S){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring32s()); }
-      TEST_METHOD(BASEX_TOSTRING64U){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring64u()); }
-      TEST_METHOD(BASEX_TOSTRING64S){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring64s()); }
+      TEST_METHOD(BASEX_TOSTRING8)  { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring8()); }
+      TEST_METHOD(BASEX_TOSTRING16) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring16()); }
+      TEST_METHOD(BASEX_TOSTRING32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring32()); }
+      TEST_METHOD(BASEX_TOSTRING64) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring64()); }
       TEST_METHOD(HEX_BYTETOHEXSTR) { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::Util::bytetohexstr()); }
       TEST_METHOD(HEX_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring()); }
       TEST_METHOD(HEX_TOSTRING16)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring16()); }
