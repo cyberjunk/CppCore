@@ -102,6 +102,15 @@ namespace CppCore { namespace Test
             ss.clear(); CppCore::BaseX::tostring(uint64_t(0xFFFFFFFFFFFFFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("18446744073709551615") != ss) return false;
             ss.clear(); CppCore::BaseX::tostring(uint64_t(0x0FFFFFFFFFFFFFFF), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("1152921504606846975" ) != ss) return false;
             ss.clear(); CppCore::BaseX::tostring(uint64_t(0xBC3A19FABC3A19FA), ss, 10U, CPPCORE_ALPHABET_B10); if (std::string("13563181792470112762") != ss) return false;
+            char s[64]; constexpr size_t S = sizeof(s);
+            if (S-1  != CppCore::BaseX::tostring(uint64_t(0x0000000000000000), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "0",                     1)) return false;
+            if (S-1  != CppCore::BaseX::tostring(uint64_t(0x0000000000000001), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "1",                     1)) return false;
+            if (S-20 != CppCore::BaseX::tostring(uint64_t(0xFFFFFFFFFFFFFFFF), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "18446744073709551615", 20)) return false;
+            if (S-19 != CppCore::BaseX::tostring(uint64_t(0x0FFFFFFFFFFFFFFF), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "1152921504606846975",  19)) return false;
+            if (S-20 != CppCore::BaseX::tostring(uint64_t(0xBC3A19FABC3A19FA), s, S,  10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "13563181792470112762", 20)) return false;
+            if (0    != CppCore::BaseX::tostring(uint64_t(0xBC3A19FABC3A19FA), s, 20, 10U, CPPCORE_ALPHABET_B10, true) || 0 != ::memcmp(s, "13563181792470112762", 20)) return false;
+            if (-1   != CppCore::BaseX::tostring(uint64_t(0xFFFFFFFFFFFFFFFF), s, 19, 10U, CPPCORE_ALPHABET_B10, true)) return false;
+            if (-20  != CppCore::BaseX::tostring(uint64_t(0xFFFFFFFFFFFFFFFF), s, 0,  10U, CPPCORE_ALPHABET_B10, true)) return false;
             // TODO: More than Base10
             return true;
          }
