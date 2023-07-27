@@ -665,14 +665,10 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::BaseX    " << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Encoding::BaseX::tostring8u,  "tostring8u:  ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring8s,  "tostring8s:  ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring16u, "tostring16u: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring16s, "tostring16s: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring32u, "tostring32u: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring32s, "tostring32s: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring64u, "tostring64u: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring64s, "tostring64s: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring8,  "tostring8:  ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring16, "tostring16: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring32, "tostring32: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring64, "tostring64: ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::Decimal  " << std::endl;

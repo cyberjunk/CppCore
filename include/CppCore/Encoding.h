@@ -146,6 +146,34 @@ namespace CppCore
    public:
       /// <summary>
       /// Encodes unsigned integer v into string s using alphabet.
+      /// </summary>
+      template<typename UINT>
+      INLINE static intptr_t tostring(UINT v, char* s, intptr_t len, const uint32_t base, const char* alphabet, bool writeterm)
+      {
+         assert(base >= 2U);
+         assert(::strlen(alphabet) == base);
+         if (!CppCore::testzero(v)) CPPCORE_LIKELY
+         {
+            uint32_t r;
+            uint32_t n = 0U;
+            do
+            {
+               CppCore::udivmod(v, base, v, r);
+               if (len > 0) *s++ = alphabet[r];
+               n++; len--;
+            } while (!CppCore::testzero(v));
+            if (len >= 0)
+               Memory::reverse(s-n, n);
+         }
+         else if (len-- > 0)
+            *s++ = '0';
+         if (writeterm)
+            *s = (char)0x00;
+         return len;
+      }
+
+      /// <summary>
+      /// Encodes unsigned integer v into string s using alphabet.
       /// This appends to the existing string.
       /// </summary>
       template<typename UINT, typename STRING>
