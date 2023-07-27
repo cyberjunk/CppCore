@@ -17,7 +17,7 @@
 // macro for basex function declarations
 #define CPPCORE_BASEX_DECLARATION(size)                                             \
   CPPCORE_EXPORT intptr_t cppcore_basex_encode##size(                               \
-    void* in, char* out, intptr_t len, size_t base, char* alphabet, int writeterm); \
+    void* in, char* out, intptr_t len, uintptr_t base, char* alphabet, int writeterm); \
   CPPCORE_EXPORT unsigned int cppcore_basex_decode##size(                           \
     char* in, void* out, size_t base, char* alphabet);
 
