@@ -45,7 +45,7 @@
     void*  pw,     uintptr_t lenpw,         \
     void*  salt,   uintptr_t lensalt,       \
     void*  digest, uintptr_t lendigest,     \
-    size_t iterations);
+    uintptr_t iterations);
 
 // macro for aes function declarations
 #define CPPCORE_AES_DECLARATION(name)                                                            \
