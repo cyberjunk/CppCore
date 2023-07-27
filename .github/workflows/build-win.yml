@@ -64,6 +64,7 @@ jobs:
         dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Example.UI.exe
         dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.exe
         dumpbin /dependents /exports ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.exe
+        dumpbin /dependents /exports ./build/make/lib/win-${{ env.TARGET_ARCH }}/CppCore.Interface.C.dll
 
     # PDB Info
     - name: PDB Info
@@ -78,6 +79,10 @@ jobs:
         llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.pdb        
         echo CppCore.Debug
         llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.pdb
+        echo CppCore.Debug
+        llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.pdb
+        echo CppCore.Interface.C
+        llvm-pdbutil dump --summary ./build/make/lib/win-${{ env.TARGET_ARCH }}/CppCore.Interface.C.pdb
 
     # Test
     - name: Test

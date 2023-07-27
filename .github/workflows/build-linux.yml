@@ -99,6 +99,8 @@ jobs:
         ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Test
         echo CppCore.Debug
         ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Debug
+        echo CppCore.Interface.C
+        ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Interface.C.so
 
     # Test
     - name: Test
