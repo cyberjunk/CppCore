@@ -19,7 +19,7 @@
   CPPCORE_EXPORT intptr_t cppcore_basex_encode##size(                               \
     void* in, char* out, intptr_t len, uintptr_t base, char* alphabet, int writeterm); \
   CPPCORE_EXPORT unsigned int cppcore_basex_decode##size(                           \
-    char* in, void* out, size_t base, char* alphabet);
+    char* in, void* out, uintptr_t base, char* alphabet);
 
 // macro for hash function declarations
 #define CPPCORE_HASH_DECLARATION(name)                                      \
@@ -27,7 +27,7 @@
   CPPCORE_EXPORT name* name ## _init   ();                                  \
   CPPCORE_EXPORT void  name ## _destroy(name* hsh);                         \
   CPPCORE_EXPORT void  name ## _reset  (name* hsh);                         \
-  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, size_t len); \
+  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, uintptr_t len); \
   CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
 
 // macro for hmac function declarations
@@ -35,16 +35,16 @@
   typedef struct _ ## name name;                                            \
   CPPCORE_EXPORT name* name ## _init   ();                                  \
   CPPCORE_EXPORT void  name ## _destroy(name* hsh);                         \
-  CPPCORE_EXPORT void  name ## _reset  (name* hsh, void* key,  size_t len); \
-  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, size_t len); \
+  CPPCORE_EXPORT void  name ## _reset  (name* hsh, void* key,  uintptr_t len); \
+  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, uintptr_t len); \
   CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
 
 // macro for pbkdf2 declarations
 #define CPPCORE_PBKDF2_DECLARATION(name) \
   CPPCORE_EXPORT void  name ## _create(  \
-    void*  pw,     size_t lenpw,         \
-    void*  salt,   size_t lensalt,       \
-    void*  digest, size_t lendigest,     \
+    void*  pw,     uintptr_t lenpw,         \
+    void*  salt,   uintptr_t lensalt,       \
+    void*  digest, uintptr_t lendigest,     \
     size_t iterations);
 
 // macro for aes function declarations
@@ -53,17 +53,17 @@
   CPPCORE_EXPORT name* name ## _init       ();                                                   \
   CPPCORE_EXPORT void  name ## _destroy    (name* aes);                                          \
   CPPCORE_EXPORT void  name ## _reset      (name* aes, void* key);                               \
-  CPPCORE_EXPORT void  name ## _encrypt_ecb(name* aes, void* in, void* out, size_t n);           \
-  CPPCORE_EXPORT void  name ## _decrypt_ecb(name* aes, void* in, void* out, size_t n);           \
-  CPPCORE_EXPORT void  name ## _encrypt_cbc(name* aes, void* in, void* out, void* iv, size_t n); \
-  CPPCORE_EXPORT void  name ## _decrypt_cbc(name* aes, void* in, void* out, void* iv, size_t n); \
-  CPPCORE_EXPORT void  name ## _encrypt_ctr(name* aes, void* in, void* out, void* iv, size_t n); \
-  CPPCORE_EXPORT void  name ## _decrypt_ctr(name* aes, void* in, void* out, void* iv, size_t n);
+  CPPCORE_EXPORT void  name ## _encrypt_ecb(name* aes, void* in, void* out, uintptr_t n);           \
+  CPPCORE_EXPORT void  name ## _decrypt_ecb(name* aes, void* in, void* out, uintptr_t n);           \
+  CPPCORE_EXPORT void  name ## _encrypt_cbc(name* aes, void* in, void* out, void* iv, uintptr_t n); \
+  CPPCORE_EXPORT void  name ## _decrypt_cbc(name* aes, void* in, void* out, void* iv, uintptr_t n); \
+  CPPCORE_EXPORT void  name ## _encrypt_ctr(name* aes, void* in, void* out, void* iv, uintptr_t n); \
+  CPPCORE_EXPORT void  name ## _decrypt_ctr(name* aes, void* in, void* out, void* iv, uintptr_t n);
 
 // macro for prime declarations
 #define CPPCORE_PRIME_DECLARATION(name)                                 \
-  CPPCORE_EXPORT int  name ## _test     (void* data, size_t certainty); \
-  CPPCORE_EXPORT void name ## _generate (void* data, size_t certainty);
+  CPPCORE_EXPORT int  name ## _test     (void* data, uintptr_t certainty); \
+  CPPCORE_EXPORT void name ## _generate (void* data, uintptr_t certainty);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
