@@ -9,61 +9,57 @@
 #endif
 #endif
 
-#include <stdint.h>
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // macro for basex function declarations
 #define CPPCORE_BASEX_DECLARATION(size)                                             \
-  CPPCORE_EXPORT intptr_t cppcore_basex_encode##size(                               \
-    void* in, char* out, intptr_t len, uintptr_t base, char* alphabet, int writeterm); \
-  CPPCORE_EXPORT unsigned int cppcore_basex_decode##size(                           \
-    char* in, void* out, uintptr_t base, char* alphabet);
+  CPPCORE_EXPORT int cppcore_basex_encode##size(void* in, char* out, int len, unsigned int base, char* alphabet, unsigned int writeterm); \
+  CPPCORE_EXPORT unsigned int cppcore_basex_decode##size(char* in, void* out, unsigned int base, char* alphabet);
 
 // macro for hash function declarations
-#define CPPCORE_HASH_DECLARATION(name)                                      \
-  typedef struct _ ## name name;                                            \
-  CPPCORE_EXPORT name* name ## _init   ();                                  \
-  CPPCORE_EXPORT void  name ## _destroy(name* hsh);                         \
-  CPPCORE_EXPORT void  name ## _reset  (name* hsh);                         \
-  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, uintptr_t len); \
+#define CPPCORE_HASH_DECLARATION(name)                                            \
+  typedef struct _ ## name name;                                                  \
+  CPPCORE_EXPORT name* name ## _init   ();                                        \
+  CPPCORE_EXPORT void  name ## _destroy(name* hsh);                               \
+  CPPCORE_EXPORT void  name ## _reset  (name* hsh);                               \
+  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, unsigned int len); \
   CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
 
 // macro for hmac function declarations
-#define CPPCORE_HMAC_DECLARATION(name)                                      \
-  typedef struct _ ## name name;                                            \
-  CPPCORE_EXPORT name* name ## _init   ();                                  \
-  CPPCORE_EXPORT void  name ## _destroy(name* hsh);                         \
-  CPPCORE_EXPORT void  name ## _reset  (name* hsh, void* key,  uintptr_t len); \
-  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, uintptr_t len); \
+#define CPPCORE_HMAC_DECLARATION(name)                                            \
+  typedef struct _ ## name name;                                                  \
+  CPPCORE_EXPORT name* name ## _init   ();                                        \
+  CPPCORE_EXPORT void  name ## _destroy(name* hsh);                               \
+  CPPCORE_EXPORT void  name ## _reset  (name* hsh, void* key,  unsigned int len); \
+  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, unsigned int len); \
   CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
 
 // macro for pbkdf2 declarations
-#define CPPCORE_PBKDF2_DECLARATION(name) \
-  CPPCORE_EXPORT void  name ## _create(  \
-    void*  pw,     uintptr_t lenpw,         \
-    void*  salt,   uintptr_t lensalt,       \
-    void*  digest, uintptr_t lendigest,     \
-    uintptr_t iterations);
+#define CPPCORE_PBKDF2_DECLARATION(name)  \
+  CPPCORE_EXPORT void  name ## _create(   \
+    void* pw,     unsigned int lenpw,     \
+    void* salt,   unsigned int lensalt,   \
+    void* digest, unsigned int lendigest, \
+    unsigned int iterations);
 
 // macro for aes function declarations
-#define CPPCORE_AES_DECLARATION(name)                                                            \
-  typedef struct _ ## name name;                                                                 \
-  CPPCORE_EXPORT name* name ## _init       ();                                                   \
-  CPPCORE_EXPORT void  name ## _destroy    (name* aes);                                          \
-  CPPCORE_EXPORT void  name ## _reset      (name* aes, void* key);                               \
-  CPPCORE_EXPORT void  name ## _encrypt_ecb(name* aes, void* in, void* out, uintptr_t n);           \
-  CPPCORE_EXPORT void  name ## _decrypt_ecb(name* aes, void* in, void* out, uintptr_t n);           \
-  CPPCORE_EXPORT void  name ## _encrypt_cbc(name* aes, void* in, void* out, void* iv, uintptr_t n); \
-  CPPCORE_EXPORT void  name ## _decrypt_cbc(name* aes, void* in, void* out, void* iv, uintptr_t n); \
-  CPPCORE_EXPORT void  name ## _encrypt_ctr(name* aes, void* in, void* out, void* iv, uintptr_t n); \
-  CPPCORE_EXPORT void  name ## _decrypt_ctr(name* aes, void* in, void* out, void* iv, uintptr_t n);
+#define CPPCORE_AES_DECLARATION(name)                                                                  \
+  typedef struct _ ## name name;                                                                       \
+  CPPCORE_EXPORT name* name ## _init       ();                                                         \
+  CPPCORE_EXPORT void  name ## _destroy    (name* aes);                                                \
+  CPPCORE_EXPORT void  name ## _reset      (name* aes, void* key);                                     \
+  CPPCORE_EXPORT void  name ## _encrypt_ecb(name* aes, void* in, void* out, unsigned int n);           \
+  CPPCORE_EXPORT void  name ## _decrypt_ecb(name* aes, void* in, void* out, unsigned int n);           \
+  CPPCORE_EXPORT void  name ## _encrypt_cbc(name* aes, void* in, void* out, void* iv, unsigned int n); \
+  CPPCORE_EXPORT void  name ## _decrypt_cbc(name* aes, void* in, void* out, void* iv, unsigned int n); \
+  CPPCORE_EXPORT void  name ## _encrypt_ctr(name* aes, void* in, void* out, void* iv, unsigned int n); \
+  CPPCORE_EXPORT void  name ## _decrypt_ctr(name* aes, void* in, void* out, void* iv, unsigned int n);
 
 // macro for prime declarations
-#define CPPCORE_PRIME_DECLARATION(name)                                 \
-  CPPCORE_EXPORT int  name ## _test     (void* data, uintptr_t certainty); \
-  CPPCORE_EXPORT void name ## _generate (void* data, uintptr_t certainty);
+#define CPPCORE_PRIME_DECLARATION(name)                                       \
+  CPPCORE_EXPORT int  name ## _test     (void* data, unsigned int certainty); \
+  CPPCORE_EXPORT void name ## _generate (void* data, unsigned int certainty);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
