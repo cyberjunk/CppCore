@@ -23,6 +23,7 @@ namespace CppCore
       {
          reset(init);
       }
+   public:
       INLINE void reset(const uint32_t init = INIT)
       {
          mState = init;
@@ -34,6 +35,10 @@ namespace CppCore
       INLINE void finish(void* digest, const uint32_t xorout = XOROUT)
       {
          *(uint32_t*)digest = mState ^ xorout;
+      }
+      INLINE void blockstep(const void* data, size_t len)
+      {
+         ((T*)this)->step(data, len);
       }
    };
 
