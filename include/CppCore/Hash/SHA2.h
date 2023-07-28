@@ -66,6 +66,7 @@ namespace CppCore
       using typename Base::Digest;
       using typename Base::Block;
       using typename Base::State;
+      using Base::blockstep512;
 
    public:
       CPPCORE_ALIGN64 static constexpr const uint32_t K[] = {
@@ -165,6 +166,15 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Computes exactly a multiple of 64 bytes into the current hash.
+      /// Do not use this if you have already called step() with a non-multiple of 64 bytes!
+      /// </summary>
+      INLINE void blockstep(const void* data, size_t length)
+      {
+         this->blockstep512(data, length, this->mBlock, this->mTotalSize);
+      }
+
+      /// <summary>
       /// Finish hash calculations.
       /// </summary>
       INLINE void finish(Digest& digest)
@@ -195,6 +205,7 @@ namespace CppCore
       using typename Base::Digest;
       using typename Base::Block;
       using typename Base::State;
+      using Base::blockstep1024;
 
    public:
       CPPCORE_ALIGN64 static constexpr const uint64_t K[] = {
@@ -296,6 +307,15 @@ namespace CppCore
          this->mState.u64[6] = s6; this->mState.u64[7] = s7;
          this->mBlockSize = 0; 
          this->mTotalSize = 0;
+      }
+
+      /// <summary>
+      /// Computes exactly a multiple of 128 bytes into the current hash.
+      /// Do not use this if you have already called step() with a non-multiple of 128 bytes!
+      /// </summary>
+      INLINE void blockstep(const void* data, size_t length)
+      {
+         this->blockstep1024(data, length, this->mBlock, this->mTotalSize);
       }
 
       /// <summary>

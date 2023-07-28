@@ -57,6 +57,64 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Shared Helper for Hashes with 512-Bit Blocks (MD5 and SHA256)
+      /// </summary>
+      template<typename BLOCK,  typename TOTALSIZE>
+      INLINE void blockstep512(
+         const void* data, 
+         size_t      length, 
+         BLOCK&      block, 
+         TOTALSIZE&  totalSize)
+      {
+         static_assert(sizeof(BLOCK) == 64);
+         assert(length % sizeof(BLOCK) == 0);
+         while (length)
+         {
+            // copy data to current block
+            Memory::singlecopy512(&block, data);
+
+            // update sizes
+            totalSize += sizeof(BLOCK);
+
+            // advance pointer, decrease length
+            data = (uint8_t*)data + sizeof(BLOCK);
+            length -= sizeof(BLOCK);
+
+            // transform block
+            thiss().transform();
+         }
+      }
+
+      /// <summary>
+      /// Shared Helper for Hashes with 1024-Bit Blocks (SHA512)
+      /// </summary>
+      template<typename BLOCK,  typename TOTALSIZE>
+      INLINE void blockstep1024(
+         const void* data, 
+         size_t      length, 
+         BLOCK&      block, 
+         TOTALSIZE&  totalSize)
+      {
+         static_assert(sizeof(BLOCK) == 128);
+         assert(length % sizeof(BLOCK) == 0);
+         while (length)
+         {
+            // copy data to current block
+            Memory::singlecopy1024(&block, data);
+
+            // update sizes
+            totalSize += sizeof(BLOCK);
+
+            // advance pointer, decrease length
+            data = (uint8_t*)data + sizeof(BLOCK);
+            length -= sizeof(BLOCK);
+
+            // transform block
+            thiss().transform();
+         }
+      }
+
+      /// <summary>
       /// Calculates amount of padding bytes.
       /// </summary>
       INLINE static size_t padSize(size_t blocksize, size_t usedsize, size_t lensize)

@@ -15,6 +15,7 @@ namespace CppCore
       using Block = Block512;
       using State = Block128;
       using Base::step;
+      using Base::blockstep512;
       using Base::hash;
       using Base::thiss;
 
@@ -244,7 +245,16 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Compute length bytes of data into the current hash.
+      /// Computes exactly a multiple of 64 bytes into the current hash.
+      /// Do not use this if you have already called step() with a non-multiple of 64 bytes!
+      /// </summary>
+      INLINE void blockstep(const void* data, size_t length)
+      {
+         this->blockstep512(data, length, this->mBlock, this->mTotalSize);
+      }
+
+      /// <summary>
+      /// Compute any length bytes of data into the current hash.
       /// </summary>
       INLINE void step(const void* data, size_t length)
       {
