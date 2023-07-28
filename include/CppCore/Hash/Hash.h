@@ -20,10 +20,7 @@ namespace CppCore
       /// <summary>
       /// Shared Helper
       /// </summary>
-      template<
-         typename BLOCK, 
-         typename BLOCKSIZE, 
-         typename TOTALSIZE>
+      template<typename BLOCK, typename BLOCKSIZE, typename TOTALSIZE>
       INLINE void step(
          const void* data, 
          size_t      length, 
@@ -57,50 +54,29 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Shared Helper for Hashes with 512-Bit Blocks (MD5 and SHA256)
+      /// Shared Helper
       /// </summary>
-      template<typename BLOCK,  typename TOTALSIZE>
-      INLINE void blockstep512(
+      template<typename BLOCK,  typename BLOCKSIZE, typename TOTALSIZE>
+      INLINE void blockstep(
          const void* data, 
-         size_t      length, 
-         BLOCK&      block, 
+         size_t      length,
+         BLOCK&      block,
+         BLOCKSIZE&  blockSize,
          TOTALSIZE&  totalSize)
       {
-         static_assert(sizeof(BLOCK) == 64);
+         static_assert(
+            sizeof(BLOCK) == 16  || sizeof(BLOCK) == 32 || sizeof(BLOCK) == 64 || 
+            sizeof(BLOCK) == 128 || sizeof(BLOCK) == 256);
          assert(length % sizeof(BLOCK) == 0);
+         assert(blockSize == 0);
          while (length)
          {
             // copy data to current block
-            Memory::singlecopy512(&block, data);
-
-            // update sizes
-            totalSize += sizeof(BLOCK);
-
-            // advance pointer, decrease length
-            data = (uint8_t*)data + sizeof(BLOCK);
-            length -= sizeof(BLOCK);
-
-            // transform block
-            thiss().transform();
-         }
-      }
-
-      /// <summary>
-      /// Shared Helper for Hashes with 1024-Bit Blocks (SHA512)
-      /// </summary>
-      template<typename BLOCK,  typename TOTALSIZE>
-      INLINE void blockstep1024(
-         const void* data, 
-         size_t      length, 
-         BLOCK&      block, 
-         TOTALSIZE&  totalSize)
-      {
-         static_assert(sizeof(BLOCK) == 128);
-         assert(length % sizeof(BLOCK) == 0);
-         while (length)
-         {
-            // copy data to current block
-            Memory::singlecopy1024(&block, data);
+            if constexpr (sizeof(BLOCK) == 256) Memory::singlecopy2048(&block, data);
+            if constexpr (sizeof(BLOCK) == 128) Memory::singlecopy1024(&block, data);
+            if constexpr (sizeof(BLOCK) == 64)  Memory::singlecopy512(&block, data);
+            if constexpr (sizeof(BLOCK) == 32)  Memory::singlecopy256(&block, data);
+            if constexpr (sizeof(BLOCK) == 16)  Memory::singlecopy128(&block, data);
 
             // update sizes
             totalSize += sizeof(BLOCK);

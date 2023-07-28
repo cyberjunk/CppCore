@@ -15,7 +15,7 @@ namespace CppCore
       using Block = Block512;
       using State = Block128;
       using Base::step;
-      using Base::blockstep512;
+      using Base::blockstep;
       using Base::hash;
       using Base::thiss;
 
@@ -250,7 +250,7 @@ namespace CppCore
       /// </summary>
       INLINE void blockstep(const void* data, size_t length)
       {
-         this->blockstep512(data, length, this->mBlock, this->mTotalSize);
+         this->blockstep(data, length, this->mBlock, this->mBlockSize, this->mTotalSize);
       }
 
       /// <summary>

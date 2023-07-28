@@ -66,7 +66,7 @@ namespace CppCore
       using typename Base::Digest;
       using typename Base::Block;
       using typename Base::State;
-      using Base::blockstep512;
+      using Base::blockstep;
 
    public:
       CPPCORE_ALIGN64 static constexpr const uint32_t K[] = {
@@ -171,7 +171,7 @@ namespace CppCore
       /// </summary>
       INLINE void blockstep(const void* data, size_t length)
       {
-         this->blockstep512(data, length, this->mBlock, this->mTotalSize);
+         this->blockstep(data, length, this->mBlock, this->mBlockSize, this->mTotalSize);
       }
 
       /// <summary>
@@ -205,7 +205,7 @@ namespace CppCore
       using typename Base::Digest;
       using typename Base::Block;
       using typename Base::State;
-      using Base::blockstep1024;
+      using Base::blockstep;
 
    public:
       CPPCORE_ALIGN64 static constexpr const uint64_t K[] = {
@@ -315,7 +315,7 @@ namespace CppCore
       /// </summary>
       INLINE void blockstep(const void* data, size_t length)
       {
-         this->blockstep1024(data, length, this->mBlock, this->mTotalSize);
+         this->blockstep(data, length, this->mBlock, this->mBlockSize, this->mTotalSize);
       }
 
       /// <summary>
