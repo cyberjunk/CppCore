@@ -148,25 +148,22 @@ namespace CppCore
       /// Encodes unsigned integer v into string s using alphabet.
       /// </summary>
       template<typename UINT>
-      INLINE static intptr_t tostring(UINT v, char* s, intptr_t len, const uint32_t base, const char* alphabet, bool writeterm)
+      INLINE static intptr_t tostring(const UINT& val, char* s, intptr_t len, const size_t base, const char* alphabet, bool writeterm)
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         if (!CppCore::testzero(v)) CPPCORE_LIKELY
+         UINT     v;
+         uint32_t r;
+         uint32_t n = 0U;
+         CppCore::clone(v, val);
+         do
          {
-            uint32_t r;
-            uint32_t n = 0U;
-            do
-            {
-               CppCore::udivmod(v, base, v, r);
-               if (len > 0) *s++ = alphabet[r];
-               n++; len--;
-            } while (!CppCore::testzero(v));
-            if (len >= 0)
-               Memory::reverse(s-n, n);
-         }
-         else if (len-- > 0)
-            *s++ = '0';
+            CppCore::udivmod(v, base, v, r);
+            if (len > 0) *s++ = alphabet[r];
+            n++; len--;
+         } while (!CppCore::testzero(v));
+         if (len >= 0)
+            Memory::reverse(s-n, n);
          if (writeterm)
             *s = (char)0x00;
          return len;
@@ -177,24 +174,21 @@ namespace CppCore
       /// This appends to the existing string.
       /// </summary>
       template<typename UINT, typename STRING>
-      INLINE static void tostring(UINT v, STRING& s, const uint32_t base, const char* alphabet)
+      INLINE static void tostring(const UINT& val, STRING& s, const size_t base, const char* alphabet)
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         if (!CppCore::testzero(v)) CPPCORE_LIKELY
+         UINT     v;
+         uint32_t r;
+         uint32_t n = 0U;
+         CppCore::clone(v, val);
+         do
          {
-            uint32_t r;
-            uint32_t n = 0U;
-            do
-            {
-               CppCore::udivmod(v, base, v, r);
-               s += alphabet[r];
-               n++;
-            } while (!CppCore::testzero(v));
-            Memory::reverse(s.data()+s.length()-n, n);
-         }
-         else
-            s += '0';
+            CppCore::udivmod(v, base, v, r);
+            s += alphabet[r];
+            n++;
+         } while (!CppCore::testzero(v));
+         Memory::reverse(s.data()+s.length()-n, n);
       }
 
       /// <summary>
@@ -202,7 +196,7 @@ namespace CppCore
       /// No overflow or invalid symbol check!
       /// </summary>
       template<typename UINT>
-      INLINE static void parse(const char* input, UINT& r, const uint32_t base, const char* alphabet)
+      INLINE static void parse(const char* input, UINT& r, const size_t base, const char* alphabet)
       {
          assert(base >= 2);
          assert(::strlen(alphabet) == base);
@@ -219,7 +213,7 @@ namespace CppCore
       /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
       /// </summary>
       template<typename UINT>
-      INLINE static bool tryparse(const char* input, UINT& r, const uint32_t base, const char* alphabet)
+      INLINE static bool tryparse(const char* input, UINT& r, const size_t base, const char* alphabet)
       {
          assert(base >= 2);
          assert(::strlen(alphabet) == base);
