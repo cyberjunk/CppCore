@@ -58,12 +58,13 @@ CPPCORE_BASEX_IMPLEMENTATION(8192, CppCore::Block8192)
 #include <CppCore/Hash/CRC32.h>
 #include <CppCore/Hash/Murmur3.h>
 
-#define CPPCORE_HASH_IMPLEMENTATION(name, classname)                                                      \
-  name* name ## _init   ()                                        { return (name*) new classname();     } \
-  void  name ## _destroy(name* hsh)                               { delete (classname*)hsh;             } \
-  void  name ## _reset  (name* hsh)                               { ((classname*)hsh)->reset();         } \
-  void  name ## _step   (name* hsh, void* data, unsigned int len) { ((classname*)hsh)->step(data, len); } \
-  void  name ## _finish (name* hsh, void* digest)                 { ((classname*)hsh)->finish(digest);  }
+#define CPPCORE_HASH_IMPLEMENTATION(name, classname)                                                             \
+  name* name ## _init     ()                                        { return (name*) new classname();          } \
+  void  name ## _destroy  (name* hsh)                               { delete (classname*)hsh;                  } \
+  void  name ## _reset    (name* hsh)                               { ((classname*)hsh)->reset();              } \
+  void  name ## _blockstep(name* hsh, void* data, unsigned int len) { ((classname*)hsh)->blockstep(data, len); } \
+  void  name ## _step     (name* hsh, void* data, unsigned int len) { ((classname*)hsh)->step(data, len);      } \
+  void  name ## _finish   (name* hsh, void* digest)                 { ((classname*)hsh)->finish(digest);       }
 
 CPPCORE_HASH_IMPLEMENTATION(cppcore_md5,     CppCore::MD5)
 CPPCORE_HASH_IMPLEMENTATION(cppcore_sha256,  CppCore::SHA256)
@@ -78,12 +79,12 @@ CPPCORE_HASH_IMPLEMENTATION(cppcore_murmur3, CppCore::Murmur3)
 
 #include <CppCore/Crypto/HMAC.h>
 
-#define CPPCORE_HMAC_IMPLEMENTATION(name, classname)                                                      \
-  name* name ## _init   ()                                        { return (name*) new classname();     } \
-  void  name ## _destroy(name* hsh)                               { delete (classname*)hsh;             } \
-  void  name ## _reset  (name* hsh, void* key,  unsigned int len) { ((classname*)hsh)->reset(key, len); } \
-  void  name ## _step   (name* hsh, void* data, unsigned int len) { ((classname*)hsh)->step(data, len); } \
-  void  name ## _finish (name* hsh, void* digest)                 { ((classname*)hsh)->finish(digest);  }
+#define CPPCORE_HMAC_IMPLEMENTATION(name, classname)                                                           \
+  name* name ## _init   ()                                        { return (name*) new classname();          } \
+  void  name ## _destroy(name* hsh)                               { delete (classname*)hsh;                  } \
+  void  name ## _reset  (name* hsh, void* key,  unsigned int len) { ((classname*)hsh)->reset(key, len);      } \
+  void  name ## _step   (name* hsh, void* data, unsigned int len) { ((classname*)hsh)->step(data, len);      } \
+  void  name ## _finish (name* hsh, void* digest)                 { ((classname*)hsh)->finish(digest);       }
 
 CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_md5,    CppCore::HMACMD5)
 CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_sha256, CppCore::HMACSHA256)

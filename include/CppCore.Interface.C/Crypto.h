@@ -18,13 +18,14 @@
   CPPCORE_EXPORT unsigned int cppcore_basex_decode##size(char* in, void* out, unsigned int base, char* alphabet);
 
 // macro for hash function declarations
-#define CPPCORE_HASH_DECLARATION(name)                                            \
-  typedef struct _ ## name name;                                                  \
-  CPPCORE_EXPORT name* name ## _init   ();                                        \
-  CPPCORE_EXPORT void  name ## _destroy(name* hsh);                               \
-  CPPCORE_EXPORT void  name ## _reset  (name* hsh);                               \
-  CPPCORE_EXPORT void  name ## _step   (name* hsh, void* data, unsigned int len); \
-  CPPCORE_EXPORT void  name ## _finish (name* hsh, void* digest);
+#define CPPCORE_HASH_DECLARATION(name)                                              \
+  typedef struct _ ## name name;                                                    \
+  CPPCORE_EXPORT name* name ## _init     ();                                        \
+  CPPCORE_EXPORT void  name ## _destroy  (name* hsh);                               \
+  CPPCORE_EXPORT void  name ## _reset    (name* hsh);                               \
+  CPPCORE_EXPORT void  name ## _blockstep(name* hsh, void* data, unsigned int len); \
+  CPPCORE_EXPORT void  name ## _step     (name* hsh, void* data, unsigned int len); \
+  CPPCORE_EXPORT void  name ## _finish   (name* hsh, void* digest);
 
 // macro for hmac function declarations
 #define CPPCORE_HMAC_DECLARATION(name)                                            \
