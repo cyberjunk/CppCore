@@ -548,6 +548,7 @@ int main()
    TEST(CppCore::Test::Hash::MD5::test2, "test2: ", std::endl);
    TEST(CppCore::Test::Hash::MD5::test3, "test3: ", " ");
    TEST(CppCore::Test::Hash::MD5::test4, "test4: ", std::endl);
+   TEST(CppCore::Test::Hash::MD5::test5, "test5: ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "       CppCore::Hash::SHA2"       << std::endl;

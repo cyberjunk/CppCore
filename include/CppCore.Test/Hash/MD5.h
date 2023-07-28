@@ -38,6 +38,15 @@ namespace CppCore { namespace Test { namespace Hash
          bool ok = CppCore::MD5::hashMem("DgjsDheManfJH=asy;D-hF1Sj4H24kjad853kdhAdgj3lkams>weqDgjsDheManfJH=asy;D-hF1Sj4H24kjad853kdhAdgj3lkams>weq", 106, hash);
          return ok && memcmp(r, &hash, 16) == 0;
       }
+      INLINE static bool test5()
+      {
+         CppCore::MD5 md5;
+         CppCore::MD5::Digest hash;
+         const static uint8_t r[16] = { 0x7f, 0x7b, 0xfd, 0x34, 0x87, 0x09, 0xde, 0xea, 0xac, 0xe1, 0x9e, 0x3f, 0x53, 0x5f, 0x8c, 0x54 };
+         md5.blockstep("0123456789012345678901234567890123456789012345678901234567890123", 64);
+         md5.finish(hash);
+         return memcmp(r, &hash, 16) == 0;
+      }
    };
 }}}
 
@@ -54,6 +63,7 @@ namespace CppCore { namespace Test { namespace VS { namespace Hash
       TEST_METHOD(test2) { Assert::AreEqual(true, CppCore::Test::Hash::MD5::test2()); }
       TEST_METHOD(test3) { Assert::AreEqual(true, CppCore::Test::Hash::MD5::test3()); }
       TEST_METHOD(test4) { Assert::AreEqual(true, CppCore::Test::Hash::MD5::test4()); }
+      TEST_METHOD(test5) { Assert::AreEqual(true, CppCore::Test::Hash::MD5::test5()); }
    };
 }}}}
 #endif
