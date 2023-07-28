@@ -101,6 +101,14 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Just calls step()
+      /// </summary>
+      INLINE void blockstep(const void* data, size_t len)
+      {
+         this->step(data, len);
+      }
+
+      /// <summary>
       /// Finish hash computation
       /// </summary>
       INLINE Digest finish()
