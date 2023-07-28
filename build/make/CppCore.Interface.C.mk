@@ -43,7 +43,10 @@ ifeq ($(TARGET_OS),win)
 DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
-LINKFLAGS := $(LINKFLAGS) -Xlinker /SUBSYSTEM:CONSOLE -DLL
+LINKFLAGS := $(LINKFLAGS) \
+             -Xlinker /SUBSYSTEM:CONSOLE",10.00" \
+             -Xlinker /PDBALTPATH:$(NAME)$(SUFFIX)$(EXTPDB) \
+             -DLL
 LINKLIBS  := $(LINKLIBS)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES) 
