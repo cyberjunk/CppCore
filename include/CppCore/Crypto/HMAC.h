@@ -75,6 +75,15 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Calculates a multiple of blocksize into data.
+      /// Don't call this after you have called step()!
+      /// </summary>
+      INLINE void blockstep(const void* data, size_t len)
+      {
+         hsh.blockstep(data, len);
+      }
+
+      /// <summary>
       /// Finish HMAC calculation into digest.
       /// </summary>
       INLINE void finish(Digest& digest)
