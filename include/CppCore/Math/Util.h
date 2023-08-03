@@ -1694,7 +1694,6 @@ namespace CppCore
 
    /// <summary>
    /// Division+Modulo (a/b=q,r) with a and q being multiple of 32-Bit and b and r exactly 32-Bit.
-   /// Uses unsafe 64 / 32 = 32 operation.
    /// </summary>
    INLINE static void udivmod64_32x(const uint32_t* a, uint32_t b, uint32_t* q, uint32_t& r, const uint32_t n32)
    {
@@ -1703,6 +1702,26 @@ namespace CppCore
       assert(n32 != 0U);
       for (uint32_t i = n32-1U; i != 0xFFFFFFFFU; i--)
          CppCore::udivmod64_32(r, a[i], b, q[i], r);
+   }
+
+   /// <summary>
+   /// Division+Modulo (a/b=q,r) with a and q being multiple of 32-Bit and b and r exactly 32-Bit.
+   /// Returns true if the q is zero else false.
+   /// </summary>
+   INLINE static bool udivmod64_32x_testzero(const uint32_t* a, uint32_t b, uint32_t* q, uint32_t& r, const uint32_t n32)
+   {
+      r = 0U;
+      assert(b != 0U);
+      assert(n32 != 0U);
+      uint32_t t;
+      uint32_t n = 0U;
+      for (uint32_t i = n32-1U; i != 0xFFFFFFFFU; i--)
+      {
+         CppCore::udivmod64_32(r, a[i], b, t, r);
+         n |= t;
+         q[i] = t;
+      }
+      return n == 0U;
    }
 
 #if defined(CPPCORE_CPU_X64)
@@ -1730,6 +1749,26 @@ namespace CppCore
       assert(n64 != 0U);
       for (uint32_t i = n64-1U; i != 0xFFFFFFFFU; i--)
          CppCore::udivmod128_64(r, a[i], b, q[i], r);
+   }
+
+   /// <summary>
+   /// Division+Modulo (a/b=q,r) with a and q being multiple of 64-Bit and b and r exactly 64-Bit.
+   /// Returns true if the q is zero else false.
+   /// </summary>
+   INLINE static bool udivmod128_64x_testzero(const uint64_t* a, uint64_t b, uint64_t* q, uint64_t& r, const uint32_t n64)
+   {
+      r = 0ULL;
+      assert(b != 0U);
+      assert(n64 != 0U);
+      uint64_t t;
+      uint64_t n = 0ULL;
+      for (uint32_t i = n64-1U; i != 0xFFFFFFFFU; i--)
+      {
+         CppCore::udivmod128_64(r, a[i], b, t, r);
+         n |= t;
+         q[i] = t;
+      }
+      return n == 0ULL;
    }
 
    /// <summary>
@@ -1987,6 +2026,142 @@ namespace CppCore
    {
       static_assert(sizeof(UINT) % 8 == 0);
       CppCore::udivmod128_64x((const uint64_t*)&a, b, (uint64_t*)&q, r, sizeof(UINT)/8);
+   }
+#endif
+
+   /// <summary>
+   /// a/b=q,r with 8/8=8,8
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint8_t a, uint8_t b, uint8_t& q, uint8_t& r)
+   {
+      CppCore::udivmod8(a, b, q, r);
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 8/16=8,16
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint8_t a, uint16_t b, uint8_t& q, uint16_t& r)
+   {
+      uint16_t t;
+      CppCore::udivmod16(a, b, t, r);
+      q = (uint8_t)t;
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 8/32=8,32
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint8_t a, uint32_t b, uint8_t& q, uint32_t& r)
+   {
+      uint32_t t;
+      CppCore::udivmod32(a, b, t, r);
+      q = (uint8_t)t;
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 8/64=8,64
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint8_t a, uint64_t b, uint8_t& q, uint64_t& r)
+   {
+      uint64_t t;
+      CppCore::udivmod64(a, b, t, r);
+      q = (uint8_t)t;
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 16/16=16,16
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint16_t a, uint16_t b, uint16_t& q, uint16_t& r)
+   {
+      CppCore::udivmod16(a, b, q, r);
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 16/32=16,32
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint16_t a, uint32_t b, uint16_t& q, uint32_t& r)
+   {
+      uint32_t t;
+      CppCore::udivmod32(a, b, t, r);
+      q = (uint16_t)t;
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 16/64=16,64
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint16_t a, uint64_t b, uint16_t& q, uint64_t& r)
+   {
+      uint64_t t;
+      CppCore::udivmod64(a, b, t, r);
+      q = (uint16_t)t;
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 32/32=32,32
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint32_t a, uint32_t b, uint32_t& q, uint32_t& r)
+   {
+      CppCore::udivmod32(a, b, q, r);
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 32/64=32,64
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint32_t a, uint64_t b, uint32_t& q, uint64_t& r)
+   {
+      uint64_t t;
+      CppCore::udivmod64(a, b, t, r);
+      q = (uint32_t)t;
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with 64/64=64,64
+   /// </summary>
+   INLINE static bool udivmod_testzero(uint64_t a, uint64_t b, uint64_t& q, uint64_t& r)
+   {
+      CppCore::udivmod64(a, b, q, r);
+      return q == 0U;
+   }
+
+   /// <summary>
+   /// a/b=q,r with N32/32=N32,32
+   /// </summary>
+   template<typename UINT>
+   INLINE static bool udivmod_testzero(const UINT& a, uint32_t b, UINT& q, uint32_t& r)
+   {
+      static_assert(sizeof(UINT) % 4 == 0);
+   #if defined(CPPCORE_CPU_X64)
+      if constexpr (sizeof(UINT) % 8 == 0)
+      {
+         uint64_t r64;
+         bool iszero = CppCore::udivmod128_64x_testzero((const uint64_t*)&a, b, (uint64_t*)&q, r64, sizeof(UINT)/8);
+         r = (uint32_t)r64;
+         return iszero;
+      }
+      else
+   #endif
+      {
+         return CppCore::udivmod64_32x_testzero((const uint32_t*)&a, b, (uint32_t*)&q, r, sizeof(UINT)/4);
+      }
+   }
+
+#if defined(CPPCORE_CPU_X64)
+   /// <summary>
+   /// a/b=q,r with N64/64=N64,64
+   /// </summary>
+   template<typename UINT>
+   INLINE static bool udivmod_testzero(const UINT& a, uint64_t b, UINT& q, uint64_t& r)
+   {
+      static_assert(sizeof(UINT) % 8 == 0);
+      return CppCore::udivmod128_64x_testzero((const uint64_t*)&a, b, (uint64_t*)&q, r, sizeof(UINT)/8);
    }
 #endif
 
