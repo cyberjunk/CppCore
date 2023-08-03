@@ -15,7 +15,7 @@
 // macro for basex function declarations
 #define CPPCORE_BASEX_DECLARATION(size)                                             \
   CPPCORE_EXPORT int cppcore_basex_encode##size(void* in, char* out, int len, unsigned int base, char* alphabet, unsigned int writeterm); \
-  CPPCORE_EXPORT unsigned int cppcore_basex_decode##size(char* in, void* out, unsigned int base, char* alphabet);
+  CPPCORE_EXPORT unsigned int cppcore_basex_decode##size(char* in, void* out, char* alphabet);
 
 // macro for hash function declarations
 #define CPPCORE_HASH_DECLARATION(name)                                              \

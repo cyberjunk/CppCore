@@ -194,6 +194,17 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Returns std::string with unsigned integer v encoded using alphabet.
+      /// </summary>
+      template<typename UINT>
+      INLINE static std::string tostring(const UINT& val, const char* alphabet = CPPCORE_ALPHABET_B10)
+      {
+         std::string s;
+         BaseX::tostring(val, s, ::strlen(alphabet), alphabet);
+         return s;
+      }
+
+      /// <summary>
       /// Template function for parsing unsigned integer from zero terminated string using alphabet.
       /// No overflow or invalid symbol check!
       /// </summary>
@@ -227,20 +238,19 @@ namespace CppCore
             return false; // null pointer
          uint8_t tbl[256];
          size_t n = 0;
-         char c;
          CppCore::bytedup(0xFF, tbl);
-         while ((c = *alphabet++))
+         while (const char c = *alphabet++)
             tbl[c] = (uint8_t)n++;
          if (n < 2U) CPPCORE_UNLIKELY
             return false; // alphabet too short
-         if ((c = *input++)) CPPCORE_LIKELY
+         if (const char first = *input++) CPPCORE_LIKELY
          {
             CppCore::clear(r);
-            uint8_t idx = tbl[c];
+            uint8_t idx = tbl[first];
             if (idx == 0xFF) CPPCORE_UNLIKELY
                return false; // invalid first symbol
             *(uint8_t*)&r = idx;
-            while ((c = *input++))
+            while (const char c = *input++)
             {
                struct { UINT v; size_t of; } t;
                idx = tbl[c];

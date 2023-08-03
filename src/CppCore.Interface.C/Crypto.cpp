@@ -31,13 +31,13 @@ int main(int argc, char* argv[])
 #include <CppCore/Encoding.h>
 #include <CppCore/Block.h>
 
-#define CPPCORE_BASEX_IMPLEMENTATION(size,block)                                                  \
-  int cppcore_basex_encode##size(                                                                 \
-    void*        in,   char* out,      int          len,                                          \
-    unsigned int base, char* alphabet, unsigned int writeterm) {                                  \
-    return (int)CppCore::BaseX::tostring(*(block*)in, out, len, base, alphabet, writeterm);       \
-  }                                                                                               \
-  unsigned int cppcore_basex_decode##size(char* in, void* out, unsigned int base, char* alphabet){\
+#define CPPCORE_BASEX_IMPLEMENTATION(size,block)                                            \
+  int cppcore_basex_encode##size(                                                           \
+    void*        in,   char* out,      int          len,                                    \
+    unsigned int base, char* alphabet, unsigned int writeterm) {                            \
+    return (int)CppCore::BaseX::tostring(*(block*)in, out, len, base, alphabet, writeterm); \
+  }                                                                                         \
+  unsigned int cppcore_basex_decode##size(char* in, void* out, char* alphabet) {            \
     return CppCore::BaseX::tryparse(in, *(block*)out, alphabet);                            \
   }
 
