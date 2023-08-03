@@ -186,16 +186,17 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         UINT   v;
+         CPPCORE_ALIGN64 UINT   v;
          size_t r;
          uint32_t n = 0U;
+         bool zero;
          CppCore::clone(v, val);
          do
          {
-            CppCore::udivmod(v, base, v, r);
+            zero = CppCore::udivmod_testzero(v, base, v, r);
             if (len > 0) *s++ = alphabet[r];
             n++; len--;
-         } while (!CppCore::testzero(v));
+         } while (!zero);
          if (len >= 0)
             Memory::reverse(s-n, n);
          if (writeterm)
@@ -212,16 +213,17 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         UINT     v;
+         CPPCORE_ALIGN64 UINT     v;
          size_t   r;
          uint32_t n = 0U;
+         bool zero;
          CppCore::clone(v, val);
          do
          {
-            CppCore::udivmod(v, base, v, r);
+            zero = CppCore::udivmod_testzero(v, base, v, r);
             s += alphabet[r];
             n++;
-         } while (!CppCore::testzero(v));
+         } while (!zero);
          Memory::reverse(s.data()+s.length()-n, n);
       }
 
