@@ -141,40 +141,6 @@ namespace CppCore
    /// </summary>
    class BaseX
    {
-
-      template<typename UINT>
-      class Encoder
-      {
-      protected:
-         UINT v;
-
-      public:
-         INLINE void reset(char* alphabet)
-         {
-         }
-
-         template<typename STRING>
-         INLINE void encode(const UINT& val, STRING& s, const size_t base, const char* alphabet)
-         {
-            assert(base >= 2U);
-            assert(::strlen(alphabet) == base);
-
-            size_t   r;
-            uint32_t n = 0U;
-            CppCore::clone(v, val);
-            do
-            {
-               CppCore::udivmod(v, base, v, r);
-               s += alphabet[r];
-               n++;
-            } while (!CppCore::testzero(v));
-            Memory::reverse(s.data() + s.length() - n, n);
-         }
-      };
-
-
-
-
    private:
       INLINE BaseX() { }
    public:
@@ -186,17 +152,17 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         CPPCORE_ALIGN64 UINT   v;
-         size_t r;
+         CPPCORE_ALIGN64 UINT v;
+         size_t   r;
          uint32_t n = 0U;
-         bool zero;
+         bool     z;
          CppCore::clone(v, val);
          do
          {
-            zero = CppCore::udivmod_testzero(v, base, v, r);
+            z = CppCore::udivmod_testzero(v, base, v, r);
             if (len > 0) *s++ = alphabet[r];
             n++; len--;
-         } while (!zero);
+         } while (!z);
          if (len >= 0)
             Memory::reverse(s-n, n);
          if (writeterm)
@@ -213,17 +179,17 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         CPPCORE_ALIGN64 UINT     v;
+         CPPCORE_ALIGN64 UINT v;
          size_t   r;
          uint32_t n = 0U;
-         bool zero;
+         bool     z;
          CppCore::clone(v, val);
          do
          {
-            zero = CppCore::udivmod_testzero(v, base, v, r);
+            z = CppCore::udivmod_testzero(v, base, v, r);
             s += alphabet[r];
             n++;
-         } while (!zero);
+         } while (!z);
          Memory::reverse(s.data()+s.length()-n, n);
       }
 
@@ -257,43 +223,41 @@ namespace CppCore
       template<typename UINT>
       INLINE static bool tryparse(const char* input, UINT& r, const char* alphabet)
       {
-         //assert(::strlen(alphabet) >= 2);
          if (!input || !alphabet)
-            return false;
+            return false; // null pointer
          uint8_t tbl[256];
          size_t n = 0;
+         char c;
          CppCore::bytedup(0xFF, tbl);
-         while (const char c = *alphabet++)
+         while ((c = *alphabet++))
             tbl[c] = (uint8_t)n++;
-         if (n < 2U)
-            return false;
-         if (const char c = *input++) CPPCORE_LIKELY
+         if (n < 2U) CPPCORE_UNLIKELY
+            return false; // alphabet too short
+         if ((c = *input++)) CPPCORE_LIKELY
          {
             CppCore::clear(r);
             uint8_t idx = tbl[c];
-            if (idx != 0xFF) CPPCORE_LIKELY
-               *(uint8_t*)&r=idx;
-               //CppCore::uadd(r, (size_t)idx, r);
-            else CPPCORE_UNLIKELY
+            if (idx == 0xFF) CPPCORE_UNLIKELY
                return false; // invalid first symbol
-            while (const char c = *input++)
+            *(uint8_t*)&r = idx;
+            while ((c = *input++))
             {
                struct { UINT v; size_t of; } t;
-               uint8_t idx = tbl[c];
+               idx = tbl[c];
                if (idx == 0xFFU) CPPCORE_UNLIKELY
                   return false; // invalid symbol
                CppCore::umul(r, n, t);
-               if (t.of != 0U) // mul overflow
-                  return false;
+               if (t.of != 0U) CPPCORE_UNLIKELY
+                  return false; // mul overflow
                uint8_t carry = 0;
                CppCore::addcarry(t.v, (size_t)idx, r, carry);
-               if (carry != 0) // add overflow
-                  return false;
+               if (carry != 0) CPPCORE_UNLIKELY
+                  return false; // add overflow
             }
             return true;
          }
-         else CPPCORE_UNLIKELY // null pointer or empty string
-            return false;
+         else CPPCORE_UNLIKELY
+            return false; // empty input
       }
    };
 
