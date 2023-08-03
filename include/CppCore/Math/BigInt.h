@@ -2314,9 +2314,7 @@ namespace CppCore
       /// </summary>
       constexpr INLINE static bool tryParse(const string& input, TC& r, const string& alphabet = CPPCORE_ALPHABET_B10)
       {
-         return 
-            alphabet.length() >= 2 && 
-            BaseX::tryparse(input.c_str(), r, (uint32_t)alphabet.length(), alphabet.c_str());
+         return alphabet.length() >= 2 && BaseX::tryparse(input.c_str(), r, alphabet.c_str());
       }
 
       /// <summary>
@@ -2326,13 +2324,17 @@ namespace CppCore
       /// </summary>
       constexpr INLINE static TC parseDecimal(const char* input)
       {
-         TC r(0ULL);
+         TC r;
+         BaseX::parse(input, r, "0123456789");
+         return r;
+
+         /*TC r(0ULL);
          while(const char c = *input++)
          {
             r *= 10U;
             r += (c - '0');
          }
-         return r;
+         return r;*/
       }
 
       /// <summary>

@@ -2112,7 +2112,7 @@ namespace CppCore
             rp[i] = 0ULL;
          bj = *bp++;
          CppCore::umul128(*ap++, bj, *rp++, k);  // mulx
-         CPPCORE_UNROLL
+         //CPPCORE_UNROLL
          for (size_t i = 1; i < MIN(NA,NR); i++, ap++, rp++)
          {
             CppCore::umul128(*ap, bj, tl, th);   // mulx
@@ -2161,7 +2161,7 @@ namespace CppCore
             rp[i] = 0U;
          bj = *bp++;
          CppCore::umul64(*ap++, bj, *rp++, k);
-         CPPCORE_UNROLL
+         //CPPCORE_UNROLL
          for (size_t i = 1; i < MIN(NA,NR); i++, ap++, rp++)
          {
             CppCore::umul64(*ap, bj, tl, th);
@@ -2177,7 +2177,7 @@ namespace CppCore
             bj = *bp++;
             ap = (uint32_t*)&a;
             rp = &((uint32_t*)&r)[j];
-            CPPCORE_UNROLL
+            //CPPCORE_UNROLL
             for (size_t i = 0; i < NA && i+j < NR; i++, ap++, rp++)
             {
                CppCore::umul64(*ap, bj, tl, th);

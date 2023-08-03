@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     return (int)CppCore::BaseX::tostring(*(block*)in, out, len, base, alphabet, writeterm);       \
   }                                                                                               \
   unsigned int cppcore_basex_decode##size(char* in, void* out, unsigned int base, char* alphabet){\
-    return CppCore::BaseX::tryparse(in, *(block*)out, base, alphabet);                            \
+    return CppCore::BaseX::tryparse(in, *(block*)out, alphabet);                            \
   }
 
 CPPCORE_BASEX_IMPLEMENTATION(128,  CppCore::Block128)
