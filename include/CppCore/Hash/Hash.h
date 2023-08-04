@@ -72,11 +72,7 @@ namespace CppCore
          while (length)
          {
             // copy data to current block
-            if constexpr (sizeof(BLOCK) == 256) Memory::singlecopy2048(&block, data);
-            if constexpr (sizeof(BLOCK) == 128) Memory::singlecopy1024(&block, data);
-            if constexpr (sizeof(BLOCK) == 64)  Memory::singlecopy512(&block, data);
-            if constexpr (sizeof(BLOCK) == 32)  Memory::singlecopy256(&block, data);
-            if constexpr (sizeof(BLOCK) == 16)  Memory::singlecopy128(&block, data);
+            Memory::singlecopy(&block, data);
 
             // update sizes
             totalSize += sizeof(BLOCK);
