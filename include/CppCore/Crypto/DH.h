@@ -1,7 +1,6 @@
 #pragma once
 
 #include <CppCore/Root.h>
-//#include <CppCore/Block.h>
 #include <CppCore/Math/BigInt.h>
 
 namespace CppCore
@@ -9,17 +8,23 @@ namespace CppCore
    /// <summary>
    /// Diffie-Hellman Key Exchange
    /// </summary>
+   template<typename UINT>
    class DH
    {
    protected:
-      uint2048_t t; // temporary value
+      UINT t; // temporary value
 
    public:
-      uint2048_t p; // public large prime (highbit set) 
-      uint2048_t g; // public random with g < p
-      uint2048_t v; // private key with v < p
-      uint2048_t V; // public key generated from v
-      uint2048_t k; // private session key
+      UINT p; // public large prime (highbit set) 
+      UINT g; // public random with g < p
+      UINT v; // private key with v < p
+      UINT V; // public key generated from v using p and g
+      UINT k; // private session key
+
+      /// <summary>
+      /// Size in Bytes
+      /// </summary>
+      static constexpr const size_t SIZE = sizeof(UINT);
 
    protected:
       INLINE void genprime(uint32_t certainty)
@@ -29,12 +34,12 @@ namespace CppCore
       INLINE void genconstant()
       {
          g.randomize();
-         g.d.i32[uint2048_t::N32-1] &= 0x7FFFFFFFU;
+         g.d.i32[UINT::N32-1] &= 0x7FFFFFFFU;
       }
       INLINE void genprivkey()
       {
          v.randomize();
-         v.d.i32[uint2048_t::N32-1] &= 0x7FFFFFFFU;
+         v.d.i32[UINT::N32-1] &= 0x7FFFFFFFU;
       }
       INLINE void genpubkey()
       {
@@ -57,7 +62,7 @@ namespace CppCore
       /// Use predefined prime (p) and constant (g) but generate private key (v).
       /// Requires p to have highbit set and g to be less than p.
       /// </summary>
-      INLINE void reset(const uint2048_t& p, const uint2048_t& g)
+      INLINE void reset(const UINT& p, const UINT& g)
       {
          assert(CppCore::lzcnt(p) == 0);
          assert(p.isprime(1));
@@ -71,7 +76,7 @@ namespace CppCore
       /// Use predefined prime (p), constant (g) and private key (v).
       /// Requires g and v to be less than p and p to be large.
       /// </summary>
-      INLINE void reset(const uint2048_t& p, const uint2048_t& g, const uint2048_t& v)
+      INLINE void reset(const UINT& p, const UINT& g, const UINT& v)
       {
          assert(p.isprime(1));
          assert(g < p);
@@ -84,10 +89,16 @@ namespace CppCore
       /// <summary>
       /// Generate session key (k) from received public key of other party.
       /// </summary>
-      INLINE void genkey(const uint2048_t& V)
+      INLINE void genkey(const UINT& V)
       {
          CppCore::clone(t, V);
          CppCore::upowmod(t, v, p, k);
       }
    };
+
+   using DH128  = DH<uint128_t>;  // Diffi-Hellman 128 Bit Key Exchange
+   using DH256  = DH<uint256_t>;  // Diffi-Hellman 256 Bit Key Exchange
+   using DH512  = DH<uint512_t>;  // Diffi-Hellman 512 Bit Key Exchange
+   using DH1024 = DH<uint1024_t>; // Diffi-Hellman 1024 Bit Key Exchange
+   using DH2048 = DH<uint2048_t>; // Diffi-Hellman 2048 Bit Key Exchange
 }

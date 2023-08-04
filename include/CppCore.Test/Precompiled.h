@@ -15,6 +15,7 @@
 #include <CppCore.Test/Hash/Murmur3.h>
 #include <CppCore.Test/Hash/SHA2.h>
 #include <CppCore.Test/Crypto/AES.h>
+#include <CppCore.Test/Crypto/DH.h>
 #include <CppCore.Test/Crypto/HMAC.h>
 #include <CppCore.Test/Crypto/PBKDF2.h>
 #include <CppCore.Test/Encoding.h>
