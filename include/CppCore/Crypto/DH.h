@@ -27,19 +27,15 @@ namespace CppCore
       static constexpr const size_t SIZE = sizeof(UINT);
 
    protected:
+      INLINE void genrnd(UINT& x)
+      {
+         x.randomize();
+         x.d.i32[UINT::N32-1] &= 0x7FFFFFFFU; // make smaller than p
+         x.d.i32[UINT::N32-1] |= 0x40000000U; // make large and not zero
+      }
       INLINE void genprime(uint32_t certainty)
       {
          p.genprime(certainty);
-      }
-      INLINE void genconstant()
-      {
-         g.randomize();
-         g.d.i32[UINT::N32-1] &= 0x7FFFFFFFU;
-      }
-      INLINE void genprivkey()
-      {
-         v.randomize();
-         v.d.i32[UINT::N32-1] &= 0x7FFFFFFFU;
       }
       INLINE void genpubkey()
       {
@@ -54,8 +50,8 @@ namespace CppCore
       INLINE void reset(uint32_t certainty = 0)
       {
          this->genprime(certainty);
-         this->genconstant();
-         this->genprivkey();
+         this->genrnd(g);
+         this->genrnd(v);
          this->genpubkey();
       }
       /// <summary>
@@ -69,7 +65,7 @@ namespace CppCore
          assert(g < p);
          CppCore::clone(this->p, p);
          CppCore::clone(this->g, g);
-         this->genprivkey();
+         this->genrnd(v);
          this->genpubkey();
       }
       /// <summary>
