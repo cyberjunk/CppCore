@@ -1594,6 +1594,36 @@ namespace CppCore
       #endif
       }
 
+      /// <summary>
+      /// Automatically picks singlecopy() variant based on sizeof(T).
+      /// Only supports power-of-two sizes from 16 to 256 Bytes.
+      /// </summary>
+      template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
+      INLINE static void singlecopy(T* dst, const void* src)
+      {
+         if      constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 128) Memory::singlecopy1024<DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 64)  Memory::singlecopy512 <DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 32)  Memory::singlecopy256 <DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 16)  Memory::singlecopy128 <DSTALIGN, SRCALIGN>(dst, src);
+         else static_assert(sizeof(T) == 0);
+      }
+
+      /// <summary>
+      /// Automatically picks singlecopy() variant based on sizeof(T).
+      /// Only supports power-of-two sizes from 16 to 256 Bytes.
+      /// </summary>
+      template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
+      INLINE static void singlecopy(const void* dst, const T* src)
+      {
+         if      constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 128) Memory::singlecopy1024<DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 64)  Memory::singlecopy512 <DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 32)  Memory::singlecopy256 <DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 16)  Memory::singlecopy128 <DSTALIGN, SRCALIGN>(dst, src);
+         else static_assert(sizeof(T) == 0);
+      }
+
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // COPY
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
