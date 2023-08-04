@@ -18,6 +18,7 @@
 #include <CppCore/Hash/Murmur3.h>
 #include <CppCore/Hash/SHA2.h>
 #include <CppCore/Crypto/AES.h>
+#include <CppCore/Crypto/DH.h>
 #include <CppCore/Crypto/HMAC.h>
 #include <CppCore/Crypto/PBKDF2.h>
 #include <CppCore/Uuid.h>

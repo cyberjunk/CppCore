@@ -195,6 +195,9 @@
     <ClInclude Include="..\..\include\CppCore\CPUID.h" />
     <ClInclude Include="..\..\include\CppCore\Resources.h" />
     <ClInclude Include="..\..\include\CppCore\RTCMemory.h" />
+    <ClInclude Include="..\..\include\CppCore\Crypto\DH.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Threading">

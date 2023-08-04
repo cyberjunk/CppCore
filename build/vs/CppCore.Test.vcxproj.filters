@@ -82,6 +82,9 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\CppCore.Test\BitOps.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Crypto\DH.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\CppCore.Test\Resources.rc" />

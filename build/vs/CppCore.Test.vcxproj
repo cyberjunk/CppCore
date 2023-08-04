@@ -34,6 +34,7 @@
     <ClInclude Include="..\..\include\CppCore.Test\Containers\HashTable.h" />
     <ClInclude Include="..\..\include\CppCore.Test\Containers\Queue.h" />
     <ClInclude Include="..\..\include\CppCore.Test\Crypto\AES.h" />
+    <ClInclude Include="..\..\include\CppCore.Test\Crypto\DH.h" />
     <ClInclude Include="..\..\include\CppCore.Test\Crypto\HMAC.h" />
     <ClInclude Include="..\..\include\CppCore.Test\Crypto\PBKDF2.h" />
     <ClInclude Include="..\..\include\CppCore.Test\Encoding.h" />

@@ -566,6 +566,15 @@ int main()
    TEST(CppCore::Test::Hash::Murmur3::test3, "test3: ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
+   std::cout << "    CppCore::Crypto::DH"       << std::endl;
+   std::cout << "-------------------------------" << std::endl;
+   TEST(CppCore::Test::Crypto::DH::test<CppCore::DH128>,  "dh128:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test<CppCore::DH256>,  "dh256:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test<CppCore::DH512>,  "dh512:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test<CppCore::DH1024>, "dh1024:   ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test<CppCore::DH2048>, "dh2048:   ", std::endl);
+
+   std::cout << "-------------------------------" << std::endl;
    std::cout << "    CppCore::Crypto::HMAC"       << std::endl;
    std::cout << "-------------------------------" << std::endl;
    TEST(CppCore::Test::Crypto::HMAC::md5test1,    "md5test1:    ", std::endl);

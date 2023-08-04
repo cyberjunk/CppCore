@@ -40,6 +40,7 @@
     <ClInclude Include="..\..\include\CppCore\Containers\Util\QuickSort.h" />
     <ClInclude Include="..\..\include\CppCore\CPUID.h" />
     <ClInclude Include="..\..\include\CppCore\Crypto\AES.h" />
+    <ClInclude Include="..\..\include\CppCore\Crypto\DH.h" />
     <ClInclude Include="..\..\include\CppCore\Crypto\HMAC.h" />
     <ClInclude Include="..\..\include\CppCore\Crypto\PBKDF2.h" />
     <ClInclude Include="..\..\include\CppCore\Encoding.h" />
