@@ -54,6 +54,7 @@ namespace CppCore
          this->genrnd(v);
          this->genpubkey();
       }
+
       /// <summary>
       /// Use predefined prime (p) and constant (g) but generate private key (v).
       /// Requires p to have highbit set and g to be less than p.
@@ -68,6 +69,21 @@ namespace CppCore
          this->genrnd(v);
          this->genpubkey();
       }
+
+      /// <summary>
+      /// Like other variant but with generic pointers.
+      /// </summary>
+      INLINE void reset(const void* p, const void* g)
+      {
+         Memory::singlecopy(&this->p, p);
+         Memory::singlecopy(&this->g, g);
+         assert(CppCore::lzcnt(this->p) == 0);
+         assert(this->p.isprime(1));
+         assert(this->g < this->p);
+         this->genrnd(v);
+         this->genpubkey();
+      }
+
       /// <summary>
       /// Use predefined prime (p), constant (g) and private key (v).
       /// Requires g and v to be less than p and p to be large.
@@ -82,12 +98,36 @@ namespace CppCore
          CppCore::clone(this->v, v);
          this->genpubkey();
       }
+
       /// <summary>
-      /// Generate session key (k) from received public key of other party.
+      /// Like other variant but with generic pointers.
+      /// </summary>
+      INLINE void reset(const void* p, const void* g, const void* v)
+      {
+         Memory::singlecopy(&this->p, p);
+         Memory::singlecopy(&this->g, g);
+         Memory::singlecopy(&this->v, v);
+         assert(this->p.isprime(1));
+         assert(this->g < this->p);
+         assert(this->v < this->p);
+         this->genpubkey();
+      }
+
+      /// <summary>
+      /// Generate session key (k) from received public key (V) of other party.
       /// </summary>
       INLINE void genkey(const UINT& V)
       {
          CppCore::clone(t, V);
+         CppCore::upowmod(t, v, p, k);
+      }
+
+      /// <summary>
+      /// Like other variant but with generic pointer.
+      /// </summary>
+      INLINE void genkey(const void* V)
+      {
+         Memory::singlecopy(&t, V);
          CppCore::upowmod(t, v, p, k);
       }
    };
