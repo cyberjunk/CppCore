@@ -115,6 +115,33 @@ CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha256, CppCore::PBKDF2SHA256)
 CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha512, CppCore::PBKDF2SHA512)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DH
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <CppCore/Memory.h>
+#include <CppCore/Crypto/DH.h>
+
+// macro for dh declarations
+#define CPPCORE_DH_IMPLEMENTATION(name, cname)                                                                           \
+  name* name ## _init         ()                                   { return (name*) new cname();                       } \
+  void  name ## _destroy      (name* dh)                           { delete (cname*)dh;                                } \
+  void  name ## _reset        (name* dh)                           { ((cname*)dh)->reset();                            } \
+  void  name ## _reset_pg     (name* dh, void* p, void* g)         { ((cname*)dh)->reset(p,g);                         } \
+  void  name ## _reset_pgv    (name* dh, void* p, void* g, void* v){ ((cname*)dh)->reset(p,g,v);                       } \
+  void  name ## _genkey       (name* dh, void* V)                  { ((cname*)dh)->genkey(V);                          } \
+  void  name ## _getprime     (name* dh, void* p)                  { CppCore::Memory::singlecopy(p, &((cname*)dh)->p); } \
+  void  name ## _getconstant  (name* dh, void* g)                  { CppCore::Memory::singlecopy(g, &((cname*)dh)->g); } \
+  void  name ## _getprivkey   (name* dh, void* v)                  { CppCore::Memory::singlecopy(v, &((cname*)dh)->v); } \
+  void  name ## _getpubkey    (name* dh, void* V)                  { CppCore::Memory::singlecopy(V, &((cname*)dh)->V); } \
+  void  name ## _getsessionkey(name* dh, void* k)                  { CppCore::Memory::singlecopy(k, &((cname*)dh)->k); }
+
+CPPCORE_DH_IMPLEMENTATION(cppcore_dh128,  CppCore::DH128)
+CPPCORE_DH_IMPLEMENTATION(cppcore_dh256,  CppCore::DH256)
+CPPCORE_DH_IMPLEMENTATION(cppcore_dh512,  CppCore::DH512)
+CPPCORE_DH_IMPLEMENTATION(cppcore_dh1024, CppCore::DH1024)
+CPPCORE_DH_IMPLEMENTATION(cppcore_dh2048, CppCore::DH2048)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AES
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -142,27 +169,20 @@ CPPCORE_AES_IMPLEMENTATION(cppcore_aes256, CppCore::AES256)
 #include <CppCore/Memory.h>
 #include <CppCore/Math/BigInt.h>
 
-#define CPPCORE_PRIME_IMPLEMENTATION(name, classname, copyop1, copyop2)                                             \
-  int  name ## _test    (void* data, unsigned int certainty) { classname v; copyop1; return v.isprime(certainty); } \
-  void name ## _generate(void* data, unsigned int certainty) { classname v; v.genprime(certainty); copyop2;       }
+#define CPPCORE_PRIME_IMPLEMENTATION(name, classname)          \
+  int  name ## _test(void* data, unsigned int certainty) {     \
+    classname v;                                               \
+    CppCore::Memory::singlecopy(&v, data);                     \
+    return v.isprime(certainty);                               \
+  }                                                            \
+  void name ## _generate(void* data, unsigned int certainty) { \
+    classname v;                                               \
+    v.genprime(certainty);                                     \
+    CppCore::Memory::singlecopy(data, &v);                     \
+  }
 
-CPPCORE_PRIME_IMPLEMENTATION(
-   cppcore_prime128, CppCore::uint128_t,
-   CppCore::Memory::singlecopy128 (&v, data),
-   CppCore::Memory::singlecopy128 (data, &v))
-CPPCORE_PRIME_IMPLEMENTATION(
-   cppcore_prime256, CppCore::uint256_t,
-   CppCore::Memory::singlecopy256 (&v, data),
-   CppCore::Memory::singlecopy256 (data, &v))
-CPPCORE_PRIME_IMPLEMENTATION(
-   cppcore_prime512, CppCore::uint512_t,
-   CppCore::Memory::singlecopy512 (&v, data),
-   CppCore::Memory::singlecopy512 (data, &v))
-CPPCORE_PRIME_IMPLEMENTATION(
-   cppcore_prime1024, CppCore::uint1024_t,
-   CppCore::Memory::singlecopy1024(&v, data),
-   CppCore::Memory::singlecopy1024(data, &v))
-CPPCORE_PRIME_IMPLEMENTATION(
-   cppcore_prime2048, CppCore::uint2048_t,
-   CppCore::Memory::singlecopy2048(&v, data),
-   CppCore::Memory::singlecopy2048(data, &v))
+CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime128,  CppCore::uint128_t)
+CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime256,  CppCore::uint256_t)
+CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime512,  CppCore::uint512_t)
+CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime1024, CppCore::uint1024_t)
+CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime2048, CppCore::uint2048_t)

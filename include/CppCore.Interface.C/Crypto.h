@@ -44,6 +44,21 @@
     void* digest, unsigned int lendigest, \
     unsigned int iterations);
 
+// macro for dh declarations
+#define CPPCORE_DH_DECLARATION(name)                                                \
+  typedef struct _ ## name name;                                                    \
+  CPPCORE_EXPORT name* name ## _init         ();                                    \
+  CPPCORE_EXPORT void  name ## _destroy      (name* dh);                            \
+  CPPCORE_EXPORT void  name ## _reset        (name* dh);                            \
+  CPPCORE_EXPORT void  name ## _reset_pg     (name* dh, void* p, void* g);          \
+  CPPCORE_EXPORT void  name ## _reset_pgv    (name* dh, void* p, void* g, void* v); \
+  CPPCORE_EXPORT void  name ## _genkey       (name* dh, void* V);                   \
+  CPPCORE_EXPORT void  name ## _getprime     (name* dh, void* p);                   \
+  CPPCORE_EXPORT void  name ## _getconstant  (name* dh, void* g);                   \
+  CPPCORE_EXPORT void  name ## _getprivkey   (name* dh, void* v);                   \
+  CPPCORE_EXPORT void  name ## _getpubkey    (name* dh, void* V);                   \
+  CPPCORE_EXPORT void  name ## _getsessionkey(name* dh, void* k);
+
 // macro for aes function declarations
 #define CPPCORE_AES_DECLARATION(name)                                                                  \
   typedef struct _ ## name name;                                                                       \
@@ -98,6 +113,14 @@ extern "C" {
 
    CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_sha256)
    CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_sha512)
+
+   // dh
+
+   CPPCORE_DH_DECLARATION(cppcore_dh128)
+   CPPCORE_DH_DECLARATION(cppcore_dh256)
+   CPPCORE_DH_DECLARATION(cppcore_dh512)
+   CPPCORE_DH_DECLARATION(cppcore_dh1024)
+   CPPCORE_DH_DECLARATION(cppcore_dh2048)
 
    // aes
 

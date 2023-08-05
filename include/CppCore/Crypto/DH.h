@@ -26,6 +26,11 @@ namespace CppCore
       /// </summary>
       static constexpr const size_t SIZE = sizeof(UINT);
 
+      /// <summary>
+      /// Template Argument Type
+      /// </summary>
+      using TYPE = UINT;
+
    protected:
       INLINE void genrnd(UINT& x)
       {
