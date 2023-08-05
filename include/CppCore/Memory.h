@@ -1614,7 +1614,7 @@ namespace CppCore
       /// Only supports power-of-two sizes from 16 to 256 Bytes.
       /// </summary>
       template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
-      INLINE static void singlecopy(const void* dst, const T* src)
+      INLINE static void singlecopy(void* dst, const T* src)
       {
          if      constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 128) Memory::singlecopy1024<DSTALIGN, SRCALIGN>(dst, src);
