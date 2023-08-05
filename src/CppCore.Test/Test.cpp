@@ -566,6 +566,20 @@ int main()
    TEST(CppCore::Test::Hash::Murmur3::test3, "test3: ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
+   std::cout << "    CppCore::Crypto::DH"       << std::endl;
+   std::cout << "-------------------------------" << std::endl;
+   TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH128>,  "test1dh128:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH256>,  "test1dh256:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH512>,  "test1dh512:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH1024>, "test1dh1024:   ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH2048>, "test1dh2048:   ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH128>,  "test2dh128:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH256>,  "test2dh256:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH512>,  "test2dh512:    ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH1024>, "test2dh1024:   ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH2048>, "test2dh2048:   ", std::endl);
+
+   std::cout << "-------------------------------" << std::endl;
    std::cout << "    CppCore::Crypto::HMAC"       << std::endl;
    std::cout << "-------------------------------" << std::endl;
    TEST(CppCore::Test::Crypto::HMAC::md5test1,    "md5test1:    ", std::endl);
