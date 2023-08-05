@@ -125,7 +125,7 @@ CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha512, CppCore::PBKDF2SHA512)
 #define CPPCORE_DH_IMPLEMENTATION(name, cname)                                                                           \
   name* name ## _init         ()                                   { return (name*) new cname();                       } \
   void  name ## _destroy      (name* dh)                           { delete (cname*)dh;                                } \
-  void  name ## _reset        (name* dh)                           { ((cname*)dh)->reset();                            } \
+  void  name ## _reset        (name* dh, unsigned int certainty)   { ((cname*)dh)->reset(certainty);                   } \
   void  name ## _reset_pg     (name* dh, void* p, void* g)         { ((cname*)dh)->reset(p,g);                         } \
   void  name ## _reset_pgv    (name* dh, void* p, void* g, void* v){ ((cname*)dh)->reset(p,g,v);                       } \
   void  name ## _genkey       (name* dh, void* V)                  { ((cname*)dh)->genkey(V);                          } \

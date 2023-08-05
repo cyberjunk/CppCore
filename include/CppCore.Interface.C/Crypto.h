@@ -49,7 +49,7 @@
   typedef struct _ ## name name;                                                    \
   CPPCORE_EXPORT name* name ## _init         ();                                    \
   CPPCORE_EXPORT void  name ## _destroy      (name* dh);                            \
-  CPPCORE_EXPORT void  name ## _reset        (name* dh);                            \
+  CPPCORE_EXPORT void  name ## _reset        (name* dh, unsigned int certainty);    \
   CPPCORE_EXPORT void  name ## _reset_pg     (name* dh, void* p, void* g);          \
   CPPCORE_EXPORT void  name ## _reset_pgv    (name* dh, void* p, void* g, void* v); \
   CPPCORE_EXPORT void  name ## _genkey       (name* dh, void* V);                   \
