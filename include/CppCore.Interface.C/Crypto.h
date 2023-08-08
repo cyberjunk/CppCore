@@ -12,6 +12,15 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// macro for large integer arithmetic function declarations
+#define CPPCORE_UINT_DECLARATION(name)                                     \
+  CPPCORE_EXPORT void name ## _add   (void* a, void* b, void* r);          \
+  CPPCORE_EXPORT void name ## _sub   (void* a, void* b, void* r);          \
+  CPPCORE_EXPORT void name ## _mul   (void* a, void* b, void* r);          \
+  CPPCORE_EXPORT void name ## _divmod(void* a, void* b, void* q, void* r); \
+  CPPCORE_EXPORT void name ## _mulmod(void* a, void* b, void* m, void* r); \
+  CPPCORE_EXPORT void name ## _powmod(void* a, void* b, void* m, void* r);
+
 // macro for basex function declarations
 #define CPPCORE_BASEX_DECLARATION(size)                                             \
   CPPCORE_EXPORT int cppcore_basex_encode##size(void* in, char* out, int len, unsigned int base, char* alphabet, unsigned int writeterm); \
@@ -83,6 +92,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+   // large integer arithmetic
+
+   CPPCORE_UINT_DECLARATION(cppcore_uint128)
+   CPPCORE_UINT_DECLARATION(cppcore_uint256)
+   CPPCORE_UINT_DECLARATION(cppcore_uint512)
+   CPPCORE_UINT_DECLARATION(cppcore_uint1024)
+   CPPCORE_UINT_DECLARATION(cppcore_uint2048)
+   CPPCORE_UINT_DECLARATION(cppcore_uint4096)
 
    // basex
 

@@ -24,15 +24,27 @@ int main(int argc, char* argv[])
 }
 #endif
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LARGE INTEGER ARITHMETIC
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #include <CppCore/Math/Util.h>
 #include <CppCore/Block.h>
 
-void cppcore_uint1024_add(void* a, void* b, void* r) { CppCore::uadd(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)r); }
-void cppcore_uint1024_sub(void* a, void* b, void* r) { CppCore::usub(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)r); }
-void cppcore_uint1024_mul(void* a, void* b, void* r) { CppCore::umul(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)r); }
-void cppcore_uint1024_divmod(void* a, void* b, void* q, void* r) { CppCore::udivmod(*(CppCore::Block1024*)q, *(CppCore::Block1024*)r, *(CppCore::Block1024*)a, *(CppCore::Block1024*)b); }
-void cppcore_uint1024_mulmod(void* a, void* b, void* m, void* r) { CppCore::umulmod(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)m, *(CppCore::Block1024*)r); }
-void cppcore_uint1024_powmod(void* a, void* b, void* m, void* r) { CppCore::upowmod(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)m, *(CppCore::Block1024*)r); }
+#define CPPCORE_UINT_IMPLEMENTATION(name, cname)                                                                           \
+  void name ## _add   (void* a, void* b, void* r)         { CppCore::uadd(*(cname*)a, *(cname*)b, *(cname*)r);}            \
+  void name ## _sub   (void* a, void* b, void* r)         { CppCore::usub(*(cname*)a, *(cname*)b, *(cname*)r);}            \
+  void name ## _mul   (void* a, void* b, void* r)         { CppCore::umul(*(cname*)a, *(cname*)b, *(cname*)r);}            \
+  void name ## _divmod(void* a, void* b, void* q, void* r){ CppCore::udivmod(*(cname*)q,*(cname*)r,*(cname*)a,*(cname*)b);}\
+  void name ## _mulmod(void* a, void* b, void* m, void* r){ CppCore::umulmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}\
+  void name ## _powmod(void* a, void* b, void* m, void* r){ CppCore::upowmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}
+
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint128,  CppCore::Block128)
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint256,  CppCore::Block256)
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint512,  CppCore::Block512)
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint1024, CppCore::Block1024)
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint2048, CppCore::Block2048)
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint4096, CppCore::Block4096)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENCODING
