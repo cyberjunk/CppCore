@@ -24,6 +24,16 @@ int main(int argc, char* argv[])
 }
 #endif
 
+#include <CppCore/Math/Util.h>
+#include <CppCore/Block.h>
+
+void cppcore_uint1024_add(void* a, void* b, void* r) { CppCore::uadd(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)r); }
+void cppcore_uint1024_sub(void* a, void* b, void* r) { CppCore::usub(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)r); }
+void cppcore_uint1024_mul(void* a, void* b, void* r) { CppCore::umul(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)r); }
+void cppcore_uint1024_divmod(void* a, void* b, void* q, void* r) { CppCore::udivmod(*(CppCore::Block1024*)q, *(CppCore::Block1024*)r, *(CppCore::Block1024*)a, *(CppCore::Block1024*)b); }
+void cppcore_uint1024_mulmod(void* a, void* b, void* m, void* r) { CppCore::umulmod(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)m, *(CppCore::Block1024*)r); }
+void cppcore_uint1024_powmod(void* a, void* b, void* m, void* r) { CppCore::upowmod(*(CppCore::Block1024*)a, *(CppCore::Block1024*)b, *(CppCore::Block1024*)m, *(CppCore::Block1024*)r); }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENCODING
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
