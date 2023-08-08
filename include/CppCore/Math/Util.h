@@ -3370,13 +3370,17 @@ namespace CppCore
    INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
    {
       assert(&a != &r);
-      assert(m != 0);
-      if (b == 0U) {
-         r = (m == 1U) ? 0U : 1U;
+      assert(!CppCore::testzero(m));
+      CppCore::clear(r);
+      constexpr auto NUMBITS = sizeof(UINT)*8U;
+      const auto LZB = CppCore::lzcnt(b);
+      if (LZB == NUMBITS) CPPCORE_UNLIKELY {
+         if (NUMBITS-CppCore::lzcnt(m) != 1U) CPPCORE_LIKELY
+            *(uint32_t*)&r = 1U;
          return;
       }
-      r = 1U;
-      const uint32_t HIDX = sizeof(UINT)*8U - CppCore::lzcnt(b);
+      *(uint32_t*)&r = 1U;
+      const uint32_t HIDX = NUMBITS-LZB;
       for (uint32_t i = 0; i < HIDX; i++)
       {
          if (CppCore::bittest(b, i))
