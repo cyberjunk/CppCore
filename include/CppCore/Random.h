@@ -16,56 +16,57 @@ namespace CppCore
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
-      /// Returns a 16-bit seed for a random number generator.
-      /// Quality and performance ranges from good to poor depending on available options.
-      /// By default (LOWBITONE=true) only 15-bit are random and lowbit is always 1 to avoid return of 0.
+      /// Small Helper
       /// </summary>
-      template <bool LOWBITONE = true>
-      INLINE static uint16_t seed16()
+      INLINE static uint32_t seedmix32(uint32_t v)
       {
-         uint16_t v;
-      #if defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDSEED)
-         while (0 == _rdseed16_step(&v)) CPPCORE_UNLIKELY _mm_pause();
-      #elif defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDRAND)
-         while (0 == _rdrand16_step(&v)) CPPCORE_UNLIKELY _mm_pause();
-      #elif defined(CPPCORE_CPU_X86ORX64)
-         v = (uint16_t)__rdtsc();
-      #else
-         v = (uint16_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count();
-      #endif
-         return v | (uint16_t)LOWBITONE;
+         v ^= v << 13;
+         v ^= v >> 17;
+         v ^= v << 5;
+         return v;
+      }
+
+      /// <summary>
+      /// Small Helper
+      /// </summary>
+      INLINE static uint64_t seedmix64(uint64_t v)
+      {
+         v ^= v << 23;
+         v ^= v << 31;
+         v ^= v >> 29;
+         v ^= v >> 23;
+         v ^= v << 9;
+         return v;
       }
 
       /// <summary>
       /// Returns a 32-bit seed for a random number generator.
       /// Quality and performance ranges from good to poor depending on available options.
-      /// By default (LOWBITONE=true) only 31-bit are random and lowbit is always 1 to avoid return of 0.
       /// </summary>
-      template <bool LOWBITONE = true>
       INLINE static uint32_t seed32()
       {
-         uint32_t v;
+         uint32_t v = 1;
       #if defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDSEED)
          while (0 == _rdseed32_step(&v)) CPPCORE_UNLIKELY _mm_pause();
       #elif defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDRAND)
          while (0 == _rdrand32_step(&v)) CPPCORE_UNLIKELY _mm_pause();
-      #elif defined(CPPCORE_CPU_X86ORX64)
-         v = (uint32_t)__rdtsc();
-      #else
-         v = (uint32_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count();
       #endif
-         return v | (uint32_t)LOWBITONE;
+         v ^= seedmix32((uint32_t)(size_t)&v);
+      #if defined(CPPCORE_CPU_X86ORX64)
+         v ^= seedmix32((uint32_t)__rdtsc());
+      #else
+         v ^= seedmix32((uint32_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count());
+      #endif
+         return v;
       }
 
       /// <summary>
       /// Returns a 64-bit seed for a random number generator.
       /// Quality and performance ranges from good to poor depending on available options.
-      /// By default (LOWBITONE=true) only 63-bit are random and lowbit is always 1 to avoid return of 0.
       /// </summary>
-      template <bool LOWBITONE = true>
       INLINE static uint64_t seed64()
       {
-         uint64_t v;
+         uint64_t v = 1;
       #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDSEED)
          while (0 == _rdseed64_step((unsigned long long*)&v)) CPPCORE_UNLIKELY _mm_pause();
       #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDRAND)
@@ -76,43 +77,40 @@ namespace CppCore
       #elif defined(CPPCORE_CPU_X86) && defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDRAND)
          while (0 == _rdrand32_step( (uint32_t*)&v))    CPPCORE_UNLIKELY _mm_pause();
          while (0 == _rdrand32_step(((uint32_t*)&v)+1)) CPPCORE_UNLIKELY _mm_pause();
-      #elif defined(CPPCORE_CPU_X86ORX64)
-         v = (uint64_t)__rdtsc();
-      #else
-         v = (uint64_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count();
       #endif
-         return v | (uint64_t)LOWBITONE;
+         v ^= seedmix64((uint64_t)&v);
+      #if defined(CPPCORE_CPU_X86ORX64)
+         v ^= seedmix64((uint64_t)__rdtsc());
+      #else
+         v ^= seedmix64((uint64_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count());
+      #endif
+         return v;
       }
 
 #if defined(CPPCORE_CPUFEAT_SSE2)
       /// <summary>
       /// Returns four 32-bit seeds for a packed random number generator.
       /// Quality and performance ranges from good to poor depending on available options.
-      /// By default (LOWBITONE=true) only each 31-bit are random and lowbits are always 1 to avoid return of 0.
       /// </summary>
-      template <bool LOWBITONE = true>
       INLINE static __m128i seed32x4()
       {
-         const __m128i t = _mm_set_epi32(
-            Random::seed32<false>(),
-            Random::seed32<false>(),
-            Random::seed32<false>(),
-            Random::seed32<false>());
-         return _mm_or_si128(t, _mm_set1_epi32(LOWBITONE));
+         return _mm_set_epi32(
+            Random::seed32(),
+            Random::seed32(),
+            Random::seed32(),
+            Random::seed32());
       }
 
       /// <summary>
       /// Returns two 64-bit seeds for a packed random number generator.
       /// Quality and performance ranges from good to poor depending on available options.
-      /// By default (LOWBITONE=true) only each 63-bit are random and lowbits are always 1 to avoid return of 0.
       /// </summary>
       template <bool LOWBITONE = true>
       INLINE static __m128i seed64x2()
       {
-         const __m128i t = _mm_set_epi64x(
-            Random::seed64<false>(),
-            Random::seed64<false>());
-         return _mm_or_si128(t, _mm_set1_epi64x(LOWBITONE));
+         return _mm_set_epi64x(
+            Random::seed64(),
+            Random::seed64());
       }
 #endif
 
