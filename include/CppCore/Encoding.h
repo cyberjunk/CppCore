@@ -152,16 +152,17 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         UINT     v;
-         uint32_t r;
+         CPPCORE_ALIGN64 UINT v;
+         size_t   r;
          uint32_t n = 0U;
+         bool     z;
          CppCore::clone(v, val);
          do
          {
-            CppCore::udivmod(v, base, v, r);
+            z = CppCore::udivmod_testzero(v, base, v, r);
             if (len > 0) *s++ = alphabet[r];
             n++; len--;
-         } while (!CppCore::testzero(v));
+         } while (!z);
          if (len >= 0)
             Memory::reverse(s-n, n);
          if (writeterm)
@@ -178,17 +179,29 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         UINT     v;
-         uint32_t r;
+         CPPCORE_ALIGN64 UINT v;
+         size_t   r;
          uint32_t n = 0U;
+         bool     z;
          CppCore::clone(v, val);
          do
          {
-            CppCore::udivmod(v, base, v, r);
+            z = CppCore::udivmod_testzero(v, base, v, r);
             s += alphabet[r];
             n++;
-         } while (!CppCore::testzero(v));
+         } while (!z);
          Memory::reverse(s.data()+s.length()-n, n);
+      }
+
+      /// <summary>
+      /// Returns std::string with unsigned integer v encoded using alphabet.
+      /// </summary>
+      template<typename UINT>
+      INLINE static std::string tostring(const UINT& val, const char* alphabet = CPPCORE_ALPHABET_B10)
+      {
+         std::string s;
+         BaseX::tostring(val, s, ::strlen(alphabet), alphabet);
+         return s;
       }
 
       /// <summary>
@@ -196,15 +209,21 @@ namespace CppCore
       /// No overflow or invalid symbol check!
       /// </summary>
       template<typename UINT>
-      INLINE static void parse(const char* input, UINT& r, const size_t base, const char* alphabet)
+      INLINE static void parse(const char* input, UINT& r, const char* alphabet)
       {
-         assert(base >= 2);
-         assert(::strlen(alphabet) == base);
+         assert(::strlen(alphabet) >= 2);
+         uint8_t tbl[256];
+         size_t n = 0;
          CppCore::clear(r);
+         CppCore::clear(tbl);
+         while (const char c = *alphabet++)
+            tbl[c] = (uint8_t)n++;
+         if (const char c = *input++)
+            *(uint8_t*)&r = tbl[c];
          while (const char c = *input++)
          {
-            CppCore::umul(r, base, r);
-            CppCore::uadd(r, Memory::byteidxf(alphabet, base, c), r);
+            CppCore::umul(r, n, r);
+            CppCore::uadd(r, (size_t)tbl[c], r);
          }
       }
 
@@ -213,38 +232,42 @@ namespace CppCore
       /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
       /// </summary>
       template<typename UINT>
-      INLINE static bool tryparse(const char* input, UINT& r, const size_t base, const char* alphabet)
+      INLINE static bool tryparse(const char* input, UINT& r, const char* alphabet)
       {
-         assert(base >= 2);
-         assert(::strlen(alphabet) == base);
-         CppCore::clear(r);
-         char c;
-         if (input && (c = *input++)) CPPCORE_LIKELY
+         if (!input || !alphabet)
+            return false; // null pointer
+         uint8_t tbl[256];
+         size_t n = 0;
+         CppCore::bytedup(0xFF, tbl);
+         while (const char c = *alphabet++)
+            tbl[c] = (uint8_t)n++;
+         if (n < 2U) CPPCORE_UNLIKELY
+            return false; // alphabet too short
+         if (const char first = *input++) CPPCORE_LIKELY
          {
-            size_t idx = Memory::byteidxf(alphabet, base, c);
-            if (idx != std::numeric_limits<size_t>::max()) CPPCORE_LIKELY
-               CppCore::uadd(r, idx, r); // only add required first
-            else CPPCORE_UNLIKELY
+            CppCore::clear(r);
+            uint8_t idx = tbl[first];
+            if (idx == 0xFF) CPPCORE_UNLIKELY
                return false; // invalid first symbol
-            struct { UINT v; uint64_t of; } t;
-            while ((c = *input++))
+            *(uint8_t*)&r = idx;
+            while (const char c = *input++)
             {
-               idx = Memory::byteidxf(alphabet, base, c);
-               if (idx == std::numeric_limits<size_t>::max()) CPPCORE_UNLIKELY
+               struct { UINT v; size_t of; } t;
+               idx = tbl[c];
+               if (idx == 0xFFU) CPPCORE_UNLIKELY
                   return false; // invalid symbol
-               CppCore::umul(r, base, t);
-               if (t.of != 0U) // mul overflow
-                  return false;
-               r = t.v;
+               CppCore::umul(r, n, t);
+               if (t.of != 0U) CPPCORE_UNLIKELY
+                  return false; // mul overflow
                uint8_t carry = 0;
-               CppCore::addcarry(r, idx, r, carry);
-               if (carry != 0) // add overflow
-                  return false;
+               CppCore::addcarry(t.v, (size_t)idx, r, carry);
+               if (carry != 0) CPPCORE_UNLIKELY
+                  return false; // add overflow
             }
             return true;
          }
-         else CPPCORE_UNLIKELY // null pointer or empty string
-            return false;
+         else CPPCORE_UNLIKELY
+            return false; // empty input
       }
    };
 
