@@ -148,12 +148,12 @@ namespace CppCore
       /// Encodes unsigned integer v into string s using alphabet.
       /// </summary>
       template<typename UINT>
-      INLINE static intptr_t tostring(const UINT& val, char* s, intptr_t len, const size_t base, const char* alphabet, bool writeterm)
+      INLINE static intptr_t tostring(const UINT& val, char* s, intptr_t len, const uint32_t base, const char* alphabet, bool writeterm)
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
          CPPCORE_ALIGN64 UINT v;
-         size_t   r;
+         uint32_t r;
          uint32_t n = 0U;
          bool     z;
          CppCore::clone(v, val);
@@ -175,12 +175,12 @@ namespace CppCore
       /// This appends to the existing string.
       /// </summary>
       template<typename UINT, typename STRING>
-      INLINE static void tostring(const UINT& val, STRING& s, const size_t base, const char* alphabet)
+      INLINE static void tostring(const UINT& val, STRING& s, const uint32_t base, const char* alphabet)
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
          CPPCORE_ALIGN64 UINT v;
-         size_t   r;
+         uint32_t r;
          uint32_t n = 0U;
          bool     z;
          CppCore::clone(v, val);
