@@ -2314,7 +2314,7 @@ namespace CppCore
       /// </summary>
       constexpr INLINE static bool tryParse(const string& input, TC& r, const string& alphabet = CPPCORE_ALPHABET_B10)
       {
-         return alphabet.length() >= 2 && BaseX::tryparse(input.c_str(), r, alphabet.c_str());
+         return BaseX::tryparse(input.c_str(), r, alphabet.c_str());
       }
 
       /// <summary>
