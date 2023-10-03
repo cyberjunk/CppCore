@@ -1148,6 +1148,40 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
+      INLINE static bool clmul32()
+      {
+         uint32_t r;
+
+         CppCore::clmul(0x00000000U, 0x00000000U, r); if (r != 0x00000000U) return false;
+         CppCore::clmul(0x00000001U, 0x00000000U, r); if (r != 0x00000000U) return false;
+         CppCore::clmul(0x00000000U, 0x00000001U, r); if (r != 0x00000000U) return false;
+         CppCore::clmul(0x00000001U, 0x00000001U, r); if (r != 0x00000001U) return false;          
+         CppCore::clmul(0x00000002U, 0x00000003U, r); if (r != 0x00000006U) return false;
+         CppCore::clmul(0x726f6e5dU, 0x5d53475dU, r); if (r != 0xd36f0451U) return false;
+         CppCore::clmul(0x68617929U, 0x5d53475dU, r); if (r != 0x2a281315U) return false;
+         CppCore::clmul(0x726f6e5dU, 0x73745665U, r); if (r != 0xf4b7d5c9U) return false;
+         CppCore::clmul(0x68617929U, 0x73745665U, r); if (r != 0x410fd4edU) return false;
+
+         return true;
+      }
+
+      INLINE static bool clmul64()
+      {
+         uint64_t r;
+
+         CppCore::clmul(0x0000000000000000ULL, 0x0000000000000000ULL, r); if (r != 0x0000000000000000ULL) return false;
+         CppCore::clmul(0x0000000000000001ULL, 0x0000000000000000ULL, r); if (r != 0x0000000000000000ULL) return false;
+         CppCore::clmul(0x0000000000000000ULL, 0x0000000000000001ULL, r); if (r != 0x0000000000000000ULL) return false;
+         CppCore::clmul(0x0000000000000001ULL, 0x0000000000000001ULL, r); if (r != 0x0000000000000001ULL) return false;          
+         CppCore::clmul(0x0000000000000002ULL, 0x0000000000000003ULL, r); if (r != 0x0000000000000006ULL) return false;
+         CppCore::clmul(0x5b477565726f6e5dULL, 0x63746f725d53475dULL, r); if (r != 0x929633d5d36f0451ULL) return false;
+         CppCore::clmul(0x4869285368617929ULL, 0x63746f725d53475dULL, r); if (r != 0x7fa540ac2a281315ULL) return false;
+         CppCore::clmul(0x5b477565726f6e5dULL, 0x7b5b546573745665ULL, r); if (r != 0xbabf262df4b7d5c9ULL) return false;
+         CppCore::clmul(0x4869285368617929ULL, 0x7b5b546573745665ULL, r); if (r != 0xd66ee03e410fd4edULL) return false;
+
+         return true;
+      }
+
       INLINE static bool todouble()
       {
          // test low ones
@@ -1298,6 +1332,8 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(ISMERSENNE32)     { Assert::AreEqual(true, CppCore::Test::Math::Util::ismersenne32()); }
       TEST_METHOD(ISMERSENNE64)     { Assert::AreEqual(true, CppCore::Test::Math::Util::ismersenne64()); }
       TEST_METHOD(ISMERSENNE128)    { Assert::AreEqual(true, CppCore::Test::Math::Util::ismersenne128()); }
+      TEST_METHOD(CLMUL32)          { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul32()); }
+      TEST_METHOD(CLMUL64)          { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul64()); }
       TEST_METHOD(TODOUBLE)         { Assert::AreEqual(true, CppCore::Test::Math::Util::todouble()); }
       TEST_METHOD(GCD32)            { Assert::AreEqual(true, CppCore::Test::Math::Util::gcd32()); }
       TEST_METHOD(GCD64)            { Assert::AreEqual(true, CppCore::Test::Math::Util::gcd64()); }
