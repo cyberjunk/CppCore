@@ -68,7 +68,7 @@
 #if defined(CPPCORE_CPUFEAT_SSE)
 #define CPPCORE_CHUNK_LOAD128(t,p)    (alignof(t)%16==0) ? _mm_load_si128 ((__m128i*)p)    : _mm_loadu_si128 ((__m128i*)p)
 #define CPPCORE_CHUNK_STORE128(t,p,v) (alignof(t)%16==0) ? _mm_store_si128((__m128i*)p, v) : _mm_storeu_si128((__m128i*)p, v)
-#define CPPCORE_CHUNK_STEP128_X(forward, p128, type)    \
+#define CPPCORE_CHUNK_STEP128_X(forward, p128)          \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
       if constexpr (!forward) { px -= 16U; }            \
@@ -76,7 +76,7 @@
       p128;                                             \
       if constexpr (forward) { px += 16U; }             \
    }
-#define CPPCORE_CHUNK_STEP128_XY(forward, p128, type)   \
+#define CPPCORE_CHUNK_STEP128_XY(forward, p128)         \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
       if constexpr (!forward) { px -= 16U; py -= 16U; } \
@@ -85,7 +85,7 @@
       p128;                                             \
       if constexpr (forward) { px += 16U; py += 16U; }  \
    }
-#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)  \
+#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128)        \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
       if constexpr (!forward) {                         \
@@ -102,7 +102,7 @@
 #elif defined(CPPCORE_CPUFEAT_ARM_NEON)
 #define CPPCORE_CHUNK_LOAD128(t,p)    vld1q_u32 ((uint32_t*)p)
 #define CPPCORE_CHUNK_STORE128(t,p,v) vst1q_u32((uint32_t*)p, v)
-#define CPPCORE_CHUNK_STEP128_X(forward, p128, type)    \
+#define CPPCORE_CHUNK_STEP128_X(forward, p128)          \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
       if constexpr (!forward) { px -= 16U; }            \
@@ -110,7 +110,7 @@
       p128;                                             \
       if constexpr (forward) { px += 16U; }             \
    }
-#define CPPCORE_CHUNK_STEP128_XY(forward, p128, type)   \
+#define CPPCORE_CHUNK_STEP128_XY(forward, p128)         \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
       if constexpr (!forward) { px -= 16U; py -= 16U; } \
@@ -119,7 +119,7 @@
       p128;                                             \
       if constexpr (forward) { px += 16U; py += 16U; }  \
    }
-#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)  \
+#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128)        \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
       if constexpr (!forward) {                         \
@@ -134,15 +134,15 @@
       }                                                 \
    }
 #else
-#define CPPCORE_CHUNK_STEP128_X(forward, p128, type)
-#define CPPCORE_CHUNK_STEP128_XY(forward, p128, type)
-#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)
+#define CPPCORE_CHUNK_STEP128_X(forward, p128)
+#define CPPCORE_CHUNK_STEP128_XY(forward, p128)
+#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128)
 #endif
 
 #if defined(CPPCORE_CPUFEAT_AVX)
 #define CPPCORE_CHUNK_LOAD256(t, p)   (alignof(t)%32==0) ? _mm256_load_si256((__m256i*)p)     : _mm256_loadu_si256((__m256i*)p)
 #define CPPCORE_CHUNK_STORE256(t,p,v) (alignof(t)%32==0) ? _mm256_store_si256((__m256i*)p, v) : _mm256_storeu_si256((__m256i*)p, v)
-#define CPPCORE_CHUNK_STEP256_X(forward, p256, type) \
+#define CPPCORE_CHUNK_STEP256_X(forward, p256)       \
    CPPCORE_UNROLL                                    \
    for (size_t i = 0; i < N256; i++) {               \
       if constexpr (!forward) { px -= 32U; }         \
@@ -150,7 +150,7 @@
       p256;                                          \
       if constexpr (forward) { px += 32U; }          \
    }
-#define CPPCORE_CHUNK_STEP256_XY(forward, p256, type)   \
+#define CPPCORE_CHUNK_STEP256_XY(forward, p256)         \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N256; i++) {                  \
       if constexpr (!forward) { px -= 32U; py -= 32U; } \
@@ -159,7 +159,7 @@
       p256;                                             \
       if constexpr (forward) { px += 32U; py += 32U; }  \
    }
-#define CPPCORE_CHUNK_STEP256_XYZ(forward, p256, type)  \
+#define CPPCORE_CHUNK_STEP256_XYZ(forward, p256)        \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N256; i++) {                  \
       if constexpr (!forward) {                         \
@@ -174,15 +174,15 @@
       }                                                 \
    }
 #else
-#define CPPCORE_CHUNK_STEP256_X(forward, p256, type)
-#define CPPCORE_CHUNK_STEP256_XY(forward, p256, type)
-#define CPPCORE_CHUNK_STEP256_XYZ(forward, p256, type)
+#define CPPCORE_CHUNK_STEP256_X(forward, p256)
+#define CPPCORE_CHUNK_STEP256_XY(forward, p256)
+#define CPPCORE_CHUNK_STEP256_XYZ(forward, p256)
 #endif
 
 #if defined(CPPCORE_CPUFEAT_AVX512F)
 #define CPPCORE_CHUNK_LOAD512(t, p)   (alignof(t)%64==0) ? _mm512_load_si512((__m512i*)p)     : _mm512_loadu_si512((__m512i*)p)
 #define CPPCORE_CHUNK_STORE512(t,p,v) (alignof(t)%64==0) ? _mm512_store_si512((__m512i*)p, v) : _mm512_storeu_si512((__m512i*)p, v)
-#define CPPCORE_CHUNK_STEP512_X(forward, p512, type) \
+#define CPPCORE_CHUNK_STEP512_X(forward, p512) \
    CPPCORE_UNROLL                              \
    for (size_t i = 0; i < N512; i++) {         \
       if constexpr (!forward) { px -= 64U; }   \
@@ -190,7 +190,7 @@
       p512;                                    \
       if constexpr (forward) { px += 64U; }    \
    }
-#define CPPCORE_CHUNK_STEP512_XY(forward, p512, type)    \
+#define CPPCORE_CHUNK_STEP512_XY(forward, p512)          \
    CPPCORE_UNROLL                                        \
    for (size_t i = 0; i < N512; i++) {                   \
       if constexpr (!forward) { px -= 64U; py -= 64U; }  \
@@ -199,7 +199,7 @@
       p512;                                              \
       if constexpr (forward) { px += 64U; py += 64U; }   \
    }
-#define CPPCORE_CHUNK_STEP512_XYZ(forward, p512, type)   \
+#define CPPCORE_CHUNK_STEP512_XYZ(forward, p512)         \
    CPPCORE_UNROLL                                        \
    for (size_t i = 0; i < N512; i++) {                   \
       if constexpr (!forward) {                          \
@@ -214,9 +214,9 @@
       }                                                  \
    }
 #else
-#define CPPCORE_CHUNK_STEP512_X(forward, p512, type)
-#define CPPCORE_CHUNK_STEP512_XY(forward, p512, type)
-#define CPPCORE_CHUNK_STEP512_XYZ(forward, p512, type)
+#define CPPCORE_CHUNK_STEP512_X(forward, p512)
+#define CPPCORE_CHUNK_STEP512_XY(forward, p512)
+#define CPPCORE_CHUNK_STEP512_XYZ(forward, p512)
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,9 +228,9 @@
    if constexpr (!forward) {                       \
       px += sizeof(type);                          \
    }                                               \
-   CPPCORE_CHUNK_STEP512_X(forward, p512, type)    \
-   CPPCORE_CHUNK_STEP256_X(forward, p256, type)    \
-   CPPCORE_CHUNK_STEP128_X(forward, p128, type)    \
+   CPPCORE_CHUNK_STEP512_X(forward, p512)          \
+   CPPCORE_CHUNK_STEP256_X(forward, p256)          \
+   CPPCORE_CHUNK_STEP128_X(forward, p128)          \
    CPPCORE_UNROLL                                  \
    for (size_t i = 0; i < N64; i++) {              \
       if constexpr (!forward) { px -= 8U; }        \
@@ -292,9 +292,9 @@
       px += sizeof(type);                             \
       py += sizeof(type);                             \
    }                                                  \
-   CPPCORE_CHUNK_STEP512_XY(forward, p512, type)      \
-   CPPCORE_CHUNK_STEP256_XY(forward, p256, type)      \
-   CPPCORE_CHUNK_STEP128_XY(forward, p128, type)      \
+   CPPCORE_CHUNK_STEP512_XY(forward, p512)            \
+   CPPCORE_CHUNK_STEP256_XY(forward, p256)            \
+   CPPCORE_CHUNK_STEP128_XY(forward, p128)            \
    CPPCORE_UNROLL                                     \
    for (size_t i = 0; i < N64; i++) {                 \
       if constexpr (!forward) { px -= 8U; py -= 8U; } \
@@ -364,9 +364,9 @@
       py += sizeof(type);                                  \
       pz += sizeof(type);                                  \
    }                                                       \
-   CPPCORE_CHUNK_STEP512_XYZ(forward, p512, type)          \
-   CPPCORE_CHUNK_STEP256_XYZ(forward, p256, type)          \
-   CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)          \
+   CPPCORE_CHUNK_STEP512_XYZ(forward, p512)                \
+   CPPCORE_CHUNK_STEP256_XYZ(forward, p256)                \
+   CPPCORE_CHUNK_STEP128_XYZ(forward, p128)                \
    CPPCORE_UNROLL                                          \
    for (size_t i = 0; i < N64; i++) {                      \
       if constexpr (!forward) {                            \
