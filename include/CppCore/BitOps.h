@@ -223,10 +223,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Base Macro for op(x).
-#define CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, p512, p256, p128, p64, p32, p16, p8) \
+#define CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, p512, p256, p128, p64, p32, p16, p8) \
    uint8_t* px = (uint8_t*)&(x);                   \
    if constexpr (!forward) {                       \
-      px += sizeof(type);                          \
+      px += sizeof(x);                             \
    }                                               \
    CPPCORE_CHUNK_STEP512_X(forward, p512)          \
    CPPCORE_CHUNK_STEP256_X(forward, p256)          \
@@ -261,36 +261,36 @@
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
 #define CPPCORE_CHUNK_PROCESS_X(x, type, forward, p64, p32, p16, p8)     \
    CPPCORE_CHUNK_COUNT(type)                                             \
-   CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, , , , p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 128-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS128_X(x, type, forward, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT128(type)                                               \
-   CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, , , p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 256-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS256_X(x, type, forward, p256, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT256(type)                                                     \
-   CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, , p256, p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 512-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS512_X(x, type, forward, p512, p256, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT512(type)                                                           \
-   CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, p512, p256, p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Base Macro for op(x, y).
-#define CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, p512, p256, p128, p64, p32, p16, p8) \
+#define CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, p512, p256, p128, p64, p32, p16, p8) \
    uint8_t* px = (uint8_t*)&(x);                      \
    uint8_t* py = (uint8_t*)&(y);                      \
    if (!forward) {                                    \
-      px += sizeof(type);                             \
-      py += sizeof(type);                             \
+      px += sizeof(x);                                \
+      py += sizeof(y);                                \
    }                                                  \
    CPPCORE_CHUNK_STEP512_XY(forward, p512)            \
    CPPCORE_CHUNK_STEP256_XY(forward, p256)            \
@@ -331,38 +331,38 @@
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
 #define CPPCORE_CHUNK_PROCESS_XY(x, y, type, forward, p64, p32, p16, p8)     \
    CPPCORE_CHUNK_COUNT(type)                                                 \
-   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, , , , p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 128-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS128_XY(x, y, type, forward, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT128(type)                                                   \
-   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, , , p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 256-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS256_XY(x, y, type, forward, p256, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT256(type)                                                         \
-   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, , p256, p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 512-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS512_XY(x, y, type, forward, p512, p256, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT512(type)                                                               \
-   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, p512, p256, p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Base Macro for op(x, y, z).
-#define CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, p512, p256, p128, p64, p32, p16, p8) \
+#define CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, p512, p256, p128, p64, p32, p16, p8) \
    uint8_t* px = (uint8_t*)&(x);                           \
    uint8_t* py = (uint8_t*)&(y);                           \
    uint8_t* pz = (uint8_t*)&(z);                           \
    if constexpr (!forward) {                               \
-      px += sizeof(type);                                  \
-      py += sizeof(type);                                  \
-      pz += sizeof(type);                                  \
+      px += sizeof(x);                                     \
+      py += sizeof(y);                                     \
+      pz += sizeof(z);                                     \
    }                                                       \
    CPPCORE_CHUNK_STEP512_XYZ(forward, p512)                \
    CPPCORE_CHUNK_STEP256_XYZ(forward, p256)                \
@@ -419,25 +419,25 @@
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
 #define CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, type, forward, p64, p32, p16, p8)     \
    CPPCORE_CHUNK_COUNT(type)                                                     \
-   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, , , , p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 128-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, type, forward, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT128(type)                                                       \
-   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, , , p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 256-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, type, forward, p256, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT256(type)                                                             \
-   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, , p256, p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 512-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, type, forward, p512, p256, p128, p64, p32, p16, p8) \
    CPPCORE_CHUNK_COUNT512(type)                                                                   \
-   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, p512, p256, p128, p64, p32, p16, p8)
+   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
