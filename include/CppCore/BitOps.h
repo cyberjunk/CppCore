@@ -259,26 +259,26 @@
 
 // Process chunks of type. For op(x). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
-#define CPPCORE_CHUNK_PROCESS_X(x, type, forward, p64, p32, p16, p8)  \
+#define CPPCORE_CHUNK_PROCESS_X(x, forward, p64, p32, p16, p8)        \
    CPPCORE_CHUNK_COUNT(x)                                             \
    CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 128-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS128_X(x, type, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(x)                                                  \
+#define CPPCORE_CHUNK_PROCESS128_X(x, forward, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT128(x)                                            \
    CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 256-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS256_X(x, type, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(x)                                                        \
+#define CPPCORE_CHUNK_PROCESS256_X(x, forward, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT256(x)                                                  \
    CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 512-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS512_X(x, type, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(x)                                                              \
+#define CPPCORE_CHUNK_PROCESS512_X(x, forward, p512, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT512(x)                                                        \
    CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -703,7 +703,7 @@ namespace CppCore
    static INLINE bool testzero(const UINT& x)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512BW)
-      CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_X(x, true,
          if (!CppCore::testzero512(CPPCORE_CHUNK_LOAD512(UINT, px512))) return false;,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
@@ -712,7 +712,7 @@ namespace CppCore
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_X(x, true,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
          if (!CppCore::testzero64 (*px64 )) return false;,
@@ -720,14 +720,14 @@ namespace CppCore
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
          if (!CppCore::testzero64 (*px64 )) return false;,
          if (!CppCore::testzero32 (*px32 )) return false;,
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
    #else
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          if (!CppCore::testzero64(*px64)) return false;,
          if (!CppCore::testzero32(*px32)) return false;,
          if (!CppCore::testzero16(*px16)) return false;,
@@ -844,7 +844,7 @@ namespace CppCore
       const __m512i ZERO512 = _mm512_setzero_si512();
       const __m256i ZERO256 = _mm256_setzero_si256();
       const __m128i ZERO128 = _mm_setzero_si128();
-      CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_X(x, true,
          CPPCORE_CHUNK_STORE512(UINT, px512, ZERO512); ,
          CPPCORE_CHUNK_STORE256(UINT, px256, ZERO256);,
          CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128);,
@@ -855,7 +855,7 @@ namespace CppCore
    #elif defined(CPPCORE_CPUFEAT_AVX)
       const __m256i ZERO256 = _mm256_setzero_si256();
       const __m128i ZERO128 = _mm_setzero_si128();
-      CPPCORE_CHUNK_PROCESS256_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_X(x, true,
          CPPCORE_CHUNK_STORE256(UINT, px256, ZERO256);,
          CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128);,
          CppCore::clear64 (*px64); ,
@@ -864,7 +864,7 @@ namespace CppCore
          CppCore::clear8  (*px8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
       const __m128i ZERO128 = _mm_setzero_si128();
-      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128);,
          CppCore::clear64 (*px64); ,
          CppCore::clear32 (*px32); ,
@@ -872,14 +872,14 @@ namespace CppCore
          CppCore::clear8  (*px8);)
    #elif defined(CPPCORE_CPUFEAT_ARM_NEON)
       constexpr uint32x4_t ZERO128 = { 0ULL, 0ULL };
-      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128);,
          CppCore::clear64 (*px64); ,
          CppCore::clear32 (*px32); ,
          CppCore::clear16 (*px16); ,
          CppCore::clear8  (*px8);)
    #else
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          CppCore::clear64(*px64); ,
          CppCore::clear32(*px32); ,
          CppCore::clear16(*px16); ,
@@ -2288,7 +2288,7 @@ namespace CppCore
    static INLINE uint32_t popcnt(const UINT& x)
    {
       uint32_t r = 0U;
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          r += CppCore::popcnt64(*px64); ,
          r += CppCore::popcnt32(*px32); ,
          r += CppCore::popcnt16(*px16); ,
@@ -2408,7 +2408,7 @@ namespace CppCore
    static INLINE uint32_t lzcnt(const UINT& x)
    {
       uint32_t r = 0U;
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, false,
+      CPPCORE_CHUNK_PROCESS_X(x, false,
          // 64-Bit
          const auto c = CppCore::lzcnt64(*px64);
          r += c;
@@ -2532,7 +2532,7 @@ namespace CppCore
    static INLINE uint32_t tzcnt(const UINT& x)
    {
       uint32_t r = 0U;
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          // 64-Bit
          const auto c = CppCore::tzcnt64(*px64);
          r += c;
@@ -2959,7 +2959,7 @@ namespace CppCore
       const __m128i dup128 = CppCore::bytedup128(v);
       const __m256i dup256 = CppCore::bytedup256(v);
       const __m512i dup512 = CppCore::bytedup512(v);
-      CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_X(x, true,
          CPPCORE_CHUNK_STORE512(UINT, px512, dup512); ,
          CPPCORE_CHUNK_STORE256(UINT, px256, dup256);,
          CPPCORE_CHUNK_STORE128(UINT, px128, dup128);,
@@ -2970,7 +2970,7 @@ namespace CppCore
    #elif defined(CPPCORE_CPUFEAT_AVX)
       const __m128i dup128 = CppCore::bytedup128(v);
       const __m256i dup256 = CppCore::bytedup256(v);
-      CPPCORE_CHUNK_PROCESS256_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_X(x, true,
          CPPCORE_CHUNK_STORE256(UINT, px256, dup256); ,
          CPPCORE_CHUNK_STORE128(UINT, px128, dup128); ,
          *px64  = dup64; ,
@@ -2979,14 +2979,14 @@ namespace CppCore
          *px8   = v;)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
       const __m128i dup128 = CppCore::bytedup128(v);
-      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, dup128); ,
          *px64  = dup64; ,
          *px32  = dup32; ,
          *px16  = dup16; ,
          *px8   = v;)
    #else
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          *px64 = dup64; ,
          *px32 = dup32; ,
          *px16 = dup16; ,
