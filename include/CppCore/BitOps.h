@@ -417,26 +417,26 @@
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
-#define CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, type, forward, p64, p32, p16, p8)  \
-   CPPCORE_CHUNK_COUNT(x)                                                     \
+#define CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, forward, p64, p32, p16, p8)  \
+   CPPCORE_CHUNK_COUNT(x)                                               \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 128-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, type, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(x)                                                          \
+#define CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, forward, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT128(x)                                                    \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 256-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, type, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(x)                                                                \
+#define CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, forward, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT256(x)                                                          \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 512-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, type, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(x)                                                                      \
+#define CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, forward, p512, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT512(x)                                                                \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1099,7 +1099,7 @@ namespace CppCore
    static INLINE void or_(const UINT& x, const UINT& y, UINT& z)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::or512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::or256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::or128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
@@ -1108,7 +1108,7 @@ namespace CppCore
          *pz16  = CppCore::or16 (*px16,  *py16); ,
          *pz8   = CppCore::or8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::or256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::or128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::or64 (*px64,  *py64); ,
@@ -1116,14 +1116,14 @@ namespace CppCore
          *pz16  = CppCore::or16 (*px16,  *py16); ,
          *pz8   = CppCore::or8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::or128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::or64 (*px64,  *py64); ,
          *pz32  = CppCore::or32 (*px32,  *py32); ,
          *pz16  = CppCore::or16 (*px16,  *py16); ,
          *pz8   = CppCore::or8  (*px8,   *py8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, true,
          *pz64  = CppCore::or64 (*px64,  *py64); ,
          *pz32  = CppCore::or32 (*px32,  *py32); ,
          *pz16  = CppCore::or16 (*px16,  *py16); ,
@@ -1236,7 +1236,7 @@ namespace CppCore
    static INLINE void xor_(const UINT& x, const UINT& y, UINT& z)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::xor512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::xor256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::xor128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
@@ -1245,7 +1245,7 @@ namespace CppCore
          *pz16  = CppCore::xor16 (*px16,  *py16); ,
          *pz8   = CppCore::xor8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::xor256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::xor128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::xor64 (*px64,  *py64); ,
@@ -1253,14 +1253,14 @@ namespace CppCore
          *pz16  = CppCore::xor16 (*px16,  *py16); ,
          *pz8   = CppCore::xor8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::xor128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::xor64 (*px64,  *py64); ,
          *pz32  = CppCore::xor32 (*px32,  *py32); ,
          *pz16  = CppCore::xor16 (*px16,  *py16); ,
          *pz8   = CppCore::xor8  (*px8,   *py8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, true,
          *pz64  = CppCore::xor64 (*px64, *py64); ,
          *pz32  = CppCore::xor32 (*px32, *py32); ,
          *pz16  = CppCore::xor16 (*px16, *py16); ,
@@ -1373,7 +1373,7 @@ namespace CppCore
    static INLINE void and_(const UINT& x, const UINT& y, UINT& z)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::and512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::and256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::and128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
@@ -1382,7 +1382,7 @@ namespace CppCore
          *pz16  = CppCore::and16 (*px16,  *py16); ,
          *pz8   = CppCore::and8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::and256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::and128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::and64 (*px64,  *py64); ,
@@ -1390,14 +1390,14 @@ namespace CppCore
          *pz16  = CppCore::and16 (*px16,  *py16); ,
          *pz8   = CppCore::and8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, true,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::and128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::and64 (*px64,  *py64); ,
          *pz32  = CppCore::and32 (*px32,  *py32); ,
          *pz16  = CppCore::and16 (*px16,  *py16); ,
          *pz8   = CppCore::and8  (*px8,   *py8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, true,
          *pz64  = CppCore::and64(*px64, *py64); ,
          *pz32  = CppCore::and32(*px32, *py32); ,
          *pz16  = CppCore::and16(*px16, *py16); ,
@@ -1626,7 +1626,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE void andn(const UINT& x, const UINT& y, UINT& z)
    {
-      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, true,
          *pz64 = CppCore::andn64(*px64, *py64); ,
          *pz32 = CppCore::andn32(*px32, *py32); ,
          *pz16 = CppCore::andn16(*px16, *py16); ,
