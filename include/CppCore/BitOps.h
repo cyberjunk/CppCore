@@ -6,54 +6,54 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Count of 512-Bit chunks and a possible 256/128/64/32/16/8 tail
-#define CPPCORE_CHUNK_COUNT512(x)                \
-   constexpr size_t N512 = (sizeof(x) / 64);     \
-   constexpr size_t N256 = (sizeof(x) % 64) / 32;\
-   constexpr size_t N128 = (sizeof(x) % 32) / 16;\
-   constexpr size_t N64  = (sizeof(x) % 16) / 8; \
-   constexpr size_t N32  = (sizeof(x) % 8 ) / 4; \
-   constexpr size_t N16  = (sizeof(x) % 4 ) / 2; \
-   constexpr size_t N8   = (sizeof(x) % 2 );
+#define CPPCORE_CHUNK_COUNT512(x)          \
+   constexpr size_t N512 = ((x) / 64);     \
+   constexpr size_t N256 = ((x) % 64) / 32;\
+   constexpr size_t N128 = ((x) % 32) / 16;\
+   constexpr size_t N64  = ((x) % 16) / 8; \
+   constexpr size_t N32  = ((x) % 8 ) / 4; \
+   constexpr size_t N16  = ((x) % 4 ) / 2; \
+   constexpr size_t N8   = ((x) % 2 );
 
 // Count of 256-Bit chunks and a possible 128/64/32/16/8 tail
-#define CPPCORE_CHUNK_COUNT256(x)                \
-   constexpr size_t N512 = 0;                    \
-   constexpr size_t N256 = (sizeof(x) / 32);     \
-   constexpr size_t N128 = (sizeof(x) % 32) / 16;\
-   constexpr size_t N64  = (sizeof(x) % 16) / 8; \
-   constexpr size_t N32  = (sizeof(x) % 8 ) / 4; \
-   constexpr size_t N16  = (sizeof(x) % 4 ) / 2; \
-   constexpr size_t N8   = (sizeof(x) % 2 );
+#define CPPCORE_CHUNK_COUNT256(x)          \
+   constexpr size_t N512 = 0;              \
+   constexpr size_t N256 = ((x) / 32);     \
+   constexpr size_t N128 = ((x) % 32) / 16;\
+   constexpr size_t N64  = ((x) % 16) / 8; \
+   constexpr size_t N32  = ((x) % 8 ) / 4; \
+   constexpr size_t N16  = ((x) % 4 ) / 2; \
+   constexpr size_t N8   = ((x) % 2 );
 
 // Count of 128-Bit chunks and a possible 64/32/16/8 tail
-#define CPPCORE_CHUNK_COUNT128(x)               \
-   constexpr size_t N512 = 0;                   \
-   constexpr size_t N256 = 0;                   \
-   constexpr size_t N128 = (sizeof(x) / 16);    \
-   constexpr size_t N64  = (sizeof(x) % 16) / 8;\
-   constexpr size_t N32  = (sizeof(x) % 8 ) / 4;\
-   constexpr size_t N16  = (sizeof(x) % 4 ) / 2;\
-   constexpr size_t N8   = (sizeof(x) % 2 );
+#define CPPCORE_CHUNK_COUNT128(x)         \
+   constexpr size_t N512 = 0;             \
+   constexpr size_t N256 = 0;             \
+   constexpr size_t N128 = ((x) / 16);    \
+   constexpr size_t N64  = ((x) % 16) / 8;\
+   constexpr size_t N32  = ((x) % 8 ) / 4;\
+   constexpr size_t N16  = ((x) % 4 ) / 2;\
+   constexpr size_t N8   = ((x) % 2 );
 
 // Count of 64-Bit chunks and a possible 32/16/8 tail
-#define CPPCORE_CHUNK_COUNT64(x)                \
-   constexpr size_t N512 = 0;                   \
-   constexpr size_t N256 = 0;                   \
-   constexpr size_t N128 = 0;                   \
-   constexpr size_t N64  = (sizeof(x) / 8);     \
-   constexpr size_t N32  = (sizeof(x) % 8) / 4; \
-   constexpr size_t N16  = (sizeof(x) % 4) / 2; \
-   constexpr size_t N8   = (sizeof(x) % 2);
+#define CPPCORE_CHUNK_COUNT64(x)          \
+   constexpr size_t N512 = 0;             \
+   constexpr size_t N256 = 0;             \
+   constexpr size_t N128 = 0;             \
+   constexpr size_t N64  = ((x) / 8);     \
+   constexpr size_t N32  = ((x) % 8) / 4; \
+   constexpr size_t N16  = ((x) % 4) / 2; \
+   constexpr size_t N8   = ((x) % 2);
 
 // Count of 32-Bit chunks and a possible 16/8 tail
-#define CPPCORE_CHUNK_COUNT32(x)                \
-   constexpr size_t N512 = 0;                   \
-   constexpr size_t N256 = 0;                   \
-   constexpr size_t N128 = 0;                   \
-   constexpr size_t N64  = 0;                   \
-   constexpr size_t N32  = (sizeof(x) / 4);     \
-   constexpr size_t N16  = (sizeof(x) % 4) / 2; \
-   constexpr size_t N8   = (sizeof(x) % 2);
+#define CPPCORE_CHUNK_COUNT32(x)          \
+   constexpr size_t N512 = 0;             \
+   constexpr size_t N256 = 0;             \
+   constexpr size_t N128 = 0;             \
+   constexpr size_t N64  = 0;             \
+   constexpr size_t N32  = ((x) / 4);     \
+   constexpr size_t N16  = ((x) % 4) / 2; \
+   constexpr size_t N8   = ((x) % 2);
 
 // Select which one to use based on CPU
 #if defined(CPPCORE_CPU_64BIT)
@@ -260,25 +260,25 @@
 // Process chunks of type. For op(x). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
 #define CPPCORE_CHUNK_PROCESS_X(x, forward, p64, p32, p16, p8)        \
-   CPPCORE_CHUNK_COUNT(x)                                             \
+   CPPCORE_CHUNK_COUNT(sizeof(x))                                     \
    CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 128-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS128_X(x, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(x)                                            \
+   CPPCORE_CHUNK_COUNT128(sizeof(x))                                    \
    CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 256-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS256_X(x, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(x)                                                  \
+   CPPCORE_CHUNK_COUNT256(sizeof(x))                                          \
    CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 512-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS512_X(x, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(x)                                                        \
+   CPPCORE_CHUNK_COUNT512(sizeof(x))                                                \
    CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -330,25 +330,25 @@
 // Process chunks of type. For op(x, y). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
 #define CPPCORE_CHUNK_PROCESS_XY(x, y, forward, p64, p32, p16, p8)        \
-   CPPCORE_CHUNK_COUNT(x)                                                 \
+   CPPCORE_CHUNK_COUNT(sizeof(x))                                         \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 128-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS128_XY(x, y, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(x)                                                \
+   CPPCORE_CHUNK_COUNT128(sizeof(x))                                        \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 256-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS256_XY(x, y, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(x)                                                      \
+   CPPCORE_CHUNK_COUNT256(sizeof(x))                                              \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 512-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS512_XY(x, y, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(x)                                                            \
+   CPPCORE_CHUNK_COUNT512(sizeof(x))                                                    \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,25 +418,25 @@
 // Process chunks of type. For op(x, y, z). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
 #define CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, forward, p64, p32, p16, p8)  \
-   CPPCORE_CHUNK_COUNT(x)                                               \
+   CPPCORE_CHUNK_COUNT(sizeof(x))                                       \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 128-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(x)                                                    \
+   CPPCORE_CHUNK_COUNT128(sizeof(x))                                            \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 256-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(x)                                                          \
+   CPPCORE_CHUNK_COUNT256(sizeof(x))                                                  \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 512-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(x)                                                                \
+   CPPCORE_CHUNK_COUNT512(sizeof(x))                                                        \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
