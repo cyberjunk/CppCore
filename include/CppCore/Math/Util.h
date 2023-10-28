@@ -1129,16 +1129,30 @@ namespace CppCore
    template<typename UINT>
    INLINE static void clmul(const UINT& a, const UINT& b, UINT& r)
    {
-      UINT ta, tb;
-      CppCore::clone(ta, a);
-      CppCore::clone(tb, b);
-      CppCore::clear(r);
-      while (!CppCore::testzero(tb))
+      static_assert(sizeof(UINT) % 4 == 0);
+   #if defined(CPPCORE_CPUFEAT_PCLMUL)
+      if constexpr (sizeof(UINT) == 8)
+         _mm_storel_epi64((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_loadl_epi64((__m128i*)&a), 
+            _mm_loadl_epi64((__m128i*)&b), 0x00));
+      else if constexpr (sizeof(UINT) == 4)
+         *(uint32_t*)&r = _mm_cvtsi128_si32(_mm_clmulepi64_si128(
+            _mm_cvtsi32_si128(*(uint32_t*)&a),
+            _mm_cvtsi32_si128(*(uint32_t*)&b), 0x00));
+      else 
+   #endif
       {
-         if (CppCore::bittest(tb, 0))
-            CppCore::xor_(r, ta, r);
-         CppCore::shr(tb, tb, 1);
-         CppCore::shl(ta, ta, 1);
+         UINT ta, tb;
+         CppCore::clone(ta, a);
+         CppCore::clone(tb, b);
+         CppCore::clear(r);
+         while (!CppCore::testzero(tb))
+         {
+            if (CppCore::bittest(tb, 0))
+               CppCore::xor_(r, ta, r);
+            CppCore::shr(tb, tb, 1);
+            CppCore::shl(ta, ta, 1);
+         }
       }
    }
 
