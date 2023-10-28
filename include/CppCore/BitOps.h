@@ -329,26 +329,26 @@
 
 // Process chunks of type. For op(x, y). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
-#define CPPCORE_CHUNK_PROCESS_XY(x, y, forward, p64, p32, p16, p8)        \
-   CPPCORE_CHUNK_COUNT(sizeof(x))                                         \
+#define CPPCORE_CHUNK_PROCESS_XY(x, y, forward, p64, p32, p16, p8)      \
+   CPPCORE_CHUNK_COUNT(MIN(sizeof(x), sizeof(y)))                       \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 128-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS128_XY(x, y, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(sizeof(x))                                        \
+   CPPCORE_CHUNK_COUNT128(MIN(sizeof(x), sizeof(y)))                        \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 256-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS256_XY(x, y, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(sizeof(x))                                              \
+   CPPCORE_CHUNK_COUNT256(MIN(sizeof(x), sizeof(y)))                              \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 512-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS512_XY(x, y, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(sizeof(x))                                                    \
+   CPPCORE_CHUNK_COUNT512(MIN(sizeof(x), sizeof(y)))                                    \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,25 +418,25 @@
 // Process chunks of type. For op(x, y, z). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
 #define CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, forward, p64, p32, p16, p8)  \
-   CPPCORE_CHUNK_COUNT(sizeof(x))                                       \
+   CPPCORE_CHUNK_COUNT(MIN(MIN(sizeof(x), sizeof(y)), sizeof(z)))       \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 128-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(sizeof(x))                                            \
+   CPPCORE_CHUNK_COUNT128(MIN(MIN(sizeof(x), sizeof(y)), sizeof(z)))            \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 256-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(sizeof(x))                                                  \
+   CPPCORE_CHUNK_COUNT256(MIN(MIN(sizeof(x), sizeof(y)), sizeof(z)))                  \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 512-Bit Op additionally
 #define CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(sizeof(x))                                                        \
+   CPPCORE_CHUNK_COUNT512(MIN(MIN(sizeof(x), sizeof(y)), sizeof(z)))                        \
    CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
