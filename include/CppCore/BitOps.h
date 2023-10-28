@@ -329,26 +329,26 @@
 
 // Process chunks of type. For op(x, y). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
-#define CPPCORE_CHUNK_PROCESS_XY(x, y, type, forward, p64, p32, p16, p8)  \
+#define CPPCORE_CHUNK_PROCESS_XY(x, y, forward, p64, p32, p16, p8)        \
    CPPCORE_CHUNK_COUNT(x)                                                 \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 128-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS128_XY(x, y, type, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(x)                                                      \
+#define CPPCORE_CHUNK_PROCESS128_XY(x, y, forward, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT128(x)                                                \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 256-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS256_XY(x, y, type, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(x)                                                            \
+#define CPPCORE_CHUNK_PROCESS256_XY(x, y, forward, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT256(x)                                                      \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 512-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS512_XY(x, y, type, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(x)                                                                  \
+#define CPPCORE_CHUNK_PROCESS512_XY(x, y, forward, p512, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT512(x)                                                            \
    CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -560,7 +560,7 @@ namespace CppCore
    static INLINE bool equal(const UINT& x, const UINT& y)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512BW)
-      CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XY(x, y, true,
          if (!CppCore::equal512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512))) return false;,
          if (!CppCore::equal256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256))) return false;,
          if (!CppCore::equal128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128))) return false;,
@@ -569,7 +569,7 @@ namespace CppCore
          if (!CppCore::equal16 (*px16,  *py16 )) return false;,
          if (!CppCore::equal8  (*px8,   *py8  )) return false;)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XY(x, y, true,
          if (!CppCore::equal256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256))) return false;,
          if (!CppCore::equal128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128))) return false;,
          if (!CppCore::equal64 (*px64,  *py64 )) return false;,
@@ -577,14 +577,14 @@ namespace CppCore
          if (!CppCore::equal16 (*px16,  *py16 )) return false;,
          if (!CppCore::equal8  (*px8,   *py8  )) return false;)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XY(x, y, true,
          if (!CppCore::equal128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128))) return false;,
          if (!CppCore::equal64 (*px64,  *py64 )) return false;,
          if (!CppCore::equal32 (*px32,  *py32 )) return false;,
          if (!CppCore::equal16 (*px16,  *py16 )) return false;,
          if (!CppCore::equal8  (*px8,   *py8  )) return false;)
    #else
-      CPPCORE_CHUNK_PROCESS_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XY(x, y, true,
          if (!CppCore::equal64 (*px64,  *py64 )) return false;,
          if (!CppCore::equal32 (*px32,  *py32 )) return false;,
          if (!CppCore::equal16 (*px16,  *py16 )) return false;,
@@ -962,7 +962,7 @@ namespace CppCore
    static INLINE void clone(UINT& x, const UINT& y)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XY(x, y, true,
          CPPCORE_CHUNK_STORE512(UINT, px512, CPPCORE_CHUNK_LOAD512(UINT, py512));,
          CPPCORE_CHUNK_STORE256(UINT, px256, CPPCORE_CHUNK_LOAD256(UINT, py256));,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
@@ -971,7 +971,7 @@ namespace CppCore
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX)
-      CPPCORE_CHUNK_PROCESS256_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XY(x, y, true,
          CPPCORE_CHUNK_STORE256(UINT, px256, CPPCORE_CHUNK_LOAD256(UINT, py256));,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
@@ -979,14 +979,14 @@ namespace CppCore
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2) || defined(CPPCORE_CPUFEAT_ARM_NEON)
-      CPPCORE_CHUNK_PROCESS128_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XY(x, y, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
          CppCore::clone32 (*px32, *py32);,
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XY(x, y, true,
          CppCore::clone64(*px64, *py64); ,
          CppCore::clone32(*px32, *py32); ,
          CppCore::clone16(*px16, *py16); ,
@@ -1510,7 +1510,7 @@ namespace CppCore
    static INLINE void not_(const UINT& x, UINT& y)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XY(x, y, true,
          CPPCORE_CHUNK_STORE512(UINT, py512, CppCore::not512(CPPCORE_CHUNK_LOAD512(UINT, px512))); ,
          CPPCORE_CHUNK_STORE256(UINT, py256, CppCore::not256(CPPCORE_CHUNK_LOAD256(UINT, px256)));,
          CPPCORE_CHUNK_STORE128(UINT, py128, CppCore::not128(CPPCORE_CHUNK_LOAD128(UINT, px128)));,
@@ -1519,7 +1519,7 @@ namespace CppCore
          *py16  = CppCore::not16 (*px16); ,
          *py8   = CppCore::not8  (*px8);)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XY(x, y, true,
          CPPCORE_CHUNK_STORE256(UINT, py256, CppCore::not256(CPPCORE_CHUNK_LOAD256(UINT, px256)));,
          CPPCORE_CHUNK_STORE128(UINT, py128, CppCore::not128(CPPCORE_CHUNK_LOAD128(UINT, px128)));,
          *py64  = CppCore::not64 (*px64); ,
@@ -1527,14 +1527,14 @@ namespace CppCore
          *py16  = CppCore::not16 (*px16); ,
          *py8   = CppCore::not8  (*px8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XY(x, y, true,
          CPPCORE_CHUNK_STORE128(UINT, py128, CppCore::not128(CPPCORE_CHUNK_LOAD128(UINT, px128)));,
          *py64  = CppCore::not64 (*px64); ,
          *py32  = CppCore::not32 (*px32); ,
          *py16  = CppCore::not16 (*px16); ,
          *py8   = CppCore::not8  (*px8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XY(x, y, true,
          *py64  = CppCore::not64(*px64); ,
          *py32  = CppCore::not32(*px32); ,
          *py16  = CppCore::not16(*px16); ,
