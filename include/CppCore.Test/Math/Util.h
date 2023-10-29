@@ -1208,6 +1208,23 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
+      INLINE static bool clmul128to256()
+      {
+         uint64_t a[2];
+         uint64_t b[2];
+         uint64_t r[4];
+
+         a[0] = 0x5b477565726f6e5dULL; a[1] = 0x63746f725d53475dULL;
+         b[0] = 0x4869285368617929ULL; b[1] = 0x7b5b546573745665ULL;
+         CppCore::clmul(a, b, r);
+         if (r[0] != 0xDD4DF8F142E15215ULL) return false;
+         if (r[1] != 0xD10EB19DC031B4CEULL) return false;
+         if (r[2] != 0x3FFA51F634880B47ULL) return false;
+         if (r[3] != 0x1127A41FDF07AF62ULL) return false;
+
+         return true;
+      }
+
       INLINE static bool todouble()
       {
          // test low ones
@@ -1362,6 +1379,7 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(CLMUL64)          { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul64()); }
       TEST_METHOD(CLMUL64TO128)     { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul64to128()); }
       TEST_METHOD(CLMUL128)         { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul128()); }
+      TEST_METHOD(CLMUL128TO256)    { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul128to256()); }
       TEST_METHOD(TODOUBLE)         { Assert::AreEqual(true, CppCore::Test::Math::Util::todouble()); }
       TEST_METHOD(GCD32)            { Assert::AreEqual(true, CppCore::Test::Math::Util::gcd32()); }
       TEST_METHOD(GCD64)            { Assert::AreEqual(true, CppCore::Test::Math::Util::gcd64()); }
