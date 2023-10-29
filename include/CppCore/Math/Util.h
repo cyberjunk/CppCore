@@ -1126,23 +1126,43 @@ namespace CppCore
    /// <summary>
    /// Carry-less Multiplication
    /// </summary>
-   template<typename UINT>
-   INLINE static void clmul(const UINT& a, const UINT& b, UINT& r)
+   template<typename UINT1, typename UINT2, typename UINT3>
+   INLINE static void clmul(const UINT1& a, const UINT2& b, UINT3& r)
    {
-      static_assert(sizeof(UINT) % 4 == 0);
+      static_assert(sizeof(UINT1) % 4 == 0);
+      static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT3) % 4 == 0);
    #if defined(CPPCORE_CPUFEAT_PCLMUL)
-      if constexpr (sizeof(UINT) == 8)
+      if constexpr (sizeof(UINT1) == 16 && sizeof(UINT2) == 16 && sizeof(UINT3) == 16)
+      {
+         __m128i xmma = _mm_loadu_si128((__m128i*)&a);
+         __m128i xmmb = _mm_loadu_si128((__m128i*)&b);
+         __m128i xmm0 = _mm_clmulepi64_si128(xmma, xmmb, 0x00); // bl x al
+         __m128i xmm1 = _mm_clmulepi64_si128(xmma, xmmb, 0x10); // bh x al
+         __m128i xmm2 = _mm_clmulepi64_si128(xmma, xmmb, 0x01); // bl x ah
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm1, 8));
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm2, 8));
+         _mm_storeu_si128((__m128i*)&r, xmm0);
+      }
+      if constexpr (sizeof(UINT1) == 8 && sizeof(UINT2) == 8 && sizeof(UINT3) == 16)
+         _mm_storeu_si128((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_loadl_epi64((__m128i*)&a),
+            _mm_loadl_epi64((__m128i*)&b), 0x00));
+      else if constexpr (sizeof(UINT1) == 8 && sizeof(UINT2) == 8 && sizeof(UINT3) == 8)
          _mm_storel_epi64((__m128i*)&r, _mm_clmulepi64_si128(
             _mm_loadl_epi64((__m128i*)&a), 
             _mm_loadl_epi64((__m128i*)&b), 0x00));
-      else if constexpr (sizeof(UINT) == 4)
+      else if constexpr (sizeof(UINT1) == 4 && sizeof(UINT2) == 4 && sizeof(UINT3) == 4)
          *(uint32_t*)&r = _mm_cvtsi128_si32(_mm_clmulepi64_si128(
             _mm_cvtsi32_si128(*(uint32_t*)&a),
             _mm_cvtsi32_si128(*(uint32_t*)&b), 0x00));
       else 
    #endif
       {
-         UINT ta, tb;
+         UINT3 ta;
+         UINT2 tb;
+         if constexpr (sizeof(a) < sizeof(r))
+            CppCore::clear(ta);
          CppCore::clone(ta, a);
          CppCore::clone(tb, b);
          CppCore::clear(r);
