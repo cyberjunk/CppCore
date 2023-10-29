@@ -1193,6 +1193,10 @@ namespace CppCore
          _mm_storel_epi64((__m128i*)&r, _mm_clmulepi64_si128(
             _mm_loadl_epi64((__m128i*)&a), 
             _mm_loadl_epi64((__m128i*)&b), 0x00));
+      else if constexpr (sizeof(UINT1) == 4 && sizeof(UINT2) == 4 && sizeof(UINT3) == 8)
+         _mm_storel_epi64((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_cvtsi32_si128(*(uint32_t*)&a),
+            _mm_cvtsi32_si128(*(uint32_t*)&b), 0x00));
       else if constexpr (sizeof(UINT1) == 4 && sizeof(UINT2) == 4 && sizeof(UINT3) == 4)
          *(uint32_t*)&r = _mm_cvtsi128_si32(_mm_clmulepi64_si128(
             _mm_cvtsi32_si128(*(uint32_t*)&a),
