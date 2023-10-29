@@ -522,6 +522,10 @@ namespace CppCore
       c = _addcarryx_u32(c, a, b, &r);
    #elif defined(CPPCORE_CPU_X86ORX64)
       c = _addcarry_u32(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addc)
+      unsigned int t;
+      r = __builtin_addc(a, b, c, &t);
+      c = (uint8_t)t;
    #else
       // from Hacker's Delight
       r = a + b + c;
@@ -550,10 +554,12 @@ namespace CppCore
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_ADX)
       c = _addcarryx_u64(c, a, b, (unsigned long long*)&r);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
-      c = _addcarry_u64(c, a, b, &r);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_ia32_addcarry_u64)
-      c = __builtin_ia32_addcarry_u64(c, a, b, (unsigned long long*)&r);
+   #elif defined(CPPCORE_CPU_X64)
+      c = _addcarry_u64(c, a, b, (unsigned long long*)&r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcll)
+      unsigned long long t;
+      r = __builtin_addcll(a, b, c, &t);
+      c = (uint8_t)t;
    #else
       // from Hacker's Delight
       r = a + b + c;
@@ -781,6 +787,10 @@ namespace CppCore
    {
    #if defined(CPPCORE_CPU_X86ORX64)
       c = _subborrow_u32(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subc)
+      unsigned int t;
+      r = __builtin_subc(a, b, c, &t);
+      c = (uint8_t)t;
    #else
       // from Hacker's Delight
       r = a - b - c;
@@ -807,10 +817,12 @@ namespace CppCore
    /// </summary>
    INLINE static void subborrow64(uint64_t a, uint64_t b, uint64_t& r, uint8_t& c)
    {
-   #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
-      c = _subborrow_u64(c, a, b, &r);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_ia32_subborrow_u64)
-      c = __builtin_ia32_subborrow_u64(c, a, b, (unsigned long long*)&r);
+   #if defined(CPPCORE_CPU_X64)
+      c = _subborrow_u64(c, a, b, (unsigned long long*)&r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcll)
+      unsigned long long t;
+      r = __builtin_subcll(a, b, c, &t);
+      c = (uint8_t)t;
    #else
       // from Hacker's Delight
       r = a - b - c;
