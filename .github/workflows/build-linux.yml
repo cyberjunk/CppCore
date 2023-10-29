@@ -73,6 +73,10 @@ jobs:
           echo "TARGET=arm-linux-gnueabihf" >> $GITHUB_ENV; \
         fi
 
+    # Clang Version
+    - name: Clang Version
+      run: clang --version
+
     # Build
     - name: Build
       run: |

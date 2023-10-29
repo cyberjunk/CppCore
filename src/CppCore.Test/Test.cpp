@@ -367,6 +367,12 @@ int main()
    TEST(CppCore::Test::Math::Util::ismersenne32,    "ismersenne32:     ", std::endl);
    TEST(CppCore::Test::Math::Util::ismersenne64,    "ismersenne64:     ", std::endl);
    TEST(CppCore::Test::Math::Util::ismersenne128,   "ismersenne128:    ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul32,         "clmul32:          ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul32to64,     "clmul32to64:      ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul64,         "clmul64:          ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul64to128,    "clmul64to128:     ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul128,        "clmul128:         ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul128to256,   "clmul128to256:    ", std::endl);
    TEST(CppCore::Test::Math::Util::todouble,        "todouble:         ", std::endl);
    TEST(CppCore::Test::Math::Util::gcd32,           "gcd32:            ", std::endl);
    TEST(CppCore::Test::Math::Util::gcd64,           "gcd64:            ", std::endl);

@@ -1120,6 +1120,93 @@ namespace CppCore
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // CLMUL
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Carry-less Multiplication (Generic Version).
+   /// Accepts any integer sizes that are multiples of four.
+   /// </summary>
+   template<typename UINT1, typename UINT2, typename UINT3>
+   INLINE static void clmul_generic(const UINT1& a, const UINT2& b, UINT3& r)
+   {
+      static_assert(sizeof(UINT1) % 4 == 0);
+      static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT3) % 4 == 0);
+      UINT3 ta;
+      UINT2 tb;
+      if constexpr (sizeof(a) < sizeof(ta)) {
+         CppCore::clear(ta);
+         CppCore::clone(*(UINT1*)&ta, a);
+      }
+      else CppCore::clone(ta, *(UINT3*)&a);
+      CppCore::clone(tb, b);
+      CppCore::clear(r);
+      while (!CppCore::testzero(tb))
+      {
+         if (CppCore::bittest(tb, 0))
+            CppCore::xor_(r, ta, r);
+         CppCore::shr(tb, tb, 1);
+         CppCore::shl(ta, ta, 1);
+      }
+   }
+
+   /// <summary>
+   /// Carry-less Multiplication (Optimized Version).
+   /// Uses CLMUL instruction if available and applicable else uses generic version.
+   /// </summary>
+   template<typename UINT1, typename UINT2, typename UINT3>
+   INLINE static void clmul(const UINT1& a, const UINT2& b, UINT3& r)
+   {
+   #if defined(CPPCORE_CPUFEAT_PCLMUL)
+      if constexpr (sizeof(UINT1) == 16 && sizeof(UINT2) == 16 && sizeof(UINT3) == 32)
+      {
+         __m128i xmma = _mm_loadu_si128((__m128i*)&a);
+         __m128i xmmb = _mm_loadu_si128((__m128i*)&b);
+         __m128i xmm0 = _mm_clmulepi64_si128(xmma, xmmb, 0x00); // l x l
+         __m128i xmm1 = _mm_clmulepi64_si128(xmma, xmmb, 0x10); // h x l
+         __m128i xmm2 = _mm_clmulepi64_si128(xmma, xmmb, 0x01); // l x h
+         __m128i xmm3 = _mm_clmulepi64_si128(xmma, xmmb, 0x11); // h x h
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm1, 8));
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm2, 8));
+         _mm_storeu_si128((__m128i*)&r, xmm0);
+         xmm3 = _mm_xor_si128(xmm3, _mm_srli_si128(xmm1, 8));
+         xmm3 = _mm_xor_si128(xmm3, _mm_srli_si128(xmm2, 8));
+         _mm_storeu_si128(((__m128i*)&r)+1, xmm3);
+      }
+      else if constexpr (sizeof(UINT1) == 16 && sizeof(UINT2) == 16 && sizeof(UINT3) == 16)
+      {
+         __m128i xmma = _mm_loadu_si128((__m128i*)&a);
+         __m128i xmmb = _mm_loadu_si128((__m128i*)&b);
+         __m128i xmm0 = _mm_clmulepi64_si128(xmma, xmmb, 0x00); // l x l
+         __m128i xmm1 = _mm_clmulepi64_si128(xmma, xmmb, 0x10); // h x l
+         __m128i xmm2 = _mm_clmulepi64_si128(xmma, xmmb, 0x01); // l x h
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm1, 8));
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm2, 8));
+         _mm_storeu_si128((__m128i*)&r, xmm0);
+      }
+      else if constexpr (sizeof(UINT1) == 8 && sizeof(UINT2) == 8 && sizeof(UINT3) == 16)
+         _mm_storeu_si128((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_loadl_epi64((__m128i*)&a),
+            _mm_loadl_epi64((__m128i*)&b), 0x00));
+      else if constexpr (sizeof(UINT1) == 8 && sizeof(UINT2) == 8 && sizeof(UINT3) == 8)
+         _mm_storel_epi64((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_loadl_epi64((__m128i*)&a), 
+            _mm_loadl_epi64((__m128i*)&b), 0x00));
+      else if constexpr (sizeof(UINT1) == 4 && sizeof(UINT2) == 4 && sizeof(UINT3) == 8)
+         _mm_storel_epi64((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_cvtsi32_si128(*(uint32_t*)&a),
+            _mm_cvtsi32_si128(*(uint32_t*)&b), 0x00));
+      else if constexpr (sizeof(UINT1) == 4 && sizeof(UINT2) == 4 && sizeof(UINT3) == 4)
+         *(uint32_t*)&r = _mm_cvtsi128_si32(_mm_clmulepi64_si128(
+            _mm_cvtsi32_si128(*(uint32_t*)&a),
+            _mm_cvtsi32_si128(*(uint32_t*)&b), 0x00));
+      else
+   #endif
+         CppCore::clmul_generic(a, b, r);
+   }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // INTEGER TO FLOAT CONVERSION
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
