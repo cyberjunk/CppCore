@@ -555,7 +555,7 @@ namespace CppCore
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_ADX)
       c = _addcarryx_u64(c, a, b, (unsigned long long*)&r);
    #elif defined(CPPCORE_CPU_X64)
-      c = _addcarry_u64(c, a, b, &r);
+      c = _addcarry_u64(c, a, b, (unsigned long long*)&r);
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcll)
       unsigned long long t;
       r = __builtin_addcll(a, b, c, &t);
@@ -818,8 +818,8 @@ namespace CppCore
    INLINE static void subborrow64(uint64_t a, uint64_t b, uint64_t& r, uint8_t& c)
    {
    #if defined(CPPCORE_CPU_X64)
-      c = _subborrow_u64(c, a, b, &r);
-   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcll)
+      c = _subborrow_u64(c, a, b, (unsigned long long*)&r);
+   #elif defined(CPPCORE_COMPILER_CLANG)
       unsigned long long t;
       r = __builtin_subcll(a, b, c, &t);
       c = (uint8_t)t;
