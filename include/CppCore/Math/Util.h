@@ -819,7 +819,7 @@ namespace CppCore
    {
    #if defined(CPPCORE_CPU_X64)
       c = _subborrow_u64(c, a, b, (unsigned long long*)&r);
-   #elif defined(CPPCORE_COMPILER_CLANG)
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcll)
       unsigned long long t;
       r = __builtin_subcll(a, b, c, &t);
       c = (uint8_t)t;
