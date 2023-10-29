@@ -958,29 +958,29 @@ namespace CppCore
    /// <summary>
    /// Sets x = y
    /// </summary>
-   template<typename UINT1, typename UINT2>
-   static INLINE void clone(UINT1& x, const UINT2& y)
+   template<typename UINT>
+   static INLINE void clone(UINT& x, const UINT& y)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
       CPPCORE_CHUNK_PROCESS512_XY(x, y, true,
-         CPPCORE_CHUNK_STORE512(UINT1, px512, CPPCORE_CHUNK_LOAD512(UINT2, py512));,
-         CPPCORE_CHUNK_STORE256(UINT1, px256, CPPCORE_CHUNK_LOAD256(UINT2, py256));,
-         CPPCORE_CHUNK_STORE128(UINT1, px128, CPPCORE_CHUNK_LOAD128(UINT2, py128));,
+         CPPCORE_CHUNK_STORE512(UINT, px512, CPPCORE_CHUNK_LOAD512(UINT, py512));,
+         CPPCORE_CHUNK_STORE256(UINT, px256, CPPCORE_CHUNK_LOAD256(UINT, py256));,
+         CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
          CppCore::clone32 (*px32, *py32);,
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX)
       CPPCORE_CHUNK_PROCESS256_XY(x, y, true,
-         CPPCORE_CHUNK_STORE256(UINT1, px256, CPPCORE_CHUNK_LOAD256(UINT2, py256));,
-         CPPCORE_CHUNK_STORE128(UINT1, px128, CPPCORE_CHUNK_LOAD128(UINT2, py128));,
+         CPPCORE_CHUNK_STORE256(UINT, px256, CPPCORE_CHUNK_LOAD256(UINT, py256));,
+         CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
          CppCore::clone32 (*px32, *py32);,
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2) || defined(CPPCORE_CPUFEAT_ARM_NEON)
       CPPCORE_CHUNK_PROCESS128_XY(x, y, true,
-         CPPCORE_CHUNK_STORE128(UINT1, px128, CPPCORE_CHUNK_LOAD128(UINT2, py128));,
+         CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
          CppCore::clone32 (*px32, *py32);,
          CppCore::clone16 (*px16, *py16);,
