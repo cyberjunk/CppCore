@@ -1020,12 +1020,8 @@ namespace CppCore
    }
 
    /// <summary>
-   /// Unsigned 64-Bit * Unsigned 64-Bit = Unsigned 128 Bit.
+   /// Unsigned 64-Bit * Unsigned 64-Bit = Unsigned 128 Bit. Uses MULX if enabled.
    /// </summary>
-   /// <remarks>
-   /// Custom Solution From:
-   /// https://www.codeproject.com/Tips/618570/UInt-Multiplication-Squaring
-   /// </remarks>
    INLINE static void umul128(uint64_t a, uint64_t b, uint64_t& l, uint64_t& h)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_BMI2)
@@ -1033,23 +1029,29 @@ namespace CppCore
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       l = _umul128(a, b, &h);
    #else
-      uint64_t al = (a & 0xffffffff);
-      uint64_t bl = (b & 0xffffffff);
-      uint64_t t = (al * bl);
-      uint64_t w3 = (t & 0xffffffff);
-      uint64_t k = (t >> 32);
+      uint64_t al = (uint32_t)a;
+      uint64_t ah = a >> 32;
+      uint64_t bl = (uint32_t)b;
+      uint64_t bh = b >> 32;
 
-      a >>= 32;
-      t = (a * bl) + k;
-      k = (t & 0xffffffff);
-      uint64_t w1 = (t >> 32);
+      uint64_t p1 = al * bl;
+      uint64_t p2 = al * bh;
+      uint64_t p3 = ah * bl;
+      uint64_t p4 = ah * bh;
 
-      b >>= 32;
-      t = (al * b) + k;
-      k = (t >> 32);
+      uint64_t t;
 
-      l = (t << 32) + w3;
-      h = (a * b) + w1 + k;
+      l = p1 & 0xffffffff;
+      h = p4;
+
+      t = p2 + (p1 >> 32);
+
+      h += (t >> 32);
+
+      t = p3 + (t & 0xffffffff);
+
+      l |= (t << 32);
+      h += (t >> 32);
    #endif
    }
 
