@@ -1020,7 +1020,8 @@ namespace CppCore
    }
 
    /// <summary>
-   /// Unsigned 64-Bit * Unsigned 64-Bit = Unsigned 128 Bit. Uses MULX if enabled.
+   /// Unsigned 64-Bit * Unsigned 64-Bit = Unsigned 128 Bit. 
+   /// Uses single MULX or MUL instruction on Intel 64-Bit.
    /// </summary>
    INLINE static void umul128(uint64_t a, uint64_t b, uint64_t& l, uint64_t& h)
    {
@@ -1028,6 +1029,8 @@ namespace CppCore
       l = _mulx_u64(a, b, (unsigned long long*)&h);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       l = _umul128(a, b, &h);
+   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
+      __asm("MULQ %4" : "=a" (l), "=d" (h) : "0" (a), "1" (b), "r" (b));
    #else
       uint64_t al = (uint32_t)a;
       uint64_t ah = a >> 32;
@@ -1038,16 +1041,13 @@ namespace CppCore
       uint64_t p2 = al * bh;
       uint64_t p3 = ah * bl;
       uint64_t p4 = ah * bh;
-
       uint64_t t;
 
       l = p1 & 0xffffffff;
       h = p4;
-
+      
       t = p2 + (p1 >> 32);
-
       h += (t >> 32);
-
       t = p3 + (t & 0xffffffff);
 
       l |= (t << 32);
