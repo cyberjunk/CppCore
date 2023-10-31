@@ -1020,36 +1020,42 @@ namespace CppCore
    }
 
    /// <summary>
-   /// Unsigned 64-Bit * Unsigned 64-Bit = Unsigned 128 Bit.
+   /// Unsigned 64-Bit * Unsigned 64-Bit = Unsigned 128 Bit. 
+   /// Uses single MULX or MUL instruction on Intel 64-Bit.
    /// </summary>
-   /// <remarks>
-   /// Custom Solution From:
-   /// https://www.codeproject.com/Tips/618570/UInt-Multiplication-Squaring
-   /// </remarks>
    INLINE static void umul128(uint64_t a, uint64_t b, uint64_t& l, uint64_t& h)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_BMI2)
       l = _mulx_u64(a, b, (unsigned long long*)&h);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       l = _umul128(a, b, &h);
+   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
+      __asm("MULQ %4" : "=a" (l), "=d" (h) : "0" (a), "1" (b), "r" (b));
+   #elif defined(CPPCORE_COMPILER_CLANG) && defined(__SIZEOF_INT128__)
+      __uint128_t t = (__uint128_t)a * b;
+      l = (uint64_t)t;
+      h = (uint64_t)(t >> 64);
    #else
-      uint64_t al = (a & 0xffffffff);
-      uint64_t bl = (b & 0xffffffff);
-      uint64_t t = (al * bl);
-      uint64_t w3 = (t & 0xffffffff);
-      uint64_t k = (t >> 32);
+      uint32_t al = (uint32_t)a;
+      uint32_t ah = (uint32_t)(a >> 32);
+      uint32_t bl = (uint32_t)b;
+      uint32_t bh = (uint32_t)(b >> 32);
 
-      a >>= 32;
-      t = (a * bl) + k;
-      k = (t & 0xffffffff);
-      uint64_t w1 = (t >> 32);
+      uint64_t p1 = (uint64_t)al * bl;
+      uint64_t p2 = (uint64_t)al * bh;
+      uint64_t p3 = (uint64_t)ah * bl;
+      uint64_t p4 = (uint64_t)ah * bh;
+      uint64_t t;
 
-      b >>= 32;
-      t = (al * b) + k;
-      k = (t >> 32);
+      l = (uint32_t)p1;
+      h = p4;
+      
+      t = p2 + (p1 >> 32);
+      h += (t >> 32);
+      t = p3 + (uint32_t)t;
 
-      l = (t << 32) + w3;
-      h = (a * b) + w1 + k;
+      l |= (t << 32);
+      h += (t >> 32);
    #endif
    }
 
