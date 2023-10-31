@@ -1036,23 +1036,23 @@ namespace CppCore
       l = (uint64_t)t;
       h = (uint64_t)(t >> 64);
    #else
-      uint64_t al = (uint32_t)a;
-      uint64_t ah = a >> 32;
-      uint64_t bl = (uint32_t)b;
-      uint64_t bh = b >> 32;
+      uint32_t al = (uint32_t)a;
+      uint32_t ah = (uint32_t)(a >> 32);
+      uint32_t bl = (uint32_t)b;
+      uint32_t bh = (uint32_t)(b >> 32);
 
-      uint64_t p1 = al * bl;
-      uint64_t p2 = al * bh;
-      uint64_t p3 = ah * bl;
-      uint64_t p4 = ah * bh;
+      uint64_t p1 = (uint64_t)al * bl;
+      uint64_t p2 = (uint64_t)al * bh;
+      uint64_t p3 = (uint64_t)ah * bl;
+      uint64_t p4 = (uint64_t)ah * bh;
       uint64_t t;
 
-      l = p1 & 0xffffffff;
+      l = (uint32_t)p1;
       h = p4;
       
       t = p2 + (p1 >> 32);
       h += (t >> 32);
-      t = p3 + (t & 0xffffffff);
+      t = p3 + (uint32_t)t;
 
       l |= (t << 32);
       h += (t >> 32);
