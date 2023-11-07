@@ -3042,7 +3042,11 @@ namespace CppCore
    /// </summary>
    static INLINE void bitswap32(uint32_t& x)
    {
-   #if defined(CPPCORE_CPU_ARM)
+   #if defined(CPPCORE_CPU_ARM64)
+      uint64_t x64 = x;
+      __asm__("RBIT %0, %1" : "=r" (x64) : "r" (x64));
+      x = (uint32_t)(x64 >> 32);
+   #elif defined(CPPCORE_CPU_ARM)
       __asm__("RBIT %0, %1" : "=r" (x) : "r" (x));
    #else
       x = ((x >> 1) & 0x55555555U) | ((x & 0x55555555U) << 1);
