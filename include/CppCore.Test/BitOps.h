@@ -1209,6 +1209,30 @@ namespace CppCore { namespace Test
          return true;
       }
 
+      INLINE static bool bitswap32()
+      {
+         uint32_t x;
+         x = 0x00000000U; CppCore::bitswap32(x); if (x != 0x00000000U) return false;
+         x = 0x00000001U; CppCore::bitswap32(x); if (x != 0x80000000U) return false;
+         x = 0x80000000U; CppCore::bitswap32(x); if (x != 0x00000001U) return false;
+         x = 0xFFFFFFFFU; CppCore::bitswap32(x); if (x != 0xFFFFFFFFU) return false;
+         x = 0x8C8C8C8CU; CppCore::bitswap32(x); if (x != 0x31313131U) return false;
+         x = 0x9A3ADE1AU; CppCore::bitswap32(x); if (x != 0x587B5C59U) return false;
+         return true;
+      }
+
+      INLINE static bool bitswap64()
+      {
+         uint64_t x;
+         x = 0x0000000000000000ULL; CppCore::bitswap64(x); if (x != 0x0000000000000000ULL) return false;
+         x = 0x0000000000000001ULL; CppCore::bitswap64(x); if (x != 0x8000000000000000ULL) return false;
+         x = 0x8000000000000000ULL; CppCore::bitswap64(x); if (x != 0x0000000000000001ULL) return false;
+         x = 0xFFFFFFFFFFFFFFFFULL; CppCore::bitswap64(x); if (x != 0xFFFFFFFFFFFFFFFFULL) return false;
+         x = 0x8C8C8C8C8C8C8C8CULL; CppCore::bitswap64(x); if (x != 0x3131313131313131ULL) return false;
+         x = 0x9A3ADE1AD7B72D2EULL; CppCore::bitswap64(x); if (x != 0x74B4EDEB587B5C59ULL) return false;
+         return true;
+      }
+
       ////////////////////////////////////////////////////
 
       INLINE static bool zbyteidxl32()
@@ -1983,6 +2007,8 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(STORER64)         { Assert::AreEqual(true, CppCore::Test::BitOps::storer64()); }
       TEST_METHOD(STORER128)        { Assert::AreEqual(true, CppCore::Test::BitOps::storer128()); }
       TEST_METHOD(BITSWAP8)         { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap8()); }
+      TEST_METHOD(BITSWAP32)        { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap32()); }
+      TEST_METHOD(BITSWAP64)        { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap64()); }
 
       TEST_METHOD(ZBYTEIDXL32)      { Assert::AreEqual(true, CppCore::Test::BitOps::zbyteidxl32()); }
       TEST_METHOD(ZBYTEIDXL64)      { Assert::AreEqual(true, CppCore::Test::BitOps::zbyteidxl64()); }

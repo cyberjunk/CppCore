@@ -3037,6 +3037,40 @@ namespace CppCore
    #endif
    }
 
+   /// <summary>
+   /// Reverse Bits in 32-Bit Integer
+   /// </summary>
+   static INLINE void bitswap32(uint32_t& x)
+   {
+   #if defined(CPPCORE_CPU_ARMORARM64)
+      __asm__("rbit %0, %1" : "=r" (x) : "r" (x));
+   #else
+      x = ((x >> 1) & 0x55555555U) | ((x & 0x55555555U) << 1);
+      x = ((x >> 2) & 0x33333333U) | ((x & 0x33333333U) << 2);
+      x = ((x >> 4) & 0x0F0F0F0FU) | ((x & 0x0F0F0F0FU) << 4);
+      x = CppCore::byteswap32(x); // BSWAP on INTEL
+   #endif
+   }
+
+   /// <summary>
+   /// Reverse Bits in 64-Bit Integer
+   /// </summary>
+   static INLINE void bitswap64(uint64_t& x)
+   {
+   #if defined(CPPCORE_CPU_ARMORARM64)
+      uint32_t xl = (uint32_t)(x);
+      uint32_t xh = (uint32_t)(x >> 32);
+      CppCore::bitswap32(xl);
+      CppCore::bitswap32(xh);
+      x = ((uint64_t)xl << 32) | (uint64_t)xh;
+   #else
+      x = ((x >>  1) & 0x5555555555555555ULL) | ((x & 0x5555555555555555ULL) << 1);
+      x = ((x >>  2) & 0x3333333333333333ULL) | ((x & 0x3333333333333333ULL) << 2);
+      x = ((x >>  4) & 0x0F0F0F0F0F0F0F0FULL) | ((x & 0x0F0F0F0F0F0F0F0FULL) << 4);
+      x = CppCore::byteswap64(x); // BSWAP on INTEL
+#endif
+   }
+
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // MOVBE: REVERSE LOAD
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
