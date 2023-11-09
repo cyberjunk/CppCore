@@ -3077,6 +3077,31 @@ namespace CppCore
 #endif
    }
 
+#if defined(CPPCORE_CPUFEAT_SSSE3)
+   /// <summary>
+   /// Reverse Bits in 128-Bit Integer.
+   /// Requires SSSE3.
+   /// </summary>
+   /// <remarks>
+   /// From https://www.intel.com/content/dam/develop/external/us/en/documents/clmul-wp-rev-2-02-2014-04-20.pdf
+   /// </remarks>
+   static INLINE void bitswap128(__m128i& x)
+   {
+      __m128i tmp1, tmp2;
+      const __m128i AND_MASK = _mm_set_epi32(0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f);
+      const __m128i LOWER_MASK = _mm_set_epi32(0x0f070b03, 0x0d050901, 0x0e060a02, 0x0c040800);
+      const __m128i HIGHER_MASK = _mm_set_epi32(0xf070b030, 0xd0509010, 0xe060a020, 0xc0408000);
+      const __m128i BSWAP_MASK = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+      tmp2 = _mm_srli_epi16(x, 4);
+      tmp1 = _mm_and_si128(x, AND_MASK);
+      tmp2 = _mm_and_si128(tmp2, AND_MASK);
+      tmp1 = _mm_shuffle_epi8(HIGHER_MASK, tmp1);
+      tmp2 = _mm_shuffle_epi8(LOWER_MASK, tmp2);
+      tmp1 = _mm_xor_si128(tmp1, tmp2);
+      x = _mm_shuffle_epi8(tmp1, BSWAP_MASK);
+   }
+#endif
+
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // MOVBE: REVERSE LOAD
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
