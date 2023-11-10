@@ -1247,6 +1247,20 @@ namespace CppCore { namespace Test
          return true;
       }
 
+      INLINE static bool bitswap256()
+      {
+      #if defined(CPPCORE_CPUFEAT_AVX2)
+         union { __m256i x; uint64_t x64[4]; };
+         x = _mm256_set_epi64x(0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL); CppCore::bitswap256(x); if (x64[3] != 0x0000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
+         x = _mm256_set_epi64x(0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000001ULL); CppCore::bitswap256(x); if (x64[3] != 0x8000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
+         x = _mm256_set_epi64x(0x8000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL); CppCore::bitswap256(x); if (x64[3] != 0x0000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000001ULL) return false;
+         x = _mm256_set_epi64x(0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL); CppCore::bitswap256(x); if (x64[3] != 0xFFFFFFFFFFFFFFFFULL || x64[2] != 0xFFFFFFFFFFFFFFFFULL || x64[1] != 0xFFFFFFFFFFFFFFFFULL || x64[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
+         x = _mm256_set_epi64x(0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL); CppCore::bitswap256(x); if (x64[3] != 0x3131313131313131ULL || x64[2] != 0x3131313131313131ULL || x64[1] != 0x3131313131313131ULL || x64[0] != 0x3131313131313131ULL) return false;
+         x = _mm256_set_epi64x(0xB1F5AA5A43F27093ULL,0x9A3ADE1AD7B72D2EULL,0x9A3ADE1AD7B72D2EULL,0xB1F5AA5A43F27093ULL); CppCore::bitswap256(x); if (x64[3] != 0xC90E4FC25A55AF8DULL || x64[2] != 0x74B4EDEB587B5C59ULL || x64[1] != 0x74B4EDEB587B5C59ULL || x64[0] != 0xC90E4FC25A55AF8DULL) return false;
+      #endif
+         return true;
+      }
+
       ////////////////////////////////////////////////////
 
       INLINE static bool zbyteidxl32()
@@ -2024,6 +2038,7 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(BITSWAP32)        { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap32()); }
       TEST_METHOD(BITSWAP64)        { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap64()); }
       TEST_METHOD(BITSWAP128)       { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap128()); }
+      TEST_METHOD(BITSWAP256)       { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap256()); }
 
       TEST_METHOD(ZBYTEIDXL32)      { Assert::AreEqual(true, CppCore::Test::BitOps::zbyteidxl32()); }
       TEST_METHOD(ZBYTEIDXL64)      { Assert::AreEqual(true, CppCore::Test::BitOps::zbyteidxl64()); }
