@@ -3137,10 +3137,10 @@ namespace CppCore
    static INLINE void bitswap256(__m256i& x)
    {
       __m256i tmp1, tmp2;
-      const __m256i AND_MASK    = _mm256_set_epi32(
+      const __m256i AND_MASK = _mm256_set_epi32(
          0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,
          0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f);
-      const __m256i LOWER_MASK  = _mm256_set_epi32(
+      const __m256i LOWER_MASK = _mm256_set_epi32(
          0x0f070b03,0x0d050901,0x0e060a02,0x0c040800,
          0x0f070b03,0x0d050901,0x0e060a02,0x0c040800);
       const __m256i HIGHER_MASK = _mm256_set_epi32(
