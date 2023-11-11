@@ -2859,6 +2859,35 @@ namespace CppCore
    #endif
    }
 
+#if defined(CPPCORE_CPUFEAT_SSSE3)
+   /// <summary>
+   /// Swaps byte order in 128-bit unsigned integer.
+   /// Requires SSSE3.
+   /// </summary>
+   static INLINE __m128i byteswap128(__m128i v)
+   {
+      const __m128i BSWAP_MASK = _mm_set_epi8(
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+      return _mm_shuffle_epi8(v, BSWAP_MASK);
+   }
+#endif
+
+#if defined(CPPCORE_CPUFEAT_AVX2)
+   /// <summary>
+   /// Swaps byte order in 256-bit unsigned integer.
+   /// Requires AVX2.
+   /// </summary>
+   static INLINE __m256i byteswap256(__m256i v)
+   {
+      const __m256i BSWAP_MASK = _mm256_set_epi8(
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+      return _mm256_permute4x64_epi64(
+         _mm256_shuffle_epi8(v, BSWAP_MASK), 
+         _MM_SHUFFLE(1, 0, 3, 2));
+   }
+#endif
+
    /// <summary>
    /// Swaps byte order in 16-bit unsigned integer.
    /// </summary>
@@ -3088,17 +3117,15 @@ namespace CppCore
    static INLINE void bitswap128(__m128i& x)
    {
       __m128i tmp1, tmp2;
-      const __m128i AND_MASK    = _mm_set_epi32(0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f);
-      const __m128i LOWER_MASK  = _mm_set_epi32(0x0f070b03, 0x0d050901, 0x0e060a02, 0x0c040800);
-      const __m128i HIGHER_MASK = _mm_set_epi32(0xf070b030, 0xd0509010, 0xe060a020, 0xc0408000);
-      const __m128i BSWAP_MASK  = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+      const __m128i AND_MASK    = _mm_set_epi32(0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f);
+      const __m128i LOWER_MASK  = _mm_set_epi32(0x0f070b03,0x0d050901,0x0e060a02,0x0c040800);
+      const __m128i HIGHER_MASK = _mm_set_epi32(0xf070b030,0xd0509010,0xe060a020,0xc0408000);
       tmp2 = _mm_srli_epi16(x, 4);
       tmp1 = _mm_and_si128(x, AND_MASK);
       tmp2 = _mm_and_si128(tmp2, AND_MASK);
       tmp1 = _mm_shuffle_epi8(HIGHER_MASK, tmp1);
       tmp2 = _mm_shuffle_epi8(LOWER_MASK, tmp2);
-      x = _mm_xor_si128(tmp1, tmp2);
-      x = _mm_shuffle_epi8(x, BSWAP_MASK);
+      x = CppCore::byteswap128(_mm_xor_si128(tmp1, tmp2));
    }
 #endif
 
@@ -3110,18 +3137,21 @@ namespace CppCore
    static INLINE void bitswap256(__m256i& x)
    {
       __m256i tmp1, tmp2;
-      const __m256i AND_MASK    = _mm256_set_epi32(0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f);
-      const __m256i LOWER_MASK  = _mm256_set_epi32(0x0f070b03, 0x0d050901, 0x0e060a02, 0x0c040800, 0x0f070b03, 0x0d050901, 0x0e060a02, 0x0c040800);
-      const __m256i HIGHER_MASK = _mm256_set_epi32(0xf070b030, 0xd0509010, 0xe060a020, 0xc0408000, 0xf070b030, 0xd0509010, 0xe060a020, 0xc0408000);
-      const __m256i BSWAP_MASK  = _mm256_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+      const __m256i AND_MASK    = _mm256_set_epi32(
+         0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,
+         0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f);
+      const __m256i LOWER_MASK  = _mm256_set_epi32(
+         0x0f070b03,0x0d050901,0x0e060a02,0x0c040800,
+         0x0f070b03,0x0d050901,0x0e060a02,0x0c040800);
+      const __m256i HIGHER_MASK = _mm256_set_epi32(
+         0xf070b030,0xd0509010,0xe060a020,0xc0408000,
+         0xf070b030,0xd0509010,0xe060a020,0xc0408000);
       tmp2 = _mm256_srli_epi32(x, 4);
       tmp1 = _mm256_and_si256(x, AND_MASK);
       tmp2 = _mm256_and_si256(tmp2, AND_MASK);
       tmp1 = _mm256_shuffle_epi8(HIGHER_MASK, tmp1);
       tmp2 = _mm256_shuffle_epi8(LOWER_MASK, tmp2);
-      x = _mm256_xor_si256(tmp1, tmp2);
-      x = _mm256_shuffle_epi8(x, BSWAP_MASK);
-      x = _mm256_permute4x64_epi64(x, _MM_SHUFFLE(1, 0, 3, 2));
+      x = CppCore::byteswap256(_mm256_xor_si256(tmp1, tmp2));
    }
 #endif
 
