@@ -3057,52 +3057,54 @@ namespace CppCore
    /// <remarks>
    /// From http://graphics.stanford.edu/~seander/bithacks.html
    /// </remarks>
-   static INLINE void bitswap8(uint8_t& x)
+   static INLINE uint8_t bitswap8(uint8_t x)
    {
    #if defined(CPPCORE_CPU_64BIT)
-      x = (uint8_t)(((x * 0x80200802ULL) & 0x0884422110ULL) * 0x0101010101ULL >> 32);
+      return (uint8_t)(((x * 0x80200802ULL) & 0x0884422110ULL) * 0x0101010101ULL >> 32);
    #else
-      x = (uint8_t)(((x * 0x0802LU & 0x22110LU) | (x * 0x8020LU & 0x88440LU)) * 0x10101LU >> 16);
+      return (uint8_t)(((x * 0x0802LU & 0x22110LU) | (x * 0x8020LU & 0x88440LU)) * 0x10101LU >> 16);
    #endif
    }
 
    /// <summary>
    /// Reverse Bits in 32-Bit Integer
    /// </summary>
-   static INLINE void bitswap32(uint32_t& x)
+   static INLINE uint32_t bitswap32(uint32_t x)
    {
    #if defined(CPPCORE_CPU_ARM64)
       uint64_t x64 = x;
       __asm__("RBIT %0, %1" : "=r" (x64) : "r" (x64));
-      x = (uint32_t)(x64 >> 32);
+      return (uint32_t)(x64 >> 32);
    #elif defined(CPPCORE_CPU_ARM)
       __asm__("RBIT %0, %1" : "=r" (x) : "r" (x));
+      return x;
    #else
       x = ((x >> 1) & 0x55555555U) | ((x & 0x55555555U) << 1);
       x = ((x >> 2) & 0x33333333U) | ((x & 0x33333333U) << 2);
       x = ((x >> 4) & 0x0F0F0F0FU) | ((x & 0x0F0F0F0FU) << 4);
-      x = CppCore::byteswap32(x); // BSWAP on INTEL
+      return CppCore::byteswap32(x); // BSWAP on INTEL
    #endif
    }
 
    /// <summary>
    /// Reverse Bits in 64-Bit Integer
    /// </summary>
-   static INLINE void bitswap64(uint64_t& x)
+   static INLINE uint64_t bitswap64(uint64_t x)
    {
    #if defined(CPPCORE_CPU_ARM64)
       __asm__("RBIT %0, %1" : "=r" (x) : "r" (x));
+      return x;
    #elif defined(CPPCORE_CPU_ARM)
       uint32_t xl = (uint32_t)(x);
       uint32_t xh = (uint32_t)(x >> 32);
-      CppCore::bitswap32(xl);
-      CppCore::bitswap32(xh);
-      x = ((uint64_t)xl << 32) | (uint64_t)xh;
+      xl = CppCore::bitswap32(xl);
+      xh = CppCore::bitswap32(xh);
+      return ((uint64_t)xl << 32) | (uint64_t)xh;
    #else
       x = ((x >>  1) & 0x5555555555555555ULL) | ((x & 0x5555555555555555ULL) << 1);
       x = ((x >>  2) & 0x3333333333333333ULL) | ((x & 0x3333333333333333ULL) << 2);
       x = ((x >>  4) & 0x0F0F0F0F0F0F0F0FULL) | ((x & 0x0F0F0F0F0F0F0F0FULL) << 4);
-      x = CppCore::byteswap64(x); // BSWAP on INTEL
+      return CppCore::byteswap64(x); // BSWAP on INTEL
 #endif
    }
 
@@ -3114,7 +3116,7 @@ namespace CppCore
    /// <remarks>
    /// From https://www.intel.com/content/dam/develop/external/us/en/documents/clmul-wp-rev-2-02-2014-04-20.pdf
    /// </remarks>
-   static INLINE void bitswap128(__m128i& x)
+   static INLINE __m128i bitswap128(__m128i x)
    {
       __m128i tmp1, tmp2;
       const __m128i AND_MASK    = _mm_set_epi32(0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f);
@@ -3125,7 +3127,7 @@ namespace CppCore
       tmp2 = _mm_and_si128(tmp2, AND_MASK);
       tmp1 = _mm_shuffle_epi8(HIGHER_MASK, tmp1);
       tmp2 = _mm_shuffle_epi8(LOWER_MASK, tmp2);
-      x = CppCore::byteswap128(_mm_xor_si128(tmp1, tmp2));
+      return CppCore::byteswap128(_mm_xor_si128(tmp1, tmp2));
    }
 #endif
 
@@ -3134,7 +3136,7 @@ namespace CppCore
    /// Reverse Bits in 256-Bit Integer.
    /// Requires AVX2.
    /// </summary>
-   static INLINE void bitswap256(__m256i& x)
+   static INLINE __m256i bitswap256(__m256i x)
    {
       __m256i tmp1, tmp2;
       const __m256i AND_MASK = _mm256_set_epi32(
@@ -3151,7 +3153,7 @@ namespace CppCore
       tmp2 = _mm256_and_si256(tmp2, AND_MASK);
       tmp1 = _mm256_shuffle_epi8(HIGHER_MASK, tmp1);
       tmp2 = _mm256_shuffle_epi8(LOWER_MASK, tmp2);
-      x = CppCore::byteswap256(_mm256_xor_si256(tmp1, tmp2));
+      return CppCore::byteswap256(_mm256_xor_si256(tmp1, tmp2));
    }
 #endif
 

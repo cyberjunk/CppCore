@@ -1201,35 +1201,35 @@ namespace CppCore { namespace Test
       INLINE static bool bitswap8()
       {
          uint8_t x;
-         x = 0x00; CppCore::bitswap8(x); if (x != 0x00) return false;
-         x = 0x01; CppCore::bitswap8(x); if (x != 0x80) return false;
-         x = 0x80; CppCore::bitswap8(x); if (x != 0x01) return false;
-         x = 0xFF; CppCore::bitswap8(x); if (x != 0xFF) return false;
-         x = 0x8C; CppCore::bitswap8(x); if (x != 0x31) return false;
+         x = 0x00; x = CppCore::bitswap8(x); if (x != 0x00) return false;
+         x = 0x01; x = CppCore::bitswap8(x); if (x != 0x80) return false;
+         x = 0x80; x = CppCore::bitswap8(x); if (x != 0x01) return false;
+         x = 0xFF; x = CppCore::bitswap8(x); if (x != 0xFF) return false;
+         x = 0x8C; x = CppCore::bitswap8(x); if (x != 0x31) return false;
          return true;
       }
 
       INLINE static bool bitswap32()
       {
          uint32_t x;
-         x = 0x00000000U; CppCore::bitswap32(x); if (x != 0x00000000U) return false;
-         x = 0x00000001U; CppCore::bitswap32(x); if (x != 0x80000000U) return false;
-         x = 0x80000000U; CppCore::bitswap32(x); if (x != 0x00000001U) return false;
-         x = 0xFFFFFFFFU; CppCore::bitswap32(x); if (x != 0xFFFFFFFFU) return false;
-         x = 0x8C8C8C8CU; CppCore::bitswap32(x); if (x != 0x31313131U) return false;
-         x = 0x9A3ADE1AU; CppCore::bitswap32(x); if (x != 0x587B5C59U) return false;
+         x = 0x00000000U; x = CppCore::bitswap32(x); if (x != 0x00000000U) return false;
+         x = 0x00000001U; x = CppCore::bitswap32(x); if (x != 0x80000000U) return false;
+         x = 0x80000000U; x = CppCore::bitswap32(x); if (x != 0x00000001U) return false;
+         x = 0xFFFFFFFFU; x = CppCore::bitswap32(x); if (x != 0xFFFFFFFFU) return false;
+         x = 0x8C8C8C8CU; x = CppCore::bitswap32(x); if (x != 0x31313131U) return false;
+         x = 0x9A3ADE1AU; x = CppCore::bitswap32(x); if (x != 0x587B5C59U) return false;
          return true;
       }
 
       INLINE static bool bitswap64()
       {
          uint64_t x;
-         x = 0x0000000000000000ULL; CppCore::bitswap64(x); if (x != 0x0000000000000000ULL) return false;
-         x = 0x0000000000000001ULL; CppCore::bitswap64(x); if (x != 0x8000000000000000ULL) return false;
-         x = 0x8000000000000000ULL; CppCore::bitswap64(x); if (x != 0x0000000000000001ULL) return false;
-         x = 0xFFFFFFFFFFFFFFFFULL; CppCore::bitswap64(x); if (x != 0xFFFFFFFFFFFFFFFFULL) return false;
-         x = 0x8C8C8C8C8C8C8C8CULL; CppCore::bitswap64(x); if (x != 0x3131313131313131ULL) return false;
-         x = 0x9A3ADE1AD7B72D2EULL; CppCore::bitswap64(x); if (x != 0x74B4EDEB587B5C59ULL) return false;
+         x = 0x0000000000000000ULL; x = CppCore::bitswap64(x); if (x != 0x0000000000000000ULL) return false;
+         x = 0x0000000000000001ULL; x = CppCore::bitswap64(x); if (x != 0x8000000000000000ULL) return false;
+         x = 0x8000000000000000ULL; x = CppCore::bitswap64(x); if (x != 0x0000000000000001ULL) return false;
+         x = 0xFFFFFFFFFFFFFFFFULL; x = CppCore::bitswap64(x); if (x != 0xFFFFFFFFFFFFFFFFULL) return false;
+         x = 0x8C8C8C8C8C8C8C8CULL; x = CppCore::bitswap64(x); if (x != 0x3131313131313131ULL) return false;
+         x = 0x9A3ADE1AD7B72D2EULL; x = CppCore::bitswap64(x); if (x != 0x74B4EDEB587B5C59ULL) return false;
          return true;
       }
 
@@ -1237,12 +1237,12 @@ namespace CppCore { namespace Test
       {
       #if defined(CPPCORE_CPUFEAT_SSSE3)
          union { __m128i x; uint64_t x64[2]; };
-         x = _mm_set_epi64x(0x0000000000000000ULL,0x0000000000000000ULL); CppCore::bitswap128(x); if (x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
-         x = _mm_set_epi64x(0x0000000000000000ULL,0x0000000000000001ULL); CppCore::bitswap128(x); if (x64[1] != 0x8000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
-         x = _mm_set_epi64x(0x8000000000000000ULL,0x0000000000000000ULL); CppCore::bitswap128(x); if (x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000001ULL) return false;
-         x = _mm_set_epi64x(0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL); CppCore::bitswap128(x); if (x64[1] != 0xFFFFFFFFFFFFFFFFULL || x64[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
-         x = _mm_set_epi64x(0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL); CppCore::bitswap128(x); if (x64[1] != 0x3131313131313131ULL || x64[0] != 0x3131313131313131ULL) return false;
-         x = _mm_set_epi64x(0xB1F5AA5A43F27093ULL,0x9A3ADE1AD7B72D2EULL); CppCore::bitswap128(x); if (x64[1] != 0x74B4EDEB587B5C59ULL || x64[0] != 0xC90E4FC25A55AF8DULL) return false;
+         x = _mm_set_epi64x(0x0000000000000000ULL,0x0000000000000000ULL); x = CppCore::bitswap128(x); if (x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
+         x = _mm_set_epi64x(0x0000000000000000ULL,0x0000000000000001ULL); x = CppCore::bitswap128(x); if (x64[1] != 0x8000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
+         x = _mm_set_epi64x(0x8000000000000000ULL,0x0000000000000000ULL); x = CppCore::bitswap128(x); if (x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000001ULL) return false;
+         x = _mm_set_epi64x(0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL); x = CppCore::bitswap128(x); if (x64[1] != 0xFFFFFFFFFFFFFFFFULL || x64[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
+         x = _mm_set_epi64x(0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL); x = CppCore::bitswap128(x); if (x64[1] != 0x3131313131313131ULL || x64[0] != 0x3131313131313131ULL) return false;
+         x = _mm_set_epi64x(0xB1F5AA5A43F27093ULL,0x9A3ADE1AD7B72D2EULL); x = CppCore::bitswap128(x); if (x64[1] != 0x74B4EDEB587B5C59ULL || x64[0] != 0xC90E4FC25A55AF8DULL) return false;
       #endif
          return true;
       }
@@ -1251,12 +1251,12 @@ namespace CppCore { namespace Test
       {
       #if defined(CPPCORE_CPUFEAT_AVX2)
          union { __m256i x; uint64_t x64[4]; };
-         x = _mm256_set_epi64x(0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL); CppCore::bitswap256(x); if (x64[3] != 0x0000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
-         x = _mm256_set_epi64x(0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000001ULL); CppCore::bitswap256(x); if (x64[3] != 0x8000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
-         x = _mm256_set_epi64x(0x8000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL); CppCore::bitswap256(x); if (x64[3] != 0x0000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000001ULL) return false;
-         x = _mm256_set_epi64x(0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL); CppCore::bitswap256(x); if (x64[3] != 0xFFFFFFFFFFFFFFFFULL || x64[2] != 0xFFFFFFFFFFFFFFFFULL || x64[1] != 0xFFFFFFFFFFFFFFFFULL || x64[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
-         x = _mm256_set_epi64x(0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL); CppCore::bitswap256(x); if (x64[3] != 0x3131313131313131ULL || x64[2] != 0x3131313131313131ULL || x64[1] != 0x3131313131313131ULL || x64[0] != 0x3131313131313131ULL) return false;
-         x = _mm256_set_epi64x(0xB1F5AA5A43F27093ULL,0x9A3ADE1AD7B72D2EULL,0x9A3ADE1AD7B72D2EULL,0xB1F5AA5A43F27093ULL); CppCore::bitswap256(x); if (x64[3] != 0xC90E4FC25A55AF8DULL || x64[2] != 0x74B4EDEB587B5C59ULL || x64[1] != 0x74B4EDEB587B5C59ULL || x64[0] != 0xC90E4FC25A55AF8DULL) return false;
+         x = _mm256_set_epi64x(0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL); x = CppCore::bitswap256(x); if (x64[3] != 0x0000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
+         x = _mm256_set_epi64x(0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000001ULL); x = CppCore::bitswap256(x); if (x64[3] != 0x8000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000000ULL) return false;
+         x = _mm256_set_epi64x(0x8000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL); x = CppCore::bitswap256(x); if (x64[3] != 0x0000000000000000ULL || x64[2] != 0x0000000000000000ULL || x64[1] != 0x0000000000000000ULL || x64[0] != 0x0000000000000001ULL) return false;
+         x = _mm256_set_epi64x(0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL); x = CppCore::bitswap256(x); if (x64[3] != 0xFFFFFFFFFFFFFFFFULL || x64[2] != 0xFFFFFFFFFFFFFFFFULL || x64[1] != 0xFFFFFFFFFFFFFFFFULL || x64[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
+         x = _mm256_set_epi64x(0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL,0x8C8C8C8C8C8C8C8CULL); x = CppCore::bitswap256(x); if (x64[3] != 0x3131313131313131ULL || x64[2] != 0x3131313131313131ULL || x64[1] != 0x3131313131313131ULL || x64[0] != 0x3131313131313131ULL) return false;
+         x = _mm256_set_epi64x(0xB1F5AA5A43F27093ULL,0x9A3ADE1AD7B72D2EULL,0x9A3ADE1AD7B72D2EULL,0xB1F5AA5A43F27093ULL); x = CppCore::bitswap256(x); if (x64[3] != 0xC90E4FC25A55AF8DULL || x64[2] != 0x74B4EDEB587B5C59ULL || x64[1] != 0x74B4EDEB587B5C59ULL || x64[0] != 0xC90E4FC25A55AF8DULL) return false;
       #endif
          return true;
       }
