@@ -291,6 +291,7 @@ int main()
    TEST(CppCore::Test::BitOps::storer32,            "storer32:         ", std::endl);
    TEST(CppCore::Test::BitOps::storer64,            "storer64:         ", std::endl);
    TEST(CppCore::Test::BitOps::bitswap8,            "bitswap8:         ", std::endl);
+   TEST(CppCore::Test::BitOps::bitswap16,           "bitswap16:        ", std::endl);
    TEST(CppCore::Test::BitOps::bitswap32,           "bitswap32:        ", std::endl);
    TEST(CppCore::Test::BitOps::bitswap64,           "bitswap64:        ", std::endl);
    TEST(CppCore::Test::BitOps::bitswap128,          "bitswap128:       ", std::endl);

@@ -3106,6 +3106,14 @@ namespace CppCore
 #endif
    }
 
+   /// <summary>
+   /// Reverse Bits in 16-Bit Integer
+   /// </summary>
+   static INLINE uint16_t bitswap16(uint16_t x)
+   {
+      return (uint16_t)(CppCore::bitswap32(x) >> 16);
+   }
+
 #if defined(CPPCORE_CPUFEAT_SSSE3)
    /// <summary>
    /// Reverse Bits in 128-Bit Integer.

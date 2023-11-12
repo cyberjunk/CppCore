@@ -1209,6 +1209,19 @@ namespace CppCore { namespace Test
          return true;
       }
 
+      INLINE static bool bitswap16()
+      {
+         uint16_t x;
+         x = 0x0000; x = CppCore::bitswap16(x); if (x != 0x0000) return false;
+         x = 0x0001; x = CppCore::bitswap16(x); if (x != 0x8000) return false;
+         x = 0x8000; x = CppCore::bitswap16(x); if (x != 0x0001) return false;
+         x = 0xFFFF; x = CppCore::bitswap16(x); if (x != 0xFFFF) return false;
+         x = 0x8C8C; x = CppCore::bitswap16(x); if (x != 0x3131) return false;
+         x = 0xDE1A; x = CppCore::bitswap16(x); if (x != 0x587B) return false;
+         x = 0x9A3A; x = CppCore::bitswap16(x); if (x != 0x5C59) return false;
+         return true;
+      }
+
       INLINE static bool bitswap32()
       {
          uint32_t x;
@@ -2035,11 +2048,11 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(STORER64)         { Assert::AreEqual(true, CppCore::Test::BitOps::storer64()); }
       TEST_METHOD(STORER128)        { Assert::AreEqual(true, CppCore::Test::BitOps::storer128()); }
       TEST_METHOD(BITSWAP8)         { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap8()); }
+      TEST_METHOD(BITSWAP16)        { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap16()); }
       TEST_METHOD(BITSWAP32)        { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap32()); }
       TEST_METHOD(BITSWAP64)        { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap64()); }
       TEST_METHOD(BITSWAP128)       { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap128()); }
       TEST_METHOD(BITSWAP256)       { Assert::AreEqual(true, CppCore::Test::BitOps::bitswap256()); }
-
       TEST_METHOD(ZBYTEIDXL32)      { Assert::AreEqual(true, CppCore::Test::BitOps::zbyteidxl32()); }
       TEST_METHOD(ZBYTEIDXL64)      { Assert::AreEqual(true, CppCore::Test::BitOps::zbyteidxl64()); }
       TEST_METHOD(ZBYTEIDXL128)     { Assert::AreEqual(true, CppCore::Test::BitOps::zbyteidxl128()); }
