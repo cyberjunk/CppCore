@@ -2859,6 +2859,35 @@ namespace CppCore
    #endif
    }
 
+#if defined(CPPCORE_CPUFEAT_SSSE3)
+   /// <summary>
+   /// Swaps byte order in 128-bit unsigned integer.
+   /// Requires SSSE3.
+   /// </summary>
+   static INLINE __m128i byteswap128(__m128i v)
+   {
+      const __m128i BSWAP_MASK = _mm_set_epi8(
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+      return _mm_shuffle_epi8(v, BSWAP_MASK);
+   }
+#endif
+
+#if defined(CPPCORE_CPUFEAT_AVX2)
+   /// <summary>
+   /// Swaps byte order in 256-bit unsigned integer.
+   /// Requires AVX2.
+   /// </summary>
+   static INLINE __m256i byteswap256(__m256i v)
+   {
+      const __m256i BSWAP_MASK = _mm256_set_epi8(
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+      return _mm256_permute4x64_epi64(
+         _mm256_shuffle_epi8(v, BSWAP_MASK), 
+         _MM_SHUFFLE(1, 0, 3, 2));
+   }
+#endif
+
    /// <summary>
    /// Swaps byte order in 16-bit unsigned integer.
    /// </summary>
@@ -3017,6 +3046,114 @@ namespace CppCore
    {
       x = CppCore::bytedup64(v);
    }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // BITSWAP: Reverse Bit Order
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Reverse Bits in 8-Bit Integer
+   /// </summary>
+   /// <remarks>
+   /// From http://graphics.stanford.edu/~seander/bithacks.html
+   /// </remarks>
+   static INLINE uint8_t bitswap8(uint8_t x)
+   {
+   #if defined(CPPCORE_CPU_64BIT)
+      return (uint8_t)(((x * 0x80200802ULL) & 0x0884422110ULL) * 0x0101010101ULL >> 32);
+   #else
+      return (uint8_t)(((x * 0x0802LU & 0x22110LU) | (x * 0x8020LU & 0x88440LU)) * 0x10101LU >> 16);
+   #endif
+   }
+
+   /// <summary>
+   /// Reverse Bits in 32-Bit Integer
+   /// </summary>
+   static INLINE uint32_t bitswap32(uint32_t x)
+   {
+   #if defined(CPPCORE_CPU_ARM64)
+      uint64_t x64 = x;
+      __asm__("RBIT %0, %1" : "=r" (x64) : "r" (x64));
+      return (uint32_t)(x64 >> 32);
+   #elif defined(CPPCORE_CPU_ARM)
+      __asm__("RBIT %0, %1" : "=r" (x) : "r" (x));
+      return x;
+   #else
+      x = ((x >> 1) & 0x55555555U) | ((x & 0x55555555U) << 1);
+      x = ((x >> 2) & 0x33333333U) | ((x & 0x33333333U) << 2);
+      x = ((x >> 4) & 0x0F0F0F0FU) | ((x & 0x0F0F0F0FU) << 4);
+      return CppCore::byteswap32(x); // BSWAP on INTEL
+   #endif
+   }
+
+   /// <summary>
+   /// Reverse Bits in 64-Bit Integer
+   /// </summary>
+   static INLINE uint64_t bitswap64(uint64_t x)
+   {
+   #if defined(CPPCORE_CPU_ARM64)
+      __asm__("RBIT %0, %1" : "=r" (x) : "r" (x));
+      return x;
+   #elif defined(CPPCORE_CPU_ARM)
+      uint32_t xl = CppCore::bitswap32((uint32_t)(x));
+      uint32_t xh = CppCore::bitswap32((uint32_t)(x >> 32));
+      return ((uint64_t)xl << 32) | xh;
+   #else
+      x = ((x >>  1) & 0x5555555555555555ULL) | ((x & 0x5555555555555555ULL) << 1);
+      x = ((x >>  2) & 0x3333333333333333ULL) | ((x & 0x3333333333333333ULL) << 2);
+      x = ((x >>  4) & 0x0F0F0F0F0F0F0F0FULL) | ((x & 0x0F0F0F0F0F0F0F0FULL) << 4);
+      return CppCore::byteswap64(x); // BSWAP on INTEL
+#endif
+   }
+
+   /// <summary>
+   /// Reverse Bits in 16-Bit Integer
+   /// </summary>
+   static INLINE uint16_t bitswap16(uint16_t x)
+   {
+      return (uint16_t)(CppCore::bitswap32(x) >> 16);
+   }
+
+#if defined(CPPCORE_CPUFEAT_SSSE3)
+   /// <summary>
+   /// Reverse Bits in 128-Bit Integer.
+   /// Requires SSSE3.
+   /// </summary>
+   /// <remarks>
+   /// From https://www.intel.com/content/dam/develop/external/us/en/documents/clmul-wp-rev-2-02-2014-04-20.pdf
+   /// </remarks>
+   static INLINE __m128i bitswap128(__m128i x)
+   {
+      const __m128i AND_MASK    = _mm_set_epi32(0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f);
+      const __m128i LOWER_MASK  = _mm_set_epi32(0x0f070b03,0x0d050901,0x0e060a02,0x0c040800);
+      const __m128i HIGHER_MASK = _mm_set_epi32(0xf070b030,0xd0509010,0xe060a020,0xc0408000);
+      return CppCore::byteswap128(_mm_xor_si128(
+         _mm_shuffle_epi8(HIGHER_MASK, _mm_and_si128(x, AND_MASK)),
+         _mm_shuffle_epi8(LOWER_MASK,  _mm_and_si128(_mm_srli_epi16(x, 4), AND_MASK))));
+   }
+#endif
+
+#if defined(CPPCORE_CPUFEAT_AVX2)
+   /// <summary>
+   /// Reverse Bits in 256-Bit Integer.
+   /// Requires AVX2.
+   /// </summary>
+   static INLINE __m256i bitswap256(__m256i x)
+   {
+      const __m256i AND_MASK = _mm256_set_epi32(
+         0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,
+         0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f);
+      const __m256i LOWER_MASK = _mm256_set_epi32(
+         0x0f070b03,0x0d050901,0x0e060a02,0x0c040800,
+         0x0f070b03,0x0d050901,0x0e060a02,0x0c040800);
+      const __m256i HIGHER_MASK = _mm256_set_epi32(
+         0xf070b030,0xd0509010,0xe060a020,0xc0408000,
+         0xf070b030,0xd0509010,0xe060a020,0xc0408000);
+      return CppCore::byteswap256(_mm256_xor_si256(
+         _mm256_shuffle_epi8(HIGHER_MASK, _mm256_and_si256(x, AND_MASK)),
+         _mm256_shuffle_epi8(LOWER_MASK,  _mm256_and_si256(_mm256_srli_epi32(x, 4), AND_MASK))));
+   }
+#endif
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // MOVBE: REVERSE LOAD
