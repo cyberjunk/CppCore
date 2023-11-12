@@ -3095,11 +3095,9 @@ namespace CppCore
       __asm__("RBIT %0, %1" : "=r" (x) : "r" (x));
       return x;
    #elif defined(CPPCORE_CPU_ARM)
-      uint32_t xl = (uint32_t)(x);
-      uint32_t xh = (uint32_t)(x >> 32);
-      xl = CppCore::bitswap32(xl);
-      xh = CppCore::bitswap32(xh);
-      return ((uint64_t)xl << 32) | (uint64_t)xh;
+      uint32_t xl = CppCore::bitswap32((uint32_t)(x));
+      uint32_t xh = CppCore::bitswap32((uint32_t)(x >> 32));
+      return ((uint64_t)xl << 32) | xh;
    #else
       x = ((x >>  1) & 0x5555555555555555ULL) | ((x & 0x5555555555555555ULL) << 1);
       x = ((x >>  2) & 0x3333333333333333ULL) | ((x & 0x3333333333333333ULL) << 2);
