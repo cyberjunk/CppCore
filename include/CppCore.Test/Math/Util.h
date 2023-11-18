@@ -289,6 +289,39 @@ namespace CppCore { namespace Test { namespace Math
             CppCore::nlptwo64(0xFFFFFFFFFFFFFFFFULL) == 0x8000000000000000ULL;
       }
 
+      INLINE static bool addcarry8()
+      {
+         uint8_t r; uint8_t c;
+         c = 0; CppCore::addcarry8(0x00, 0x00, r, c); if (c != 0x00 || r != 0x00) return false;
+         c = 1; CppCore::addcarry8(0x00, 0x00, r, c); if (c != 0x00 || r != 0x01) return false;
+         c = 0; CppCore::addcarry8(0x00, 0xFF, r, c); if (c != 0x00 || r != 0xFF) return false;
+         c = 1; CppCore::addcarry8(0x00, 0xFF, r, c); if (c != 0x01 || r != 0x00) return false;
+         c = 0; CppCore::addcarry8(0xFF, 0x01, r, c); if (c != 0x01 || r != 0x00) return false;
+         c = 0; CppCore::addcarry8(0xFF, 0xFF, r, c); if (c != 0x01 || r != 0xFE) return false;
+         c = 1; CppCore::addcarry8(0xFF, 0xFF, r, c); if (c != 0x01 || r != 0xFF) return false;
+         c = 1; CppCore::addcarry8(0x00, 0xFE, r, c); if (c != 0x00 || r != 0xFF) return false;
+         c = 1; CppCore::addcarry8(0xFE, 0x00, r, c); if (c != 0x00 || r != 0xFF) return false;
+         c = 1; CppCore::addcarry8(0x51, 0xAF, r, c); if (c != 0x01 || r != 0x01) return false;
+         return true;
+      }
+
+      INLINE static bool addcarry16()
+      {
+         uint16_t r; uint8_t c;
+         c = 0; CppCore::addcarry16(0x0000, 0x0000, r, c); if (c != 0x00 || r != 0x0000) return false;
+         c = 1; CppCore::addcarry16(0x0000, 0x0000, r, c); if (c != 0x00 || r != 0x0001) return false;
+         c = 0; CppCore::addcarry16(0x0000, 0xFFFF, r, c); if (c != 0x00 || r != 0xFFFF) return false;
+         c = 1; CppCore::addcarry16(0x0000, 0xFFFF, r, c); if (c != 0x01 || r != 0x0000) return false;
+         c = 0; CppCore::addcarry16(0xFFFF, 0x0001, r, c); if (c != 0x01 || r != 0x0000) return false;
+         c = 0; CppCore::addcarry16(0xFFFF, 0xFFFF, r, c); if (c != 0x01 || r != 0xFFFE) return false;
+         c = 1; CppCore::addcarry16(0xFFFF, 0xFFFF, r, c); if (c != 0x01 || r != 0xFFFF) return false;
+         c = 1; CppCore::addcarry16(0x0000, 0xFFFE, r, c); if (c != 0x00 || r != 0xFFFF) return false;
+         c = 1; CppCore::addcarry16(0xFFFE, 0x0000, r, c); if (c != 0x00 || r != 0xFFFF) return false;
+         c = 1; CppCore::addcarry16(0xC351, 0xBCA9, r, c); if (c != 0x01 || r != 0x7FFB) return false;
+         c = 1; CppCore::addcarry16(0xC350, 0xBCA0, r, c); if (c != 0x01 || r != 0x7FF1) return false;
+         return true;
+      }
+
       INLINE static bool addcarry32()
       {
          uint32_t r; uint8_t c;
@@ -320,6 +353,34 @@ namespace CppCore { namespace Test { namespace Math
          c = 1; CppCore::addcarry64(0xFFFFFFFFFFFFFFFEULL, 0x0000000000000000ULL, r, c); if (c != 0x00 || r != 0xFFFFFFFFFFFFFFFFULL) return false;
          c = 1; CppCore::addcarry64(0x5F8BC3515F8BC351ULL, 0xF924BCA9F924BCA9ULL, r, c); if (c != 0x01 || r != 0x58B07FFB58B07FFBULL) return false;
          c = 1; CppCore::addcarry64(0x5F8BC3505F8BC350ULL, 0xF924BCA0F924BCA0ULL, r, c); if (c != 0x01 || r != 0x58B07FF158B07FF1ULL) return false;
+         return true;
+      }
+
+      INLINE static bool subborrow8()
+      {
+         uint8_t r; uint8_t c;
+         c = 0; CppCore::subborrow8(0x00, 0x00, r, c); if (c != 0x00 || r != 0x00) return false;
+         c = 1; CppCore::subborrow8(0x00, 0x00, r, c); if (c != 0x01 || r != 0xFF) return false;
+         c = 1; CppCore::subborrow8(0x02, 0x01, r, c); if (c != 0x00 || r != 0x00) return false;
+         c = 1; CppCore::subborrow8(0x00, 0xFF, r, c); if (c != 0x01 || r != 0x00) return false;
+         c = 0; CppCore::subborrow8(0xFF, 0x01, r, c); if (c != 0x00 || r != 0xFE) return false;
+         c = 1; CppCore::subborrow8(0xFF, 0xFF, r, c); if (c != 0x01 || r != 0xFF) return false;
+         c = 1; CppCore::subborrow8(0xFF, 0xFE, r, c); if (c != 0x00 || r != 0x00) return false;
+         c = 1; CppCore::subborrow8(0xC0, 0x5B, r, c); if (c != 0x00 || r != 0x64) return false;
+         return true;
+      }
+
+      INLINE static bool subborrow16()
+      {
+         uint16_t r; uint8_t c;
+         c = 0; CppCore::subborrow16(0x0000, 0x0000, r, c); if (c != 0x00 || r != 0x0000) return false;
+         c = 1; CppCore::subborrow16(0x0000, 0x0000, r, c); if (c != 0x01 || r != 0xFFFF) return false;
+         c = 1; CppCore::subborrow16(0x0002, 0x0001, r, c); if (c != 0x00 || r != 0x0000) return false;
+         c = 1; CppCore::subborrow16(0x0000, 0xFFFF, r, c); if (c != 0x01 || r != 0x0000) return false;
+         c = 0; CppCore::subborrow16(0xFFFF, 0x0001, r, c); if (c != 0x00 || r != 0xFFFE) return false;
+         c = 1; CppCore::subborrow16(0xFFFF, 0xFFFF, r, c); if (c != 0x01 || r != 0xFFFF) return false;
+         c = 1; CppCore::subborrow16(0xFFFF, 0xFFFE, r, c); if (c != 0x00 || r != 0x0000) return false;
+         c = 1; CppCore::subborrow16(0x2BC0, 0x155B, r, c); if (c != 0x00 || r != 0x1664) return false;
          return true;
       }
 
@@ -1433,8 +1494,12 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(NGPTWO64)         { Assert::AreEqual(true, CppCore::Test::Math::Util::ngptwo64()); }
       TEST_METHOD(NLPTWO32)         { Assert::AreEqual(true, CppCore::Test::Math::Util::nlptwo32()); }
       TEST_METHOD(NLPTWO64)         { Assert::AreEqual(true, CppCore::Test::Math::Util::nlptwo64()); }
+      TEST_METHOD(ADDCARRY8)        { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry8()); }
+      TEST_METHOD(ADDCARRY16)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry16()); }
       TEST_METHOD(ADDCARRY32)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry32()); }
       TEST_METHOD(ADDCARRY64)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry64()); }
+      TEST_METHOD(SUBBORROW8)       { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow8()); }
+      TEST_METHOD(SUBBORROW16)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow16()); }
       TEST_METHOD(SUBBORROW32)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow32()); }
       TEST_METHOD(SUBBORROW64)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow64()); }
       TEST_METHOD(MUL128)           { Assert::AreEqual(true, CppCore::Test::Math::Util::mul128()); }

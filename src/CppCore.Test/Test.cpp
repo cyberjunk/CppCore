@@ -342,8 +342,12 @@ int main()
    TEST(CppCore::Test::Math::Util::ngptwo64,        "ngptwo64:         ", std::endl);
    TEST(CppCore::Test::Math::Util::nlptwo32,        "nlptwo32:         ", std::endl);
    TEST(CppCore::Test::Math::Util::nlptwo64,        "nlptwo64:         ", std::endl);
+   TEST(CppCore::Test::Math::Util::addcarry8,       "addcarry8:        ", std::endl);
+   TEST(CppCore::Test::Math::Util::addcarry16,      "addcarry16:       ", std::endl);
    TEST(CppCore::Test::Math::Util::addcarry32,      "addcarry32:       ", std::endl);
    TEST(CppCore::Test::Math::Util::addcarry64,      "addcarry64:       ", std::endl);
+   TEST(CppCore::Test::Math::Util::subborrow8,      "subborrow8:       ", std::endl);
+   TEST(CppCore::Test::Math::Util::subborrow16,     "subborrow16:      ", std::endl);
    TEST(CppCore::Test::Math::Util::subborrow32,     "subborrow32:      ", std::endl);
    TEST(CppCore::Test::Math::Util::subborrow64,     "subborrow64:      ", std::endl);
    TEST(CppCore::Test::Math::Util::mul128,          "mul128:           ", std::endl);

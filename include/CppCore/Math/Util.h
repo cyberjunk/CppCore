@@ -514,6 +514,42 @@ namespace CppCore
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
+   /// Addition with carry bit for 8-bit integer.
+   /// </summary>
+   INLINE static void addcarry8(uint8_t a, uint8_t b, uint8_t& r, uint8_t& c)
+   {
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
+      c = _addcarry_u8(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcb)
+      unsigned char t;
+      r = __builtin_addcb(a, b, c, &t);
+      c = (uint8_t)t;
+   #else
+      // from Hacker's Delight
+      r = a + b + c;
+      c = ((a & b) | ((a | b) & ~r)) >> 7;
+   #endif
+   }
+
+   /// <summary>
+   /// Addition with carry bit for 16-bit integer.
+   /// </summary>
+   INLINE static void addcarry16(uint16_t a, uint16_t b, uint16_t& r, uint8_t& c)
+   {
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
+      c = _addcarry_u16(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcs)
+      unsigned short t;
+      r = __builtin_addcs(a, b, c, &t);
+      c = (uint8_t)t;
+   #else
+      // from Hacker's Delight
+      r = a + b + c;
+      c = ((a & b) | ((a | b) & ~r)) >> 15;
+   #endif
+   }
+
+   /// <summary>
    /// Addition with carry bit for 32-bit integer.
    /// </summary>
    INLINE static void addcarry32(uint32_t a, uint32_t b, uint32_t& r, uint8_t& c)
@@ -645,6 +681,22 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry32(0U, py[i], pz[i], c);
       }
+   }
+
+   /// <summary>
+   /// Template Specialization for 8+8=8
+   /// </summary>
+   template<> INLINE void addcarry(const uint8_t& x, const uint8_t& y, uint8_t& r, uint8_t& c)
+   {
+      CppCore::addcarry8(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 16+16=16
+   /// </summary>
+   template<> INLINE void addcarry(const uint16_t& x, const uint16_t& y, uint16_t& r, uint8_t& c)
+   {
+      CppCore::addcarry16(x, y, r, c);
    }
 
    /// <summary>
@@ -781,6 +833,42 @@ namespace CppCore
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
+   /// Subtraction with carry bit for 8-bit integer.
+   /// </summary>
+   INLINE static void subborrow8(uint8_t a, uint8_t b, uint8_t& r, uint8_t& c)
+   {
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
+      c = _subborrow_u8(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcb)
+      unsigned char t;
+      r = __builtin_subcb(a, b, c, &t);
+      c = (uint8_t)t;
+   #else
+      // from Hacker's Delight
+      r = a - b - c;
+      c = ((~a & b) | ((~a | b) & r)) >> 7;
+   #endif
+   }
+
+   /// <summary>
+   /// Subtraction with carry bit for 16-bit integer.
+   /// </summary>
+   INLINE static void subborrow16(uint16_t a, uint16_t b, uint16_t& r, uint8_t& c)
+   {
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
+      c = _subborrow_u16(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcs)
+      unsigned short t;
+      r = __builtin_subcs(a, b, c, &t);
+      c = (uint8_t)t;
+   #else
+      // from Hacker's Delight
+      r = a - b - c;
+      c = ((~a & b) | ((~a | b) & r)) >> 15;
+   #endif
+   }
+
+   /// <summary>
    /// Subtraction with carry bit for 32-bit integer.
    /// </summary>
    INLINE static void subborrow32(uint32_t a, uint32_t b, uint32_t& r, uint8_t& c)
@@ -910,6 +998,38 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::subborrow32(0U, py[i], pz[i], c);
       }
+   }
+
+   /// <summary>
+   /// Template Specialization for 8-8=8
+   /// </summary>
+   template<> INLINE void subborrow(const uint8_t& x, const uint8_t& y, uint8_t& r, uint8_t& c)
+   {
+      CppCore::subborrow8(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 16-16=16
+   /// </summary>
+   template<> INLINE void subborrow(const uint16_t& x, const uint16_t& y, uint16_t& r, uint8_t& c)
+   {
+      CppCore::subborrow16(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 32-32=32
+   /// </summary>
+   template<> INLINE void subborrow(const uint32_t& x, const uint32_t& y, uint32_t& r, uint8_t& c)
+   {
+      CppCore::subborrow32(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-64=64
+   /// </summary>
+   template<> INLINE void subborrow(const uint64_t& x, const uint64_t& y, uint64_t& r, uint8_t& c)
+   {
+      CppCore::subborrow64(x, y, r, c);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
