@@ -213,17 +213,17 @@ namespace CppCore
       {
          assert(::strlen(alphabet) >= 2);
          uint8_t tbl[256];
-         size_t n = 0;
+         uint8_t n = 0;
          CppCore::clear(r);
          CppCore::clear(tbl);
          while (const char c = *alphabet++)
-            tbl[c] = (uint8_t)n++;
+            tbl[c] = n++;
          if (const char c = *input++)
             *(uint8_t*)&r = tbl[c];
          while (const char c = *input++)
          {
             CppCore::umul(r, n, r);
-            CppCore::uadd(r, (size_t)tbl[c], r);
+            CppCore::uadd(r, tbl[c], r);
          }
       }
 

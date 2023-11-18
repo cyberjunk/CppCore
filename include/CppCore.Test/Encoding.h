@@ -191,6 +191,21 @@ namespace CppCore { namespace Test
             CppCore::BaseX::parse("18446744073709551616", r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
             return true;
          }
+         INLINE static bool parse128()
+         {
+            uint64_t r[2];
+            CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
+            CppCore::BaseX::parse("0",          r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
+            CppCore::BaseX::parse("1",          r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 1U) return false;
+            CppCore::BaseX::parse("143",        r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 143U) return false;
+            CppCore::BaseX::parse("255",        r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 255U) return false;
+            CppCore::BaseX::parse("65535",      r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 65535U) return false;
+            CppCore::BaseX::parse("4294967295", r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 4294967295U) return false;
+            CppCore::BaseX::parse("18446744073709551615", r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 18446744073709551615ULL) return false;
+            CppCore::BaseX::parse("340282366920938463463374607431768211455", r, CPPCORE_ALPHABET_B10); if (r[1] != 0xFFFFFFFFFFFFFFFFULL || r[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::BaseX::parse("340282366920938463463374607431768211456", r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
+            return true;
+         }
       };
       class Hex
       {
@@ -964,6 +979,7 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(BASEX_PARSE16)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse16()); }
       TEST_METHOD(BASEX_PARSE32)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse32()); }
       TEST_METHOD(BASEX_PARSE64)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse64()); }
+      TEST_METHOD(BASEX_PARSE128)   { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse128()); }
       TEST_METHOD(HEX_BYTETOHEXSTR) { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::Util::bytetohexstr()); }
       TEST_METHOD(HEX_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring()); }
       TEST_METHOD(HEX_TOSTRING16)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring16()); }
