@@ -639,8 +639,8 @@ namespace CppCore
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void addcarry(const UINT1& x, const UINT2& y, UINT3& z, uint8_t& c)
    {
-      static_assert(sizeof(UINT1) % 4 == 0);
-      static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT1) % 4 == 0 || sizeof(UINT1) < sizeof(size_t));
+      static_assert(sizeof(UINT2) % 4 == 0 || sizeof(UINT2) < sizeof(size_t));
       static_assert(sizeof(UINT3) % 4 == 0);
       constexpr size_t MAXSIZE = MAX(sizeof(UINT1), sizeof(UINT2));
       constexpr size_t MINSIZE = MIN(sizeof(UINT1), sizeof(UINT2));
@@ -663,7 +663,7 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry64(0ULL, py[i], pz[i], c);
       }
-      else
+      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
    #endif
       {
          constexpr size_t NUINT1 = sizeof(UINT1) / 4;
@@ -681,6 +681,9 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry32(0U, py[i], pz[i], c);
       }
+      else if constexpr (sizeof(UINT1) < sizeof(size_t)) { addcarry<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { addcarry<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
+      else throw;
    }
 
    /// <summary>
@@ -692,6 +695,14 @@ namespace CppCore
    }
 
    /// <summary>
+   /// Template Specialization for 16+8=16
+   /// </summary>
+   template<> INLINE void addcarry(const uint16_t& x, const uint8_t& y, uint16_t& r, uint8_t& c)
+   {
+      CppCore::addcarry16(x, y, r, c);
+   }
+
+   /// <summary>
    /// Template Specialization for 16+16=16
    /// </summary>
    template<> INLINE void addcarry(const uint16_t& x, const uint16_t& y, uint16_t& r, uint8_t& c)
@@ -700,11 +711,51 @@ namespace CppCore
    }
 
    /// <summary>
+   /// Template Specialization for 32+8=32
+   /// </summary>
+   template<> INLINE void addcarry(const uint32_t& x, const uint8_t& y, uint32_t& r, uint8_t& c)
+   {
+      CppCore::addcarry32(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 32+16=32
+   /// </summary>
+   template<> INLINE void addcarry(const uint32_t& x, const uint16_t& y, uint32_t& r, uint8_t& c)
+   {
+      CppCore::addcarry32(x, y, r, c);
+   }
+
+   /// <summary>
    /// Template Specialization for 32+32=32
    /// </summary>
    template<> INLINE void addcarry(const uint32_t& x, const uint32_t& y, uint32_t& r, uint8_t& c)
    {
       CppCore::addcarry32(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64+8=64
+   /// </summary>
+   template<> INLINE void addcarry(const uint64_t& x, const uint8_t& y, uint64_t& r, uint8_t& c)
+   {
+      CppCore::addcarry64(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64+16=64
+   /// </summary>
+   template<> INLINE void addcarry(const uint64_t& x, const uint16_t& y, uint64_t& r, uint8_t& c)
+   {
+      CppCore::addcarry64(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64+32=64
+   /// </summary>
+   template<> INLINE void addcarry(const uint64_t& x, const uint32_t& y, uint64_t& r, uint8_t& c)
+   {
+      CppCore::addcarry64(x, y, r, c);
    }
 
    /// <summary>

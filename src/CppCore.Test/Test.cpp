@@ -705,6 +705,11 @@ int main()
    TEST(CppCore::Test::Encoding::BaseX::parse32,    "parse32:    ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::parse64,    "parse64:    ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::parse128,   "parse128:   ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse8,  "tryparse8:  ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse16, "tryparse16: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse32, "tryparse32: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse64, "tryparse64: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse128,"tryparse128:", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::Decimal  " << std::endl;
