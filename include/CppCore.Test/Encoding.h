@@ -144,7 +144,7 @@ namespace CppCore { namespace Test
          INLINE static bool parse8()
          {
             uint8_t r;
-            //CppCore::BaseX::parse("",    r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            CppCore::BaseX::parse("",    r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
             CppCore::BaseX::parse("0",   r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
             CppCore::BaseX::parse("1",   r, CPPCORE_ALPHABET_B10); if (r != 1) return false;
             CppCore::BaseX::parse("143", r, CPPCORE_ALPHABET_B10); if (r != 143) return false;
@@ -155,7 +155,7 @@ namespace CppCore { namespace Test
          INLINE static bool parse16()
          {
             uint16_t r;
-            //CppCore::BaseX::parse("",      r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            CppCore::BaseX::parse("",      r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
             CppCore::BaseX::parse("0",     r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
             CppCore::BaseX::parse("1",     r, CPPCORE_ALPHABET_B10); if (r != 1) return false;
             CppCore::BaseX::parse("143",   r, CPPCORE_ALPHABET_B10); if (r != 143) return false;
@@ -167,7 +167,7 @@ namespace CppCore { namespace Test
          INLINE static bool parse32()
          {
             uint32_t r;
-            //CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
+            CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
             CppCore::BaseX::parse("0",          r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
             CppCore::BaseX::parse("1",          r, CPPCORE_ALPHABET_B10); if (r != 1U) return false;
             CppCore::BaseX::parse("143",        r, CPPCORE_ALPHABET_B10); if (r != 143U) return false;
@@ -180,7 +180,7 @@ namespace CppCore { namespace Test
          INLINE static bool parse64()
          {
             uint64_t r;
-            //CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
+            CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
             CppCore::BaseX::parse("0",          r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
             CppCore::BaseX::parse("1",          r, CPPCORE_ALPHABET_B10); if (r != 1U) return false;
             CppCore::BaseX::parse("143",        r, CPPCORE_ALPHABET_B10); if (r != 143U) return false;
@@ -194,7 +194,7 @@ namespace CppCore { namespace Test
          INLINE static bool parse128()
          {
             uint64_t r[2];
-            //CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
+            CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
             CppCore::BaseX::parse("0",          r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
             CppCore::BaseX::parse("1",          r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 1U) return false;
             CppCore::BaseX::parse("143",        r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 143U) return false;
