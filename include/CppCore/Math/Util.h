@@ -518,7 +518,7 @@ namespace CppCore
    /// </summary>
    INLINE static void addcarry8(uint8_t a, uint8_t b, uint8_t& r, uint8_t& c)
    {
-   #if defined(CPPCORE_CPU_X86ORX64)
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
       c = _addcarry_u8(c, a, b, &r);
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcb)
       unsigned char t;
@@ -536,7 +536,7 @@ namespace CppCore
    /// </summary>
    INLINE static void addcarry16(uint16_t a, uint16_t b, uint16_t& r, uint8_t& c)
    {
-   #if defined(CPPCORE_CPU_X86ORX64)
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
       c = _addcarry_u16(c, a, b, &r);
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcs)
       unsigned short t;
@@ -837,7 +837,7 @@ namespace CppCore
    /// </summary>
    INLINE static void subborrow8(uint8_t a, uint8_t b, uint8_t& r, uint8_t& c)
    {
-   #if defined(CPPCORE_CPU_X86ORX64)
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
       c = _subborrow_u8(c, a, b, &r);
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcb)
       unsigned char t;
@@ -855,7 +855,7 @@ namespace CppCore
    /// </summary>
    INLINE static void subborrow16(uint16_t a, uint16_t b, uint16_t& r, uint8_t& c)
    {
-   #if defined(CPPCORE_CPU_X86ORX64)
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
       c = _subborrow_u16(c, a, b, &r);
    #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcs)
       unsigned short t;
