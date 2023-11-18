@@ -768,8 +768,10 @@ namespace CppCore
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void uadd(const UINT1& x, const UINT2& y, UINT3& r)
    {
-      uint8_t c = 0;
-      CppCore::addcarry(x, y, r, c);
+      if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::uadd((size_t)x, y, r); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::uadd(x, (size_t)y, r); }
+      else if constexpr (sizeof(UINT3) < sizeof(size_t)) { size_t t; CppCore::uadd(x, y, t); r = (UINT3)t; }
+      else { uint8_t c = 0; CppCore::addcarry(x, y, r, c); }
    }
 
    /// <summary>
