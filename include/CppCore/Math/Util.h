@@ -663,8 +663,11 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry64(0ULL, py[i], pz[i], c);
       }
-      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
+      else if
+   #else
+      if
    #endif
+         constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
       {
          constexpr size_t NUINT1 = sizeof(UINT1) / 4;
          constexpr size_t NUINT2 = sizeof(UINT2) / 4;

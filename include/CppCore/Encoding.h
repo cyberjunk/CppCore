@@ -237,10 +237,10 @@ namespace CppCore
          if (!input || !alphabet)
             return false; // null pointer
          uint8_t tbl[256];
-         size_t n = 0;
+         uint8_t n = 0;
          CppCore::bytedup(0xFF, tbl);
          while (const char c = *alphabet++)
-            tbl[c] = (uint8_t)n++;
+            tbl[c] = n++;
          if (n < 2U) CPPCORE_UNLIKELY
             return false; // alphabet too short
          if (const char first = *input++) CPPCORE_LIKELY
@@ -260,7 +260,7 @@ namespace CppCore
                if (t.of != 0U) CPPCORE_UNLIKELY
                   return false; // mul overflow
                uint8_t carry = 0;
-               CppCore::addcarry(t.v, (size_t)idx, r, carry);
+               CppCore::addcarry(t.v, idx, r, carry);
                if (carry != 0) CPPCORE_UNLIKELY
                   return false; // add overflow
             }
