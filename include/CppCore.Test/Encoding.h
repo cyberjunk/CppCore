@@ -1049,12 +1049,12 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(BASEX_PARSE16)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse16()); }
       TEST_METHOD(BASEX_PARSE32)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse32()); }
       TEST_METHOD(BASEX_PARSE64)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse64()); }
+      TEST_METHOD(BASEX_PARSE128)   { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse128()); }
       TEST_METHOD(BASEX_TRYPARSE8)  { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse8()); }
       TEST_METHOD(BASEX_TRYPARSE16) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse16()); }
       TEST_METHOD(BASEX_TRYPARSE32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse32()); }
       TEST_METHOD(BASEX_TRYPARSE64) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse64()); }
       TEST_METHOD(BASEX_TRYPARSE128){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse128()); }
-      TEST_METHOD(BASEX_PARSE128)   { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse128()); }
       TEST_METHOD(HEX_BYTETOHEXSTR) { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::Util::bytetohexstr()); }
       TEST_METHOD(HEX_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring()); }
       TEST_METHOD(HEX_TOSTRING16)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring16()); }
