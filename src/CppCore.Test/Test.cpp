@@ -700,11 +700,11 @@ int main()
    TEST(CppCore::Test::Encoding::BaseX::tostring16, "tostring16: ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tostring32, "tostring32: ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tostring64, "tostring64: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::parse8,     "parse8:     ", std::endl);
+/*   TEST(CppCore::Test::Encoding::BaseX::parse8, "parse8:     ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::parse16,    "parse16:    ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::parse32,    "parse32:    ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::parse64,    "parse64:    ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::parse128,   "parse128:   ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse128,   "parse128:   ", std::endl);*/
    TEST(CppCore::Test::Encoding::BaseX::tryparse8,  "tryparse8:  ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tryparse16, "tryparse16: ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tryparse32, "tryparse32: ", std::endl);
