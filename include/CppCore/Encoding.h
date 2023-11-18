@@ -219,11 +219,13 @@ namespace CppCore
          while (const char c = *alphabet++)
             tbl[c] = (uint8_t)n++;
          if (const char c = *input++)
-            *(uint8_t*)&r = tbl[c];
-         while (const char c = *input++)
          {
-            CppCore::umul(r, n, r);
-            CppCore::uadd(r, (size_t)tbl[c], r);
+            *(uint8_t*)&r = tbl[c];
+            while (const char c = *input++)
+            {
+               CppCore::umul(r, n, r);
+               CppCore::uadd(r, (size_t)tbl[c], r);
+            }
          }
       }
 
