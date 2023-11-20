@@ -929,6 +929,25 @@ namespace CppCore
       INLINE Decimal() { }
    public:
       /// <summary>
+      /// Template function for parsing unsigned integer from zero terminated decimal string.
+      /// No overflow or invalid symbol check!
+      /// </summary>
+      template<typename UINT>
+      INLINE static void parseu(const char* input, UINT& r)
+      {
+         CppCore::clear(r);
+         if (const char c = *input++)
+         {        
+            *(uint8_t*)&r = (uint8_t)(c-'0');
+            while (const char c = *input++)
+            {
+               CppCore::umul(r, (uint8_t)10U, r);
+               CppCore::uadd(r, (uint8_t)(c-'0'), r);
+            }
+         }
+      }
+
+      /// <summary>
       /// Decimal Helper Functions
       /// </summary>
       class Util
@@ -1043,19 +1062,6 @@ namespace CppCore
             char* start = s.data();
             char* end   = tostrings<INT, UINT, N>(v, start, false);
             s.resize(end-start);
-         }
-
-         /// <summary>
-         /// Template function for parsing unsigned integer from zero terminated decimal string.
-         /// No overflow or invalid symbol check!
-         /// </summary>
-         template<typename T>
-         INLINE static T parseu(const char* input)
-         {
-            T r = 0U;
-            while (const char c = *input++)
-               r = CppCore::madd<T>(r, (T)10U, (T)(c-'0'));
-            return r;
          }
 
          /// <summary>
@@ -1365,42 +1371,6 @@ namespace CppCore
       }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Parses 8-bit unsigned integer from zero terminated decimal string.
-      /// No overflow or invalid symbol check!
-      /// </summary>
-      INLINE static uint8_t parse8u(const char* input)
-      {
-         return Util::parseu<uint8_t>(input);
-      }
-
-      /// <summary>
-      /// Parses 16-bit unsigned integer from zero terminated decimal string.
-      /// No overflow or invalid symbol check!
-      /// </summary>
-      INLINE static uint16_t parse16u(const char* input)
-      {
-         return Util::parseu<uint16_t>(input);
-      }
-
-      /// <summary>
-      /// Parses 32-bit unsigned integer from zero terminated decimal string.
-      /// No overflow or invalid symbol check!
-      /// </summary>
-      INLINE static uint32_t parse32u(const char* input)
-      {
-         return Util::parseu<uint32_t>(input);
-      }
-
-      /// <summary>
-      /// Parses 64-bit unsigned integer from zero terminated decimal string.
-      /// No overflow or invalid symbol check!
-      /// </summary>
-      INLINE static uint64_t parse64u(const char* input)
-      {
-         return Util::parseu<uint64_t>(input);
-      }
 
       /// <summary>
       /// Parses 8-bit signed integer from zero terminated decimal string.

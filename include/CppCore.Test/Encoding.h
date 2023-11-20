@@ -715,12 +715,12 @@ namespace CppCore { namespace Test
          INLINE static bool parse8u()
          {
             uint8_t r;
-            if (CppCore::Decimal::parse8u("00" ) != uint8_t(0x00)) return false;
-            if (CppCore::Decimal::parse8u("01" ) != uint8_t(0x01)) return false;
-            if (CppCore::Decimal::parse8u("99" ) != uint8_t(0x63)) return false;
-            if (CppCore::Decimal::parse8u("16" ) != uint8_t(0x10)) return false;
-            if (CppCore::Decimal::parse8u("0"  ) != uint8_t(0x00)) return false;
-            if (CppCore::Decimal::parse8u("255") != uint8_t(0xFF)) return false;
+            CppCore::Decimal::parseu("00",  r); if (r != uint8_t(0x00)) return false;
+            CppCore::Decimal::parseu("01",  r); if (r != uint8_t(0x01)) return false;
+            CppCore::Decimal::parseu("99",  r); if (r != uint8_t(0x63)) return false;
+            CppCore::Decimal::parseu("16",  r); if (r != uint8_t(0x10)) return false;
+            CppCore::Decimal::parseu("0",   r); if (r != uint8_t(0x00)) return false;
+            CppCore::Decimal::parseu("255", r); if (r != uint8_t(0xFF)) return false;
 
             if (!CppCore::Decimal::tryparse("00" ,r) || r != uint8_t(0x00)) return false;
             if (!CppCore::Decimal::tryparse("01" ,r) || r != uint8_t(0x01)) return false;
@@ -792,12 +792,12 @@ namespace CppCore { namespace Test
          INLINE static bool parse16u()
          {
             uint16_t r;
-            if (CppCore::Decimal::parse16u("0000" ) != uint16_t(0x0000)) return false;
-            if (CppCore::Decimal::parse16u("0001" ) != uint16_t(0x0001)) return false;
-            if (CppCore::Decimal::parse16u("9999" ) != uint16_t(0x270F)) return false;
-            if (CppCore::Decimal::parse16u("16"   ) != uint16_t(0x0010)) return false;
-            if (CppCore::Decimal::parse16u("0"    ) != uint16_t(0x0000)) return false;
-            if (CppCore::Decimal::parse16u("65535") != uint16_t(0xFFFF)) return false;
+            CppCore::Decimal::parseu("0000" ,r); if (r != uint16_t(0x0000)) return false;
+            CppCore::Decimal::parseu("0001" ,r); if (r != uint16_t(0x0001)) return false;
+            CppCore::Decimal::parseu("9999" ,r); if (r != uint16_t(0x270F)) return false;
+            CppCore::Decimal::parseu("16"   ,r); if (r != uint16_t(0x0010)) return false;
+            CppCore::Decimal::parseu("0"    ,r); if (r != uint16_t(0x0000)) return false;
+            CppCore::Decimal::parseu("65535",r); if (r != uint16_t(0xFFFF)) return false;
 
             if (!CppCore::Decimal::tryparse("0000" ,r) || r != uint16_t(0x0000)) return false;
             if (!CppCore::Decimal::tryparse("0001" ,r) || r != uint16_t(0x0001)) return false;
@@ -871,12 +871,12 @@ namespace CppCore { namespace Test
          INLINE static bool parse32u()
          {
             uint32_t r;
-            if (CppCore::Decimal::parse32u("00000000"  ) != 0x00000000U) return false;
-            if (CppCore::Decimal::parse32u("00000001"  ) != 0x00000001U) return false;
-            if (CppCore::Decimal::parse32u("99999999"  ) != 0x05F5E0FFU) return false;
-            if (CppCore::Decimal::parse32u("16"        ) != 0x00000010U) return false;
-            if (CppCore::Decimal::parse32u("0"         ) != 0x00000000U) return false;
-            if (CppCore::Decimal::parse32u("4294967295") != 0xFFFFFFFFU) return false;
+            CppCore::Decimal::parseu("00000000"  ,r); if (r != 0x00000000U) return false;
+            CppCore::Decimal::parseu("00000001"  ,r); if (r != 0x00000001U) return false;
+            CppCore::Decimal::parseu("99999999"  ,r); if (r != 0x05F5E0FFU) return false;
+            CppCore::Decimal::parseu("16"        ,r); if (r != 0x00000010U) return false;
+            CppCore::Decimal::parseu("0"         ,r); if (r != 0x00000000U) return false;
+            CppCore::Decimal::parseu("4294967295",r); if (r != 0xFFFFFFFFU) return false;
 
             if (!CppCore::Decimal::tryparse("00000000"  ,r) || r != 0x00000000U) return false;
             if (!CppCore::Decimal::tryparse("00000001"  ,r) || r != 0x00000001U) return false;
@@ -950,12 +950,12 @@ namespace CppCore { namespace Test
          INLINE static bool parse64u()
          {
             uint64_t r;
-            if (CppCore::Decimal::parse64u("0000000000000000")     != 0x0000000000000000ULL) return false;
-            if (CppCore::Decimal::parse64u("0000000000000001")     != 0x0000000000000001ULL) return false;
-            if (CppCore::Decimal::parse64u("9999999999999999")     != 0x002386F26FC0FFFFULL) return false;
-            if (CppCore::Decimal::parse64u("16")                   != 0x0000000000000010ULL) return false;
-            if (CppCore::Decimal::parse64u("0")                    != 0x0000000000000000ULL) return false;
-            if (CppCore::Decimal::parse64u("18446744073709551615") != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::Decimal::parseu("0000000000000000",r)    ; if (r != 0x0000000000000000ULL) return false;
+            CppCore::Decimal::parseu("0000000000000001",r)    ; if (r != 0x0000000000000001ULL) return false;
+            CppCore::Decimal::parseu("9999999999999999",r)    ; if (r != 0x002386F26FC0FFFFULL) return false;
+            CppCore::Decimal::parseu("16",r)                  ; if (r != 0x0000000000000010ULL) return false;
+            CppCore::Decimal::parseu("0",r)                   ; if (r != 0x0000000000000000ULL) return false;
+            CppCore::Decimal::parseu("18446744073709551615",r); if (r != 0xFFFFFFFFFFFFFFFFULL) return false;
 
             if (!CppCore::Decimal::tryparse("0000000000000000"    ,r) || r != 0x0000000000000000ULL) return false;
             if (!CppCore::Decimal::tryparse("0000000000000001"    ,r) || r != 0x0000000000000001ULL) return false;
