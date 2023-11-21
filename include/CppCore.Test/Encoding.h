@@ -227,7 +227,8 @@ namespace CppCore { namespace Test
             if (!CppCore::BaseX::tryparse("143",   r, CPPCORE_ALPHABET_B10) || r != 143) return false;
             if (!CppCore::BaseX::tryparse("255",   r, CPPCORE_ALPHABET_B10) || r != 255) return false;
             if (!CppCore::BaseX::tryparse("65535", r, CPPCORE_ALPHABET_B10) || r != 65535) return false;
-            if ( CppCore::BaseX::tryparse("65536", r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("65536", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("655350",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
             if ( CppCore::BaseX::tryparse("",      r, CPPCORE_ALPHABET_B10)) return false;
             if ( CppCore::BaseX::tryparse("x",     r, CPPCORE_ALPHABET_B10)) return false;
             return true;
@@ -241,7 +242,8 @@ namespace CppCore { namespace Test
             if (!CppCore::BaseX::tryparse("255",   r, CPPCORE_ALPHABET_B10) || r != 255) return false;
             if (!CppCore::BaseX::tryparse("65535", r, CPPCORE_ALPHABET_B10) || r != 65535) return false;
             if (!CppCore::BaseX::tryparse("4294967295", r, CPPCORE_ALPHABET_B10) || r != 4294967295U) return false;
-            if ( CppCore::BaseX::tryparse("4294967296", r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("4294967296", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("42949672950",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
             if ( CppCore::BaseX::tryparse("",      r, CPPCORE_ALPHABET_B10)) return false;
             if ( CppCore::BaseX::tryparse("x",     r, CPPCORE_ALPHABET_B10)) return false;
             return true;
@@ -256,7 +258,8 @@ namespace CppCore { namespace Test
             if (!CppCore::BaseX::tryparse("65535", r, CPPCORE_ALPHABET_B10) || r != 65535) return false;
             if (!CppCore::BaseX::tryparse("4294967295", r, CPPCORE_ALPHABET_B10) || r != 4294967295U) return false;
             if (!CppCore::BaseX::tryparse("18446744073709551615", r, CPPCORE_ALPHABET_B10) || r != 18446744073709551615ULL) return false;
-            if ( CppCore::BaseX::tryparse("18446744073709551616", r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("18446744073709551616", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("184467440737095516150",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
             if ( CppCore::BaseX::tryparse("",      r, CPPCORE_ALPHABET_B10)) return false;
             if ( CppCore::BaseX::tryparse("x",     r, CPPCORE_ALPHABET_B10)) return false;
             return true;
@@ -272,7 +275,8 @@ namespace CppCore { namespace Test
             if (!CppCore::BaseX::tryparse("4294967295", r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 4294967295U) return false;
             if (!CppCore::BaseX::tryparse("18446744073709551615", r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 18446744073709551615ULL) return false;
             if (!CppCore::BaseX::tryparse("340282366920938463463374607431768211455", r, CPPCORE_ALPHABET_B10) || r[1] != 0xFFFFFFFFFFFFFFFFULL || r[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
-            if ( CppCore::BaseX::tryparse("340282366920938463463374607431768211456", r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("340282366920938463463374607431768211456", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("3402823669209384634633746074317682114550",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
             if ( CppCore::BaseX::tryparse("",      r, CPPCORE_ALPHABET_B10)) return false;
             if ( CppCore::BaseX::tryparse("x",     r, CPPCORE_ALPHABET_B10)) return false;
             return true;
