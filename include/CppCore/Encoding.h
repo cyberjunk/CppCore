@@ -254,9 +254,8 @@ namespace CppCore
             *(uint8_t*)&r = idx;
             while (const char c = *input++)
             {
-               constexpr size_t FILL = CppCore::rup32(sizeof(UINT), sizeof(size_t)) - sizeof(UINT);
             #pragma pack (push, 1)
-               struct { UINT v; uint8_t of[FILL ? FILL : sizeof(size_t)]; } t;
+               struct { UINT v; uint8_t of; } t;
             #pragma pack(pop)
                idx = tbl[c];
                if (idx == 0xFFU) CPPCORE_UNLIKELY
