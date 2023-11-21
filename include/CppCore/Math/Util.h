@@ -2540,25 +2540,6 @@ namespace CppCore
    // MULTIPLICATION
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#pragma pack (push, 1)
-   /// <summary>
-   /// Pads T to next higher multiple of N. 
-   /// sizeof(T) must not be a multiple of N already.
-   /// </summary>
-   template<typename T, size_t N=sizeof(size_t)>
-   struct Padded
-   {
-      T v;
-      uint8_t t[CppCore::rup32(sizeof(T),N)-sizeof(T)];
-      INLINE Padded() { }
-      INLINE Padded(const T& v)
-      {
-         CppCore::clone(this->v, v);
-         CppCore::clear(t);
-      }
-   };
-#pragma pack(pop)
-
    /// <summary>
    /// Simple Multiplication (a*b=r) in up to O(n*n) automatically selecting 64-Bit or 32-Bit operations and chunks.
    /// Calculates all bits of r, performing a full wide multiplication if sizeof(r) larger-equal sizeof(a)+sizeof(b).
