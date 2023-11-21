@@ -2699,7 +2699,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint8_t& a, const uint8_t& b, uint16_t& r)
    {
-      r = (uint16_t)a * (uint16_t)b;
+      r = (uint16_t)a * b;
    }
 
    /// <summary>
@@ -2715,7 +2715,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint16_t& a, const uint16_t& b, uint32_t& r)
    {
-      r = (uint32_t)a * (uint32_t)b;
+      r = (uint32_t)a * b;
    }
 
    /// <summary>
@@ -2731,7 +2731,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint32_t& a, const uint32_t& b, uint64_t& r)
    {
-      r = (uint64_t)a * (uint64_t)b;
+      r = (uint64_t)a * b;
    }
 
    /// <summary>
