@@ -254,12 +254,14 @@ namespace CppCore
             *(uint8_t*)&r = idx;
             while (const char c = *input++)
             {
-               struct { UINT v; size_t of; } t;
+            #pragma pack (push, 1)
+               struct { UINT v; uint8_t of; } t;
+            #pragma pack(pop)
                idx = tbl[c];
                if (idx == 0xFFU) CPPCORE_UNLIKELY
                   return false; // invalid symbol
                CppCore::umul(r, n, t);
-               if (t.of != 0U) CPPCORE_UNLIKELY
+               if (!CppCore::testzero(t.of)) CPPCORE_UNLIKELY
                   return false; // mul overflow
                uint8_t carry = 0;
                CppCore::addcarry(t.v, idx, r, carry);

@@ -510,6 +510,30 @@ namespace CppCore
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // PADDED STRUCT
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma pack (push, 1)
+   /// <summary>
+   /// Pads T to next higher multiple of N. 
+   /// sizeof(T) must not be a multiple of N already.
+   /// </summary>
+   template<typename T, size_t N=sizeof(size_t)>
+   struct Padded
+   {
+      static constexpr size_t PADSIZE = CppCore::rup32(sizeof(T),N)-sizeof(T);
+      T v;
+      uint8_t t[PADSIZE];
+      INLINE Padded() { }
+      INLINE Padded(const T& v)
+      {
+         CppCore::clone(this->v, v);
+         CppCore::clear(t);
+      }
+   };
+#pragma pack(pop)
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // ADDITION OPERATIONS WITH OVERFLOW BIT
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2542,18 +2566,37 @@ namespace CppCore
 
    /// <summary>
    /// Simple Multiplication (a*b=r) in up to O(n*n) automatically selecting 64-Bit or 32-Bit operations and chunks.
-   /// Requires all three types to be any multiple of at least 32-Bit (better all 64-Bit on 64-Bit CPU).
    /// Calculates all bits of r, performing a full wide multiplication if sizeof(r) larger-equal sizeof(a)+sizeof(b).
    /// </summary>
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void umul(const UINT1& a, const UINT2& b, UINT3& r)
    {
-      // TODO: use ADCX/ADOX interleaved if available
-      static_assert(sizeof(UINT1) > 0 && (sizeof(UINT1) % 4 == 0 || sizeof(UINT1) < 4));
-      static_assert(sizeof(UINT2) > 0 && (sizeof(UINT2) % 4 == 0 || sizeof(UINT2) < 4));
-      static_assert(sizeof(UINT3) > 0 && (sizeof(UINT3) % 4 == 0 || sizeof(UINT3) < 4));
+      if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::umul((size_t)a, b, r); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::umul(a, (size_t)b, r); }
+      else if constexpr (sizeof(UINT3) < sizeof(size_t)) 
+      { 
+         size_t t; 
+         CppCore::umul(a, b, t); 
+         CppCore::clone(r, *(UINT3*)&t); 
+      }
+      else if constexpr (sizeof(UINT1) % sizeof(size_t))
+      {
+         Padded<UINT1> t(a);
+         CppCore::umul(t, b, r);
+      }
+      else if constexpr (sizeof(UINT2) % sizeof(size_t))
+      {
+         Padded<UINT2> t(b);
+         CppCore::umul(a, t, r);
+      }
+      else if constexpr (sizeof(UINT3) % sizeof(size_t))
+      {
+         Padded<UINT3> t;
+         CppCore::umul(a, b, t);
+         CppCore::clone(r, t.v);
+      }
    #if defined(CPPCORE_CPU_64BIT)
-      if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0 && sizeof(UINT3) % 8 == 0)
+      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0 && sizeof(UINT3) % 8 == 0)
       {
          // 64-Bit CPU and Multiples of 64-Bit
          constexpr size_t NA = sizeof(UINT1) / 8;
@@ -2598,11 +2641,8 @@ namespace CppCore
                *rp = k;
          }
       }
-      else if
-   #else
-      if
    #endif
-         constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
+      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
       {
          // 32/64-Bit CPU and Multiples of 32-Bit
          constexpr size_t NA = sizeof(UINT1) / 4;
@@ -2648,9 +2688,6 @@ namespace CppCore
                *rp = k;
          }
       }
-      else if constexpr (sizeof(UINT1) < 4) { umul<size_t, UINT2, UINT3>((size_t)a, b, r); }
-      else if constexpr (sizeof(UINT2) < 4) { umul<UINT1, size_t, UINT3>(a, (size_t)b, r); }
-      else if constexpr (sizeof(UINT3) < 4) { size_t t; umul<UINT1, UINT2, size_t>(a, b, t); r=(UINT3)t; }
       else throw;
    }
 
@@ -2667,7 +2704,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint8_t& a, const uint8_t& b, uint16_t& r)
    {
-      r = (uint16_t)a * (uint16_t)b;
+      r = (uint16_t)a * b;
    }
 
    /// <summary>
@@ -2683,7 +2720,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint16_t& a, const uint16_t& b, uint32_t& r)
    {
-      r = (uint32_t)a * (uint32_t)b;
+      r = (uint32_t)a * b;
    }
 
    /// <summary>
@@ -2699,7 +2736,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint32_t& a, const uint32_t& b, uint64_t& r)
    {
-      r = (uint64_t)a * (uint64_t)b;
+      r = (uint64_t)a * b;
    }
 
    /// <summary>
