@@ -2650,7 +2650,7 @@ namespace CppCore
       }
       else if constexpr (sizeof(UINT1) < 4) { umul<size_t, UINT2, UINT3>((size_t)a, b, r); }
       else if constexpr (sizeof(UINT2) < 4) { umul<UINT1, size_t, UINT3>(a, (size_t)b, r); }
-      else if constexpr (sizeof(UINT3) < 4) { size_t t; umul<UINT1, UINT2, size_t>(a, b, t); r=(UINT3)t; }
+      else if constexpr (sizeof(UINT3) < 4) { size_t t; umul<UINT1, UINT2, size_t>(a, b, t); r=*(UINT3*)&t; }
       else throw;
    }
 
