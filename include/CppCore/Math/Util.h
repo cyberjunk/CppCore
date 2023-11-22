@@ -708,8 +708,8 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry32(0U, py[i], pz[i], c);
       }
-      else if constexpr (sizeof(UINT1) < sizeof(size_t)) { addcarry<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
-      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { addcarry<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
+      else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::addcarry<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::addcarry<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
       else throw;
    }
 
@@ -1034,8 +1034,8 @@ namespace CppCore
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void subborrow(const UINT1& x, const UINT2& y, UINT3& z, uint8_t& c)
    {
-      static_assert(sizeof(UINT1) % 4 == 0);
-      static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT1) % 4 == 0 || sizeof(UINT1) < sizeof(size_t));
+      static_assert(sizeof(UINT2) % 4 == 0 || sizeof(UINT2) < sizeof(size_t));
       static_assert(sizeof(UINT3) % 4 == 0);
       constexpr size_t MAXSIZE = MAX(sizeof(UINT1), sizeof(UINT2));
       constexpr size_t MINSIZE = MIN(sizeof(UINT1), sizeof(UINT2));
@@ -1059,8 +1059,11 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::subborrow64(0ULL, py[i], pz[i], c);
       }
-      else
+      else if
+   #else
+      if
    #endif
+         constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
       {
          constexpr size_t NUINT1 = sizeof(UINT1) / 4;
          constexpr size_t NUINT2 = sizeof(UINT2) / 4;
@@ -1078,6 +1081,9 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::subborrow32(0U, py[i], pz[i], c);
       }
+      else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::subborrow<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::subborrow<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
+      else throw;
    }
 
    /// <summary>
@@ -1163,16 +1169,26 @@ namespace CppCore
    /// Subtraction for any sized integer that is multiple of 32-bit.
    /// </summary>
    template<typename UINT1, typename UINT2, typename UINT3>
-   INLINE static void usub(const UINT1& x, const UINT2& y, UINT3& z)
+   INLINE static void usub(const UINT1& x, const UINT2& y, UINT3& r)
    {
-      uint8_t c = 0;
-      CppCore::subborrow(x, y, z, c);
+      if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::usub((size_t)x, y, r); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::usub(x, (size_t)y, r); }
+      else if constexpr (sizeof(UINT3) < sizeof(size_t)) { size_t t; CppCore::usub(x, y, t); r = (UINT3)t; }
+      else { uint8_t c = 0; CppCore::subborrow(x, y, r, c); }
    }
 
    /// <summary>
    /// Template Specialization for 8-8=8
    /// </summary>
    template<> INLINE void usub(const uint8_t& x, const uint8_t& y, uint8_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 16-8=16
+   /// </summary>
+   template<> INLINE void usub(const uint16_t& x, const uint8_t& y, uint16_t& r)
    {
       r = x - y;
    }
@@ -1186,9 +1202,49 @@ namespace CppCore
    }
 
    /// <summary>
+   /// Template Specialization for 32-8=32
+   /// </summary>
+   template<> INLINE void usub(const uint32_t& x, const uint8_t& y, uint32_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 32-16=32
+   /// </summary>
+   template<> INLINE void usub(const uint32_t& x, const uint16_t& y, uint32_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
    /// Template Specialization for 32-32=32
    /// </summary>
    template<> INLINE void usub(const uint32_t& x, const uint32_t& y, uint32_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-8=64
+   /// </summary>
+   template<> INLINE void usub(const uint64_t& x, const uint8_t& y, uint64_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-16=64
+   /// </summary>
+   template<> INLINE void usub(const uint64_t& x, const uint16_t& y, uint64_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-32=64
+   /// </summary>
+   template<> INLINE void usub(const uint64_t& x, const uint32_t& y, uint64_t& r)
    {
       r = x - y;
    }

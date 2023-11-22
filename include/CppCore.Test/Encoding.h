@@ -750,16 +750,16 @@ namespace CppCore { namespace Test
          {
             int8_t r;
 
-            if (CppCore::Decimal::parse16s( "00" ) != int8_t(0x00)) return false;
-            if (CppCore::Decimal::parse16s( "01" ) != int8_t(0x01)) return false;
-            if (CppCore::Decimal::parse16s("-01" ) != int8_t(0xFF)) return false;
-            if (CppCore::Decimal::parse16s( "99" ) != int8_t(0x63)) return false;
-            if (CppCore::Decimal::parse16s("-99" ) != int8_t(0x9D)) return false;
-            if (CppCore::Decimal::parse16s("+16" ) != int8_t(0x10)) return false;
-            if (CppCore::Decimal::parse16s("-16" ) != int8_t(0xF0)) return false;
-            if (CppCore::Decimal::parse16s( "0"  ) != int8_t(0x00)) return false;
-            if (CppCore::Decimal::parse16s( "127") != int8_t(0x7F)) return false;
-            if (CppCore::Decimal::parse16s("-128") != int8_t(0x80)) return false;
+            if (CppCore::Decimal::parse8s( "00" ) != int8_t(0x00)) return false;
+            if (CppCore::Decimal::parse8s( "01" ) != int8_t(0x01)) return false;
+            if (CppCore::Decimal::parse8s("-01" ) != int8_t(0xFF)) return false;
+            if (CppCore::Decimal::parse8s( "99" ) != int8_t(0x63)) return false;
+            if (CppCore::Decimal::parse8s("-99" ) != int8_t(0x9D)) return false;
+            if (CppCore::Decimal::parse8s("+16" ) != int8_t(0x10)) return false;
+            if (CppCore::Decimal::parse8s("-16" ) != int8_t(0xF0)) return false;
+            if (CppCore::Decimal::parse8s( "0"  ) != int8_t(0x00)) return false;
+            if (CppCore::Decimal::parse8s( "127") != int8_t(0x7F)) return false;
+            if (CppCore::Decimal::parse8s("-128") != int8_t(0x80)) return false;
 
             if (!CppCore::Decimal::tryparse( "00" ,r) || r != int8_t(0x00)) return false;
             if (!CppCore::Decimal::tryparse( "01" ,r) || r != int8_t(0x01)) return false;
@@ -906,16 +906,16 @@ namespace CppCore { namespace Test
          {
             int32_t r;
 
-            if (CppCore::Decimal::parse32s( "00000000"  ) != int32_t(0x00000000)) return false;
-            if (CppCore::Decimal::parse32s( "00000001"  ) != int32_t(0x00000001)) return false;
-            if (CppCore::Decimal::parse32s("-00000001"  ) != int32_t(0xFFFFFFFF)) return false;
-            if (CppCore::Decimal::parse32s( "99999999"  ) != int32_t(0x05F5E0FF)) return false;
-            if (CppCore::Decimal::parse32s("-99999999"  ) != int32_t(0xFA0A1F01)) return false;
-            if (CppCore::Decimal::parse32s("+16"        ) != int32_t(0x00000010)) return false;
-            if (CppCore::Decimal::parse32s("-16"        ) != int32_t(0xFFFFFFF0)) return false;
-            if (CppCore::Decimal::parse32s( "0"         ) != int32_t(0x00000000)) return false;
-            if (CppCore::Decimal::parse32s( "2147483647") != int32_t(0x7FFFFFFF)) return false;
-            if (CppCore::Decimal::parse32s("-2147483648") != int32_t(0x80000000)) return false;
+            CppCore::Decimal::parses( "00000000"  ,r); if (r != int32_t(0x00000000)) return false;
+            CppCore::Decimal::parses( "00000001"  ,r); if (r != int32_t(0x00000001)) return false;
+            CppCore::Decimal::parses("-00000001"  ,r); if (r != int32_t(0xFFFFFFFF)) return false;
+            CppCore::Decimal::parses( "99999999"  ,r); if (r != int32_t(0x05F5E0FF)) return false;
+            CppCore::Decimal::parses("-99999999"  ,r); if (r != int32_t(0xFA0A1F01)) return false;
+            CppCore::Decimal::parses("+16"        ,r); if (r != int32_t(0x00000010)) return false;
+            CppCore::Decimal::parses("-16"        ,r); if (r != int32_t(0xFFFFFFF0)) return false;
+            CppCore::Decimal::parses( "0"         ,r); if (r != int32_t(0x00000000)) return false;
+            CppCore::Decimal::parses( "2147483647",r); if (r != int32_t(0x7FFFFFFF)) return false;
+            CppCore::Decimal::parses("-2147483648",r); if (r != int32_t(0x80000000)) return false;
 
             if (!CppCore::Decimal::tryparse( "00000000"  ,r) || r != int32_t(0x00000000)) return false;
             if (!CppCore::Decimal::tryparse( "00000001"  ,r) || r != int32_t(0x00000001)) return false;
@@ -985,16 +985,16 @@ namespace CppCore { namespace Test
          {
             int64_t r;
 
-            if (CppCore::Decimal::parse64s( "0000000000000000"   ) != int64_t(0x0000000000000000)) return false;
-            if (CppCore::Decimal::parse64s( "0000000000000001"   ) != int64_t(0x0000000000000001)) return false;
-            if (CppCore::Decimal::parse64s("-0000000000000001"   ) != int64_t(0xFFFFFFFFFFFFFFFF)) return false;
-            if (CppCore::Decimal::parse64s( "9999999999999999"   ) != int64_t(0x002386F26FC0FFFF)) return false;
-            if (CppCore::Decimal::parse64s("-9999999999999999"   ) != int64_t(0xFFDC790D903F0001)) return false;
-            if (CppCore::Decimal::parse64s("+16"                 ) != int64_t(0x0000000000000010)) return false;
-            if (CppCore::Decimal::parse64s("-16"                 ) != int64_t(0xFFFFFFFFFFFFFFF0)) return false;
-            if (CppCore::Decimal::parse64s( "0"                  ) != int64_t(0x0000000000000000)) return false;
-            if (CppCore::Decimal::parse64s( "9223372036854775807") != int64_t(0x7FFFFFFFFFFFFFFF)) return false;
-            if (CppCore::Decimal::parse64s("-9223372036854775808") != int64_t(0x8000000000000000)) return false;
+            CppCore::Decimal::parses( "0000000000000000"   ,r); if (r != int64_t(0x0000000000000000)) return false;
+            CppCore::Decimal::parses( "0000000000000001"   ,r); if (r != int64_t(0x0000000000000001)) return false;
+            CppCore::Decimal::parses("-0000000000000001"   ,r); if (r != int64_t(0xFFFFFFFFFFFFFFFF)) return false;
+            CppCore::Decimal::parses( "9999999999999999"   ,r); if (r != int64_t(0x002386F26FC0FFFF)) return false;
+            CppCore::Decimal::parses("-9999999999999999"   ,r); if (r != int64_t(0xFFDC790D903F0001)) return false;
+            CppCore::Decimal::parses("+16"                 ,r); if (r != int64_t(0x0000000000000010)) return false;
+            CppCore::Decimal::parses("-16"                 ,r); if (r != int64_t(0xFFFFFFFFFFFFFFF0)) return false;
+            CppCore::Decimal::parses( "0"                  ,r); if (r != int64_t(0x0000000000000000)) return false;
+            CppCore::Decimal::parses( "9223372036854775807",r); if (r != int64_t(0x7FFFFFFFFFFFFFFF)) return false;
+            CppCore::Decimal::parses("-9223372036854775808",r); if (r != int64_t(0x8000000000000000)) return false;
 
             if (!CppCore::Decimal::tryparse( "0000000000000000"   ,r) || r != int64_t(0x0000000000000000)) return false;
             if (!CppCore::Decimal::tryparse( "0000000000000001"   ,r) || r != int64_t(0x0000000000000001)) return false;

@@ -950,6 +950,30 @@ namespace CppCore
       }
 
       /// <summary>
+      /// Template function for parsing signed integer from zero terminated decimal string.
+      /// No overflow or invalid symbol check! First symbol can be '-' or '+' to indicate sign.
+      /// </summary>
+      template<typename INT>
+      INLINE static void parses(const char* input, INT& r)
+      {
+         CppCore::clear(r);
+         if (const char c = *input++)
+         {
+            bool neg = false;
+            if (c == '-') neg = true; 
+            else if (c == '+') { }
+            else *(uint8_t*)&r = (uint8_t)(c-'0');
+            while (const char c = *input++)
+            {
+               CppCore::umul(r, (uint8_t)10U, r);
+               CppCore::uadd(r, (uint8_t)(c-'0'), r);
+            }
+            if (neg)
+               CppCore::usub((uint8_t)0U, r, r);
+         }
+      }
+
+      /// <summary>
       /// Template function for parsing unsigned integer from zero terminated string using decimal alphabet.
       /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
       /// </summary>
