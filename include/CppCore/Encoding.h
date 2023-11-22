@@ -1128,28 +1128,6 @@ namespace CppCore
 
          /// <summary>
          /// Template function for parsing signed integer from zero terminated decimal string.
-         /// No overflow or invalid symbol check! First symbol can be '-' or '+' to indicate sign.
-         /// </summary>
-         template<typename T>
-         INLINE static T parses(const char* input)
-         {
-            T r = 0;
-            char c;
-            if ((c = *input++)) CPPCORE_LIKELY
-            {
-               T sign = 1;
-               if (c == '-') sign = -sign; 
-               else if (c == '+') { }
-               else r += (T)(c-'0');
-               while ((c = *input++))
-                  r = CppCore::madd<T>(r, (T)10, (T)(c-'0'));
-               r *= sign;
-            }
-            return r;
-         }
-
-         /// <summary>
-         /// Template function for parsing signed integer from zero terminated decimal string.
          /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
          /// N must be the number of max symbols e.g. 10 for int32_t or 19 for int64_t.
          /// </summary>
@@ -1383,44 +1361,6 @@ namespace CppCore
       INLINE static void tostring(int64_t v, STRING& s)
       {
          Util::tostrings<int64_t, uint64_t, STRING, CPPCORE_MAXLENGTH_B10_64S>(v, s);
-      }
-
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Parses 8-bit signed integer from zero terminated decimal string.
-      /// No overflow or invalid symbol check!
-      /// </summary>
-      INLINE static int8_t parse8s(const char* input)
-      {
-         return Util::parses<int8_t>(input);
-      }
-
-      /// <summary>
-      /// Parses 16-bit signed integer from zero terminated decimal string.
-      /// No overflow or invalid symbol check!
-      /// </summary>
-      INLINE static int16_t parse16s(const char* input)
-      {
-         return Util::parses<int16_t>(input);
-      }
-
-      /// <summary>
-      /// Parses 32-bit signed integer from zero terminated decimal string.
-      /// No overflow or invalid symbol check!
-      /// </summary>
-      INLINE static int32_t parse32s(const char* input)
-      {
-         return Util::parses<int32_t>(input);
-      }
-
-      /// <summary>
-      /// Parses 64-bit signed integer from zero terminated decimal string.
-      /// No overflow or invalid symbol check!
-      /// </summary>
-      INLINE static int64_t parse64s(const char* input)
-      {
-         return Util::parses<int64_t>(input);
       }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
