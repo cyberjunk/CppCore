@@ -727,22 +727,22 @@ namespace CppCore { namespace Test
             CppCore::Decimal::parseu("0",   r); if (r != uint8_t(0x00)) return false;
             CppCore::Decimal::parseu("255", r); if (r != uint8_t(0xFF)) return false;
 
-            if (!CppCore::Decimal::tryparse("00" ,r) || r != uint8_t(0x00)) return false;
-            if (!CppCore::Decimal::tryparse("01" ,r) || r != uint8_t(0x01)) return false;
-            if (!CppCore::Decimal::tryparse("99" ,r) || r != uint8_t(0x63)) return false;
-            if (!CppCore::Decimal::tryparse("16" ,r) || r != uint8_t(0x10)) return false;
-            if (!CppCore::Decimal::tryparse("0"  ,r) || r != uint8_t(0x00)) return false;
-            if (!CppCore::Decimal::tryparse("255",r) || r != uint8_t(0xFF)) return false;
+            if (!CppCore::Decimal::tryparseu("00" ,  r) || r != uint8_t(0x00)) return false;
+            if (!CppCore::Decimal::tryparseu("01" ,  r) || r != uint8_t(0x01)) return false;
+            if (!CppCore::Decimal::tryparseu("99" ,  r) || r != uint8_t(0x63)) return false;
+            if (!CppCore::Decimal::tryparseu("16" ,  r) || r != uint8_t(0x10)) return false;
+            if (!CppCore::Decimal::tryparseu("0"  ,  r) || r != uint8_t(0x00)) return false;
+            if (!CppCore::Decimal::tryparseu("255",  r) || r != uint8_t(0xFF)) return false;
+            if (!CppCore::Decimal::tryparseu("0001", r) || r != uint8_t(0x01)) return false;
 
-            if (CppCore::Decimal::tryparse("256",  r)) return false; // add overflow
-            if (CppCore::Decimal::tryparse("999",  r)) return false; // mul overflow ?
-            if (CppCore::Decimal::tryparse("2X3",  r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("-1",   r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("+1",   r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("255X", r)) return false; // invalid symbol after valid max
-            //if (CppCore::Decimal::tryparse("0001",      r)) return false; // too many leading zeros
-            if (CppCore::Decimal::tryparse("",            r)) return false; // empty input
-            if (CppCore::Decimal::tryparse((const char*)0,r)) return false; // null pointer
+            if (CppCore::Decimal::tryparseu("256",  r)) return false; // add overflow
+            if (CppCore::Decimal::tryparseu("999",  r)) return false; // mul overflow
+            if (CppCore::Decimal::tryparseu("2X3",  r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("-1",   r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("+1",   r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("255X", r)) return false; // invalid symbol after valid max
+            if (CppCore::Decimal::tryparseu("",            r)) return false; // empty input
+            if (CppCore::Decimal::tryparseu((const char*)0,r)) return false; // null pointer
 
             return true;
          }
@@ -804,22 +804,22 @@ namespace CppCore { namespace Test
             CppCore::Decimal::parseu("0"    ,r); if (r != uint16_t(0x0000)) return false;
             CppCore::Decimal::parseu("65535",r); if (r != uint16_t(0xFFFF)) return false;
 
-            if (!CppCore::Decimal::tryparse("0000" ,r) || r != uint16_t(0x0000)) return false;
-            if (!CppCore::Decimal::tryparse("0001" ,r) || r != uint16_t(0x0001)) return false;
-            if (!CppCore::Decimal::tryparse("9999" ,r) || r != uint16_t(0x270F)) return false;
-            if (!CppCore::Decimal::tryparse("16"   ,r) || r != uint16_t(0x0010)) return false;
-            if (!CppCore::Decimal::tryparse("0"    ,r) || r != uint16_t(0x0000)) return false;
-            if (!CppCore::Decimal::tryparse("65535",r) || r != uint16_t(0xFFFF)) return false;
+            if (!CppCore::Decimal::tryparseu("0000"  , r) || r != uint16_t(0x0000)) return false;
+            if (!CppCore::Decimal::tryparseu("0001"  , r) || r != uint16_t(0x0001)) return false;
+            if (!CppCore::Decimal::tryparseu("9999"  , r) || r != uint16_t(0x270F)) return false;
+            if (!CppCore::Decimal::tryparseu("16"    , r) || r != uint16_t(0x0010)) return false;
+            if (!CppCore::Decimal::tryparseu("0"     , r) || r != uint16_t(0x0000)) return false;
+            if (!CppCore::Decimal::tryparseu("65535" , r) || r != uint16_t(0xFFFF)) return false;
+            if (!CppCore::Decimal::tryparseu("000001", r) || r != uint16_t(0x0001)) return false;
 
-            if (CppCore::Decimal::tryparse("65536",       r)) return false; // add overflow
-            if (CppCore::Decimal::tryparse("99999",       r)) return false; // mul overflow ?
-            if (CppCore::Decimal::tryparse("12X34",       r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("-1",          r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("+1",          r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("65535X",      r)) return false; // invalid symbol after valid max
-            //if (CppCore::Decimal::tryparse("000001",      r)) return false; // too many leading zeros
-            if (CppCore::Decimal::tryparse("",            r)) return false; // empty input
-            if (CppCore::Decimal::tryparse((const char*)0,r)) return false; // null pointer
+            if (CppCore::Decimal::tryparseu("65536",       r)) return false; // add overflow
+            if (CppCore::Decimal::tryparseu("99999",       r)) return false; // mul overflow
+            if (CppCore::Decimal::tryparseu("12X34",       r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("-1",          r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("+1",          r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("65535X",      r)) return false; // invalid symbol after valid max
+            if (CppCore::Decimal::tryparseu("",            r)) return false; // empty input
+            if (CppCore::Decimal::tryparseu((const char*)0,r)) return false; // null pointer
 
             return true;
          }
@@ -883,22 +883,22 @@ namespace CppCore { namespace Test
             CppCore::Decimal::parseu("0"         ,r); if (r != 0x00000000U) return false;
             CppCore::Decimal::parseu("4294967295",r); if (r != 0xFFFFFFFFU) return false;
 
-            if (!CppCore::Decimal::tryparse("00000000"  ,r) || r != 0x00000000U) return false;
-            if (!CppCore::Decimal::tryparse("00000001"  ,r) || r != 0x00000001U) return false;
-            if (!CppCore::Decimal::tryparse("99999999"  ,r) || r != 0x05F5E0FFU) return false;
-            if (!CppCore::Decimal::tryparse("16"        ,r) || r != 0x00000010U) return false;
-            if (!CppCore::Decimal::tryparse("0"         ,r) || r != 0x00000000U) return false;
-            if (!CppCore::Decimal::tryparse("4294967295",r) || r != 0xFFFFFFFFU) return false;
+            if (!CppCore::Decimal::tryparseu("00000000"   , r) || r != 0x00000000U) return false;
+            if (!CppCore::Decimal::tryparseu("00000001"   , r) || r != 0x00000001U) return false;
+            if (!CppCore::Decimal::tryparseu("99999999"   , r) || r != 0x05F5E0FFU) return false;
+            if (!CppCore::Decimal::tryparseu("16"         , r) || r != 0x00000010U) return false;
+            if (!CppCore::Decimal::tryparseu("0"          , r) || r != 0x00000000U) return false;
+            if (!CppCore::Decimal::tryparseu("4294967295" , r) || r != 0xFFFFFFFFU) return false;
+            if (!CppCore::Decimal::tryparseu("00000000001", r) || r != 0x00000001U) return false;
 
-            if (CppCore::Decimal::tryparse("4294967296",  r)) return false; // add overflow
-            if (CppCore::Decimal::tryparse("5555555555",  r)) return false; // mul overflow
-            if (CppCore::Decimal::tryparse("12X345",      r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("-1",          r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("+1",          r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("4294967295X", r)) return false; // invalid symbol after valid max
-            //if (CppCore::Decimal::tryparse("00000000001", r)) return false; // too many leading zeros
-            if (CppCore::Decimal::tryparse("",            r)) return false; // empty input
-            if (CppCore::Decimal::tryparse((const char*)0,r)) return false; // null pointer
+            if (CppCore::Decimal::tryparseu("4294967296",  r)) return false; // add overflow
+            if (CppCore::Decimal::tryparseu("5555555555",  r)) return false; // mul overflow
+            if (CppCore::Decimal::tryparseu("12X345",      r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("-1",          r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("+1",          r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("4294967295X", r)) return false; // invalid symbol after valid max
+            if (CppCore::Decimal::tryparseu("",            r)) return false; // empty input
+            if (CppCore::Decimal::tryparseu((const char*)0,r)) return false; // null pointer
 
             return true;
          }
@@ -962,22 +962,22 @@ namespace CppCore { namespace Test
             CppCore::Decimal::parseu("0",r)                   ; if (r != 0x0000000000000000ULL) return false;
             CppCore::Decimal::parseu("18446744073709551615",r); if (r != 0xFFFFFFFFFFFFFFFFULL) return false;
 
-            if (!CppCore::Decimal::tryparse("0000000000000000"    ,r) || r != 0x0000000000000000ULL) return false;
-            if (!CppCore::Decimal::tryparse("0000000000000001"    ,r) || r != 0x0000000000000001ULL) return false;
-            if (!CppCore::Decimal::tryparse("9999999999999999"    ,r) || r != 0x002386F26FC0FFFFULL) return false;
-            if (!CppCore::Decimal::tryparse("16"                  ,r) || r != 0x0000000000000010ULL) return false;
-            if (!CppCore::Decimal::tryparse("0"                   ,r) || r != 0x0000000000000000ULL) return false;
-            if (!CppCore::Decimal::tryparse("18446744073709551615",r) || r != 0xFFFFFFFFFFFFFFFFULL) return false;
+            if (!CppCore::Decimal::tryparseu("0000000000000000"     ,r) || r != 0x0000000000000000ULL) return false;
+            if (!CppCore::Decimal::tryparseu("0000000000000001"     ,r) || r != 0x0000000000000001ULL) return false;
+            if (!CppCore::Decimal::tryparseu("9999999999999999"     ,r) || r != 0x002386F26FC0FFFFULL) return false;
+            if (!CppCore::Decimal::tryparseu("16"                   ,r) || r != 0x0000000000000010ULL) return false;
+            if (!CppCore::Decimal::tryparseu("0"                    ,r) || r != 0x0000000000000000ULL) return false;
+            if (!CppCore::Decimal::tryparseu("18446744073709551615" ,r) || r != 0xFFFFFFFFFFFFFFFFULL) return false;
+            if (!CppCore::Decimal::tryparseu("000000000000000000001",r) || r != 0x0000000000000001ULL) return false;
 
-            if (CppCore::Decimal::tryparse("18446744073709551616", r)) return false; // add overflow
-            if (CppCore::Decimal::tryparse("55555555555555555555", r)) return false; // mul overflow
-            if (CppCore::Decimal::tryparse("12X345",               r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("-1",                   r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("+1",                   r)) return false; // invalid symbol
-            if (CppCore::Decimal::tryparse("18446744073709551615X",r)) return false; // invalid symbol after valid max
-            //if (CppCore::Decimal::tryparse("000000000000000000001",r)) return false; // too many leading zeros
-            if (CppCore::Decimal::tryparse("",                     r)) return false; // empty input
-            if (CppCore::Decimal::tryparse((const char*)0,         r)) return false; // null pointer
+            if (CppCore::Decimal::tryparseu("18446744073709551616", r)) return false; // add overflow
+            if (CppCore::Decimal::tryparseu("55555555555555555555", r)) return false; // mul overflow
+            if (CppCore::Decimal::tryparseu("12X345",               r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("-1",                   r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("+1",                   r)) return false; // invalid symbol
+            if (CppCore::Decimal::tryparseu("18446744073709551615X",r)) return false; // invalid symbol after valid max
+            if (CppCore::Decimal::tryparseu("",                     r)) return false; // empty input
+            if (CppCore::Decimal::tryparseu((const char*)0,         r)) return false; // null pointer
 
             return true;
          }

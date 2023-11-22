@@ -939,7 +939,7 @@ namespace CppCore
       {
          CppCore::clear(r);
          if (const char c = *input++)
-         {        
+         {
             *(uint8_t*)&r = (uint8_t)(c-'0');
             while (const char c = *input++)
             {
@@ -947,6 +947,42 @@ namespace CppCore
                CppCore::uadd(r, (uint8_t)(c-'0'), r);
             }
          }
+      }
+
+      /// <summary>
+      /// Template function for parsing unsigned integer from zero terminated string using decimal alphabet.
+      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
+      /// </summary>
+      template<typename UINT>
+      INLINE static bool tryparseu(const char* input, UINT& r)
+      {
+         if (!input)
+            return false; // null pointer
+         if (const char first = *input++) CPPCORE_LIKELY
+         {
+            CppCore::clear(r);
+            if (!CppCore::isdigit(first)) CPPCORE_UNLIKELY
+               return false; // invalid first symbol
+            *(uint8_t*)&r = (uint8_t)(first-'0');
+            while (const char c = *input++)
+            {
+               if (!CppCore::isdigit(c)) CPPCORE_UNLIKELY
+                  return false; // invalid symbol
+            #pragma pack (push, 1)
+               struct { UINT v; uint8_t of; } t;
+            #pragma pack(pop)
+               CppCore::umul(r, (uint8_t)10U, t);
+               if (!CppCore::testzero(t.of)) CPPCORE_UNLIKELY
+                  return false; // mul overflow
+               uint8_t carry = 0;
+               CppCore::addcarry(t.v, (uint8_t)(c-'0'), r, carry);
+               if (carry != 0) CPPCORE_UNLIKELY
+                  return false; // add overflow
+            }
+            return true;
+         }
+         else CPPCORE_UNLIKELY
+            return false; // empty input
       }
 
       /// <summary>
@@ -1086,53 +1122,6 @@ namespace CppCore
                r *= sign;
             }
             return r;
-         }
-
-         /// <summary>
-         /// Template function for parsing unsigned integer from zero terminated decimal string.
-         /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-         /// N must be the number of max symbols e.g. 10 for uint32_t or 20 for uint64_t.
-         /// </summary>
-         template<typename T, size_t N>
-         INLINE static bool tryparseu(const char* input, T& r)
-         {
-            // TODO: The 00-byte check and isdigit() can be
-            // done with lookup table like in hex-version
-            r = 0U;
-            char c;
-            if (input) CPPCORE_LIKELY
-            {
-               // symbol 1 (no mul, no overflow)
-               if ((c = *input++) && CppCore::isdigit(c)) CPPCORE_LIKELY
-                  r += (T)(c-'0');
-               else CPPCORE_UNLIKELY // invalid symbol or empty string
-                  return false;
-               // n-2 symbols (muladd, no overflow)
-               for (size_t i = 0; i != N-2U; i++)
-               {
-                  if ((c = *input++))
-                  {
-                     if (CppCore::isdigit(c)) CPPCORE_LIKELY
-                        r = CppCore::madd<T>((T)r, (T)10U, (T)(c-'0'));
-                     else CPPCORE_UNLIKELY // invalid symbol
-                        return false;
-                  }
-                  else // end of str
-                     return true;
-               }
-               // last symbol (may fit or overflow already)
-               if ((c = *input++))
-               {
-                  if (!CppCore::isdigit(c) || CppCore::overflowmadd((T&)r, (T)r, (T)10U, (T)(c - '0'))) CPPCORE_UNLIKELY
-                     return false; // invalid symbol or overflow
-               }
-               else // end of str
-                  return true;
-               // ok if end of str else fail (invalid symbol or overflow)
-               return (*input == 0);
-            }
-            else CPPCORE_UNLIKELY // null pointer
-               return false;
          }
 
          /// <summary>
@@ -1411,42 +1400,6 @@ namespace CppCore
       }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Tries to parse 8-bit unsigned integer from zero terminated decimal string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint8_t& r)
-      {
-         return Util::tryparseu<uint8_t, CPPCORE_MAXSYMBOLS_B10_8U>(input, r);
-      }
-
-      /// <summary>
-      /// Tries to parse 16-bit unsigned integer from zero terminated decimal string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint16_t& r)
-      {
-         return Util::tryparseu<uint16_t, CPPCORE_MAXSYMBOLS_B10_16U>(input, r);
-      }
-
-      /// <summary>
-      /// Tries to parse 32-bit unsigned integer from zero terminated decimal string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint32_t& r)
-      {
-         return Util::tryparseu<uint32_t, CPPCORE_MAXSYMBOLS_B10_32U>(input, r);
-      }
-
-      /// <summary>
-      /// Tries to parse 64-bit unsigned integer from zero terminated decimal string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint64_t& r)
-      {
-         return Util::tryparseu<uint64_t, CPPCORE_MAXSYMBOLS_B10_64U>(input, r);
-      }
 
       /// <summary>
       /// Tries to parse 8-bit signed integer from zero terminated decimal string.
