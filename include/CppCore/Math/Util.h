@@ -2636,17 +2636,17 @@ namespace CppCore
          CppCore::umul(a, b, t); 
          CppCore::clone(r, *(UINT3*)&t); 
       }
-      else if constexpr (sizeof(UINT1) % sizeof(size_t))
+      else if constexpr (sizeof(UINT1) % sizeof(size_t) != 0)
       {
          Padded<UINT1> t(a);
          CppCore::umul(t, b, r);
       }
-      else if constexpr (sizeof(UINT2) % sizeof(size_t))
+      else if constexpr (sizeof(UINT2) % sizeof(size_t) != 0)
       {
          Padded<UINT2> t(b);
          CppCore::umul(a, t, r);
       }
-      else if constexpr (sizeof(UINT3) % sizeof(size_t))
+      else if constexpr (sizeof(UINT3) % sizeof(size_t) != 0)
       {
          Padded<UINT3> t;
          CppCore::umul(a, b, t);
