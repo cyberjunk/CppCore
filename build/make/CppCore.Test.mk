@@ -140,9 +140,9 @@ ifeq ($(TARGET_OS),android)
 	$(AVDMANAGER) list avd
 	$(ADB) start-server
 ifeq ($(DETECTED_OS),win)
-	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
+	$(EMULATOR) -no-window -no-audio -no-snapstorage -no-snapshot -no-boot-anim -gpu guest -avd $(NAME)_AVD
 else
-	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD &
+	$(EMULATOR) -no-window -no-audio -no-snapstorage -no-snapshot -no-boot-anim -gpu guest -avd $(NAME)_AVD &
 endif
 	echo WAITING FOR DEVICE
 	$(ADB) wait-for-any-device
