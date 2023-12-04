@@ -238,7 +238,6 @@ namespace CppCore
       {
          if (!input || !alphabet)
             return false; // null pointer
-         CppCore::Padded<UINT> t;
          uint8_t tbl[256];
          uint8_t n = 0;
          CppCore::bytedup(0xFF, tbl);
@@ -255,6 +254,7 @@ namespace CppCore
             *(uint8_t*)&r = idx;
             while (const char c = *input++)
             {
+               CppCore::Padded<UINT> t;
                idx = tbl[c];
                if (idx == 0xFFU) CPPCORE_UNLIKELY
                   return false; // invalid symbol
