@@ -130,6 +130,7 @@ ifeq ($(TARGET_OS),android)
 	echo [SDK] $(ANDROID_HOME)
 #	$(SDKMANAGER) --list_installed
 	$(SDKMANAGER) 'emulator'
+	$(SDKMANAGER) --update
 	$(SDKMANAGER) $(ANDROID_SYSIMAGE)
 #	$(SDKMANAGER) 'extras;intel;Hardware_Accelerated_Execution_Manager'
 	$(AVDMANAGER) create avd --force \
