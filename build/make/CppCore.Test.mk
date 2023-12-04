@@ -144,6 +144,7 @@ ifeq ($(DETECTED_OS),win)
 else
 	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD &
 endif
+	echo WAITING FOR DEVICE
 	$(ADB) wait-for-any-device
 	$(ADB) devices
 	$(ADB) push $(OUT) /data/local/tmp
