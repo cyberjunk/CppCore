@@ -238,6 +238,7 @@ namespace CppCore
       {
          if (!input || !alphabet)
             return false; // null pointer
+         CppCore::Padded<UINT> t;
          uint8_t tbl[256];
          uint8_t n = 0;
          CppCore::bytedup(0xFF, tbl);
@@ -254,14 +255,11 @@ namespace CppCore
             *(uint8_t*)&r = idx;
             while (const char c = *input++)
             {
-            #pragma pack (push, 1)
-               struct { UINT v; uint8_t of; } t;
-            #pragma pack(pop)
                idx = tbl[c];
                if (idx == 0xFFU) CPPCORE_UNLIKELY
                   return false; // invalid symbol
                CppCore::umul(r, n, t);
-               if (!CppCore::testzero(t.of)) CPPCORE_UNLIKELY
+               if (!CppCore::testzero(t.t)) CPPCORE_UNLIKELY
                   return false; // mul overflow
                uint8_t carry = 0;
                CppCore::addcarry(t.v, idx, r, carry);
