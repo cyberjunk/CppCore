@@ -510,8 +510,68 @@ namespace CppCore
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // PADDED STRUCT
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma pack (push, 1)
+   /// <summary>
+   /// Pads T to next higher multiple of N. 
+   /// sizeof(T) must not be a multiple of N already.
+   /// </summary>
+   template<typename T, size_t N=sizeof(size_t)>
+   struct Padded
+   {
+      static constexpr size_t PADSIZE = CppCore::rup32(sizeof(T),N)-sizeof(T);
+      T v;
+      uint8_t t[PADSIZE];
+      INLINE Padded() { }
+      INLINE Padded(const T& v)
+      {
+         CppCore::clone(this->v, v);
+         CppCore::clear(t);
+      }
+   };
+#pragma pack(pop)
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // ADDITION OPERATIONS WITH OVERFLOW BIT
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Addition with carry bit for 8-bit integer.
+   /// </summary>
+   INLINE static void addcarry8(uint8_t a, uint8_t b, uint8_t& r, uint8_t& c)
+   {
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
+      c = _addcarry_u8(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcb)
+      unsigned char t;
+      r = __builtin_addcb(a, b, c, &t);
+      c = (uint8_t)t;
+   #else
+      // from Hacker's Delight
+      r = a + b + c;
+      c = ((a & b) | ((a | b) & ~r)) >> 7;
+   #endif
+   }
+
+   /// <summary>
+   /// Addition with carry bit for 16-bit integer.
+   /// </summary>
+   INLINE static void addcarry16(uint16_t a, uint16_t b, uint16_t& r, uint8_t& c)
+   {
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
+      c = _addcarry_u16(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcs)
+      unsigned short t;
+      r = __builtin_addcs(a, b, c, &t);
+      c = (uint8_t)t;
+   #else
+      // from Hacker's Delight
+      r = a + b + c;
+      c = ((a & b) | ((a | b) & ~r)) >> 15;
+   #endif
+   }
 
    /// <summary>
    /// Addition with carry bit for 32-bit integer.
@@ -522,6 +582,10 @@ namespace CppCore
       c = _addcarryx_u32(c, a, b, &r);
    #elif defined(CPPCORE_CPU_X86ORX64)
       c = _addcarry_u32(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addc)
+      unsigned int t;
+      r = __builtin_addc(a, b, c, &t);
+      c = (uint8_t)t;
    #else
       // from Hacker's Delight
       r = a + b + c;
@@ -550,10 +614,12 @@ namespace CppCore
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_ADX)
       c = _addcarryx_u64(c, a, b, (unsigned long long*)&r);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
-      c = _addcarry_u64(c, a, b, &r);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_ia32_addcarry_u64)
-      c = __builtin_ia32_addcarry_u64(c, a, b, (unsigned long long*)&r);
+   #elif defined(CPPCORE_CPU_X64)
+      c = _addcarry_u64(c, a, b, (unsigned long long*)&r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_addcll)
+      unsigned long long t;
+      r = __builtin_addcll(a, b, c, &t);
+      c = (uint8_t)t;
    #else
       // from Hacker's Delight
       r = a + b + c;
@@ -597,8 +663,8 @@ namespace CppCore
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void addcarry(const UINT1& x, const UINT2& y, UINT3& z, uint8_t& c)
    {
-      static_assert(sizeof(UINT1) % 4 == 0);
-      static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT1) % 4 == 0 || sizeof(UINT1) < sizeof(size_t));
+      static_assert(sizeof(UINT2) % 4 == 0 || sizeof(UINT2) < sizeof(size_t));
       static_assert(sizeof(UINT3) % 4 == 0);
       constexpr size_t MAXSIZE = MAX(sizeof(UINT1), sizeof(UINT2));
       constexpr size_t MINSIZE = MIN(sizeof(UINT1), sizeof(UINT2));
@@ -621,8 +687,11 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry64(0ULL, py[i], pz[i], c);
       }
-      else
+      else if
+   #else
+      if
    #endif
+         constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
       {
          constexpr size_t NUINT1 = sizeof(UINT1) / 4;
          constexpr size_t NUINT2 = sizeof(UINT2) / 4;
@@ -639,6 +708,49 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry32(0U, py[i], pz[i], c);
       }
+      else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::addcarry<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::addcarry<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
+      else throw;
+   }
+
+   /// <summary>
+   /// Template Specialization for 8+8=8
+   /// </summary>
+   template<> INLINE void addcarry(const uint8_t& x, const uint8_t& y, uint8_t& r, uint8_t& c)
+   {
+      CppCore::addcarry8(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 16+8=16
+   /// </summary>
+   template<> INLINE void addcarry(const uint16_t& x, const uint8_t& y, uint16_t& r, uint8_t& c)
+   {
+      CppCore::addcarry16(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 16+16=16
+   /// </summary>
+   template<> INLINE void addcarry(const uint16_t& x, const uint16_t& y, uint16_t& r, uint8_t& c)
+   {
+      CppCore::addcarry16(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 32+8=32
+   /// </summary>
+   template<> INLINE void addcarry(const uint32_t& x, const uint8_t& y, uint32_t& r, uint8_t& c)
+   {
+      CppCore::addcarry32(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 32+16=32
+   /// </summary>
+   template<> INLINE void addcarry(const uint32_t& x, const uint16_t& y, uint32_t& r, uint8_t& c)
+   {
+      CppCore::addcarry32(x, y, r, c);
    }
 
    /// <summary>
@@ -647,6 +759,30 @@ namespace CppCore
    template<> INLINE void addcarry(const uint32_t& x, const uint32_t& y, uint32_t& r, uint8_t& c)
    {
       CppCore::addcarry32(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64+8=64
+   /// </summary>
+   template<> INLINE void addcarry(const uint64_t& x, const uint8_t& y, uint64_t& r, uint8_t& c)
+   {
+      CppCore::addcarry64(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64+16=64
+   /// </summary>
+   template<> INLINE void addcarry(const uint64_t& x, const uint16_t& y, uint64_t& r, uint8_t& c)
+   {
+      CppCore::addcarry64(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64+32=64
+   /// </summary>
+   template<> INLINE void addcarry(const uint64_t& x, const uint32_t& y, uint64_t& r, uint8_t& c)
+   {
+      CppCore::addcarry64(x, y, r, c);
    }
 
    /// <summary>
@@ -710,8 +846,10 @@ namespace CppCore
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void uadd(const UINT1& x, const UINT2& y, UINT3& r)
    {
-      uint8_t c = 0;
-      CppCore::addcarry(x, y, r, c);
+      if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::uadd((size_t)x, y, r); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::uadd(x, (size_t)y, r); }
+      else if constexpr (sizeof(UINT3) < sizeof(size_t)) { size_t t; CppCore::uadd(x, y, t); r = (UINT3)t; }
+      else { uint8_t c = 0; CppCore::addcarry(x, y, r, c); }
    }
 
    /// <summary>
@@ -775,12 +913,52 @@ namespace CppCore
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
+   /// Subtraction with carry bit for 8-bit integer.
+   /// </summary>
+   INLINE static void subborrow8(uint8_t a, uint8_t b, uint8_t& r, uint8_t& c)
+   {
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
+      c = _subborrow_u8(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcb)
+      unsigned char t;
+      r = __builtin_subcb(a, b, c, &t);
+      c = (uint8_t)t;
+   #else
+      // from Hacker's Delight
+      r = a - b - c;
+      c = ((~a & b) | ((~a | b) & r)) >> 7;
+   #endif
+   }
+
+   /// <summary>
+   /// Subtraction with carry bit for 16-bit integer.
+   /// </summary>
+   INLINE static void subborrow16(uint16_t a, uint16_t b, uint16_t& r, uint8_t& c)
+   {
+   #if defined(CPPCORE_COMPILER_MSVC) && defined(CPPCORE_CPU_X86ORX64)
+      c = _subborrow_u16(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcs)
+      unsigned short t;
+      r = __builtin_subcs(a, b, c, &t);
+      c = (uint8_t)t;
+   #else
+      // from Hacker's Delight
+      r = a - b - c;
+      c = ((~a & b) | ((~a | b) & r)) >> 15;
+   #endif
+   }
+
+   /// <summary>
    /// Subtraction with carry bit for 32-bit integer.
    /// </summary>
    INLINE static void subborrow32(uint32_t a, uint32_t b, uint32_t& r, uint8_t& c)
    {
    #if defined(CPPCORE_CPU_X86ORX64)
       c = _subborrow_u32(c, a, b, &r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subc)
+      unsigned int t;
+      r = __builtin_subc(a, b, c, &t);
+      c = (uint8_t)t;
    #else
       // from Hacker's Delight
       r = a - b - c;
@@ -807,10 +985,12 @@ namespace CppCore
    /// </summary>
    INLINE static void subborrow64(uint64_t a, uint64_t b, uint64_t& r, uint8_t& c)
    {
-   #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
-      c = _subborrow_u64(c, a, b, &r);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_ia32_subborrow_u64)
-      c = __builtin_ia32_subborrow_u64(c, a, b, (unsigned long long*)&r);
+   #if defined(CPPCORE_CPU_X64)
+      c = _subborrow_u64(c, a, b, (unsigned long long*)&r);
+   #elif defined(CPPCORE_COMPILER_CLANG) && __has_builtin(__builtin_subcll)
+      unsigned long long t;
+      r = __builtin_subcll(a, b, c, &t);
+      c = (uint8_t)t;
    #else
       // from Hacker's Delight
       r = a - b - c;
@@ -854,8 +1034,8 @@ namespace CppCore
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void subborrow(const UINT1& x, const UINT2& y, UINT3& z, uint8_t& c)
    {
-      static_assert(sizeof(UINT1) % 4 == 0);
-      static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT1) % 4 == 0 || sizeof(UINT1) < sizeof(size_t));
+      static_assert(sizeof(UINT2) % 4 == 0 || sizeof(UINT2) < sizeof(size_t));
       static_assert(sizeof(UINT3) % 4 == 0);
       constexpr size_t MAXSIZE = MAX(sizeof(UINT1), sizeof(UINT2));
       constexpr size_t MINSIZE = MIN(sizeof(UINT1), sizeof(UINT2));
@@ -879,8 +1059,11 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::subborrow64(0ULL, py[i], pz[i], c);
       }
-      else
+      else if
+   #else
+      if
    #endif
+         constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
       {
          constexpr size_t NUINT1 = sizeof(UINT1) / 4;
          constexpr size_t NUINT2 = sizeof(UINT2) / 4;
@@ -898,6 +1081,41 @@ namespace CppCore
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::subborrow32(0U, py[i], pz[i], c);
       }
+      else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::subborrow<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::subborrow<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
+      else throw;
+   }
+
+   /// <summary>
+   /// Template Specialization for 8-8=8
+   /// </summary>
+   template<> INLINE void subborrow(const uint8_t& x, const uint8_t& y, uint8_t& r, uint8_t& c)
+   {
+      CppCore::subborrow8(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 16-16=16
+   /// </summary>
+   template<> INLINE void subborrow(const uint16_t& x, const uint16_t& y, uint16_t& r, uint8_t& c)
+   {
+      CppCore::subborrow16(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 32-32=32
+   /// </summary>
+   template<> INLINE void subborrow(const uint32_t& x, const uint32_t& y, uint32_t& r, uint8_t& c)
+   {
+      CppCore::subborrow32(x, y, r, c);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-64=64
+   /// </summary>
+   template<> INLINE void subborrow(const uint64_t& x, const uint64_t& y, uint64_t& r, uint8_t& c)
+   {
+      CppCore::subborrow64(x, y, r, c);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -951,16 +1169,26 @@ namespace CppCore
    /// Subtraction for any sized integer that is multiple of 32-bit.
    /// </summary>
    template<typename UINT1, typename UINT2, typename UINT3>
-   INLINE static void usub(const UINT1& x, const UINT2& y, UINT3& z)
+   INLINE static void usub(const UINT1& x, const UINT2& y, UINT3& r)
    {
-      uint8_t c = 0;
-      CppCore::subborrow(x, y, z, c);
+      if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::usub((size_t)x, y, r); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::usub(x, (size_t)y, r); }
+      else if constexpr (sizeof(UINT3) < sizeof(size_t)) { size_t t; CppCore::usub(x, y, t); r = (UINT3)t; }
+      else { uint8_t c = 0; CppCore::subborrow(x, y, r, c); }
    }
 
    /// <summary>
    /// Template Specialization for 8-8=8
    /// </summary>
    template<> INLINE void usub(const uint8_t& x, const uint8_t& y, uint8_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 16-8=16
+   /// </summary>
+   template<> INLINE void usub(const uint16_t& x, const uint8_t& y, uint16_t& r)
    {
       r = x - y;
    }
@@ -974,9 +1202,49 @@ namespace CppCore
    }
 
    /// <summary>
+   /// Template Specialization for 32-8=32
+   /// </summary>
+   template<> INLINE void usub(const uint32_t& x, const uint8_t& y, uint32_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 32-16=32
+   /// </summary>
+   template<> INLINE void usub(const uint32_t& x, const uint16_t& y, uint32_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
    /// Template Specialization for 32-32=32
    /// </summary>
    template<> INLINE void usub(const uint32_t& x, const uint32_t& y, uint32_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-8=64
+   /// </summary>
+   template<> INLINE void usub(const uint64_t& x, const uint8_t& y, uint64_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-16=64
+   /// </summary>
+   template<> INLINE void usub(const uint64_t& x, const uint16_t& y, uint64_t& r)
+   {
+      r = x - y;
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-32=64
+   /// </summary>
+   template<> INLINE void usub(const uint64_t& x, const uint32_t& y, uint64_t& r)
    {
       r = x - y;
    }
@@ -1008,36 +1276,42 @@ namespace CppCore
    }
 
    /// <summary>
-   /// Unsigned 64-Bit * Unsigned 64-Bit = Unsigned 128 Bit.
+   /// Unsigned 64-Bit * Unsigned 64-Bit = Unsigned 128 Bit. 
+   /// Uses single MULX or MUL instruction on Intel 64-Bit.
    /// </summary>
-   /// <remarks>
-   /// Custom Solution From:
-   /// https://www.codeproject.com/Tips/618570/UInt-Multiplication-Squaring
-   /// </remarks>
    INLINE static void umul128(uint64_t a, uint64_t b, uint64_t& l, uint64_t& h)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_BMI2)
       l = _mulx_u64(a, b, (unsigned long long*)&h);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       l = _umul128(a, b, &h);
+   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
+      __asm("MULQ %4" : "=a" (l), "=d" (h) : "0" (a), "1" (b), "r" (b));
+   #elif defined(CPPCORE_COMPILER_CLANG) && defined(__SIZEOF_INT128__)
+      __uint128_t t = (__uint128_t)a * b;
+      l = (uint64_t)t;
+      h = (uint64_t)(t >> 64);
    #else
-      uint64_t al = (a & 0xffffffff);
-      uint64_t bl = (b & 0xffffffff);
-      uint64_t t = (al * bl);
-      uint64_t w3 = (t & 0xffffffff);
-      uint64_t k = (t >> 32);
+      uint32_t al = (uint32_t)a;
+      uint32_t ah = (uint32_t)(a >> 32);
+      uint32_t bl = (uint32_t)b;
+      uint32_t bh = (uint32_t)(b >> 32);
 
-      a >>= 32;
-      t = (a * bl) + k;
-      k = (t & 0xffffffff);
-      uint64_t w1 = (t >> 32);
+      uint64_t p1 = (uint64_t)al * bl;
+      uint64_t p2 = (uint64_t)al * bh;
+      uint64_t p3 = (uint64_t)ah * bl;
+      uint64_t p4 = (uint64_t)ah * bh;
+      uint64_t t;
 
-      b >>= 32;
-      t = (al * b) + k;
-      k = (t >> 32);
+      l = (uint32_t)p1;
+      h = p4;
+      
+      t = p2 + (p1 >> 32);
+      h += (t >> 32);
+      t = p3 + (uint32_t)t;
 
-      l = (t << 32) + w3;
-      h = (a * b) + w1 + k;
+      l |= (t << 32);
+      h += (t >> 32);
    #endif
    }
 
@@ -1117,6 +1391,93 @@ namespace CppCore
          m >>= 2;
       }
       return y;
+   }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // CLMUL
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Carry-less Multiplication (Generic Version).
+   /// Accepts any integer sizes that are multiples of four.
+   /// </summary>
+   template<typename UINT1, typename UINT2, typename UINT3>
+   INLINE static void clmul_generic(const UINT1& a, const UINT2& b, UINT3& r)
+   {
+      static_assert(sizeof(UINT1) % 4 == 0);
+      static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT3) % 4 == 0);
+      UINT3 ta;
+      UINT2 tb;
+      if constexpr (sizeof(a) < sizeof(ta)) {
+         CppCore::clear(ta);
+         CppCore::clone(*(UINT1*)&ta, a);
+      }
+      else CppCore::clone(ta, *(UINT3*)&a);
+      CppCore::clone(tb, b);
+      CppCore::clear(r);
+      while (!CppCore::testzero(tb))
+      {
+         if (CppCore::bittest(tb, 0))
+            CppCore::xor_(r, ta, r);
+         CppCore::shr(tb, tb, 1);
+         CppCore::shl(ta, ta, 1);
+      }
+   }
+
+   /// <summary>
+   /// Carry-less Multiplication (Optimized Version).
+   /// Uses CLMUL instruction if available and applicable else uses generic version.
+   /// </summary>
+   template<typename UINT1, typename UINT2, typename UINT3>
+   INLINE static void clmul(const UINT1& a, const UINT2& b, UINT3& r)
+   {
+   #if defined(CPPCORE_CPUFEAT_PCLMUL)
+      if constexpr (sizeof(UINT1) == 16 && sizeof(UINT2) == 16 && sizeof(UINT3) == 32)
+      {
+         __m128i xmma = _mm_loadu_si128((__m128i*)&a);
+         __m128i xmmb = _mm_loadu_si128((__m128i*)&b);
+         __m128i xmm0 = _mm_clmulepi64_si128(xmma, xmmb, 0x00); // l x l
+         __m128i xmm1 = _mm_clmulepi64_si128(xmma, xmmb, 0x10); // h x l
+         __m128i xmm2 = _mm_clmulepi64_si128(xmma, xmmb, 0x01); // l x h
+         __m128i xmm3 = _mm_clmulepi64_si128(xmma, xmmb, 0x11); // h x h
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm1, 8));
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm2, 8));
+         _mm_storeu_si128((__m128i*)&r, xmm0);
+         xmm3 = _mm_xor_si128(xmm3, _mm_srli_si128(xmm1, 8));
+         xmm3 = _mm_xor_si128(xmm3, _mm_srli_si128(xmm2, 8));
+         _mm_storeu_si128(((__m128i*)&r)+1, xmm3);
+      }
+      else if constexpr (sizeof(UINT1) == 16 && sizeof(UINT2) == 16 && sizeof(UINT3) == 16)
+      {
+         __m128i xmma = _mm_loadu_si128((__m128i*)&a);
+         __m128i xmmb = _mm_loadu_si128((__m128i*)&b);
+         __m128i xmm0 = _mm_clmulepi64_si128(xmma, xmmb, 0x00); // l x l
+         __m128i xmm1 = _mm_clmulepi64_si128(xmma, xmmb, 0x10); // h x l
+         __m128i xmm2 = _mm_clmulepi64_si128(xmma, xmmb, 0x01); // l x h
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm1, 8));
+         xmm0 = _mm_xor_si128(xmm0, _mm_slli_si128(xmm2, 8));
+         _mm_storeu_si128((__m128i*)&r, xmm0);
+      }
+      else if constexpr (sizeof(UINT1) == 8 && sizeof(UINT2) == 8 && sizeof(UINT3) == 16)
+         _mm_storeu_si128((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_loadl_epi64((__m128i*)&a),
+            _mm_loadl_epi64((__m128i*)&b), 0x00));
+      else if constexpr (sizeof(UINT1) == 8 && sizeof(UINT2) == 8 && sizeof(UINT3) == 8)
+         _mm_storel_epi64((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_loadl_epi64((__m128i*)&a), 
+            _mm_loadl_epi64((__m128i*)&b), 0x00));
+      else if constexpr (sizeof(UINT1) == 4 && sizeof(UINT2) == 4 && sizeof(UINT3) == 8)
+         _mm_storel_epi64((__m128i*)&r, _mm_clmulepi64_si128(
+            _mm_cvtsi32_si128(*(uint32_t*)&a),
+            _mm_cvtsi32_si128(*(uint32_t*)&b), 0x00));
+      else if constexpr (sizeof(UINT1) == 4 && sizeof(UINT2) == 4 && sizeof(UINT3) == 4)
+         *(uint32_t*)&r = _mm_cvtsi128_si32(_mm_clmulepi64_si128(
+            _mm_cvtsi32_si128(*(uint32_t*)&a),
+            _mm_cvtsi32_si128(*(uint32_t*)&b), 0x00));
+      else
+   #endif
+         CppCore::clmul_generic(a, b, r);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2261,18 +2622,37 @@ namespace CppCore
 
    /// <summary>
    /// Simple Multiplication (a*b=r) in up to O(n*n) automatically selecting 64-Bit or 32-Bit operations and chunks.
-   /// Requires all three types to be any multiple of at least 32-Bit (better all 64-Bit on 64-Bit CPU).
    /// Calculates all bits of r, performing a full wide multiplication if sizeof(r) larger-equal sizeof(a)+sizeof(b).
    /// </summary>
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void umul(const UINT1& a, const UINT2& b, UINT3& r)
    {
-      // TODO: use ADCX/ADOX interleaved if available
-      static_assert(sizeof(UINT1) > 0 && (sizeof(UINT1) % 4 == 0 || sizeof(UINT1) < 4));
-      static_assert(sizeof(UINT2) > 0 && (sizeof(UINT2) % 4 == 0 || sizeof(UINT2) < 4));
-      static_assert(sizeof(UINT3) > 0 && (sizeof(UINT3) % 4 == 0 || sizeof(UINT3) < 4));
+      if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::umul((size_t)a, b, r); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::umul(a, (size_t)b, r); }
+      else if constexpr (sizeof(UINT3) < sizeof(size_t)) 
+      { 
+         size_t t; 
+         CppCore::umul(a, b, t); 
+         CppCore::clone(r, *(UINT3*)&t); 
+      }
+      else if constexpr (sizeof(UINT1) % sizeof(size_t))
+      {
+         Padded<UINT1> t(a);
+         CppCore::umul(t, b, r);
+      }
+      else if constexpr (sizeof(UINT2) % sizeof(size_t))
+      {
+         Padded<UINT2> t(b);
+         CppCore::umul(a, t, r);
+      }
+      else if constexpr (sizeof(UINT3) % sizeof(size_t))
+      {
+         Padded<UINT3> t;
+         CppCore::umul(a, b, t);
+         CppCore::clone(r, t.v);
+      }
    #if defined(CPPCORE_CPU_64BIT)
-      if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0 && sizeof(UINT3) % 8 == 0)
+      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0 && sizeof(UINT3) % 8 == 0)
       {
          // 64-Bit CPU and Multiples of 64-Bit
          constexpr size_t NA = sizeof(UINT1) / 8;
@@ -2317,11 +2697,8 @@ namespace CppCore
                *rp = k;
          }
       }
-      else if
-   #else
-      if
    #endif
-         constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
+      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
       {
          // 32/64-Bit CPU and Multiples of 32-Bit
          constexpr size_t NA = sizeof(UINT1) / 4;
@@ -2367,9 +2744,6 @@ namespace CppCore
                *rp = k;
          }
       }
-      else if constexpr (sizeof(UINT1) < 4) { umul<size_t, UINT2, UINT3>((size_t)a, b, r); }
-      else if constexpr (sizeof(UINT2) < 4) { umul<UINT1, size_t, UINT3>(a, (size_t)b, r); }
-      else if constexpr (sizeof(UINT3) < 4) { size_t t; umul<UINT1, UINT2, size_t>(a, b, t); r=(UINT3)t; }
       else throw;
    }
 
@@ -2386,7 +2760,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint8_t& a, const uint8_t& b, uint16_t& r)
    {
-      r = (uint16_t)a * (uint16_t)b;
+      r = (uint16_t)a * b;
    }
 
    /// <summary>
@@ -2402,7 +2776,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint16_t& a, const uint16_t& b, uint32_t& r)
    {
-      r = (uint32_t)a * (uint32_t)b;
+      r = (uint32_t)a * b;
    }
 
    /// <summary>
@@ -2418,7 +2792,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void umul(const uint32_t& a, const uint32_t& b, uint64_t& r)
    {
-      r = (uint64_t)a * (uint64_t)b;
+      r = (uint64_t)a * b;
    }
 
    /// <summary>

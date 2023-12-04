@@ -141,6 +141,146 @@ namespace CppCore { namespace Test
             // TODO: More than Base10
             return true;
          }
+         INLINE static bool parse8()
+         {
+            uint8_t r;
+            CppCore::BaseX::parse("",    r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            CppCore::BaseX::parse("0",   r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            CppCore::BaseX::parse("1",   r, CPPCORE_ALPHABET_B10); if (r != 1) return false;
+            CppCore::BaseX::parse("143", r, CPPCORE_ALPHABET_B10); if (r != 143) return false;
+            CppCore::BaseX::parse("255", r, CPPCORE_ALPHABET_B10); if (r != 255) return false;
+            CppCore::BaseX::parse("256", r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            return true;
+         }
+         INLINE static bool parse16()
+         {
+            uint16_t r;
+            CppCore::BaseX::parse("",      r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            CppCore::BaseX::parse("0",     r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            CppCore::BaseX::parse("1",     r, CPPCORE_ALPHABET_B10); if (r != 1) return false;
+            CppCore::BaseX::parse("143",   r, CPPCORE_ALPHABET_B10); if (r != 143) return false;
+            CppCore::BaseX::parse("255",   r, CPPCORE_ALPHABET_B10); if (r != 255) return false;
+            CppCore::BaseX::parse("65535", r, CPPCORE_ALPHABET_B10); if (r != 65535) return false;
+            CppCore::BaseX::parse("65536", r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            return true;
+         }
+         INLINE static bool parse32()
+         {
+            uint32_t r;
+            CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
+            CppCore::BaseX::parse("0",          r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
+            CppCore::BaseX::parse("1",          r, CPPCORE_ALPHABET_B10); if (r != 1U) return false;
+            CppCore::BaseX::parse("143",        r, CPPCORE_ALPHABET_B10); if (r != 143U) return false;
+            CppCore::BaseX::parse("255",        r, CPPCORE_ALPHABET_B10); if (r != 255U) return false;
+            CppCore::BaseX::parse("65535",      r, CPPCORE_ALPHABET_B10); if (r != 65535U) return false;
+            CppCore::BaseX::parse("4294967295", r, CPPCORE_ALPHABET_B10); if (r != 4294967295U) return false;
+            CppCore::BaseX::parse("4294967296", r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            return true;
+         }
+         INLINE static bool parse64()
+         {
+            uint64_t r;
+            CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
+            CppCore::BaseX::parse("0",          r, CPPCORE_ALPHABET_B10); if (r != 0U) return false;
+            CppCore::BaseX::parse("1",          r, CPPCORE_ALPHABET_B10); if (r != 1U) return false;
+            CppCore::BaseX::parse("143",        r, CPPCORE_ALPHABET_B10); if (r != 143U) return false;
+            CppCore::BaseX::parse("255",        r, CPPCORE_ALPHABET_B10); if (r != 255U) return false;
+            CppCore::BaseX::parse("65535",      r, CPPCORE_ALPHABET_B10); if (r != 65535U) return false;
+            CppCore::BaseX::parse("4294967295", r, CPPCORE_ALPHABET_B10); if (r != 4294967295U) return false;
+            CppCore::BaseX::parse("18446744073709551615", r, CPPCORE_ALPHABET_B10); if (r != 18446744073709551615ULL) return false;
+            CppCore::BaseX::parse("18446744073709551616", r, CPPCORE_ALPHABET_B10); if (r != 0) return false;
+            return true;
+         }
+         INLINE static bool parse128()
+         {
+            uint64_t r[2];
+            CppCore::BaseX::parse("",           r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
+            CppCore::BaseX::parse("0",          r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
+            CppCore::BaseX::parse("1",          r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 1U) return false;
+            CppCore::BaseX::parse("143",        r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 143U) return false;
+            CppCore::BaseX::parse("255",        r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 255U) return false;
+            CppCore::BaseX::parse("65535",      r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 65535U) return false;
+            CppCore::BaseX::parse("4294967295", r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 4294967295U) return false;
+            CppCore::BaseX::parse("18446744073709551615", r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 18446744073709551615ULL) return false;
+            CppCore::BaseX::parse("340282366920938463463374607431768211455", r, CPPCORE_ALPHABET_B10); if (r[1] != 0xFFFFFFFFFFFFFFFFULL || r[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::BaseX::parse("340282366920938463463374607431768211456", r, CPPCORE_ALPHABET_B10); if (r[1] != 0U || r[0] != 0U) return false;
+            return true;
+         }
+         INLINE static bool tryparse8()
+         {
+            uint8_t r;
+            if (!CppCore::BaseX::tryparse("0",   r, CPPCORE_ALPHABET_B10) || r != 0) return false;
+            if (!CppCore::BaseX::tryparse("1",   r, CPPCORE_ALPHABET_B10) || r != 1) return false;
+            if (!CppCore::BaseX::tryparse("143", r, CPPCORE_ALPHABET_B10) || r != 143) return false;
+            if (!CppCore::BaseX::tryparse("255", r, CPPCORE_ALPHABET_B10) || r != 255) return false;
+            if ( CppCore::BaseX::tryparse("256", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("2550",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
+            if ( CppCore::BaseX::tryparse("",    r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("x",   r, CPPCORE_ALPHABET_B10)) return false;
+            return true;
+         }
+         INLINE static bool tryparse16()
+         {
+            uint16_t r;
+            if (!CppCore::BaseX::tryparse("0",     r, CPPCORE_ALPHABET_B10) || r != 0) return false;
+            if (!CppCore::BaseX::tryparse("1",     r, CPPCORE_ALPHABET_B10) || r != 1) return false;
+            if (!CppCore::BaseX::tryparse("143",   r, CPPCORE_ALPHABET_B10) || r != 143) return false;
+            if (!CppCore::BaseX::tryparse("255",   r, CPPCORE_ALPHABET_B10) || r != 255) return false;
+            if (!CppCore::BaseX::tryparse("65535", r, CPPCORE_ALPHABET_B10) || r != 65535) return false;
+            if ( CppCore::BaseX::tryparse("65536", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("655350",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
+            if ( CppCore::BaseX::tryparse("",      r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("x",     r, CPPCORE_ALPHABET_B10)) return false;
+            return true;
+         }
+         INLINE static bool tryparse32()
+         {
+            uint32_t r;
+            if (!CppCore::BaseX::tryparse("0",     r, CPPCORE_ALPHABET_B10) || r != 0) return false;
+            if (!CppCore::BaseX::tryparse("1",     r, CPPCORE_ALPHABET_B10) || r != 1) return false;
+            if (!CppCore::BaseX::tryparse("143",   r, CPPCORE_ALPHABET_B10) || r != 143) return false;
+            if (!CppCore::BaseX::tryparse("255",   r, CPPCORE_ALPHABET_B10) || r != 255) return false;
+            if (!CppCore::BaseX::tryparse("65535", r, CPPCORE_ALPHABET_B10) || r != 65535) return false;
+            if (!CppCore::BaseX::tryparse("4294967295", r, CPPCORE_ALPHABET_B10) || r != 4294967295U) return false;
+            if ( CppCore::BaseX::tryparse("4294967296", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("42949672950",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
+            if ( CppCore::BaseX::tryparse("",      r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("x",     r, CPPCORE_ALPHABET_B10)) return false;
+            return true;
+         }
+         INLINE static bool tryparse64()
+         {
+            uint64_t r;
+            if (!CppCore::BaseX::tryparse("0",     r, CPPCORE_ALPHABET_B10) || r != 0) return false;
+            if (!CppCore::BaseX::tryparse("1",     r, CPPCORE_ALPHABET_B10) || r != 1) return false;
+            if (!CppCore::BaseX::tryparse("143",   r, CPPCORE_ALPHABET_B10) || r != 143) return false;
+            if (!CppCore::BaseX::tryparse("255",   r, CPPCORE_ALPHABET_B10) || r != 255) return false;
+            if (!CppCore::BaseX::tryparse("65535", r, CPPCORE_ALPHABET_B10) || r != 65535) return false;
+            if (!CppCore::BaseX::tryparse("4294967295", r, CPPCORE_ALPHABET_B10) || r != 4294967295U) return false;
+            if (!CppCore::BaseX::tryparse("18446744073709551615", r, CPPCORE_ALPHABET_B10) || r != 18446744073709551615ULL) return false;
+            if ( CppCore::BaseX::tryparse("18446744073709551616", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("184467440737095516150",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
+            if ( CppCore::BaseX::tryparse("",      r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("x",     r, CPPCORE_ALPHABET_B10)) return false;
+            return true;
+         }
+         INLINE static bool tryparse128()
+         {
+            uint64_t r[2];
+            if (!CppCore::BaseX::tryparse("0",          r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 0U) return false;
+            if (!CppCore::BaseX::tryparse("1",          r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 1U) return false;
+            if (!CppCore::BaseX::tryparse("143",        r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 143U) return false;
+            if (!CppCore::BaseX::tryparse("255",        r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 255U) return false;
+            if (!CppCore::BaseX::tryparse("65535",      r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 65535U) return false;
+            if (!CppCore::BaseX::tryparse("4294967295", r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 4294967295U) return false;
+            if (!CppCore::BaseX::tryparse("18446744073709551615", r, CPPCORE_ALPHABET_B10) || r[1] != 0U || r[0] != 18446744073709551615ULL) return false;
+            if (!CppCore::BaseX::tryparse("340282366920938463463374607431768211455", r, CPPCORE_ALPHABET_B10) || r[1] != 0xFFFFFFFFFFFFFFFFULL || r[0] != 0xFFFFFFFFFFFFFFFFULL) return false;
+            if ( CppCore::BaseX::tryparse("340282366920938463463374607431768211456", r, CPPCORE_ALPHABET_B10)) return false; // add overflow
+            if ( CppCore::BaseX::tryparse("3402823669209384634633746074317682114550",r, CPPCORE_ALPHABET_B10)) return false; // mul overflow
+            if ( CppCore::BaseX::tryparse("",      r, CPPCORE_ALPHABET_B10)) return false;
+            if ( CppCore::BaseX::tryparse("x",     r, CPPCORE_ALPHABET_B10)) return false;
+            return true;
+         }
       };
       class Hex
       {
@@ -910,6 +1050,16 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(BASEX_TOSTRING16) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring16()); }
       TEST_METHOD(BASEX_TOSTRING32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring32()); }
       TEST_METHOD(BASEX_TOSTRING64) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring64()); }
+      TEST_METHOD(BASEX_PARSE8)     { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse8()); }
+      TEST_METHOD(BASEX_PARSE16)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse16()); }
+      TEST_METHOD(BASEX_PARSE32)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse32()); }
+      TEST_METHOD(BASEX_PARSE64)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse64()); }
+      TEST_METHOD(BASEX_PARSE128)   { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::parse128()); }
+      TEST_METHOD(BASEX_TRYPARSE8)  { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse8()); }
+      TEST_METHOD(BASEX_TRYPARSE16) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse16()); }
+      TEST_METHOD(BASEX_TRYPARSE32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse32()); }
+      TEST_METHOD(BASEX_TRYPARSE64) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse64()); }
+      TEST_METHOD(BASEX_TRYPARSE128){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse128()); }
       TEST_METHOD(HEX_BYTETOHEXSTR) { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::Util::bytetohexstr()); }
       TEST_METHOD(HEX_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring()); }
       TEST_METHOD(HEX_TOSTRING16)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring16()); }

@@ -289,6 +289,39 @@ namespace CppCore { namespace Test { namespace Math
             CppCore::nlptwo64(0xFFFFFFFFFFFFFFFFULL) == 0x8000000000000000ULL;
       }
 
+      INLINE static bool addcarry8()
+      {
+         uint8_t r; uint8_t c;
+         c = 0; CppCore::addcarry8(0x00, 0x00, r, c); if (c != 0x00 || r != 0x00) return false;
+         c = 1; CppCore::addcarry8(0x00, 0x00, r, c); if (c != 0x00 || r != 0x01) return false;
+         c = 0; CppCore::addcarry8(0x00, 0xFF, r, c); if (c != 0x00 || r != 0xFF) return false;
+         c = 1; CppCore::addcarry8(0x00, 0xFF, r, c); if (c != 0x01 || r != 0x00) return false;
+         c = 0; CppCore::addcarry8(0xFF, 0x01, r, c); if (c != 0x01 || r != 0x00) return false;
+         c = 0; CppCore::addcarry8(0xFF, 0xFF, r, c); if (c != 0x01 || r != 0xFE) return false;
+         c = 1; CppCore::addcarry8(0xFF, 0xFF, r, c); if (c != 0x01 || r != 0xFF) return false;
+         c = 1; CppCore::addcarry8(0x00, 0xFE, r, c); if (c != 0x00 || r != 0xFF) return false;
+         c = 1; CppCore::addcarry8(0xFE, 0x00, r, c); if (c != 0x00 || r != 0xFF) return false;
+         c = 1; CppCore::addcarry8(0x51, 0xAF, r, c); if (c != 0x01 || r != 0x01) return false;
+         return true;
+      }
+
+      INLINE static bool addcarry16()
+      {
+         uint16_t r; uint8_t c;
+         c = 0; CppCore::addcarry16(0x0000, 0x0000, r, c); if (c != 0x00 || r != 0x0000) return false;
+         c = 1; CppCore::addcarry16(0x0000, 0x0000, r, c); if (c != 0x00 || r != 0x0001) return false;
+         c = 0; CppCore::addcarry16(0x0000, 0xFFFF, r, c); if (c != 0x00 || r != 0xFFFF) return false;
+         c = 1; CppCore::addcarry16(0x0000, 0xFFFF, r, c); if (c != 0x01 || r != 0x0000) return false;
+         c = 0; CppCore::addcarry16(0xFFFF, 0x0001, r, c); if (c != 0x01 || r != 0x0000) return false;
+         c = 0; CppCore::addcarry16(0xFFFF, 0xFFFF, r, c); if (c != 0x01 || r != 0xFFFE) return false;
+         c = 1; CppCore::addcarry16(0xFFFF, 0xFFFF, r, c); if (c != 0x01 || r != 0xFFFF) return false;
+         c = 1; CppCore::addcarry16(0x0000, 0xFFFE, r, c); if (c != 0x00 || r != 0xFFFF) return false;
+         c = 1; CppCore::addcarry16(0xFFFE, 0x0000, r, c); if (c != 0x00 || r != 0xFFFF) return false;
+         c = 1; CppCore::addcarry16(0xC351, 0xBCA9, r, c); if (c != 0x01 || r != 0x7FFB) return false;
+         c = 1; CppCore::addcarry16(0xC350, 0xBCA0, r, c); if (c != 0x01 || r != 0x7FF1) return false;
+         return true;
+      }
+
       INLINE static bool addcarry32()
       {
          uint32_t r; uint8_t c;
@@ -320,6 +353,34 @@ namespace CppCore { namespace Test { namespace Math
          c = 1; CppCore::addcarry64(0xFFFFFFFFFFFFFFFEULL, 0x0000000000000000ULL, r, c); if (c != 0x00 || r != 0xFFFFFFFFFFFFFFFFULL) return false;
          c = 1; CppCore::addcarry64(0x5F8BC3515F8BC351ULL, 0xF924BCA9F924BCA9ULL, r, c); if (c != 0x01 || r != 0x58B07FFB58B07FFBULL) return false;
          c = 1; CppCore::addcarry64(0x5F8BC3505F8BC350ULL, 0xF924BCA0F924BCA0ULL, r, c); if (c != 0x01 || r != 0x58B07FF158B07FF1ULL) return false;
+         return true;
+      }
+
+      INLINE static bool subborrow8()
+      {
+         uint8_t r; uint8_t c;
+         c = 0; CppCore::subborrow8(0x00, 0x00, r, c); if (c != 0x00 || r != 0x00) return false;
+         c = 1; CppCore::subborrow8(0x00, 0x00, r, c); if (c != 0x01 || r != 0xFF) return false;
+         c = 1; CppCore::subborrow8(0x02, 0x01, r, c); if (c != 0x00 || r != 0x00) return false;
+         c = 1; CppCore::subborrow8(0x00, 0xFF, r, c); if (c != 0x01 || r != 0x00) return false;
+         c = 0; CppCore::subborrow8(0xFF, 0x01, r, c); if (c != 0x00 || r != 0xFE) return false;
+         c = 1; CppCore::subborrow8(0xFF, 0xFF, r, c); if (c != 0x01 || r != 0xFF) return false;
+         c = 1; CppCore::subborrow8(0xFF, 0xFE, r, c); if (c != 0x00 || r != 0x00) return false;
+         c = 1; CppCore::subborrow8(0xC0, 0x5B, r, c); if (c != 0x00 || r != 0x64) return false;
+         return true;
+      }
+
+      INLINE static bool subborrow16()
+      {
+         uint16_t r; uint8_t c;
+         c = 0; CppCore::subborrow16(0x0000, 0x0000, r, c); if (c != 0x00 || r != 0x0000) return false;
+         c = 1; CppCore::subborrow16(0x0000, 0x0000, r, c); if (c != 0x01 || r != 0xFFFF) return false;
+         c = 1; CppCore::subborrow16(0x0002, 0x0001, r, c); if (c != 0x00 || r != 0x0000) return false;
+         c = 1; CppCore::subborrow16(0x0000, 0xFFFF, r, c); if (c != 0x01 || r != 0x0000) return false;
+         c = 0; CppCore::subborrow16(0xFFFF, 0x0001, r, c); if (c != 0x00 || r != 0xFFFE) return false;
+         c = 1; CppCore::subborrow16(0xFFFF, 0xFFFF, r, c); if (c != 0x01 || r != 0xFFFF) return false;
+         c = 1; CppCore::subborrow16(0xFFFF, 0xFFFE, r, c); if (c != 0x00 || r != 0x0000) return false;
+         c = 1; CppCore::subborrow16(0x2BC0, 0x155B, r, c); if (c != 0x00 || r != 0x1664) return false;
          return true;
       }
 
@@ -1148,6 +1209,178 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
+      INLINE static bool clmul32()
+      {
+         uint32_t r;
+         CppCore::clmul(0x00000000U, 0x00000000U, r); if (r != 0x00000000U) return false;
+         CppCore::clmul(0x00000001U, 0x00000000U, r); if (r != 0x00000000U) return false;
+         CppCore::clmul(0x00000000U, 0x00000001U, r); if (r != 0x00000000U) return false;
+         CppCore::clmul(0x00000001U, 0x00000001U, r); if (r != 0x00000001U) return false;
+         CppCore::clmul(0x00000002U, 0x00000003U, r); if (r != 0x00000006U) return false;
+         CppCore::clmul(0x726f6e5dU, 0x5d53475dU, r); if (r != 0xd36f0451U) return false;
+         CppCore::clmul(0x68617929U, 0x5d53475dU, r); if (r != 0x2a281315U) return false;
+         CppCore::clmul(0x726f6e5dU, 0x73745665U, r); if (r != 0xf4b7d5c9U) return false;
+         CppCore::clmul(0x68617929U, 0x73745665U, r); if (r != 0x410fd4edU) return false;
+      #if defined(CPPCORE_CPUFEAT_PCLMUL)
+         CppCore::Random::Default32 rnd;
+         for (uint32_t i = 0; i < 100; i++)
+         {
+            uint32_t a = rnd.next();
+            uint32_t b = rnd.next();
+            uint32_t r1, r2;
+            CppCore::clmul_generic(a, b, r1);
+            CppCore::clmul(a, b, r2);
+            if (r1 != r2)
+               return false;
+         }
+      #endif
+         return true;
+      }
+
+      INLINE static bool clmul32to64()
+      {
+         uint64_t r;
+         CppCore::clmul(0x00000000U, 0x00000000U, r); if (r != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul(0x00000001U, 0x00000000U, r); if (r != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul(0x00000000U, 0x00000001U, r); if (r != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul(0x00000001U, 0x00000001U, r); if (r != (uint64_t)0x0000000000000001ULL) return false;
+         CppCore::clmul(0x00000002U, 0x00000003U, r); if (r != (uint64_t)0x0000000000000006ULL) return false;
+         CppCore::clmul(0x726f6e5dU, 0x5d53475dU, r); if (r != (uint64_t)0x198eb296d36f0451ULL) return false;
+         CppCore::clmul(0x68617929U, 0x5d53475dU, r); if (r != (uint64_t)0x1e089b792a281315ULL) return false;
+         CppCore::clmul(0x726f6e5dU, 0x73745665U, r); if (r != (uint64_t)0x157252f5f4b7d5c9ULL) return false;
+         CppCore::clmul(0x68617929U, 0x73745665U, r); if (r != (uint64_t)0x113aeb6c410fd4edULL) return false;
+      #if defined(CPPCORE_CPUFEAT_PCLMUL)
+         CppCore::Random::Default32 rnd;
+         for (uint32_t i = 0; i < 100; i++)
+         {
+            uint32_t a = rnd.next();
+            uint32_t b = rnd.next();
+            uint64_t r1, r2;
+            CppCore::clmul_generic(a, b, r1);
+            CppCore::clmul(a, b, r2);
+            if (r1 != r2)
+               return false;
+         }
+      #endif
+         return true;
+      }
+
+      INLINE static bool clmul64()
+      {
+         uint64_t r;
+         CppCore::clmul((uint64_t)0x0000000000000000ULL, (uint64_t)0x0000000000000000ULL, r); if (r != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul((uint64_t)0x0000000000000001ULL, (uint64_t)0x0000000000000000ULL, r); if (r != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul((uint64_t)0x0000000000000000ULL, (uint64_t)0x0000000000000001ULL, r); if (r != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul((uint64_t)0x0000000000000001ULL, (uint64_t)0x0000000000000001ULL, r); if (r != (uint64_t)0x0000000000000001ULL) return false;
+         CppCore::clmul((uint64_t)0x0000000000000002ULL, (uint64_t)0x0000000000000003ULL, r); if (r != (uint64_t)0x0000000000000006ULL) return false;
+         CppCore::clmul((uint64_t)0x5b477565726f6e5dULL, (uint64_t)0x63746f725d53475dULL, r); if (r != (uint64_t)0x929633d5d36f0451ULL) return false;
+         CppCore::clmul((uint64_t)0x4869285368617929ULL, (uint64_t)0x63746f725d53475dULL, r); if (r != (uint64_t)0x7fa540ac2a281315ULL) return false;
+         CppCore::clmul((uint64_t)0x5b477565726f6e5dULL, (uint64_t)0x7b5b546573745665ULL, r); if (r != (uint64_t)0xbabf262df4b7d5c9ULL) return false;
+         CppCore::clmul((uint64_t)0x4869285368617929ULL, (uint64_t)0x7b5b546573745665ULL, r); if (r != (uint64_t)0xd66ee03e410fd4edULL) return false;
+      #if defined(CPPCORE_CPUFEAT_PCLMUL)
+         CppCore::Random::Default64 rnd;
+         for (uint32_t i = 0; i < 100; i++)
+         {
+            uint64_t a = rnd.next();
+            uint64_t b = rnd.next();
+            uint64_t r1, r2;
+            CppCore::clmul_generic(a, b, r1);
+            CppCore::clmul(a, b, r2);
+            if (r1 != r2)
+               return false;
+         }
+      #endif
+         return true;
+      }
+
+      INLINE static bool clmul64to128()
+      {
+         uint64_t r[2];
+         CppCore::clmul((uint64_t)0x0000000000000000ULL, (uint64_t)0x0000000000000000ULL, r); if (r[0] != (uint64_t)0x0000000000000000ULL || r[1] != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul((uint64_t)0x0000000000000001ULL, (uint64_t)0x0000000000000000ULL, r); if (r[0] != (uint64_t)0x0000000000000000ULL || r[1] != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul((uint64_t)0x0000000000000000ULL, (uint64_t)0x0000000000000001ULL, r); if (r[0] != (uint64_t)0x0000000000000000ULL || r[1] != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul((uint64_t)0x0000000000000001ULL, (uint64_t)0x0000000000000001ULL, r); if (r[0] != (uint64_t)0x0000000000000001ULL || r[1] != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul((uint64_t)0x0000000000000002ULL, (uint64_t)0x0000000000000003ULL, r); if (r[0] != (uint64_t)0x0000000000000006ULL || r[1] != (uint64_t)0x0000000000000000ULL) return false;
+         CppCore::clmul((uint64_t)0x5b477565726f6e5dULL, (uint64_t)0x63746f725d53475dULL, r); if (r[0] != (uint64_t)0x929633d5d36f0451ULL || r[1] != (uint64_t)0x1d4d84c85c3440c0ULL) return false;
+         CppCore::clmul((uint64_t)0x4869285368617929ULL, (uint64_t)0x63746f725d53475dULL, r); if (r[0] != (uint64_t)0x7fa540ac2a281315ULL || r[1] != (uint64_t)0x1bd17c8d556ab5a1ULL) return false;
+         CppCore::clmul((uint64_t)0x5b477565726f6e5dULL, (uint64_t)0x7b5b546573745665ULL, r); if (r[0] != (uint64_t)0xbabf262df4b7d5c9ULL || r[1] != (uint64_t)0x1a2bf6db3a30862fULL) return false;
+         CppCore::clmul((uint64_t)0x4869285368617929ULL, (uint64_t)0x7b5b546573745665ULL, r); if (r[0] != (uint64_t)0xd66ee03e410fd4edULL || r[1] != (uint64_t)0x1d1e1f2c592e7c45ULL) return false;
+      #if defined(CPPCORE_CPUFEAT_PCLMUL)
+         CppCore::Random::Default64 rnd;
+         for (uint32_t i = 0; i < 100; i++)
+         {
+            uint64_t a = rnd.next();
+            uint64_t b = rnd.next();
+            uint64_t r1[2], r2[2];
+            CppCore::clmul_generic(a, b, r1);
+            CppCore::clmul(a, b, r2);
+            if (r1[0] != r2[0] || r1[1] != r2[1])
+               return false;
+         }
+      #endif
+         return true;
+      }
+
+      INLINE static bool clmul128()
+      {
+         uint64_t a[2];
+         uint64_t b[2];
+         uint64_t r[2];
+
+         a[0] = 0x5b477565726f6e5dULL; a[1] = 0x63746f725d53475dULL;
+         b[0] = 0x4869285368617929ULL; b[1] = 0x7b5b546573745665ULL;
+         CppCore::clmul(a, b, r);
+         if (r[0] != 0xDD4DF8F142E15215ULL) return false;
+         if (r[1] != 0xD10EB19DC031B4CEULL) return false;
+
+      #if defined(CPPCORE_CPUFEAT_PCLMUL)
+         CppCore::Random::Default64 rnd;
+         for (uint32_t i = 0; i < 100; i++)
+         {
+            uint64_t a[2] = { rnd.next(),rnd.next() };
+            uint64_t b[2] = { rnd.next(),rnd.next() };
+            uint64_t r1[2], r2[2];
+            CppCore::clmul_generic(a, b, r1);
+            CppCore::clmul(a, b, r2);
+            if (r1[0] != r2[0] || r1[1] != r2[1])
+               return false;
+         }
+      #endif
+
+         return true;
+      }
+
+      INLINE static bool clmul128to256()
+      {
+         uint64_t a[2];
+         uint64_t b[2];
+         uint64_t r[4];
+
+         a[0] = 0x5b477565726f6e5dULL; a[1] = 0x63746f725d53475dULL;
+         b[0] = 0x4869285368617929ULL; b[1] = 0x7b5b546573745665ULL;
+         CppCore::clmul(a, b, r);
+         if (r[0] != 0xDD4DF8F142E15215ULL) return false;
+         if (r[1] != 0xD10EB19DC031B4CEULL) return false;
+         if (r[2] != 0x3FFA51F634880B47ULL) return false;
+         if (r[3] != 0x1127A41FDF07AF62ULL) return false;
+
+      #if defined(CPPCORE_CPUFEAT_PCLMUL)
+         CppCore::Random::Default64 rnd;
+         for (uint32_t i = 0; i < 100; i++)
+         {
+            uint64_t a[2] = { rnd.next(),rnd.next() };
+            uint64_t b[2] = { rnd.next(),rnd.next() };
+            uint64_t r1[4], r2[4];
+            CppCore::clmul_generic(a, b, r1);
+            CppCore::clmul(a, b, r2);
+            if (r1[0] != r2[0] || r1[1] != r2[1] || r1[2] != r2[2] || r1[3] != r2[3])
+               return false;
+         }
+      #endif
+
+         return true;
+      }
+
       INLINE static bool todouble()
       {
          // test low ones
@@ -1261,8 +1494,12 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(NGPTWO64)         { Assert::AreEqual(true, CppCore::Test::Math::Util::ngptwo64()); }
       TEST_METHOD(NLPTWO32)         { Assert::AreEqual(true, CppCore::Test::Math::Util::nlptwo32()); }
       TEST_METHOD(NLPTWO64)         { Assert::AreEqual(true, CppCore::Test::Math::Util::nlptwo64()); }
+      TEST_METHOD(ADDCARRY8)        { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry8()); }
+      TEST_METHOD(ADDCARRY16)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry16()); }
       TEST_METHOD(ADDCARRY32)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry32()); }
       TEST_METHOD(ADDCARRY64)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry64()); }
+      TEST_METHOD(SUBBORROW8)       { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow8()); }
+      TEST_METHOD(SUBBORROW16)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow16()); }
       TEST_METHOD(SUBBORROW32)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow32()); }
       TEST_METHOD(SUBBORROW64)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow64()); }
       TEST_METHOD(MUL128)           { Assert::AreEqual(true, CppCore::Test::Math::Util::mul128()); }
@@ -1298,6 +1535,12 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(ISMERSENNE32)     { Assert::AreEqual(true, CppCore::Test::Math::Util::ismersenne32()); }
       TEST_METHOD(ISMERSENNE64)     { Assert::AreEqual(true, CppCore::Test::Math::Util::ismersenne64()); }
       TEST_METHOD(ISMERSENNE128)    { Assert::AreEqual(true, CppCore::Test::Math::Util::ismersenne128()); }
+      TEST_METHOD(CLMUL32)          { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul32()); }
+      TEST_METHOD(CLMUL32TO64)      { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul32to64()); }
+      TEST_METHOD(CLMUL64)          { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul64()); }
+      TEST_METHOD(CLMUL64TO128)     { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul64to128()); }
+      TEST_METHOD(CLMUL128)         { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul128()); }
+      TEST_METHOD(CLMUL128TO256)    { Assert::AreEqual(true, CppCore::Test::Math::Util::clmul128to256()); }
       TEST_METHOD(TODOUBLE)         { Assert::AreEqual(true, CppCore::Test::Math::Util::todouble()); }
       TEST_METHOD(GCD32)            { Assert::AreEqual(true, CppCore::Test::Math::Util::gcd32()); }
       TEST_METHOD(GCD64)            { Assert::AreEqual(true, CppCore::Test::Math::Util::gcd64()); }

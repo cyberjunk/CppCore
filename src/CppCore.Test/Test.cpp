@@ -290,6 +290,12 @@ int main()
    TEST(CppCore::Test::BitOps::storer16,            "storer16:         ", std::endl);
    TEST(CppCore::Test::BitOps::storer32,            "storer32:         ", std::endl);
    TEST(CppCore::Test::BitOps::storer64,            "storer64:         ", std::endl);
+   TEST(CppCore::Test::BitOps::bitswap8,            "bitswap8:         ", std::endl);
+   TEST(CppCore::Test::BitOps::bitswap16,           "bitswap16:        ", std::endl);
+   TEST(CppCore::Test::BitOps::bitswap32,           "bitswap32:        ", std::endl);
+   TEST(CppCore::Test::BitOps::bitswap64,           "bitswap64:        ", std::endl);
+   TEST(CppCore::Test::BitOps::bitswap128,          "bitswap128:       ", std::endl);
+   TEST(CppCore::Test::BitOps::bitswap256,          "bitswap256:       ", std::endl);
    TEST(CppCore::Test::BitOps::zbyteidxl32,         "zbyteidxl32:      ", std::endl);
    TEST(CppCore::Test::BitOps::zbyteidxl64,         "zbyteidxl64:      ", std::endl);
    TEST(CppCore::Test::BitOps::zbyteidxl128,        "zbyteidxl128:     ", std::endl);
@@ -336,8 +342,12 @@ int main()
    TEST(CppCore::Test::Math::Util::ngptwo64,        "ngptwo64:         ", std::endl);
    TEST(CppCore::Test::Math::Util::nlptwo32,        "nlptwo32:         ", std::endl);
    TEST(CppCore::Test::Math::Util::nlptwo64,        "nlptwo64:         ", std::endl);
+   TEST(CppCore::Test::Math::Util::addcarry8,       "addcarry8:        ", std::endl);
+   TEST(CppCore::Test::Math::Util::addcarry16,      "addcarry16:       ", std::endl);
    TEST(CppCore::Test::Math::Util::addcarry32,      "addcarry32:       ", std::endl);
    TEST(CppCore::Test::Math::Util::addcarry64,      "addcarry64:       ", std::endl);
+   TEST(CppCore::Test::Math::Util::subborrow8,      "subborrow8:       ", std::endl);
+   TEST(CppCore::Test::Math::Util::subborrow16,     "subborrow16:      ", std::endl);
    TEST(CppCore::Test::Math::Util::subborrow32,     "subborrow32:      ", std::endl);
    TEST(CppCore::Test::Math::Util::subborrow64,     "subborrow64:      ", std::endl);
    TEST(CppCore::Test::Math::Util::mul128,          "mul128:           ", std::endl);
@@ -367,6 +377,12 @@ int main()
    TEST(CppCore::Test::Math::Util::ismersenne32,    "ismersenne32:     ", std::endl);
    TEST(CppCore::Test::Math::Util::ismersenne64,    "ismersenne64:     ", std::endl);
    TEST(CppCore::Test::Math::Util::ismersenne128,   "ismersenne128:    ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul32,         "clmul32:          ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul32to64,     "clmul32to64:      ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul64,         "clmul64:          ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul64to128,    "clmul64to128:     ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul128,        "clmul128:         ", std::endl);
+   TEST(CppCore::Test::Math::Util::clmul128to256,   "clmul128to256:    ", std::endl);
    TEST(CppCore::Test::Math::Util::todouble,        "todouble:         ", std::endl);
    TEST(CppCore::Test::Math::Util::gcd32,           "gcd32:            ", std::endl);
    TEST(CppCore::Test::Math::Util::gcd64,           "gcd64:            ", std::endl);
@@ -684,6 +700,16 @@ int main()
    TEST(CppCore::Test::Encoding::BaseX::tostring16, "tostring16: ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tostring32, "tostring32: ", std::endl);
    TEST(CppCore::Test::Encoding::BaseX::tostring64, "tostring64: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse8,     "parse8:     ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse16,    "parse16:    ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse32,    "parse32:    ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse64,    "parse64:    ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse128,   "parse128:   ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse8,  "tryparse8:  ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse16, "tryparse16: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse32, "tryparse32: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse64, "tryparse64: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse128,"tryparse128:", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::Decimal  " << std::endl;

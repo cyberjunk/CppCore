@@ -6,54 +6,54 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Count of 512-Bit chunks and a possible 256/128/64/32/16/8 tail
-#define CPPCORE_CHUNK_COUNT512(x)                \
-   constexpr size_t N512 = (sizeof(x) / 64);     \
-   constexpr size_t N256 = (sizeof(x) % 64) / 32;\
-   constexpr size_t N128 = (sizeof(x) % 32) / 16;\
-   constexpr size_t N64  = (sizeof(x) % 16) / 8; \
-   constexpr size_t N32  = (sizeof(x) % 8 ) / 4; \
-   constexpr size_t N16  = (sizeof(x) % 4 ) / 2; \
-   constexpr size_t N8   = (sizeof(x) % 2 );
+#define CPPCORE_CHUNK_COUNT512(x)          \
+   constexpr size_t N512 = ((x) / 64);     \
+   constexpr size_t N256 = ((x) % 64) / 32;\
+   constexpr size_t N128 = ((x) % 32) / 16;\
+   constexpr size_t N64  = ((x) % 16) / 8; \
+   constexpr size_t N32  = ((x) % 8 ) / 4; \
+   constexpr size_t N16  = ((x) % 4 ) / 2; \
+   constexpr size_t N8   = ((x) % 2 );
 
 // Count of 256-Bit chunks and a possible 128/64/32/16/8 tail
-#define CPPCORE_CHUNK_COUNT256(x)                \
-   constexpr size_t N512 = 0;                    \
-   constexpr size_t N256 = (sizeof(x) / 32);     \
-   constexpr size_t N128 = (sizeof(x) % 32) / 16;\
-   constexpr size_t N64  = (sizeof(x) % 16) / 8; \
-   constexpr size_t N32  = (sizeof(x) % 8 ) / 4; \
-   constexpr size_t N16  = (sizeof(x) % 4 ) / 2; \
-   constexpr size_t N8   = (sizeof(x) % 2 );
+#define CPPCORE_CHUNK_COUNT256(x)          \
+   constexpr size_t N512 = 0;              \
+   constexpr size_t N256 = ((x) / 32);     \
+   constexpr size_t N128 = ((x) % 32) / 16;\
+   constexpr size_t N64  = ((x) % 16) / 8; \
+   constexpr size_t N32  = ((x) % 8 ) / 4; \
+   constexpr size_t N16  = ((x) % 4 ) / 2; \
+   constexpr size_t N8   = ((x) % 2 );
 
 // Count of 128-Bit chunks and a possible 64/32/16/8 tail
-#define CPPCORE_CHUNK_COUNT128(x)               \
-   constexpr size_t N512 = 0;                   \
-   constexpr size_t N256 = 0;                   \
-   constexpr size_t N128 = (sizeof(x) / 16);    \
-   constexpr size_t N64  = (sizeof(x) % 16) / 8;\
-   constexpr size_t N32  = (sizeof(x) % 8 ) / 4;\
-   constexpr size_t N16  = (sizeof(x) % 4 ) / 2;\
-   constexpr size_t N8   = (sizeof(x) % 2 );
+#define CPPCORE_CHUNK_COUNT128(x)         \
+   constexpr size_t N512 = 0;             \
+   constexpr size_t N256 = 0;             \
+   constexpr size_t N128 = ((x) / 16);    \
+   constexpr size_t N64  = ((x) % 16) / 8;\
+   constexpr size_t N32  = ((x) % 8 ) / 4;\
+   constexpr size_t N16  = ((x) % 4 ) / 2;\
+   constexpr size_t N8   = ((x) % 2 );
 
 // Count of 64-Bit chunks and a possible 32/16/8 tail
-#define CPPCORE_CHUNK_COUNT64(x)                \
-   constexpr size_t N512 = 0;                   \
-   constexpr size_t N256 = 0;                   \
-   constexpr size_t N128 = 0;                   \
-   constexpr size_t N64  = (sizeof(x) / 8);     \
-   constexpr size_t N32  = (sizeof(x) % 8) / 4; \
-   constexpr size_t N16  = (sizeof(x) % 4) / 2; \
-   constexpr size_t N8   = (sizeof(x) % 2);
+#define CPPCORE_CHUNK_COUNT64(x)          \
+   constexpr size_t N512 = 0;             \
+   constexpr size_t N256 = 0;             \
+   constexpr size_t N128 = 0;             \
+   constexpr size_t N64  = ((x) / 8);     \
+   constexpr size_t N32  = ((x) % 8) / 4; \
+   constexpr size_t N16  = ((x) % 4) / 2; \
+   constexpr size_t N8   = ((x) % 2);
 
 // Count of 32-Bit chunks and a possible 16/8 tail
-#define CPPCORE_CHUNK_COUNT32(x)                \
-   constexpr size_t N512 = 0;                   \
-   constexpr size_t N256 = 0;                   \
-   constexpr size_t N128 = 0;                   \
-   constexpr size_t N64  = 0;                   \
-   constexpr size_t N32  = (sizeof(x) / 4);     \
-   constexpr size_t N16  = (sizeof(x) % 4) / 2; \
-   constexpr size_t N8   = (sizeof(x) % 2);
+#define CPPCORE_CHUNK_COUNT32(x)          \
+   constexpr size_t N512 = 0;             \
+   constexpr size_t N256 = 0;             \
+   constexpr size_t N128 = 0;             \
+   constexpr size_t N64  = 0;             \
+   constexpr size_t N32  = ((x) / 4);     \
+   constexpr size_t N16  = ((x) % 4) / 2; \
+   constexpr size_t N8   = ((x) % 2);
 
 // Select which one to use based on CPU
 #if defined(CPPCORE_CPU_64BIT)
@@ -68,7 +68,7 @@
 #if defined(CPPCORE_CPUFEAT_SSE)
 #define CPPCORE_CHUNK_LOAD128(t,p)    (alignof(t)%16==0) ? _mm_load_si128 ((__m128i*)p)    : _mm_loadu_si128 ((__m128i*)p)
 #define CPPCORE_CHUNK_STORE128(t,p,v) (alignof(t)%16==0) ? _mm_store_si128((__m128i*)p, v) : _mm_storeu_si128((__m128i*)p, v)
-#define CPPCORE_CHUNK_STEP128_X(forward, p128, type)    \
+#define CPPCORE_CHUNK_STEP128_X(forward, p128)          \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
       if constexpr (!forward) { px -= 16U; }            \
@@ -76,33 +76,35 @@
       p128;                                             \
       if constexpr (forward) { px += 16U; }             \
    }
-#define CPPCORE_CHUNK_STEP128_XY(forward, p128, type)   \
-   CPPCORE_UNROLL                                       \
-   for (size_t i = 0; i < N128; i++) {                  \
-      if constexpr (!forward) { px -= 16U; py -= 16U; } \
-      __m128i* px128 = (__m128i*)px;                    \
-      __m128i* py128 = (__m128i*)py;                    \
-      p128;                                             \
-      if constexpr (forward) { px += 16U; py += 16U; }  \
+#define CPPCORE_CHUNK_STEP128_XY(forwardx,forwardy,p128) \
+   CPPCORE_UNROLL                                        \
+   for (size_t i = 0; i < N128; i++) {                   \
+      if constexpr (!forwardx) { px -= 16U; }            \
+      if constexpr (!forwardy) { py -= 16U; }            \
+      __m128i* px128 = (__m128i*)px;                     \
+      __m128i* py128 = (__m128i*)py;                     \
+      p128;                                              \
+      if constexpr (forwardx) { px += 16U; }             \
+      if constexpr (forwardy) { py += 16U; }             \
    }
-#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)  \
-   CPPCORE_UNROLL                                       \
-   for (size_t i = 0; i < N128; i++) {                  \
-      if constexpr (!forward) {                         \
-         px -= 16U; py -= 16U; pz -= 16U;               \
-      }                                                 \
-      __m128i* px128 = (__m128i*)px;                    \
-      __m128i* py128 = (__m128i*)py;                    \
-      __m128i* pz128 = (__m128i*)pz;                    \
-      p128;                                             \
-      if constexpr (forward) {                          \
-         px += 16U; py += 16U; pz += 16U;               \
-      }                                                 \
+#define CPPCORE_CHUNK_STEP128_XYZ(forwardx,forwardy,forwardz,p128) \
+   CPPCORE_UNROLL                                        \
+   for (size_t i = 0; i < N128; i++) {                   \
+      if constexpr (!forwardx) { px -= 16U; }            \
+      if constexpr (!forwardy) { py -= 16U; }            \
+      if constexpr (!forwardz) { pz -= 16U; }            \
+      __m128i* px128 = (__m128i*)px;                     \
+      __m128i* py128 = (__m128i*)py;                     \
+      __m128i* pz128 = (__m128i*)pz;                     \
+      p128;                                              \
+      if constexpr (forwardx) { px += 16U; }             \
+      if constexpr (forwardy) { py += 16U; }             \
+      if constexpr (forwardz) { pz += 16U; }             \
    }
 #elif defined(CPPCORE_CPUFEAT_ARM_NEON)
 #define CPPCORE_CHUNK_LOAD128(t,p)    vld1q_u32 ((uint32_t*)p)
 #define CPPCORE_CHUNK_STORE128(t,p,v) vst1q_u32((uint32_t*)p, v)
-#define CPPCORE_CHUNK_STEP128_X(forward, p128, type)    \
+#define CPPCORE_CHUNK_STEP128_X(forward, p128)          \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
       if constexpr (!forward) { px -= 16U; }            \
@@ -110,39 +112,41 @@
       p128;                                             \
       if constexpr (forward) { px += 16U; }             \
    }
-#define CPPCORE_CHUNK_STEP128_XY(forward, p128, type)   \
+#define CPPCORE_CHUNK_STEP128_XY(forwardx,forwardy,p128)\
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
-      if constexpr (!forward) { px -= 16U; py -= 16U; } \
+      if constexpr (!forwardx) { px -= 16U; }           \
+      if constexpr (!forwardy) { py -= 16U; }           \
       uint32x4_t* px128 = (uint32x4_t*)px;              \
       uint32x4_t* py128 = (uint32x4_t*)py;              \
       p128;                                             \
-      if constexpr (forward) { px += 16U; py += 16U; }  \
+      if constexpr (forwardx) { px += 16U; }            \
+      if constexpr (forwardy) { py += 16U; }            \
    }
-#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)  \
+#define CPPCORE_CHUNK_STEP128_XYZ(forwardx,forwardy,forwardz,p128) \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
-      if constexpr (!forward) {                         \
-         px -= 16U; py -= 16U; pz -= 16U;               \
-      }                                                 \
+      if constexpr (!forwardx) { px -= 16U; }           \
+      if constexpr (!forwardy) { py -= 16U; }           \
+      if constexpr (!forwardz) { pz -= 16U; }           \
       uint32x4_t* px128 = (uint32x4_t*)px;              \
       uint32x4_t* py128 = (uint32x4_t*)py;              \
       uint32x4_t* pz128 = (uint32x4_t*)pz;              \
       p128;                                             \
-      if constexpr (forward) {                          \
-         px += 16U; py += 16U; pz += 16U;               \
-      }                                                 \
+      if constexpr (forwardx) { px += 16U; }            \
+      if constexpr (forwardy) { py += 16U; }            \
+      if constexpr (forwardz) { pz += 16U; }            \
    }
 #else
-#define CPPCORE_CHUNK_STEP128_X(forward, p128, type)
-#define CPPCORE_CHUNK_STEP128_XY(forward, p128, type)
-#define CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)
+#define CPPCORE_CHUNK_STEP128_X(forward, p128)
+#define CPPCORE_CHUNK_STEP128_XY(forwardx,forwardy,p128)
+#define CPPCORE_CHUNK_STEP128_XYZ(forwardx,forwardy,forwardz,p128)
 #endif
 
 #if defined(CPPCORE_CPUFEAT_AVX)
 #define CPPCORE_CHUNK_LOAD256(t, p)   (alignof(t)%32==0) ? _mm256_load_si256((__m256i*)p)     : _mm256_loadu_si256((__m256i*)p)
 #define CPPCORE_CHUNK_STORE256(t,p,v) (alignof(t)%32==0) ? _mm256_store_si256((__m256i*)p, v) : _mm256_storeu_si256((__m256i*)p, v)
-#define CPPCORE_CHUNK_STEP256_X(forward, p256, type) \
+#define CPPCORE_CHUNK_STEP256_X(forward, p256)       \
    CPPCORE_UNROLL                                    \
    for (size_t i = 0; i < N256; i++) {               \
       if constexpr (!forward) { px -= 32U; }         \
@@ -150,39 +154,41 @@
       p256;                                          \
       if constexpr (forward) { px += 32U; }          \
    }
-#define CPPCORE_CHUNK_STEP256_XY(forward, p256, type)   \
+#define CPPCORE_CHUNK_STEP256_XY(forwardx,forwardy,p256)\
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N256; i++) {                  \
-      if constexpr (!forward) { px -= 32U; py -= 32U; } \
+      if constexpr (!forwardx) { px -= 32U; }           \
+      if constexpr (!forwardy) { py -= 32U; }           \
       __m256i* px256 = (__m256i*)px;                    \
       __m256i* py256 = (__m256i*)py;                    \
       p256;                                             \
-      if constexpr (forward) { px += 32U; py += 32U; }  \
+      if constexpr (forwardx) { px += 32U; }            \
+      if constexpr (forwardy) { py += 32U; }            \
    }
-#define CPPCORE_CHUNK_STEP256_XYZ(forward, p256, type)  \
+#define CPPCORE_CHUNK_STEP256_XYZ(forwardx,forwardy,forwardz,p256) \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N256; i++) {                  \
-      if constexpr (!forward) {                         \
-         px -= 32U; py -= 32U; pz -= 32U;               \
-      }                                                 \
+      if constexpr (!forwardx) { px -= 32U; }           \
+      if constexpr (!forwardy) { py -= 32U; }           \
+      if constexpr (!forwardz) { pz -= 32U; }           \
       __m256i* px256 = (__m256i*)px;                    \
       __m256i* py256 = (__m256i*)py;                    \
       __m256i* pz256 = (__m256i*)pz;                    \
       p256;                                             \
-      if constexpr (forward) {                          \
-         px += 32U; py += 32U; pz += 32U;               \
-      }                                                 \
+      if constexpr (forwardx) { px += 32U; }            \
+      if constexpr (forwardy) { py += 32U; }            \
+      if constexpr (forwardz) { pz += 32U; }            \
    }
 #else
-#define CPPCORE_CHUNK_STEP256_X(forward, p256, type)
-#define CPPCORE_CHUNK_STEP256_XY(forward, p256, type)
-#define CPPCORE_CHUNK_STEP256_XYZ(forward, p256, type)
+#define CPPCORE_CHUNK_STEP256_X(forward, p256)
+#define CPPCORE_CHUNK_STEP256_XY(forwardx,forwardy,p256)
+#define CPPCORE_CHUNK_STEP256_XYZ(forwardx,forwardy,forwardz,p256)
 #endif
 
 #if defined(CPPCORE_CPUFEAT_AVX512F)
 #define CPPCORE_CHUNK_LOAD512(t, p)   (alignof(t)%64==0) ? _mm512_load_si512((__m512i*)p)     : _mm512_loadu_si512((__m512i*)p)
 #define CPPCORE_CHUNK_STORE512(t,p,v) (alignof(t)%64==0) ? _mm512_store_si512((__m512i*)p, v) : _mm512_storeu_si512((__m512i*)p, v)
-#define CPPCORE_CHUNK_STEP512_X(forward, p512, type) \
+#define CPPCORE_CHUNK_STEP512_X(forward, p512) \
    CPPCORE_UNROLL                              \
    for (size_t i = 0; i < N512; i++) {         \
       if constexpr (!forward) { px -= 64U; }   \
@@ -190,47 +196,49 @@
       p512;                                    \
       if constexpr (forward) { px += 64U; }    \
    }
-#define CPPCORE_CHUNK_STEP512_XY(forward, p512, type)    \
+#define CPPCORE_CHUNK_STEP512_XY(forwardx,forwardy,p512) \
    CPPCORE_UNROLL                                        \
    for (size_t i = 0; i < N512; i++) {                   \
-      if constexpr (!forward) { px -= 64U; py -= 64U; }  \
+      if constexpr (!forwardx) { px -= 64U; }            \
+      if constexpr (!forwardy) { py -= 64U; }            \
       __m512i* px512 = (__m512i*)px;                     \
       __m512i* py512 = (__m512i*)py;                     \
       p512;                                              \
-      if constexpr (forward) { px += 64U; py += 64U; }   \
+      if constexpr (forwardx) { px += 64U; }             \
+      if constexpr (forwardy) { py += 64U; }             \
    }
-#define CPPCORE_CHUNK_STEP512_XYZ(forward, p512, type)   \
+#define CPPCORE_CHUNK_STEP512_XYZ(forwardx,forwardy,forwardz,p512) \
    CPPCORE_UNROLL                                        \
    for (size_t i = 0; i < N512; i++) {                   \
-      if constexpr (!forward) {                          \
-         px -= 64U; py -= 64U; pz -= 64U;                \
-      }                                                  \
+      if constexpr (!forwardx) { px -= 64U; }            \
+      if constexpr (!forwardy) { py -= 64U; }            \
+      if constexpr (!forwardz) { pz -= 64U; }            \
       __m512i* px512 = (__m512i*)px;                     \
       __m512i* py512 = (__m512i*)py;                     \
       __m512i* pz512 = (__m512i*)pz;                     \
       p512;                                              \
-      if constexpr (forward) {                           \
-         px += 64U; py += 64U; pz += 64U;                \
-      }                                                  \
+      if constexpr (forwardx) { px += 64U; }             \
+      if constexpr (forwardy) { py += 64U; }             \
+      if constexpr (forwardz) { pz += 64U; }             \
    }
 #else
-#define CPPCORE_CHUNK_STEP512_X(forward, p512, type)
-#define CPPCORE_CHUNK_STEP512_XY(forward, p512, type)
-#define CPPCORE_CHUNK_STEP512_XYZ(forward, p512, type)
+#define CPPCORE_CHUNK_STEP512_X(forward, p512)
+#define CPPCORE_CHUNK_STEP512_XY(forwardx,forwardy,p512)
+#define CPPCORE_CHUNK_STEP512_XYZ(forwardx,forwardy,forwardz,p512)
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Base Macro for op(x).
-#define CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, p512, p256, p128, p64, p32, p16, p8) \
+#define CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, p512, p256, p128, p64, p32, p16, p8) \
    uint8_t* px = (uint8_t*)&(x);                   \
    if constexpr (!forward) {                       \
-      px += sizeof(type);                          \
+      px += sizeof(x);                             \
    }                                               \
-   CPPCORE_CHUNK_STEP512_X(forward, p512, type)    \
-   CPPCORE_CHUNK_STEP256_X(forward, p256, type)    \
-   CPPCORE_CHUNK_STEP128_X(forward, p128, type)    \
+   CPPCORE_CHUNK_STEP512_X(forward, p512)          \
+   CPPCORE_CHUNK_STEP256_X(forward, p256)          \
+   CPPCORE_CHUNK_STEP128_X(forward, p128)          \
    CPPCORE_UNROLL                                  \
    for (size_t i = 0; i < N64; i++) {              \
       if constexpr (!forward) { px -= 8U; }        \
@@ -259,69 +267,72 @@
 
 // Process chunks of type. For op(x). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
-#define CPPCORE_CHUNK_PROCESS_X(x, type, forward, p64, p32, p16, p8)     \
-   CPPCORE_CHUNK_COUNT(type)                                             \
-   CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, , , , p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS_X(x, forward, p64, p32, p16, p8)        \
+   CPPCORE_CHUNK_COUNT(sizeof(x))                                     \
+   CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 128-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS128_X(x, type, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(type)                                               \
-   CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, , , p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS128_X(x, forward, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT128(sizeof(x))                                    \
+   CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 256-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS256_X(x, type, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(type)                                                     \
-   CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, , p256, p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS256_X(x, forward, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT256(sizeof(x))                                          \
+   CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x). 
 // Requires 512-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS512_X(x, type, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(type)                                                           \
-   CPPCORE_CHUNK_PROCESS_BASE_X(x, type, forward, p512, p256, p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS512_X(x, forward, p512, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT512(sizeof(x))                                                \
+   CPPCORE_CHUNK_PROCESS_BASE_X(x, forward, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Base Macro for op(x, y).
-#define CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, p512, p256, p128, p64, p32, p16, p8) \
+#define CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forwardx, forwardy, p512, p256, p128, p64, p32, p16, p8) \
    uint8_t* px = (uint8_t*)&(x);                      \
    uint8_t* py = (uint8_t*)&(y);                      \
-   if (!forward) {                                    \
-      px += sizeof(type);                             \
-      py += sizeof(type);                             \
-   }                                                  \
-   CPPCORE_CHUNK_STEP512_XY(forward, p512, type)      \
-   CPPCORE_CHUNK_STEP256_XY(forward, p256, type)      \
-   CPPCORE_CHUNK_STEP128_XY(forward, p128, type)      \
+   if (!forwardx) px += sizeof(x);                    \
+   if (!forwardy) py += sizeof(y);                    \
+   CPPCORE_CHUNK_STEP512_XY(forwardx,forwardy,p512)   \
+   CPPCORE_CHUNK_STEP256_XY(forwardx,forwardy,p256)   \
+   CPPCORE_CHUNK_STEP128_XY(forwardx,forwardy,p128)   \
    CPPCORE_UNROLL                                     \
    for (size_t i = 0; i < N64; i++) {                 \
-      if constexpr (!forward) { px -= 8U; py -= 8U; } \
+      if constexpr (!forwardx) { px -= 8U; }          \
+      if constexpr (!forwardy) { py -= 8U; }          \
       uint64_t* px64 = (uint64_t*)px;                 \
       uint64_t* py64 = (uint64_t*)py;                 \
       p64;                                            \
-      if constexpr (forward) { px += 8U; py += 8U; }  \
+      if constexpr (forwardx) { px += 8U; }           \
+      if constexpr (forwardy) { py += 8U; }           \
    }                                                  \
    CPPCORE_UNROLL                                     \
    for (size_t i = 0; i < N32; i++) {                 \
-      if constexpr (!forward) { px -= 4U; py -= 4U; } \
+      if constexpr (!forwardx) { px -= 4U; }          \
+      if constexpr (!forwardy) { py -= 4U; }          \
       uint32_t* px32 = (uint32_t*)px;                 \
       uint32_t* py32 = (uint32_t*)py;                 \
       p32;                                            \
-      if constexpr (forward) { px += 4U; py += 4U; }  \
+      if constexpr (forwardx) { px += 4U; }           \
+      if constexpr (forwardy) { py += 4U; }           \
    }                                                  \
    if (N16) {                                         \
-      if constexpr (!forward) { px -= 2U; py -= 2U; } \
+      if constexpr (!forwardx) { px -= 2U; }          \
+      if constexpr (!forwardy) { py -= 2U; }          \
       uint16_t* px16 = (uint16_t*)px;                 \
       uint16_t* py16 = (uint16_t*)py;                 \
       p16;                                            \
-      if constexpr (forward && N8) {                  \
-         px += 2U; py += 2U;                          \
-      }                                               \
+      if constexpr (forwardx && N8) { px += 2U; }     \
+      if constexpr (forwardy && N8) { py += 2U; }     \
    }                                                  \
    if (N8) {                                          \
-      if constexpr (!forward) { px -= 1U; py -= 1U; } \
+      if constexpr (!forwardx) { px -= 1U; }          \
+      if constexpr (!forwardy) { py -= 1U; }          \
       uint8_t* px8 = (uint8_t*)px;                    \
       uint8_t* py8 = (uint8_t*)py;                    \
       p8;                                             \
@@ -329,86 +340,84 @@
 
 // Process chunks of type. For op(x, y). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
-#define CPPCORE_CHUNK_PROCESS_XY(x, y, type, forward, p64, p32, p16, p8)     \
-   CPPCORE_CHUNK_COUNT(type)                                                 \
-   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, , , , p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS_XY(x, y, forwardx, forwardy, p64, p32, p16, p8)      \
+   CPPCORE_CHUNK_COUNT(MIN(sizeof(x), sizeof(y)))                                  \
+   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forwardx, forwardy, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 128-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS128_XY(x, y, type, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(type)                                                   \
-   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, , , p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS128_XY(x, y, forwardx, forwardy, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT128(MIN(sizeof(x), sizeof(y)))                                   \
+   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forwardx, forwardy, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 256-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS256_XY(x, y, type, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(type)                                                         \
-   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, , p256, p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS256_XY(x, y, forwardx, forwardy, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT256(MIN(sizeof(x), sizeof(y)))                                         \
+   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forwardx, forwardy, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y). 
 // Requires 512-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS512_XY(x, y, type, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(type)                                                               \
-   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, type, forward, p512, p256, p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS512_XY(x, y, forwardx, forwardy, p512, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT512(MIN(sizeof(x), sizeof(y)))                                               \
+   CPPCORE_CHUNK_PROCESS_BASE_XY(x, y, forwardx, forwardy, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Base Macro for op(x, y, z).
-#define CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, p512, p256, p128, p64, p32, p16, p8) \
-   uint8_t* px = (uint8_t*)&(x);                           \
-   uint8_t* py = (uint8_t*)&(y);                           \
-   uint8_t* pz = (uint8_t*)&(z);                           \
-   if constexpr (!forward) {                               \
-      px += sizeof(type);                                  \
-      py += sizeof(type);                                  \
-      pz += sizeof(type);                                  \
-   }                                                       \
-   CPPCORE_CHUNK_STEP512_XYZ(forward, p512, type)          \
-   CPPCORE_CHUNK_STEP256_XYZ(forward, p256, type)          \
-   CPPCORE_CHUNK_STEP128_XYZ(forward, p128, type)          \
-   CPPCORE_UNROLL                                          \
+#define CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forwardx, forwardy, forwardz, p512, p256, p128, p64, p32, p16, p8) \
+   uint8_t* px = (uint8_t*)&(x);                              \
+   uint8_t* py = (uint8_t*)&(y);                              \
+   uint8_t* pz = (uint8_t*)&(z);                              \
+   if (!forwardx) px += sizeof(x);                            \
+   if (!forwardy) py += sizeof(y);                            \
+   if (!forwardz) pz += sizeof(z);                            \
+   CPPCORE_CHUNK_STEP512_XYZ(forwardx,forwardy,forwardz,p512) \
+   CPPCORE_CHUNK_STEP256_XYZ(forwardx,forwardy,forwardz,p256) \
+   CPPCORE_CHUNK_STEP128_XYZ(forwardx,forwardy,forwardz,p128) \
+   CPPCORE_UNROLL                                             \
    for (size_t i = 0; i < N64; i++) {                      \
-      if constexpr (!forward) {                            \
-         px -= 8U; py -= 8U; pz -= 8U;                     \
-      }                                                    \
+      if constexpr (!forwardx) { px -= 8U; }               \
+      if constexpr (!forwardy) { py -= 8U; }               \
+      if constexpr (!forwardz) { pz -= 8U; }               \
       uint64_t* px64 = (uint64_t*)px;                      \
       uint64_t* py64 = (uint64_t*)py;                      \
       uint64_t* pz64 = (uint64_t*)pz;                      \
       p64;                                                 \
-      if constexpr (forward) {                             \
-         px += 8U; py += 8U; pz += 8U;                     \
-      }                                                    \
+      if constexpr (forwardx) { px += 8U; }                \
+      if constexpr (forwardy) { py += 8U; }                \
+      if constexpr (forwardz) { pz += 8U; }                \
    }                                                       \
    CPPCORE_UNROLL                                          \
    for (size_t i = 0; i < N32; i++) {                      \
-      if constexpr (!forward) {                            \
-         px -= 4U; py -= 4U; pz -= 4U;                     \
-      }                                                    \
+      if constexpr (!forwardx) { px -= 4U; }               \
+      if constexpr (!forwardy) { py -= 4U; }               \
+      if constexpr (!forwardz) { pz -= 4U; }               \
       uint32_t* px32 = (uint32_t*)px;                      \
       uint32_t* py32 = (uint32_t*)py;                      \
       uint32_t* pz32 = (uint32_t*)pz;                      \
       p32;                                                 \
-      if constexpr (forward) {                             \
-         px += 4U; py += 4U; pz += 4U;                     \
-      }                                                    \
+      if constexpr (forwardx) { px += 4U; }                \
+      if constexpr (forwardy) { py += 4U; }                \
+      if constexpr (forwardz) { pz += 4U; }                \
    }                                                       \
    if (N16) {                                              \
-      if constexpr (!forward) {                            \
-         px -= 2U; py -= 2U; pz -= 2U;                     \
-      }                                                    \
+      if constexpr (!forwardx) { px -= 2U; }               \
+      if constexpr (!forwardy) { py -= 2U; }               \
+      if constexpr (!forwardz) { pz -= 2U; }               \
       uint16_t* px16 = (uint16_t*)px;                      \
       uint16_t* py16 = (uint16_t*)py;                      \
       uint16_t* pz16 = (uint16_t*)pz;                      \
       p16;                                                 \
-      if constexpr (forward && N8) {                       \
-         px += 2U; py += 2U; pz += 2U;                     \
-      }                                                    \
+      if constexpr (forwardx && N8) { px += 2U; }          \
+      if constexpr (forwardy && N8) { py += 2U; }          \
+      if constexpr (forwardz && N8) { pz += 2U; }          \
    }                                                       \
    if (N8) {                                               \
-      if constexpr (!forward) {                            \
-         px -= 1U; py -= 1U; pz -= 1U;                     \
-      }                                                    \
+      if constexpr (!forwardx) { px -= 1U; }               \
+      if constexpr (!forwardy) { py -= 1U; }               \
+      if constexpr (!forwardz) { pz -= 1U; }               \
       uint8_t* px8 = (uint8_t*)px;                         \
       uint8_t* py8 = (uint8_t*)py;                         \
       uint8_t* pz8 = (uint8_t*)pz;                         \
@@ -417,27 +426,27 @@
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 64-Bit and 32-Bit Op and will select based on CPU
-#define CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, type, forward, p64, p32, p16, p8)     \
-   CPPCORE_CHUNK_COUNT(type)                                                     \
-   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, , , , p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, forwardx, forwardy, forwardz, p64, p32, p16, p8)  \
+   CPPCORE_CHUNK_COUNT(MIN(MIN(sizeof(x), sizeof(y)), sizeof(z)))                            \
+   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forwardx, forwardy, forwardz, , , , p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 128-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, type, forward, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT128(type)                                                       \
-   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, , , p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, forwardx, forwardy, forwardz, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT128(MIN(MIN(sizeof(x), sizeof(y)), sizeof(z)))                                 \
+   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forwardx, forwardy, forwardz, , , p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 256-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, type, forward, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT256(type)                                                             \
-   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, , p256, p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, forwardx, forwardy, forwardz, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT256(MIN(MIN(sizeof(x), sizeof(y)), sizeof(z)))                                       \
+   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forwardx, forwardy, forwardz, , p256, p128, p64, p32, p16, p8)
 
 // Process chunks of type. For op(x, y, z). 
 // Requires 512-Bit Op additionally
-#define CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, type, forward, p512, p256, p128, p64, p32, p16, p8) \
-   CPPCORE_CHUNK_COUNT512(type)                                                                   \
-   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, type, forward, p512, p256, p128, p64, p32, p16, p8)
+#define CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, forwardx, forwardy, forwardz, p512, p256, p128, p64, p32, p16, p8) \
+   CPPCORE_CHUNK_COUNT512(MIN(MIN(sizeof(x), sizeof(y)), sizeof(z)))                                             \
+   CPPCORE_CHUNK_PROCESS_BASE_XYZ(x, y, z, forwardx, forwardy, forwardz, p512, p256, p128, p64, p32, p16, p8)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -560,7 +569,7 @@ namespace CppCore
    static INLINE bool equal(const UINT& x, const UINT& y)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512BW)
-      CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XY(x, y, true, true,
          if (!CppCore::equal512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512))) return false;,
          if (!CppCore::equal256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256))) return false;,
          if (!CppCore::equal128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128))) return false;,
@@ -569,7 +578,7 @@ namespace CppCore
          if (!CppCore::equal16 (*px16,  *py16 )) return false;,
          if (!CppCore::equal8  (*px8,   *py8  )) return false;)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XY(x, y, true, true,
          if (!CppCore::equal256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256))) return false;,
          if (!CppCore::equal128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128))) return false;,
          if (!CppCore::equal64 (*px64,  *py64 )) return false;,
@@ -577,14 +586,14 @@ namespace CppCore
          if (!CppCore::equal16 (*px16,  *py16 )) return false;,
          if (!CppCore::equal8  (*px8,   *py8  )) return false;)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XY(x, y, true, true,
          if (!CppCore::equal128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128))) return false;,
          if (!CppCore::equal64 (*px64,  *py64 )) return false;,
          if (!CppCore::equal32 (*px32,  *py32 )) return false;,
          if (!CppCore::equal16 (*px16,  *py16 )) return false;,
          if (!CppCore::equal8  (*px8,   *py8  )) return false;)
    #else
-      CPPCORE_CHUNK_PROCESS_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XY(x, y, true, true,
          if (!CppCore::equal64 (*px64,  *py64 )) return false;,
          if (!CppCore::equal32 (*px32,  *py32 )) return false;,
          if (!CppCore::equal16 (*px16,  *py16 )) return false;,
@@ -703,7 +712,7 @@ namespace CppCore
    static INLINE bool testzero(const UINT& x)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512BW)
-      CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_X(x, true,
          if (!CppCore::testzero512(CPPCORE_CHUNK_LOAD512(UINT, px512))) return false;,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
@@ -712,7 +721,7 @@ namespace CppCore
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_X(x, true,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
          if (!CppCore::testzero64 (*px64 )) return false;,
@@ -720,14 +729,14 @@ namespace CppCore
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
          if (!CppCore::testzero64 (*px64 )) return false;,
          if (!CppCore::testzero32 (*px32 )) return false;,
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
    #else
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          if (!CppCore::testzero64(*px64)) return false;,
          if (!CppCore::testzero32(*px32)) return false;,
          if (!CppCore::testzero16(*px16)) return false;,
@@ -844,7 +853,7 @@ namespace CppCore
       const __m512i ZERO512 = _mm512_setzero_si512();
       const __m256i ZERO256 = _mm256_setzero_si256();
       const __m128i ZERO128 = _mm_setzero_si128();
-      CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_X(x, true,
          CPPCORE_CHUNK_STORE512(UINT, px512, ZERO512); ,
          CPPCORE_CHUNK_STORE256(UINT, px256, ZERO256);,
          CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128);,
@@ -855,7 +864,7 @@ namespace CppCore
    #elif defined(CPPCORE_CPUFEAT_AVX)
       const __m256i ZERO256 = _mm256_setzero_si256();
       const __m128i ZERO128 = _mm_setzero_si128();
-      CPPCORE_CHUNK_PROCESS256_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_X(x, true,
          CPPCORE_CHUNK_STORE256(UINT, px256, ZERO256);,
          CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128);,
          CppCore::clear64 (*px64); ,
@@ -864,7 +873,7 @@ namespace CppCore
          CppCore::clear8  (*px8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
       const __m128i ZERO128 = _mm_setzero_si128();
-      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128);,
          CppCore::clear64 (*px64); ,
          CppCore::clear32 (*px32); ,
@@ -872,14 +881,14 @@ namespace CppCore
          CppCore::clear8  (*px8);)
    #elif defined(CPPCORE_CPUFEAT_ARM_NEON)
       constexpr uint32x4_t ZERO128 = { 0ULL, 0ULL };
-      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128);,
          CppCore::clear64 (*px64); ,
          CppCore::clear32 (*px32); ,
          CppCore::clear16 (*px16); ,
          CppCore::clear8  (*px8);)
    #else
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          CppCore::clear64(*px64); ,
          CppCore::clear32(*px32); ,
          CppCore::clear16(*px16); ,
@@ -962,7 +971,7 @@ namespace CppCore
    static INLINE void clone(UINT& x, const UINT& y)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XY(x, y, true, true,
          CPPCORE_CHUNK_STORE512(UINT, px512, CPPCORE_CHUNK_LOAD512(UINT, py512));,
          CPPCORE_CHUNK_STORE256(UINT, px256, CPPCORE_CHUNK_LOAD256(UINT, py256));,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
@@ -971,7 +980,7 @@ namespace CppCore
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX)
-      CPPCORE_CHUNK_PROCESS256_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XY(x, y, true, true,
          CPPCORE_CHUNK_STORE256(UINT, px256, CPPCORE_CHUNK_LOAD256(UINT, py256));,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
@@ -979,14 +988,14 @@ namespace CppCore
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2) || defined(CPPCORE_CPUFEAT_ARM_NEON)
-      CPPCORE_CHUNK_PROCESS128_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XY(x, y, true, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
          CppCore::clone32 (*px32, *py32);,
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XY(x, y, true, true,
          CppCore::clone64(*px64, *py64); ,
          CppCore::clone32(*px32, *py32); ,
          CppCore::clone16(*px16, *py16); ,
@@ -1099,7 +1108,7 @@ namespace CppCore
    static INLINE void or_(const UINT& x, const UINT& y, UINT& z)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::or512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::or256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::or128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
@@ -1108,7 +1117,7 @@ namespace CppCore
          *pz16  = CppCore::or16 (*px16,  *py16); ,
          *pz8   = CppCore::or8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::or256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::or128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::or64 (*px64,  *py64); ,
@@ -1116,14 +1125,14 @@ namespace CppCore
          *pz16  = CppCore::or16 (*px16,  *py16); ,
          *pz8   = CppCore::or8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::or128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::or64 (*px64,  *py64); ,
          *pz32  = CppCore::or32 (*px32,  *py32); ,
          *pz16  = CppCore::or16 (*px16,  *py16); ,
          *pz8   = CppCore::or8  (*px8,   *py8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, true, true, true,
          *pz64  = CppCore::or64 (*px64,  *py64); ,
          *pz32  = CppCore::or32 (*px32,  *py32); ,
          *pz16  = CppCore::or16 (*px16,  *py16); ,
@@ -1236,7 +1245,7 @@ namespace CppCore
    static INLINE void xor_(const UINT& x, const UINT& y, UINT& z)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::xor512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::xor256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::xor128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
@@ -1245,7 +1254,7 @@ namespace CppCore
          *pz16  = CppCore::xor16 (*px16,  *py16); ,
          *pz8   = CppCore::xor8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::xor256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::xor128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::xor64 (*px64,  *py64); ,
@@ -1253,14 +1262,14 @@ namespace CppCore
          *pz16  = CppCore::xor16 (*px16,  *py16); ,
          *pz8   = CppCore::xor8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::xor128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::xor64 (*px64,  *py64); ,
          *pz32  = CppCore::xor32 (*px32,  *py32); ,
          *pz16  = CppCore::xor16 (*px16,  *py16); ,
          *pz8   = CppCore::xor8  (*px8,   *py8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, true, true, true,
          *pz64  = CppCore::xor64 (*px64, *py64); ,
          *pz32  = CppCore::xor32 (*px32, *py32); ,
          *pz16  = CppCore::xor16 (*px16, *py16); ,
@@ -1373,7 +1382,7 @@ namespace CppCore
    static INLINE void and_(const UINT& x, const UINT& y, UINT& z)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE512(UINT, pz512, CppCore::and512(CPPCORE_CHUNK_LOAD512(UINT, px512), CPPCORE_CHUNK_LOAD512(UINT, py512)));,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::and256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::and128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
@@ -1382,7 +1391,7 @@ namespace CppCore
          *pz16  = CppCore::and16 (*px16,  *py16); ,
          *pz8   = CppCore::and8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE256(UINT, pz256, CppCore::and256(CPPCORE_CHUNK_LOAD256(UINT, px256), CPPCORE_CHUNK_LOAD256(UINT, py256)));,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::and128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::and64 (*px64,  *py64); ,
@@ -1390,14 +1399,14 @@ namespace CppCore
          *pz16  = CppCore::and16 (*px16,  *py16); ,
          *pz8   = CppCore::and8  (*px8,   *py8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XYZ(x, y, z, true, true, true,
          CPPCORE_CHUNK_STORE128(UINT, pz128, CppCore::and128(CPPCORE_CHUNK_LOAD128(UINT, px128), CPPCORE_CHUNK_LOAD128(UINT, py128)));,
          *pz64  = CppCore::and64 (*px64,  *py64); ,
          *pz32  = CppCore::and32 (*px32,  *py32); ,
          *pz16  = CppCore::and16 (*px16,  *py16); ,
          *pz8   = CppCore::and8  (*px8,   *py8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, true, true, true,
          *pz64  = CppCore::and64(*px64, *py64); ,
          *pz32  = CppCore::and32(*px32, *py32); ,
          *pz16  = CppCore::and16(*px16, *py16); ,
@@ -1510,7 +1519,7 @@ namespace CppCore
    static INLINE void not_(const UINT& x, UINT& y)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
-      CPPCORE_CHUNK_PROCESS512_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_XY(x, y, true, true,
          CPPCORE_CHUNK_STORE512(UINT, py512, CppCore::not512(CPPCORE_CHUNK_LOAD512(UINT, px512))); ,
          CPPCORE_CHUNK_STORE256(UINT, py256, CppCore::not256(CPPCORE_CHUNK_LOAD256(UINT, px256)));,
          CPPCORE_CHUNK_STORE128(UINT, py128, CppCore::not128(CPPCORE_CHUNK_LOAD128(UINT, px128)));,
@@ -1519,7 +1528,7 @@ namespace CppCore
          *py16  = CppCore::not16 (*px16); ,
          *py8   = CppCore::not8  (*px8);)
    #elif defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_XY(x, y, true, true,
          CPPCORE_CHUNK_STORE256(UINT, py256, CppCore::not256(CPPCORE_CHUNK_LOAD256(UINT, px256)));,
          CPPCORE_CHUNK_STORE128(UINT, py128, CppCore::not128(CPPCORE_CHUNK_LOAD128(UINT, px128)));,
          *py64  = CppCore::not64 (*px64); ,
@@ -1527,14 +1536,14 @@ namespace CppCore
          *py16  = CppCore::not16 (*px16); ,
          *py8   = CppCore::not8  (*px8);)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
-      CPPCORE_CHUNK_PROCESS128_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_XY(x, y, true, true,
          CPPCORE_CHUNK_STORE128(UINT, py128, CppCore::not128(CPPCORE_CHUNK_LOAD128(UINT, px128)));,
          *py64  = CppCore::not64 (*px64); ,
          *py32  = CppCore::not32 (*px32); ,
          *py16  = CppCore::not16 (*px16); ,
          *py8   = CppCore::not8  (*px8);)
    #else
-      CPPCORE_CHUNK_PROCESS_XY(x, y, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XY(x, y, true, true,
          *py64  = CppCore::not64(*px64); ,
          *py32  = CppCore::not32(*px32); ,
          *py16  = CppCore::not16(*px16); ,
@@ -1626,7 +1635,7 @@ namespace CppCore
    template<typename UINT>
    static INLINE void andn(const UINT& x, const UINT& y, UINT& z)
    {
-      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, UINT, true,
+      CPPCORE_CHUNK_PROCESS_XYZ(x, y, z, true, true, true,
          *pz64 = CppCore::andn64(*px64, *py64); ,
          *pz32 = CppCore::andn32(*px32, *py32); ,
          *pz16 = CppCore::andn16(*px16, *py16); ,
@@ -2288,7 +2297,7 @@ namespace CppCore
    static INLINE uint32_t popcnt(const UINT& x)
    {
       uint32_t r = 0U;
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          r += CppCore::popcnt64(*px64); ,
          r += CppCore::popcnt32(*px32); ,
          r += CppCore::popcnt16(*px16); ,
@@ -2408,7 +2417,7 @@ namespace CppCore
    static INLINE uint32_t lzcnt(const UINT& x)
    {
       uint32_t r = 0U;
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, false,
+      CPPCORE_CHUNK_PROCESS_X(x, false,
          // 64-Bit
          const auto c = CppCore::lzcnt64(*px64);
          r += c;
@@ -2532,7 +2541,7 @@ namespace CppCore
    static INLINE uint32_t tzcnt(const UINT& x)
    {
       uint32_t r = 0U;
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          // 64-Bit
          const auto c = CppCore::tzcnt64(*px64);
          r += c;
@@ -2859,6 +2868,35 @@ namespace CppCore
    #endif
    }
 
+#if defined(CPPCORE_CPUFEAT_SSSE3)
+   /// <summary>
+   /// Swaps byte order in 128-bit unsigned integer.
+   /// Requires SSSE3.
+   /// </summary>
+   static INLINE __m128i byteswap128(__m128i v)
+   {
+      const __m128i BSWAP_MASK = _mm_set_epi8(
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+      return _mm_shuffle_epi8(v, BSWAP_MASK);
+   }
+#endif
+
+#if defined(CPPCORE_CPUFEAT_AVX2)
+   /// <summary>
+   /// Swaps byte order in 256-bit unsigned integer.
+   /// Requires AVX2.
+   /// </summary>
+   static INLINE __m256i byteswap256(__m256i v)
+   {
+      const __m256i BSWAP_MASK = _mm256_set_epi8(
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 
+         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+      return _mm256_permute4x64_epi64(
+         _mm256_shuffle_epi8(v, BSWAP_MASK), 
+         _MM_SHUFFLE(1, 0, 3, 2));
+   }
+#endif
+
    /// <summary>
    /// Swaps byte order in 16-bit unsigned integer.
    /// </summary>
@@ -2959,7 +2997,7 @@ namespace CppCore
       const __m128i dup128 = CppCore::bytedup128(v);
       const __m256i dup256 = CppCore::bytedup256(v);
       const __m512i dup512 = CppCore::bytedup512(v);
-      CPPCORE_CHUNK_PROCESS512_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS512_X(x, true,
          CPPCORE_CHUNK_STORE512(UINT, px512, dup512); ,
          CPPCORE_CHUNK_STORE256(UINT, px256, dup256);,
          CPPCORE_CHUNK_STORE128(UINT, px128, dup128);,
@@ -2970,7 +3008,7 @@ namespace CppCore
    #elif defined(CPPCORE_CPUFEAT_AVX)
       const __m128i dup128 = CppCore::bytedup128(v);
       const __m256i dup256 = CppCore::bytedup256(v);
-      CPPCORE_CHUNK_PROCESS256_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS256_X(x, true,
          CPPCORE_CHUNK_STORE256(UINT, px256, dup256); ,
          CPPCORE_CHUNK_STORE128(UINT, px128, dup128); ,
          *px64  = dup64; ,
@@ -2979,14 +3017,14 @@ namespace CppCore
          *px8   = v;)
    #elif defined(CPPCORE_CPUFEAT_SSE2)
       const __m128i dup128 = CppCore::bytedup128(v);
-      CPPCORE_CHUNK_PROCESS128_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, dup128); ,
          *px64  = dup64; ,
          *px32  = dup32; ,
          *px16  = dup16; ,
          *px8   = v;)
    #else
-      CPPCORE_CHUNK_PROCESS_X(x, UINT, true,
+      CPPCORE_CHUNK_PROCESS_X(x, true,
          *px64 = dup64; ,
          *px32 = dup32; ,
          *px16 = dup16; ,
@@ -3017,6 +3055,114 @@ namespace CppCore
    {
       x = CppCore::bytedup64(v);
    }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // BITSWAP: Reverse Bit Order
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Reverse Bits in 8-Bit Integer
+   /// </summary>
+   /// <remarks>
+   /// From http://graphics.stanford.edu/~seander/bithacks.html
+   /// </remarks>
+   static INLINE uint8_t bitswap8(uint8_t x)
+   {
+   #if defined(CPPCORE_CPU_64BIT)
+      return (uint8_t)(((x * 0x80200802ULL) & 0x0884422110ULL) * 0x0101010101ULL >> 32);
+   #else
+      return (uint8_t)(((x * 0x0802LU & 0x22110LU) | (x * 0x8020LU & 0x88440LU)) * 0x10101LU >> 16);
+   #endif
+   }
+
+   /// <summary>
+   /// Reverse Bits in 32-Bit Integer
+   /// </summary>
+   static INLINE uint32_t bitswap32(uint32_t x)
+   {
+   #if defined(CPPCORE_CPU_ARM64)
+      uint64_t x64 = x;
+      __asm__("RBIT %0, %1" : "=r" (x64) : "r" (x64));
+      return (uint32_t)(x64 >> 32);
+   #elif defined(CPPCORE_CPU_ARM)
+      __asm__("RBIT %0, %1" : "=r" (x) : "r" (x));
+      return x;
+   #else
+      x = ((x >> 1) & 0x55555555U) | ((x & 0x55555555U) << 1);
+      x = ((x >> 2) & 0x33333333U) | ((x & 0x33333333U) << 2);
+      x = ((x >> 4) & 0x0F0F0F0FU) | ((x & 0x0F0F0F0FU) << 4);
+      return CppCore::byteswap32(x); // BSWAP on INTEL
+   #endif
+   }
+
+   /// <summary>
+   /// Reverse Bits in 64-Bit Integer
+   /// </summary>
+   static INLINE uint64_t bitswap64(uint64_t x)
+   {
+   #if defined(CPPCORE_CPU_ARM64)
+      __asm__("RBIT %0, %1" : "=r" (x) : "r" (x));
+      return x;
+   #elif defined(CPPCORE_CPU_ARM)
+      uint32_t xl = CppCore::bitswap32((uint32_t)(x));
+      uint32_t xh = CppCore::bitswap32((uint32_t)(x >> 32));
+      return ((uint64_t)xl << 32) | xh;
+   #else
+      x = ((x >>  1) & 0x5555555555555555ULL) | ((x & 0x5555555555555555ULL) << 1);
+      x = ((x >>  2) & 0x3333333333333333ULL) | ((x & 0x3333333333333333ULL) << 2);
+      x = ((x >>  4) & 0x0F0F0F0F0F0F0F0FULL) | ((x & 0x0F0F0F0F0F0F0F0FULL) << 4);
+      return CppCore::byteswap64(x); // BSWAP on INTEL
+#endif
+   }
+
+   /// <summary>
+   /// Reverse Bits in 16-Bit Integer
+   /// </summary>
+   static INLINE uint16_t bitswap16(uint16_t x)
+   {
+      return (uint16_t)(CppCore::bitswap32(x) >> 16);
+   }
+
+#if defined(CPPCORE_CPUFEAT_SSSE3)
+   /// <summary>
+   /// Reverse Bits in 128-Bit Integer.
+   /// Requires SSSE3.
+   /// </summary>
+   /// <remarks>
+   /// From https://www.intel.com/content/dam/develop/external/us/en/documents/clmul-wp-rev-2-02-2014-04-20.pdf
+   /// </remarks>
+   static INLINE __m128i bitswap128(__m128i x)
+   {
+      const __m128i AND_MASK    = _mm_set_epi32(0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f);
+      const __m128i LOWER_MASK  = _mm_set_epi32(0x0f070b03,0x0d050901,0x0e060a02,0x0c040800);
+      const __m128i HIGHER_MASK = _mm_set_epi32(0xf070b030,0xd0509010,0xe060a020,0xc0408000);
+      return CppCore::byteswap128(_mm_xor_si128(
+         _mm_shuffle_epi8(HIGHER_MASK, _mm_and_si128(x, AND_MASK)),
+         _mm_shuffle_epi8(LOWER_MASK,  _mm_and_si128(_mm_srli_epi16(x, 4), AND_MASK))));
+   }
+#endif
+
+#if defined(CPPCORE_CPUFEAT_AVX2)
+   /// <summary>
+   /// Reverse Bits in 256-Bit Integer.
+   /// Requires AVX2.
+   /// </summary>
+   static INLINE __m256i bitswap256(__m256i x)
+   {
+      const __m256i AND_MASK = _mm256_set_epi32(
+         0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,
+         0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f,0x0f0f0f0f);
+      const __m256i LOWER_MASK = _mm256_set_epi32(
+         0x0f070b03,0x0d050901,0x0e060a02,0x0c040800,
+         0x0f070b03,0x0d050901,0x0e060a02,0x0c040800);
+      const __m256i HIGHER_MASK = _mm256_set_epi32(
+         0xf070b030,0xd0509010,0xe060a020,0xc0408000,
+         0xf070b030,0xd0509010,0xe060a020,0xc0408000);
+      return CppCore::byteswap256(_mm256_xor_si256(
+         _mm256_shuffle_epi8(HIGHER_MASK, _mm256_and_si256(x, AND_MASK)),
+         _mm256_shuffle_epi8(LOWER_MASK,  _mm256_and_si256(_mm256_srli_epi32(x, 4), AND_MASK))));
+   }
+#endif
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // MOVBE: REVERSE LOAD
