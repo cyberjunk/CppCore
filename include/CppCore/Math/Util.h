@@ -516,12 +516,13 @@ namespace CppCore
 #pragma pack (push, 1)
    /// <summary>
    /// Pads T to next higher multiple of N. 
-   /// sizeof(T) must not be a multiple of N already.
+   /// Extends by N if sizeof(T) is multiple of N already.
    /// </summary>
    template<typename T, size_t N=sizeof(size_t)>
    struct Padded
    {
-      static constexpr size_t PADSIZE = CppCore::rup32(sizeof(T),N)-sizeof(T);
+      static constexpr size_t DELTA = CppCore::rup32(sizeof(T),N)-sizeof(T);
+      static constexpr size_t PADSIZE = DELTA ? DELTA : N;
       T v;
       uint8_t t[PADSIZE];
       INLINE Padded() { }
@@ -2635,17 +2636,17 @@ namespace CppCore
          CppCore::umul(a, b, t); 
          CppCore::clone(r, *(UINT3*)&t); 
       }
-      else if constexpr (sizeof(UINT1) % sizeof(size_t))
+      else if constexpr (sizeof(UINT1) % sizeof(size_t) != 0)
       {
          Padded<UINT1> t(a);
          CppCore::umul(t, b, r);
       }
-      else if constexpr (sizeof(UINT2) % sizeof(size_t))
+      else if constexpr (sizeof(UINT2) % sizeof(size_t) != 0)
       {
          Padded<UINT2> t(b);
          CppCore::umul(a, t, r);
       }
-      else if constexpr (sizeof(UINT3) % sizeof(size_t))
+      else if constexpr (sizeof(UINT3) % sizeof(size_t) != 0)
       {
          Padded<UINT3> t;
          CppCore::umul(a, b, t);
