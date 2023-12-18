@@ -69,7 +69,7 @@
 #define CPPCORE_CHUNK_LOAD128(t,p)    (alignof(t)%16==0) ? _mm_load_si128 ((__m128i*)p)    : _mm_loadu_si128 ((__m128i*)p)
 #define CPPCORE_CHUNK_STORE128(t,p,v) (alignof(t)%16==0) ? _mm_store_si128((__m128i*)p, v) : _mm_storeu_si128((__m128i*)p, v)
 #define CPPCORE_CHUNK_STEP128_X_HALF(p128)              \
-   if constexpr (N128) {                                \
+   if constexpr (N128 != 0) {                           \
       CPPCORE_UNROLL                                    \
       for (size_t i = 0; i < N128; i++) {               \
          pxe -= 16U;                                    \
@@ -168,7 +168,7 @@
 #define CPPCORE_CHUNK_LOAD256(t, p)   (alignof(t)%32==0) ? _mm256_load_si256((__m256i*)p)     : _mm256_loadu_si256((__m256i*)p)
 #define CPPCORE_CHUNK_STORE256(t,p,v) (alignof(t)%32==0) ? _mm256_store_si256((__m256i*)p, v) : _mm256_storeu_si256((__m256i*)p, v)
 #define CPPCORE_CHUNK_STEP256_X_HALF(p256)           \
-   if constexpr (N256) {                             \
+   if constexpr (N256 != 0) {                        \
       CPPCORE_UNROLL                                 \
       for (size_t i = 0; i < N256; i++) {            \
          pxe -= 32U;                                 \
@@ -222,7 +222,7 @@
 #define CPPCORE_CHUNK_LOAD512(t, p)   (alignof(t)%64==0) ? _mm512_load_si512((__m512i*)p)     : _mm512_loadu_si512((__m512i*)p)
 #define CPPCORE_CHUNK_STORE512(t,p,v) (alignof(t)%64==0) ? _mm512_store_si512((__m512i*)p, v) : _mm512_storeu_si512((__m512i*)p, v)
 #define CPPCORE_CHUNK_STEP512_X_HALF(p512)     \
-   if constexpr (N512) {                       \
+   if constexpr (N512 != 0) {                  \
       CPPCORE_UNROLL                           \
       for (size_t i = 0; i < N512; i++) {      \
          pxe -= 64U;                           \
@@ -282,7 +282,7 @@
    CPPCORE_CHUNK_STEP512_X_HALF(p512)              \
    CPPCORE_CHUNK_STEP256_X_HALF(p256)              \
    CPPCORE_CHUNK_STEP128_X_HALF(p128)              \
-   if constexpr (N64) {                            \
+   if constexpr (N64 != 0) {                       \
       CPPCORE_UNROLL                               \
       for (size_t i = 0; i < N64; i++) {           \
          pxe -= 8U;                                \
@@ -292,7 +292,7 @@
          pxs += 8U;                                \
       }                                            \
    }                                               \
-   if constexpr (N32) {                            \
+   if constexpr (N32 != 0) {                       \
       CPPCORE_UNROLL                               \
       for (size_t i = 0; i < N32; i++) {           \
          pxe -= 4U;                                \
@@ -302,14 +302,14 @@
          pxs += 4U;                                \
       }                                            \
    }                                               \
-   if constexpr (N16) {                            \
+   if constexpr (N16 != 0) {                       \
       pxe -= 2U;                                   \
       uint16_t* pxs16 = (uint16_t*)pxs;            \
       uint16_t* pxe16 = (uint16_t*)pxe;            \
       p16;                                         \
       pxs += 2U;                                   \
    }                                               \
-   if constexpr (N8) {                             \
+   if constexpr (N8 != 0) {                        \
       pxe -= 1U;                                   \
       uint8_t* pxs8  = (uint8_t*)pxs;              \
       uint8_t* pxe8  = (uint8_t*)pxe;              \
