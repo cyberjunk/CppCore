@@ -1083,6 +1083,25 @@ namespace CppCore { namespace Test
             CppCore::byteswap64(uint64_t(0x0100000000000000)) == uint64_t(0x0000000000000001);
       }
 
+      template<size_t N>
+      INLINE static bool byteswap()
+      {
+         for (size_t j = 0; j < 10; j++)
+         {
+            uint8_t v[N];
+            uint8_t r[N];
+            CppCore::Random::Default32 rnd;
+            for (uint32_t i = 0; i < N; i++)
+               v[i] = (uint8_t)rnd.next((uint32_t)'0', (uint32_t)'9');
+            CppCore::clone(r, v);
+            CppCore::byteswap(r);
+            for (uint32_t i = 0; i < N; i++)
+               if (r[N-1-i] != v[i])
+                  return false;
+         }
+         return true;
+      }
+
       ////////////////////////////////////////////////////
 
       INLINE static bool bytedup16()
@@ -2036,6 +2055,17 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(BYTESWAP16)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap16()); }
       TEST_METHOD(BYTESWAP32)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap32()); }
       TEST_METHOD(BYTESWAP64)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap64()); }
+      TEST_METHOD(BYTESWAPGEN8)     { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<1>()); }
+      TEST_METHOD(BYTESWAPGEN16)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<2>()); }
+      TEST_METHOD(BYTESWAPGEN24)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<3>()); }
+      TEST_METHOD(BYTESWAPGEN32)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<4>()); }
+      TEST_METHOD(BYTESWAPGEN40)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<5>()); }
+      TEST_METHOD(BYTESWAPGEN48)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<6>()); }
+      TEST_METHOD(BYTESWAPGEN56)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<7>()); }
+      TEST_METHOD(BYTESWAPGEN64)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<8>()); }
+      TEST_METHOD(BYTESWAPGEN128)   { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<16>()); }
+      TEST_METHOD(BYTESWAPGEN256)   { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<32>()); }
+      TEST_METHOD(BYTESWAPGEN512)   { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<64>()); }
       TEST_METHOD(BYTEDUP16)        { Assert::AreEqual(true, CppCore::Test::BitOps::bytedup16()); }
       TEST_METHOD(BYTEDUP32)        { Assert::AreEqual(true, CppCore::Test::BitOps::bytedup32()); }
       TEST_METHOD(BYTEDUP64)        { Assert::AreEqual(true, CppCore::Test::BitOps::bytedup64()); }

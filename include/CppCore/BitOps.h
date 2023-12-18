@@ -68,6 +68,17 @@
 #if defined(CPPCORE_CPUFEAT_SSE)
 #define CPPCORE_CHUNK_LOAD128(t,p)    (alignof(t)%16==0) ? _mm_load_si128 ((__m128i*)p)    : _mm_loadu_si128 ((__m128i*)p)
 #define CPPCORE_CHUNK_STORE128(t,p,v) (alignof(t)%16==0) ? _mm_store_si128((__m128i*)p, v) : _mm_storeu_si128((__m128i*)p, v)
+#define CPPCORE_CHUNK_STEP128_X_HALF(p128)              \
+   if constexpr (N128) {                                \
+      CPPCORE_UNROLL                                    \
+      for (size_t i = 0; i < N128; i++) {               \
+         pxe -= 16U;                                    \
+         __m128i* pxs128 = (__m128i*)pxs;               \
+         __m128i* pxe128 = (__m128i*)pxe;               \
+         p128;                                          \
+         pxs += 16U;                                    \
+      }                                                 \
+   }
 #define CPPCORE_CHUNK_STEP128_X(forward, p128)          \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
@@ -104,6 +115,15 @@
 #elif defined(CPPCORE_CPUFEAT_ARM_NEON)
 #define CPPCORE_CHUNK_LOAD128(t,p)    vld1q_u32 ((uint32_t*)p)
 #define CPPCORE_CHUNK_STORE128(t,p,v) vst1q_u32((uint32_t*)p, v)
+#define CPPCORE_CHUNK_STEP128_X_HALF(p128)              \
+   CPPCORE_UNROLL                                       \
+   for (size_t i = 0; i < N128; i++) {                  \
+      pxe -= 16U;                                       \
+      uint32x4_t* pxs128 = (uint32x4_t*)pxs;            \
+      uint32x4_t* pxe128 = (uint32x4_t*)pxe;            \
+      p128;                                             \
+      pxs += 16U;                                       \
+   }
 #define CPPCORE_CHUNK_STEP128_X(forward, p128)          \
    CPPCORE_UNROLL                                       \
    for (size_t i = 0; i < N128; i++) {                  \
@@ -138,6 +158,7 @@
       if constexpr (forwardz) { pz += 16U; }            \
    }
 #else
+#define CPPCORE_CHUNK_STEP128_X_HALF(p128)
 #define CPPCORE_CHUNK_STEP128_X(forward, p128)
 #define CPPCORE_CHUNK_STEP128_XY(forwardx,forwardy,p128)
 #define CPPCORE_CHUNK_STEP128_XYZ(forwardx,forwardy,forwardz,p128)
@@ -146,6 +167,17 @@
 #if defined(CPPCORE_CPUFEAT_AVX)
 #define CPPCORE_CHUNK_LOAD256(t, p)   (alignof(t)%32==0) ? _mm256_load_si256((__m256i*)p)     : _mm256_loadu_si256((__m256i*)p)
 #define CPPCORE_CHUNK_STORE256(t,p,v) (alignof(t)%32==0) ? _mm256_store_si256((__m256i*)p, v) : _mm256_storeu_si256((__m256i*)p, v)
+#define CPPCORE_CHUNK_STEP256_X_HALF(p256)           \
+   if constexpr (N256) {                             \
+      CPPCORE_UNROLL                                 \
+      for (size_t i = 0; i < N256; i++) {            \
+         pxe -= 32U;                                 \
+         __m256i* pxs256 = (__m256i*)pxs;            \
+         __m256i* pxe256 = (__m256i*)pxe;            \
+         p256;                                       \
+         pxs += 32U;                                 \
+      }                                              \
+   }
 #define CPPCORE_CHUNK_STEP256_X(forward, p256)       \
    CPPCORE_UNROLL                                    \
    for (size_t i = 0; i < N256; i++) {               \
@@ -180,6 +212,7 @@
       if constexpr (forwardz) { pz += 32U; }            \
    }
 #else
+#define CPPCORE_CHUNK_STEP256_X_HALF(p256)
 #define CPPCORE_CHUNK_STEP256_X(forward, p256)
 #define CPPCORE_CHUNK_STEP256_XY(forwardx,forwardy,p256)
 #define CPPCORE_CHUNK_STEP256_XYZ(forwardx,forwardy,forwardz,p256)
@@ -188,6 +221,17 @@
 #if defined(CPPCORE_CPUFEAT_AVX512F)
 #define CPPCORE_CHUNK_LOAD512(t, p)   (alignof(t)%64==0) ? _mm512_load_si512((__m512i*)p)     : _mm512_loadu_si512((__m512i*)p)
 #define CPPCORE_CHUNK_STORE512(t,p,v) (alignof(t)%64==0) ? _mm512_store_si512((__m512i*)p, v) : _mm512_storeu_si512((__m512i*)p, v)
+#define CPPCORE_CHUNK_STEP512_X_HALF(p512)     \
+   if constexpr (N512) {                       \
+      CPPCORE_UNROLL                           \
+      for (size_t i = 0; i < N512; i++) {      \
+         pxe -= 64U;                           \
+         __m512i* pxs512 = (__m512i*)pxs;      \
+         __m512i* pxe512 = (__m512i*)pxe;      \
+         p512;                                 \
+         pxs += 64U;                           \
+      }                                        \
+   }
 #define CPPCORE_CHUNK_STEP512_X(forward, p512) \
    CPPCORE_UNROLL                              \
    for (size_t i = 0; i < N512; i++) {         \
@@ -222,10 +266,84 @@
       if constexpr (forwardz) { pz += 64U; }             \
    }
 #else
+#define CPPCORE_CHUNK_STEP512_X_HALF(p512)
 #define CPPCORE_CHUNK_STEP512_X(forward, p512)
 #define CPPCORE_CHUNK_STEP512_XY(forwardx,forwardy,p512)
 #define CPPCORE_CHUNK_STEP512_XYZ(forwardx,forwardy,forwardz,p512)
 #endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Base Macro for op(x) (half)
+#define CPPCORE_CHUNK_PROCESS_BASE_X_HALF(x, p512, p256, p128, p64, p32, p16, p8, p8m) \
+   uint8_t* pxs = (uint8_t*)&(x);                  \
+   uint8_t* pxe = (uint8_t*)&(x) + sizeof(x);      \
+   CPPCORE_CHUNK_STEP512_X_HALF(p512)              \
+   CPPCORE_CHUNK_STEP256_X_HALF(p256)              \
+   CPPCORE_CHUNK_STEP128_X_HALF(p128)              \
+   if constexpr (N64) {                            \
+      CPPCORE_UNROLL                               \
+      for (size_t i = 0; i < N64; i++) {           \
+         pxe -= 8U;                                \
+         uint64_t* pxs64 = (uint64_t*)pxs;         \
+         uint64_t* pxe64 = (uint64_t*)pxe;         \
+         p64;                                      \
+         pxs += 8U;                                \
+      }                                            \
+   }                                               \
+   if constexpr (N32) {                            \
+      CPPCORE_UNROLL                               \
+      for (size_t i = 0; i < N32; i++) {           \
+         pxe -= 4U;                                \
+         uint32_t* pxs32 = (uint32_t*)pxs;         \
+         uint32_t* pxe32 = (uint32_t*)pxe;         \
+         p32;                                      \
+         pxs += 4U;                                \
+      }                                            \
+   }                                               \
+   if constexpr (N16) {                            \
+      pxe -= 2U;                                   \
+      uint16_t* pxs16 = (uint16_t*)pxs;            \
+      uint16_t* pxe16 = (uint16_t*)pxe;            \
+      p16;                                         \
+      pxs += 2U;                                   \
+   }                                               \
+   if constexpr (N8) {                             \
+      pxe -= 1U;                                   \
+      uint8_t* pxs8  = (uint8_t*)pxs;              \
+      uint8_t* pxe8  = (uint8_t*)pxe;              \
+      p8;                                          \
+      pxs += 1U;                                   \
+   }                                               \
+   if constexpr (sizeof(x) & 1) {                  \
+      uint8_t* px8  = (uint8_t*)pxs;               \
+      p8m                                          \
+   }
+
+// Process chunks of type. For op(x) (half). 
+// Requires 64-Bit and 32-Bit Op and will select based on CPU
+#define CPPCORE_CHUNK_PROCESS_X_HALF(x, p64, p32, p16, p8, p8m)        \
+   CPPCORE_CHUNK_COUNT(sizeof(x)/2)                                    \
+   CPPCORE_CHUNK_PROCESS_BASE_X_HALF(x,; ,; ,; , p64, p32, p16, p8, p8m)
+
+// Process chunks of type. For op(x) (half). 
+// Requires 128-Bit Op additionally
+#define CPPCORE_CHUNK_PROCESS128_X_HALF(x, p128, p64, p32, p16, p8, p8m)  \
+   CPPCORE_CHUNK_COUNT128(sizeof(x)/2)                                    \
+   CPPCORE_CHUNK_PROCESS_BASE_X_HALF(x,; ,; , p128, p64, p32, p16, p8, p8m)
+
+// Process chunks of type. For op(x) (half). 
+// Requires 256-Bit Op additionally
+#define CPPCORE_CHUNK_PROCESS256_X_HALF(x, p256, p128, p64, p32, p16, p8, p8m) \
+   CPPCORE_CHUNK_COUNT256(sizeof(x)/2)                                         \
+   CPPCORE_CHUNK_PROCESS_BASE_X_HALF(x,; , p256, p128, p64, p32, p16, p8, p8m)
+
+// Process chunks of type. For op(x) (half). 
+// Requires 512-Bit Op additionally
+#define CPPCORE_CHUNK_PROCESS512_X_HALF(x, p512, p256, p128, p64, p32, p16, p8, p8m) \
+   CPPCORE_CHUNK_COUNT512(sizeof(x)/2)                                               \
+   CPPCORE_CHUNK_PROCESS_BASE_X_HALF(x, p512, p256, p128, p64, p32, p16, p8, p8m)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2921,6 +3039,36 @@ namespace CppCore
       return CppCore::byteswap64(v);
    }
 
+   /// <summary>
+   /// Swaps byte order in any sized integer.
+   /// </summary>
+   template<typename UINT>
+   static INLINE void byteswap(UINT& v)
+   {
+   #if defined(CPPCORE_CPUFEAT_AVX2)
+      CPPCORE_CHUNK_PROCESS256_X_HALF(v,
+         __m256i  t = CppCore::loadr256(pxs256); CPPCORE_CHUNK_STORE256(UINT, pxs256, CppCore::loadr256(pxe256)); CPPCORE_CHUNK_STORE256(UINT, pxe256, t),
+         __m128i  t = CppCore::loadr128(pxs128); CPPCORE_CHUNK_STORE128(UINT, pxs128, CppCore::loadr128(pxe128)); CPPCORE_CHUNK_STORE128(UINT, pxe128, t),
+         uint64_t t = CppCore::loadr64 (pxs64);  *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t;,
+         uint32_t t = CppCore::loadr32 (pxs32);  *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t;,
+         uint16_t t = CppCore::loadr16 (pxs16);  *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t;,
+         uint8_t  t = *pxs8;                     *pxs8 = *pxe8;                    *pxe8  = t;, )
+   #elif defined(CPPCORE_CPUFEAT_SSSE3)
+      CPPCORE_CHUNK_PROCESS128_X_HALF(v,
+         __m128i  t = CppCore::loadr128(pxs128); CPPCORE_CHUNK_STORE128(UINT, pxs128, CppCore::loadr128(pxe128)); CPPCORE_CHUNK_STORE128(UINT, pxe128, t),
+         uint64_t t = CppCore::loadr64 (pxs64);  *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t;,
+         uint32_t t = CppCore::loadr32 (pxs32);  *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t;,
+         uint16_t t = CppCore::loadr16 (pxs16);  *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t;,
+         uint8_t  t = *pxs8;                     *pxs8 = *pxe8;                    *pxe8  = t;, )
+   #else
+      CPPCORE_CHUNK_PROCESS_X_HALF(v,
+         uint64_t t = CppCore::loadr64(pxs64); *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t; ,
+         uint32_t t = CppCore::loadr32(pxs32); *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t; ,
+         uint16_t t = CppCore::loadr16(pxs16); *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t; ,
+         uint8_t  t = *pxs8;                   *pxs8  = *pxe8;                   *pxe8  = t; , )
+   #endif
+   }
+
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // BYTEDUP: Duplicate byte
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3219,8 +3367,7 @@ namespace CppCore
    static INLINE __m128i loadr128(const __m128i mem[1])
    {
    #if defined(CPPCORE_CPUFEAT_SSSE3)
-      return _mm_shuffle_epi8(ALIGNED ? _mm_load_si128(mem) : _mm_loadu_si128(mem), 
-         _mm_set_epi8(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15));
+      return CppCore::byteswap128(ALIGNED ? _mm_load_si128(mem) : _mm_loadu_si128(mem));
    #elif defined(CPPCORE_CPU_64BIT)
       return _mm_set_epi64x(
          CppCore::loadr64(&(((uint64_t*)mem)[0])),
@@ -3232,6 +3379,18 @@ namespace CppCore
          CppCore::loadr32(&(((uint32_t*)mem)[2])),
          CppCore::loadr32(&(((uint32_t*)mem)[3])));
    #endif
+   }
+#endif
+
+#if defined(CPPCORE_CPUFEAT_AVX2)
+   /// <summary>
+   /// Loads 256-bit unsigned integer in reverse byte order. 
+   /// Requires AVX2.
+   /// </summary>
+   template<bool ALIGNED = false>
+   static INLINE __m256i loadr256(const __m256i mem[1])
+   {
+      return CppCore::byteswap256(ALIGNED ? _mm256_load_si256(mem) : _mm256_loadu_si256(mem));
    }
 #endif
 

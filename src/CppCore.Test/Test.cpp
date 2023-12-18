@@ -281,6 +281,17 @@ int main()
    TEST(CppCore::Test::BitOps::byteswap16,          "byteswap16:       ", std::endl);
    TEST(CppCore::Test::BitOps::byteswap32,          "byteswap32:       ", std::endl);
    TEST(CppCore::Test::BitOps::byteswap64,          "byteswap64:       ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<1>,         "byteswapg8:       ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<2>,         "byteswapg16:      ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<3>,         "byteswapg24:      ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<4>,         "byteswapg32:      ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<5>,         "byteswapg40:      ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<6>,         "byteswapg48:      ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<7>,         "byteswapg56:      ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<8>,         "byteswapg64:      ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<16>,        "byteswapg128:     ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<32>,        "byteswapg256:     ", std::endl);
+   TEST(CppCore::Test::BitOps::byteswap<64>,        "byteswapg512:     ", std::endl);
    TEST(CppCore::Test::BitOps::bytedup16,           "bytedup16:        ", std::endl);
    TEST(CppCore::Test::BitOps::bytedup32,           "bytedup32:        ", std::endl);
    TEST(CppCore::Test::BitOps::bytedup64,           "bytedup64:        ", std::endl);
