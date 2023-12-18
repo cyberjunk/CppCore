@@ -2927,7 +2927,7 @@ namespace CppCore
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   // BSWAP: Reverse Byte Order
+   // BSWAP: Reverse Byte Order (DEFAULT SIZES)
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
@@ -3037,46 +3037,6 @@ namespace CppCore
    static INLINE uint64_t byteswap(uint64_t v)
    {
       return CppCore::byteswap64(v);
-   }
-
-   /// <summary>
-   /// Swaps byte order in any sized integer.
-   /// </summary>
-   template<typename UINT>
-   static INLINE void byteswap(UINT& v)
-   {
-      if constexpr (sizeof(v) == 1)  { return; }
-      if constexpr (sizeof(v) == 2)  { *(uint16_t*)&v = CppCore::byteswap16(*(uint16_t*)&v); return; }
-      if constexpr (sizeof(v) == 4)  { *(uint32_t*)&v = CppCore::byteswap32(*(uint32_t*)&v); return; }
-      if constexpr (sizeof(v) == 8)  { *(uint64_t*)&v = CppCore::byteswap64(*(uint64_t*)&v); return; }
-   #if defined(CPPCORE_CPUFEAT_SSSE3)
-      if constexpr (sizeof(v) == 16) { *(__m128i*)&v = CppCore::byteswap128(*(__m128i*)&v); return; }
-   #endif
-   #if defined(CPPCORE_CPUFEAT_AVX2)
-      if constexpr (sizeof(v) == 32) { *(__m256i*)&v = CppCore::byteswap256(*(__m256i*)&v); return; }
-   #endif
-   #if defined(CPPCORE_CPUFEAT_AVX2)
-      CPPCORE_CHUNK_PROCESS256_X_HALF(v,
-         __m256i  t = CppCore::loadr256(pxs256); CPPCORE_CHUNK_STORE256(UINT, pxs256, CppCore::loadr256(pxe256)); CPPCORE_CHUNK_STORE256(UINT, pxe256, t),
-         __m128i  t = CppCore::loadr128(pxs128); CPPCORE_CHUNK_STORE128(UINT, pxs128, CppCore::loadr128(pxe128)); CPPCORE_CHUNK_STORE128(UINT, pxe128, t),
-         uint64_t t = CppCore::loadr64 (pxs64);  *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t;,
-         uint32_t t = CppCore::loadr32 (pxs32);  *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t;,
-         uint16_t t = CppCore::loadr16 (pxs16);  *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t;,
-         uint8_t  t = *pxs8;                     *pxs8 = *pxe8;                    *pxe8  = t;, )
-   #elif defined(CPPCORE_CPUFEAT_SSSE3)
-      CPPCORE_CHUNK_PROCESS128_X_HALF(v,
-         __m128i  t = CppCore::loadr128(pxs128); CPPCORE_CHUNK_STORE128(UINT, pxs128, CppCore::loadr128(pxe128)); CPPCORE_CHUNK_STORE128(UINT, pxe128, t),
-         uint64_t t = CppCore::loadr64 (pxs64);  *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t;,
-         uint32_t t = CppCore::loadr32 (pxs32);  *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t;,
-         uint16_t t = CppCore::loadr16 (pxs16);  *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t;,
-         uint8_t  t = *pxs8;                     *pxs8 = *pxe8;                    *pxe8  = t;, )
-   #else
-      CPPCORE_CHUNK_PROCESS_X_HALF(v,
-         uint64_t t = CppCore::loadr64(pxs64); *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t; ,
-         uint32_t t = CppCore::loadr32(pxs32); *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t; ,
-         uint16_t t = CppCore::loadr16(pxs16); *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t; ,
-         uint8_t  t = *pxs8;                   *pxs8  = *pxe8;                   *pxe8  = t; , )
-   #endif
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3474,6 +3434,50 @@ namespace CppCore
    #endif
    }
 #endif
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // BSWAP: Reverse Byte Order (ANY SIZE)
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Swaps byte order in any sized integer.
+   /// </summary>
+   template<typename UINT>
+   static INLINE void byteswap(UINT& v)
+   {
+      if constexpr (sizeof(v) == 1)  { return; }
+      if constexpr (sizeof(v) == 2)  { *(uint16_t*)&v = CppCore::byteswap16(*(uint16_t*)&v); return; }
+      if constexpr (sizeof(v) == 4)  { *(uint32_t*)&v = CppCore::byteswap32(*(uint32_t*)&v); return; }
+      if constexpr (sizeof(v) == 8)  { *(uint64_t*)&v = CppCore::byteswap64(*(uint64_t*)&v); return; }
+   #if defined(CPPCORE_CPUFEAT_SSSE3)
+      if constexpr (sizeof(v) == 16) { *(__m128i*)&v = CppCore::byteswap128(*(__m128i*)&v); return; }
+   #endif
+   #if defined(CPPCORE_CPUFEAT_AVX2)
+      if constexpr (sizeof(v) == 32) { *(__m256i*)&v = CppCore::byteswap256(*(__m256i*)&v); return; }
+   #endif
+   #if defined(CPPCORE_CPUFEAT_AVX2)
+      CPPCORE_CHUNK_PROCESS256_X_HALF(v,
+         __m256i  t = CppCore::loadr256(pxs256); CPPCORE_CHUNK_STORE256(UINT, pxs256, CppCore::loadr256(pxe256)); CPPCORE_CHUNK_STORE256(UINT, pxe256, t),
+         __m128i  t = CppCore::loadr128(pxs128); CPPCORE_CHUNK_STORE128(UINT, pxs128, CppCore::loadr128(pxe128)); CPPCORE_CHUNK_STORE128(UINT, pxe128, t),
+         uint64_t t = CppCore::loadr64 (pxs64);  *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t;,
+         uint32_t t = CppCore::loadr32 (pxs32);  *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t;,
+         uint16_t t = CppCore::loadr16 (pxs16);  *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t;,
+         uint8_t  t = *pxs8;                     *pxs8 = *pxe8;                    *pxe8  = t;, )
+   #elif defined(CPPCORE_CPUFEAT_SSSE3)
+      CPPCORE_CHUNK_PROCESS128_X_HALF(v,
+         __m128i  t = CppCore::loadr128(pxs128); CPPCORE_CHUNK_STORE128(UINT, pxs128, CppCore::loadr128(pxe128)); CPPCORE_CHUNK_STORE128(UINT, pxe128, t),
+         uint64_t t = CppCore::loadr64 (pxs64);  *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t;,
+         uint32_t t = CppCore::loadr32 (pxs32);  *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t;,
+         uint16_t t = CppCore::loadr16 (pxs16);  *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t;,
+         uint8_t  t = *pxs8;                     *pxs8 = *pxe8;                    *pxe8  = t;, )
+   #else
+      CPPCORE_CHUNK_PROCESS_X_HALF(v,
+         uint64_t t = CppCore::loadr64(pxs64); *pxs64 = CppCore::loadr64(pxe64); *pxe64 = t; ,
+         uint32_t t = CppCore::loadr32(pxs32); *pxs32 = CppCore::loadr32(pxe32); *pxe32 = t; ,
+         uint16_t t = CppCore::loadr16(pxs16); *pxs16 = CppCore::loadr16(pxe16); *pxe16 = t; ,
+         uint8_t  t = *pxs8;                   *pxs8  = *pxe8;                   *pxe8  = t; , )
+   #endif
+   }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // ZBYTEIDXL: FIND INDEX OF FIRST ZERO BYTE FROM LEFT
