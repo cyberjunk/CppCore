@@ -3045,6 +3045,16 @@ namespace CppCore
    template<typename UINT>
    static INLINE void byteswap(UINT& v)
    {
+      if constexpr (sizeof(v) == 1)  { return; }
+      if constexpr (sizeof(v) == 2)  { *(uint16_t*)&v = CppCore::byteswap16(*(uint16_t*)&v); return; }
+      if constexpr (sizeof(v) == 4)  { *(uint32_t*)&v = CppCore::byteswap32(*(uint32_t*)&v); return; }
+      if constexpr (sizeof(v) == 8)  { *(uint64_t*)&v = CppCore::byteswap64(*(uint64_t*)&v); return; }
+   #if defined(CPPCORE_CPUFEAT_SSSE3)
+      if constexpr (sizeof(v) == 16) { *(__m128i*)&v = CppCore::byteswap128(*(__m128i*)&v); return; }
+   #endif
+   #if defined(CPPCORE_CPUFEAT_AVX2)
+      if constexpr (sizeof(v) == 32) { *(__m256i*)&v = CppCore::byteswap256(*(__m256i*)&v); return; }
+   #endif
    #if defined(CPPCORE_CPUFEAT_AVX2)
       CPPCORE_CHUNK_PROCESS256_X_HALF(v,
          __m256i  t = CppCore::loadr256(pxs256); CPPCORE_CHUNK_STORE256(UINT, pxs256, CppCore::loadr256(pxe256)); CPPCORE_CHUNK_STORE256(UINT, pxe256, t),

@@ -1050,39 +1050,6 @@ namespace CppCore { namespace Test
 
       ////////////////////////////////////////////////////
 
-      INLINE static bool byteswap16()
-      {
-         return
-            CppCore::byteswap16((uint16_t)0x0000U) == (uint16_t)0x0000U &&
-            CppCore::byteswap16((uint16_t)0xFFFFU) == (uint16_t)0xFFFFU &&
-            CppCore::byteswap16((uint16_t)0x0102U) == (uint16_t)0x0201U &&
-            CppCore::byteswap16((uint16_t)0x1020U) == (uint16_t)0x2010U &&
-            CppCore::byteswap16((uint16_t)0x7A2BU) == (uint16_t)0x2B7AU &&
-            CppCore::byteswap16((uint16_t)0x0100U) == (uint16_t)0x0001U;
-      }
-
-      INLINE static bool byteswap32()
-      {
-         return
-            CppCore::byteswap32(0x00000000U) == 0x00000000U &&
-            CppCore::byteswap32(0xFFFFFFFFU) == 0xFFFFFFFFU &&
-            CppCore::byteswap32(0x01020304U) == 0x04030201U &&
-            CppCore::byteswap32(0x10203040U) == 0x40302010U &&
-            CppCore::byteswap32(0x7A2B82EEU) == 0xEE822B7AU &&
-            CppCore::byteswap32(0x01000000U) == 0x00000001U;
-      }
-
-      INLINE static bool byteswap64()
-      {
-         return
-            CppCore::byteswap64(uint64_t(0x0000000000000000)) == uint64_t(0x0000000000000000) &&
-            CppCore::byteswap64(uint64_t(0xFFFFFFFFFFFFFFFF)) == uint64_t(0xFFFFFFFFFFFFFFFF) &&
-            CppCore::byteswap64(uint64_t(0x0102030405060708)) == uint64_t(0x0807060504030201) &&
-            CppCore::byteswap64(uint64_t(0x1020304050607080)) == uint64_t(0x8070605040302010) &&
-            CppCore::byteswap64(uint64_t(0x7A2B82EE7A2B82EE)) == uint64_t(0xEE822B7AEE822B7A) &&
-            CppCore::byteswap64(uint64_t(0x0100000000000000)) == uint64_t(0x0000000000000001);
-      }
-
       template<size_t N>
       INLINE static bool byteswap()
       {
@@ -1100,6 +1067,45 @@ namespace CppCore { namespace Test
                   return false;
          }
          return true;
+      }
+
+      INLINE static bool byteswap16()
+      {
+         if (!byteswap<2>())
+            return false;
+         return
+            CppCore::byteswap16((uint16_t)0x0000U) == (uint16_t)0x0000U &&
+            CppCore::byteswap16((uint16_t)0xFFFFU) == (uint16_t)0xFFFFU &&
+            CppCore::byteswap16((uint16_t)0x0102U) == (uint16_t)0x0201U &&
+            CppCore::byteswap16((uint16_t)0x1020U) == (uint16_t)0x2010U &&
+            CppCore::byteswap16((uint16_t)0x7A2BU) == (uint16_t)0x2B7AU &&
+            CppCore::byteswap16((uint16_t)0x0100U) == (uint16_t)0x0001U;
+      }
+
+      INLINE static bool byteswap32()
+      {
+         if (!byteswap<4>())
+            return false;
+         return
+            CppCore::byteswap32(0x00000000U) == 0x00000000U &&
+            CppCore::byteswap32(0xFFFFFFFFU) == 0xFFFFFFFFU &&
+            CppCore::byteswap32(0x01020304U) == 0x04030201U &&
+            CppCore::byteswap32(0x10203040U) == 0x40302010U &&
+            CppCore::byteswap32(0x7A2B82EEU) == 0xEE822B7AU &&
+            CppCore::byteswap32(0x01000000U) == 0x00000001U;
+      }
+
+      INLINE static bool byteswap64()
+      {
+         if (!byteswap<8>())
+            return false;
+         return
+            CppCore::byteswap64(uint64_t(0x0000000000000000)) == uint64_t(0x0000000000000000) &&
+            CppCore::byteswap64(uint64_t(0xFFFFFFFFFFFFFFFF)) == uint64_t(0xFFFFFFFFFFFFFFFF) &&
+            CppCore::byteswap64(uint64_t(0x0102030405060708)) == uint64_t(0x0807060504030201) &&
+            CppCore::byteswap64(uint64_t(0x1020304050607080)) == uint64_t(0x8070605040302010) &&
+            CppCore::byteswap64(uint64_t(0x7A2B82EE7A2B82EE)) == uint64_t(0xEE822B7AEE822B7A) &&
+            CppCore::byteswap64(uint64_t(0x0100000000000000)) == uint64_t(0x0000000000000001);
       }
 
       ////////////////////////////////////////////////////
@@ -2052,20 +2058,17 @@ namespace CppCore { namespace Test { namespace VS {
       TEST_METHOD(BITTEST)          { Assert::AreEqual(true, CppCore::Test::BitOps::bittest()); }
       TEST_METHOD(BITEXTRACT32)     { Assert::AreEqual(true, CppCore::Test::BitOps::bitextract32()); }
       TEST_METHOD(BITEXTRACT64)     { Assert::AreEqual(true, CppCore::Test::BitOps::bitextract64()); }
+      TEST_METHOD(BYTESWAP8)        { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<1>()); }
       TEST_METHOD(BYTESWAP16)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap16()); }
+      TEST_METHOD(BYTESWAP24)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<3>()); }
       TEST_METHOD(BYTESWAP32)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap32()); }
+      TEST_METHOD(BYTESWAP40)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<5>()); }
+      TEST_METHOD(BYTESWAP48)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<6>()); }
+      TEST_METHOD(BYTESWAP56)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<7>()); }
       TEST_METHOD(BYTESWAP64)       { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap64()); }
-      TEST_METHOD(BYTESWAPGEN8)     { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<1>()); }
-      TEST_METHOD(BYTESWAPGEN16)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<2>()); }
-      TEST_METHOD(BYTESWAPGEN24)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<3>()); }
-      TEST_METHOD(BYTESWAPGEN32)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<4>()); }
-      TEST_METHOD(BYTESWAPGEN40)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<5>()); }
-      TEST_METHOD(BYTESWAPGEN48)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<6>()); }
-      TEST_METHOD(BYTESWAPGEN56)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<7>()); }
-      TEST_METHOD(BYTESWAPGEN64)    { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<8>()); }
-      TEST_METHOD(BYTESWAPGEN128)   { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<16>()); }
-      TEST_METHOD(BYTESWAPGEN256)   { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<32>()); }
-      TEST_METHOD(BYTESWAPGEN512)   { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<64>()); }
+      TEST_METHOD(BYTESWAP128)      { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<16>()); }
+      TEST_METHOD(BYTESWAP256)      { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<32>()); }
+      TEST_METHOD(BYTESWAP512)      { Assert::AreEqual(true, CppCore::Test::BitOps::byteswap<64>()); }
       TEST_METHOD(BYTEDUP16)        { Assert::AreEqual(true, CppCore::Test::BitOps::bytedup16()); }
       TEST_METHOD(BYTEDUP32)        { Assert::AreEqual(true, CppCore::Test::BitOps::bytedup32()); }
       TEST_METHOD(BYTEDUP64)        { Assert::AreEqual(true, CppCore::Test::BitOps::bytedup64()); }
