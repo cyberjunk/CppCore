@@ -286,136 +286,130 @@ namespace CppCore
       INLINE Hex() { }
    public:
 
-      class Fix
+      /// <summary>
+      /// Encodes exactly 'len' bytes from 'in' into '2*len' hex characters in 'out'.
+      /// </summary>
+      INLINE static void encode(const void* in, char* out, size_t len, bool reverse = false)
       {
-      private:
-         INLINE Fix() { }
-      public:
-
-
-         INLINE static void parse2(const char in[sizeof(uint32_t)*2], uint32_t& r)
+         uint16_t* out16 = (uint16_t*)out;
+         if (reverse)
          {
-            uint32_t t = 0;
-            CPPCORE_UNROLL
-            for (size_t i = 0; i < 8; i++)
-            {
-               t <<= 4;
-               t |= Util::valueofhexchar(*in++);
-            }
-            r = t;
+            uint8_t* in8 = (uint8_t*)in + len;
+            while (len--)
+               *out16++ = Util::bytetohexint16(*--in8);
          }
-
-         INLINE static void parse4(const char* in, void* out, size_t lenout, bool reverse = false)
+         else
          {
-            uint8_t* out8 = (uint8_t*)out;
-            if (reverse)
-            {
-               in += lenout + lenout;
-               while (lenout--)
-               {
-                  char c2 = *--in;
-                  char c1 = *--in;
-                  *out8++ = 
-                     (Util::valueofhexchar(c1) << 4) | 
-                     (Util::valueofhexchar(c2));
-               }
-            }
-            else
-            {
-               while (lenout--)
-               {
-                  char c1 = *in++;
-                  char c2 = *in++;
-                  *out8++ = 
-                     (Util::valueofhexchar(c1) << 4) | 
-                     (Util::valueofhexchar(c2));
-               }
-            }
+            uint8_t* in8 = (uint8_t*)in;
+            while (len--)
+               *out16++ = Util::bytetohexint16(*in8++);
          }
+      }
 
-         INLINE static void* decode(const char* in, void* out)
+      /// <summary>
+      /// Decodes exactly '2*len' characters from 'in' into 'len' bytes in 'out'.
+      /// </summary>
+      INLINE static void decode(const char* in, void* out, size_t len, bool reverse = false)
+      {
+         uint8_t* out8 = (uint8_t*)out;
+         if (reverse)
          {
-            uint8_t* out8 = (uint8_t*)out;
-            while (true)
+            in += len + len;
+            while (len--)
             {
-               char c1 = *in++;
-               char c2 = *in++;
-               if ((c1 & c2) == 0)
-                  break;
+               char c2 = *--in;
+               char c1 = *--in;
                *out8++ = 
                   (Util::valueofhexchar(c1) << 4) | 
                   (Util::valueofhexchar(c2));
             }
-            return (void*)out8;
          }
-      };
-
-
-         INLINE static void parse(const char* in, uint32_t& r)
+         else
          {
-            CppCore::clear(r);
-
-            uint64_t v = *(uint64_t*)in;
-            uint64_t idx = CppCore::zbyteidxr64(v);
-            uint32_t shl = 0;
-
-            switch (idx)
+            while (len--)
             {
-            case 8: {r  = (uint32_t)(Util::valueofhexchar((uint8_t)(v >> 56))) << shl; shl+=4;} [[fallthrough]];//(mul-32);//0;
-            case 7: {r |= (uint32_t)(Util::valueofhexchar((uint8_t)(v >> 48))) << shl; shl+=4;} [[fallthrough]];//(mul-28);//4;
-            case 6: {r |= (uint32_t)(Util::valueofhexchar((uint8_t)(v >> 40))) << shl; shl+=4;} [[fallthrough]];//(mul-24);//8;
-            case 5: {r |= (uint32_t)(Util::valueofhexchar((uint8_t)(v >> 32))) << shl; shl+=4;} [[fallthrough]];//(mul-20);//12;
-            case 4: {r |= (uint32_t)(Util::valueofhexchar((uint8_t)(v >> 24))) << shl; shl+=4;} [[fallthrough]];//(mul-16);//16;
-            case 3: {r |= (uint32_t)(Util::valueofhexchar((uint8_t)(v >> 16))) << shl; shl+=4;} [[fallthrough]];//(mul-12);//20;
-            case 2: {r |= (uint32_t)(Util::valueofhexchar((uint8_t)(v >>  8))) << shl; shl+=4;} [[fallthrough]];//(mul-8);//24;
-            case 1: {r |= (uint32_t)(Util::valueofhexchar((uint8_t)(v >>  0))) << shl; shl+=4;} [[fallthrough]];//(mul-4);//28;
-            case 0: [[fallthrough]];
-            default:
+               char c1 = *in++;
+               char c2 = *in++;
+               *out8++ = 
+                  (Util::valueofhexchar(c1) << 4) | 
+                  (Util::valueofhexchar(c2));
+            }
+         }
+      }
+
+
+
+
+
+      INLINE static void parse2(const char in[sizeof(uint32_t)*2], uint32_t& r)
+      {
+         uint32_t t = 0;
+         CPPCORE_UNROLL
+         for (size_t i = 0; i < 8; i++)
+         {
+            t <<= 4;
+            t |= Util::valueofhexchar(*in++);
+         }
+         r = t;
+      }
+
+      INLINE static void* decode(const char* in, void* out)
+      {
+         uint8_t* out8 = (uint8_t*)out;
+         while (true)
+         {
+            char c1 = *in++;
+            char c2 = *in++;
+            if ((c1 & c2) == 0)
                break;
-            }
+            *out8++ = 
+               (Util::valueofhexchar(c1) << 4) | 
+               (Util::valueofhexchar(c2));
          }
+         return (void*)out8;
+      }
 
-         /// <summary>
-         /// Template function for parsing unsigned integer from zero terminated hex string.
-         /// No overflow or invalid symbol check! No support for '0x' prefix!
-         /// For bigendian=true the first character must contain the highest bits.
-         /// </summary>
-         INLINE static void parse(const char* in, size_t inlen, void* out, size_t outlen, const bool bigendian = true)
+
+
+      /// <summary>
+      ///
+      /// </summary>
+      INLINE static void parse(const char* in, size_t inlen, void* out, size_t outlen, const bool bigendian = true)
+      {
+         const char* ins = in;
+         const char* ine = in + inlen;
+
+         uint8_t* prs = (uint8_t*)out;
+         uint8_t* pre = prs + outlen;
+
+         while ((ins <= ine-2) & (prs < pre))
          {
-            const char* ins = in;
-            const char* ine = in + inlen;
-
-            uint8_t* prs = (uint8_t*)out;
-            uint8_t* pre = prs + outlen;
-
-            while ((ins <= ine-2) & (prs < pre))
-            {
-               ine -= 2;
-               uint16_t t = *(uint16_t*)ine;
-               *prs++ = (Util::valueofhexchar((uint8_t)t) << 4) | Util::valueofhexchar((uint8_t)(t >> 8));
-            }
-            if ((ins < ine) & (prs < pre))
-            {
-               *prs++ = Util::valueofhexchar(*--ine);
-            }
-            /*while (ins < ine)
-            {
-               const char c = *--ine;
-               if (c != '0' && CppCore::isxdigit(c))
-               {
-                  CppCore::bytedup(0xff, r);
-                  return;
-               }
-               else
-               {
-                  CppCore::clear(r);
-               }
-            }*/
-            while (prs < pre)
-            {
-               *prs++ = 0;
-            }
+            ine -= 2;
+            uint16_t t = *(uint16_t*)ine;
+            *prs++ = (Util::valueofhexchar((uint8_t)t) << 4) | Util::valueofhexchar((uint8_t)(t >> 8));
          }
+         if ((ins < ine) & (prs < pre))
+         {
+            *prs++ = Util::valueofhexchar(*--ine);
+         }
+         /*while (ins < ine)
+         {
+            const char c = *--ine;
+            if (c != '0' && CppCore::isxdigit(c))
+            {
+               CppCore::bytedup(0xff, r);
+               return;
+            }
+            else
+            {
+               CppCore::clear(r);
+            }
+         }*/
+         while (prs < pre)
+         {
+            *prs++ = 0;
+         }
+      }
 
       /// <summary>
       /// Hexadecimal Helper Functions
@@ -425,78 +419,6 @@ namespace CppCore
       private:
          INLINE Util() { }
       public:
-         CPPCORE_ALIGN64 static constexpr uint8_t hexcharvalues[] =
-         {
-            0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //  !"#$%&'
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ()*+,-./
-            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, // 01234567
-            0x08, 0x09, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 89:;<=>?
-            0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, // @ABCDEFG
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // HIJKLMNO
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // PQRSTUVW
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // XYZ[\]^_
-            0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, // `abcdefg
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // hijklmno
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // pqrstuvw
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // xyz{|}~.
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  // ........
-         };
-
-         CPPCORE_ALIGN64 static constexpr uint8_t hexcharvalues2[] =
-         {
-            0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //  !"#$%&'
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ()*+,-./
-            0x00, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, // 01234567
-            0x80, 0x90, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 89:;<=>?
-            0xFF, 0xa0, 0xb0, 0xc0, 0xd0, 0xe0, 0xf0, 0xFF, // @ABCDEFG
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // HIJKLMNO
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // PQRSTUVW
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // XYZ[\]^_
-            0xFF, 0xa0, 0xb0, 0xc0, 0xd0, 0xe0, 0xf0, 0xFF, // `abcdefg
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // hijklmno
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // pqrstuvw
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // xyz{|}~.
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  // ........
-         };
-
          /// <summary>
          /// Returns the value represented by the hexadecimal character c.
          /// For instance the characters 'a' and 'A' will both return 10, '0' returns 0.
@@ -507,57 +429,43 @@ namespace CppCore
          #if false
             return 9 * (c >> 6) + (c & 0xf);
          #else
+            CPPCORE_ALIGN64 static constexpr uint8_t hexcharvalues[] =
+            {
+               0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //  !"#$%&'
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ()*+,-./
+               0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, // 01234567
+               0x08, 0x09, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 89:;<=>?
+               0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, // @ABCDEFG
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // HIJKLMNO
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // PQRSTUVW
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // XYZ[\]^_
+               0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, // `abcdefg
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // hijklmno
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // pqrstuvw
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // xyz{|}~.
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  // ........
+            };
             return hexcharvalues[c];
          #endif
-         }
-
-         INLINE static uint8_t valueofhexchar2(const uint8_t c)
-         {
-            return hexcharvalues2[c];
-         }
-
-         /// <summary>
-         /// Returns 2 characters with the string representation of the byte argument.
-         /// For instance, returns "00" for 0x00 or "FF" for 0xFF.
-         /// </summary>
-         INLINE static const char* bytetohexstr(const uint8_t byte)
-         {
-            static const char* table[] = 
-            {
-               "00", "01", "02", "03", "04", "05", "06", "07", 
-               "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
-               "10", "11", "12", "13", "14", "15", "16", "17",
-               "18", "19", "1A", "1B", "1C", "1D", "1E", "1F",
-               "20", "21", "22", "23", "24", "25", "26", "27",
-               "28", "29", "2A", "2B", "2C", "2D", "2E", "2F",
-               "30", "31", "32", "33", "34", "35", "36", "37",
-               "38", "39", "3A", "3B", "3C", "3D", "3E", "3F",
-               "40", "41", "42", "43", "44", "45", "46", "47",
-               "48", "49", "4A", "4B", "4C", "4D", "4E", "4F",
-               "50", "51", "52", "53", "54", "55", "56", "57",
-               "58", "59", "5A", "5B", "5C", "5D", "5E", "5F",
-               "60", "61", "62", "63", "64", "65", "66", "67",
-               "68", "69", "6A", "6B", "6C", "6D", "6E", "6F",
-               "70", "71", "72", "73", "74", "75", "76", "77",
-               "78", "79", "7A", "7B", "7C", "7D", "7E", "7F",
-               "80", "81", "82", "83", "84", "85", "86", "87",
-               "88", "89", "8A", "8B", "8C", "8D", "8E", "8F",
-               "90", "91", "92", "93", "94", "95", "96", "97",
-               "98", "99", "9A", "9B", "9C", "9D", "9E", "9F",
-               "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7",
-               "A8", "A9", "AA", "AB", "AC", "AD", "AE", "AF",
-               "B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7",
-               "B8", "B9", "BA", "BB", "BC", "BD", "BE", "BF",
-               "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7",
-               "C8", "C9", "CA", "CB", "CC", "CD", "CE", "CF",
-               "D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7",
-               "D8", "D9", "DA", "DB", "DC", "DD", "DE", "DF",
-               "E0", "E1", "E2", "E3", "E4", "E5", "E6", "E7",
-               "E8", "E9", "EA", "EB", "EC", "ED", "EE", "EF",
-               "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7",
-               "F8", "F9", "FA", "FB", "FC", "FD", "FE", "FF"
-            };
-            return table[byte];
          }
 
          /// <summary>
@@ -566,7 +474,7 @@ namespace CppCore
          /// </summary>
          INLINE static uint16_t bytetohexint16(const uint8_t byte)
          {
-            static const uint16_t table[] = 
+            CPPCORE_ALIGN64 static const uint16_t table[] =
             {
                0x3030, 0x3130, 0x3230, 0x3330, 0x3430, 0x3530, 0x3630, 0x3730,
                0x3830, 0x3930, 0x4130, 0x4230, 0x4330, 0x4430, 0x4530, 0x4630,
@@ -600,42 +508,11 @@ namespace CppCore
                0x3845, 0x3945, 0x4145, 0x4245, 0x4345, 0x4445, 0x4545, 0x4645,
                0x3046, 0x3146, 0x3246, 0x3346, 0x3446, 0x3546, 0x3646, 0x3746,
                0x3846, 0x3946, 0x4146, 0x4246, 0x4346, 0x4446, 0x4546, 0x4646
-               /* reverse
-               0x3030, 0x3031, 0x3032, 0x3033, 0x3034, 0x3035, 0x3036, 0x3037,
-               0x3038, 0x3039, 0x3041, 0x3042, 0x3043, 0x3044, 0x3045, 0x3046,
-               0x3130, 0x3131, 0x3132, 0x3133, 0x3134, 0x3135, 0x3136, 0x3137,
-               0x3138, 0x3139, 0x3141, 0x3142, 0x3143, 0x3144, 0x3145, 0x3146,
-               0x3230, 0x3231, 0x3232, 0x3233, 0x3234, 0x3235, 0x3236, 0x3237,
-               0x3238, 0x3239, 0x3241, 0x3242, 0x3243, 0x3244, 0x3245, 0x3246,
-               0x3330, 0x3331, 0x3332, 0x3333, 0x3334, 0x3335, 0x3336, 0x3337,
-               0x3338, 0x3339, 0x3341, 0x3342, 0x3343, 0x3344, 0x3345, 0x3346,
-               0x3430, 0x3431, 0x3432, 0x3433, 0x3434, 0x3435, 0x3436, 0x3437,
-               0x3438, 0x3439, 0x3441, 0x3442, 0x3443, 0x3444, 0x3445, 0x3446,
-               0x3530, 0x3531, 0x3532, 0x3533, 0x3534, 0x3535, 0x3536, 0x3537,
-               0x3538, 0x3539, 0x3541, 0x3542, 0x3543, 0x3544, 0x3545, 0x3546,
-               0x3630, 0x3631, 0x3632, 0x3633, 0x3634, 0x3635, 0x3636, 0x3637,
-               0x3638, 0x3639, 0x3641, 0x3642, 0x3643, 0x3644, 0x3645, 0x3646,
-               0x3730, 0x3731, 0x3732, 0x3733, 0x3734, 0x3735, 0x3736, 0x3737,
-               0x3738, 0x3739, 0x3741, 0x3742, 0x3743, 0x3744, 0x3745, 0x3746,
-               0x3830, 0x3831, 0x3832, 0x3833, 0x3834, 0x3835, 0x3836, 0x3837,
-               0x3838, 0x3839, 0x3841, 0x3842, 0x3843, 0x3844, 0x3845, 0x3846,
-               0x3930, 0x3931, 0x3932, 0x3933, 0x3934, 0x3935, 0x3936, 0x3937,
-               0x3938, 0x3939, 0x3941, 0x3942, 0x3943, 0x3944, 0x3945, 0x3946,
-               0x4130, 0x4131, 0x4132, 0x4133, 0x4134, 0x4135, 0x4136, 0x4137,
-               0x4138, 0x4139, 0x4141, 0x4142, 0x4143, 0x4144, 0x4145, 0x4146,
-               0x4230, 0x4231, 0x4232, 0x4233, 0x4234, 0x4235, 0x4236, 0x4237,
-               0x4238, 0x4239, 0x4241, 0x4242, 0x4243, 0x4244, 0x4245, 0x4246,
-               0x4330, 0x4331, 0x4332, 0x4333, 0x4334, 0x4335, 0x4336, 0x4337,
-               0x4338, 0x4339, 0x4341, 0x4342, 0x4343, 0x4344, 0x4345, 0x4346,
-               0x4430, 0x4431, 0x4432, 0x4433, 0x4434, 0x4435, 0x4436, 0x4437,
-               0x4438, 0x4439, 0x4441, 0x4442, 0x4443, 0x4444, 0x4445, 0x4446,
-               0x4530, 0x4531, 0x4532, 0x4533, 0x4534, 0x4535, 0x4536, 0x4537,
-               0x4538, 0x4539, 0x4541, 0x4542, 0x4543, 0x4544, 0x4545, 0x4546,
-               0x4630, 0x4631, 0x4632, 0x4633, 0x4634, 0x4635, 0x4636, 0x4637,
-               0x4638, 0x4639, 0x4641, 0x4642, 0x4643, 0x4644, 0x4645, 0x4646*/
             };
             return table[byte];
          }
+
+
 
          /// <summary>
          /// Returns 4 characters encoded in uint32_t with the string representation of parts from v selected by il and ih.

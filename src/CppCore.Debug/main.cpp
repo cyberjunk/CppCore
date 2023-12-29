@@ -17,8 +17,8 @@ using namespace CppCore;
 CppCore::Random::Default64 rnd;
 CppCore::Stopwatch watch;
 
-constexpr size_t n = 100000;
-constexpr size_t m = 4097;
+constexpr size_t n = 1000;
+constexpr size_t m = 9;
 
 //char* v = "678";
 char v[n][m];
@@ -45,7 +45,7 @@ void test2(char* v)
 NOINLINE
 void test3(char* v)
 {
-   CppCore::Hex::parse(v, r[0]);
+   //CppCore::Hex::parse(v, r[0]);
    sum += r[0];
 }
 
@@ -59,7 +59,7 @@ void test4(char* v)
 NOINLINE
 void test5(char* v)
 {
-   CppCore::Hex::Fix::parse2(v, r[0]);
+   CppCore::Hex::parse2(v, r[0]);
    sum += r[0];
 }
 
@@ -73,22 +73,35 @@ void test6(char* v)
 NOINLINE
 void test7(char* v)
 {
-   CppCore::Hex::Fix::parse4(v, r, m/2);
+   CppCore::Hex::decode(v, r, m/2);
    sum += r[0];
 }
 NOINLINE
 void test8(char* v)
 {
-   CppCore::Hex::Fix::decode(v, r);
+   CppCore::Hex::decode(v, r);
    sum += r[0];
 }
 
 int main()
 {
+   CppCore::clear(r);
+   r[0] = 0xf1020304;
+
+
    CppCore::clear(v);
-   for (size_t j = 0; j < n; j++)
-      for (size_t i = 0; i < sizeof(v[j]) - 1; i++)
-         v[j][i] = (uint8_t)rnd.next((uint64_t)'0', (uint64_t)'9');
+   //for (size_t j = 0; j < n; j++)
+   //   for (size_t i = 0; i < sizeof(v[j]) - 1; i++)
+   //      v[j][i] = (uint8_t)rnd.next((uint64_t)'0', (uint64_t)'9');
+
+   //std::cout << std::hex << v[0] << std::endl;
+   Hex::encode(r, v[0], 4, false);
+   std::cout << std::hex << v[0] << std::endl;
+   Hex::decode(v[0], r, 4, false);
+   std::cout << std::hex << r[0] << std::endl;
+
+   std::cout << "-----------" << std::endl;
+
 
    for (uint32_t j = 0; j < 1; j++)
    {
