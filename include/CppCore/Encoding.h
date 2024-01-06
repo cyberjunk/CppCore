@@ -337,6 +337,48 @@ namespace CppCore
          }
       }
 
+      /// <summary>
+      /// Parses unsigned integer 'out' from n hex characters in 'in'.
+      /// </summary>
+      template<typename UINT>
+      INLINE static void parse(const char* in, size_t n, UINT& out, const bool bigendian = true)
+      {
+         CppCore::clear(out);
+         uint8_t* prs = (uint8_t*)&out;
+         uint8_t* pre = prs + sizeof(UINT);
+         const char* ine = in + n;
+         //if (bigendian)
+         {
+            while (((in <= ine-2) & (prs < pre)) != 0)
+            {
+               char c2 = *--ine;
+               char c1 = *--ine;
+               *prs++ = 
+                  (Util::valueofhexchar(c1) << 4) | 
+                  (Util::valueofhexchar(c2));
+            }
+            if (((in < ine) & (prs < pre)) != 0)
+               *prs++ = Util::valueofhexchar(*--ine);
+         }
+         /*else
+         {
+            while (((in <= ine-2) & (prs < pre)) != 0)
+            {
+               char c1 = *in++;
+               char c2 = *in++;
+               *prs++ = 
+                  (Util::valueofhexchar(c1) << 4) | 
+                  (Util::valueofhexchar(c2));
+            }
+            if (((in < ine) & (prs < pre)) != 0)
+               *prs++ = Util::valueofhexchar(*in);
+         }*/
+         if (!bigendian)
+            CppCore::byteswap(out);
+      }
+
+
+
 
 
 
@@ -553,7 +595,10 @@ namespace CppCore
                r <<= 4;
                r |= Util::valueofhexchar(c);
             }
-            return bigendian ? r : CppCore::byteswap(r);
+            if (!bigendian)
+               CppCore::byteswap(r);
+            return r;
+            //return bigendian ? r : CppCore::byteswap(r);
          }
 
          /// <summary>
@@ -584,7 +629,9 @@ namespace CppCore
                      }
                      else if (v == 0xFE) // end of str
                      {
-                        r = bigendian ? r : CppCore::byteswap(r);
+                        if (!bigendian)
+                           CppCore::byteswap(r);
+//                        r = bigendian ? r : CppCore::byteswap(r);
                         return true;
                      }
                      else // invalid symbol
@@ -592,7 +639,9 @@ namespace CppCore
                   }
                   if (*input == 0) CPPCORE_LIKELY
                   {
-                     r = bigendian ? r : CppCore::byteswap(r);
+                     if (!bigendian)
+                        CppCore::byteswap(r);
+//                     r = bigendian ? r : CppCore::byteswap(r);
                      return true;
                   }
                   else CPPCORE_UNLIKELY // too many symbols for T

@@ -31,14 +31,14 @@ uint32_t sum;
 NOINLINE
 void test(char* v, size_t strlen)
 {
-   CppCore::Hex::parse(v, strlen, r, sizeof(r));
+   CppCore::Hex::parse(v, strlen, r);
    sum += r[0];
 }
 
 NOINLINE
-void test2(char* v)
+void test2(char* v, size_t strlen)
 {
-   r[0] = CppCore::Hex::Util::parse<uint32_t, 8>(v);
+   //CppCore::Hex::parse2(v, strlen, r);
    sum += r[0];
 }
 
@@ -86,22 +86,28 @@ void test8(char* v)
 int main()
 {
    CppCore::clear(r);
-   r[0] = 0xf1020304;
+   //r[0] = 0x00020304;
 
 
    CppCore::clear(v);
-   //for (size_t j = 0; j < n; j++)
-   //   for (size_t i = 0; i < sizeof(v[j]) - 1; i++)
-   //      v[j][i] = (uint8_t)rnd.next((uint64_t)'0', (uint64_t)'9');
+   /*for (size_t j = 0; j < n; j++)
+      for (size_t i = 0; i < sizeof(v[j]) - 1; i++)
+         v[j][i] = (uint8_t)rnd.next((uint64_t)'0', (uint64_t)'9');*/
+
+   //strcpy(v[0], "0ff123");
 
    //std::cout << std::hex << v[0] << std::endl;
    Hex::encode(r, v[0], 4, false);
    std::cout << std::hex << v[0] << std::endl;
    Hex::decode(v[0], r, 4, false);
    std::cout << std::hex << r[0] << std::endl;
-
    std::cout << "-----------" << std::endl;
 
+   /*Hex::parse(v[0], ::strlen(v[0]), r[0], false);
+   std::cout << std::hex << r[0] << std::endl;
+   uint32_t r2 = std::strtoul(v[0], 0, 16);
+   std::cout << std::hex << r2 << std::endl;
+   std::cout << std::hex << CppCore::byteswap32(r2) << std::endl;*/
 
    for (uint32_t j = 0; j < 1; j++)
    {
@@ -109,14 +115,14 @@ int main()
       //std::cout << std::hex << r2 << std::endl;
 
       //   watch.reset();
-      size_t strlen = ::strlen(v[0]);
+      size_t strlen = rnd.next(0U,::strlen(v[0]));
       uint64_t t;
 
 
       std::cout << "test1" << std::endl;
       sum = 0;
       t = __rdtsc();
-      for (uint32_t i = 0; i < n; i++) CPPCORE_UNROLL for (uint32_t j=0; j < 2; j++) test(v[i], strlen);
+      for (uint32_t i = 0; i < n; i++) CPPCORE_UNROLL for (uint32_t j=0; j < 2; j++) test2(v[i], strlen);
       t = __rdtsc() - t;
       std::cout << std::hex << r[0] << std::endl;
       std::cout << std::hex << sum << std::endl;
@@ -127,7 +133,7 @@ int main()
       std::cout << "test2" << std::endl;
       sum = 0;
       t = __rdtsc();
-      for (uint32_t i = 0; i < n; i++) CPPCORE_UNROLL for (uint32_t j=0; j < 2; j++)  test2(v[i]);
+      for (uint32_t i = 0; i < n; i++) CPPCORE_UNROLL for (uint32_t j=0; j < 2; j++)  test(v[i], strlen);
       t = __rdtsc() - t;
       std::cout << std::hex << r[0] << std::endl;
       std::cout << std::hex << sum << std::endl;
