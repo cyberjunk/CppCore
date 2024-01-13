@@ -330,19 +330,19 @@ namespace CppCore { namespace Test
 
             CppCore::Hex::decode("00",         out, 1, false); if (::memcmp(out, rr0, 1) != 0) return false;
             CppCore::Hex::decode("A5",         out, 1, false); if (::memcmp(out, rr1, 1) != 0) return false;
-            CppCore::Hex::decode("A5FF",       out, 2, false); if (::memcmp(out, rr2, 1) != 0) return false;
-            CppCore::Hex::decode("A5FF3C",     out, 3, false); if (::memcmp(out, rr3, 1) != 0) return false;
-            CppCore::Hex::decode("A5FF3C74",   out, 4, false); if (::memcmp(out, rr4, 1) != 0) return false;
-            CppCore::Hex::decode("A5FF3C74E9", out, 5, false); if (::memcmp(out, rr5, 1) != 0) return false;
-            CppCore::Hex::decode("A5FF3C74E9A5FF3C04", out, 9, false); if (::memcmp(out, rr6, 1) != 0) return false;
+            CppCore::Hex::decode("A5FF",       out, 2, false); if (::memcmp(out, rr2, 2) != 0) return false;
+            CppCore::Hex::decode("A5FF3C",     out, 3, false); if (::memcmp(out, rr3, 3) != 0) return false;
+            CppCore::Hex::decode("A5FF3C74",   out, 4, false); if (::memcmp(out, rr4, 4) != 0) return false;
+            CppCore::Hex::decode("A5FF3C74E9", out, 5, false); if (::memcmp(out, rr5, 5) != 0) return false;
+            CppCore::Hex::decode("A5FF3C74E9A5FF3C04", out, 9, false); if (::memcmp(out, rr6, 9) != 0) return false;
 
             CppCore::Hex::decode("00",                 out, 1, true); if (::memcmp(out, rr0, 1) != 0) return false;
             CppCore::Hex::decode("A5",                 out, 1, true); if (::memcmp(out, rr1, 1) != 0) return false;
-            CppCore::Hex::decode("FFA5",               out, 2, true); if (::memcmp(out, rr2, 1) != 0) return false;
-            CppCore::Hex::decode("3CFFA5",             out, 3, true); if (::memcmp(out, rr3, 1) != 0) return false;
-            CppCore::Hex::decode("743CFFA5",           out, 4, true); if (::memcmp(out, rr4, 1) != 0) return false;
-            CppCore::Hex::decode("E9743CFFA5",         out, 5, true); if (::memcmp(out, rr5, 1) != 0) return false;
-            CppCore::Hex::decode("043CFFA5E9743CFFA5", out, 9, true); if (::memcmp(out, rr6, 1) != 0) return false;
+            CppCore::Hex::decode("FFA5",               out, 2, true); if (::memcmp(out, rr2, 2) != 0) return false;
+            CppCore::Hex::decode("3CFFA5",             out, 3, true); if (::memcmp(out, rr3, 3) != 0) return false;
+            CppCore::Hex::decode("743CFFA5",           out, 4, true); if (::memcmp(out, rr4, 4) != 0) return false;
+            CppCore::Hex::decode("E9743CFFA5",         out, 5, true); if (::memcmp(out, rr5, 5) != 0) return false;
+            CppCore::Hex::decode("043CFFA5E9743CFFA5", out, 9, true); if (::memcmp(out, rr6, 9) != 0) return false;
 
             return true;
          }
