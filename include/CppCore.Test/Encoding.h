@@ -285,28 +285,28 @@ namespace CppCore { namespace Test
       class Hex
       {
       public:
-         INLINE static bool tostring()
+         INLINE static bool encode()
          {
             char s[9 * 2 + 1];
             ::std::string ss;
             
-            uint8_t rr0[1] = { 0x00                     }; CppCore::Hex::tostring(rr0, 1, s, true); CppCore::Hex::tostring(rr0, 1, ss, true); if (s != ss || s != std::string("00")) return false;
-            uint8_t rr1[1] = { 0xA5                     }; CppCore::Hex::tostring(rr1, 1, s, true); CppCore::Hex::tostring(rr1, 1, ss, true); if (s != ss || s != std::string("A5")) return false;
-            uint8_t rr2[2] = { 0xA5,0xFF                }; CppCore::Hex::tostring(rr2, 2, s, true); CppCore::Hex::tostring(rr2, 2, ss, true); if (s != ss || s != std::string("A5FF")) return false;
-            uint8_t rr3[3] = { 0xA5,0xFF,0x3C           }; CppCore::Hex::tostring(rr3, 3, s, true); CppCore::Hex::tostring(rr3, 3, ss, true); if (s != ss || s != std::string("A5FF3C")) return false;
-            uint8_t rr4[4] = { 0xA5,0xFF,0x3C,0x74      }; CppCore::Hex::tostring(rr4, 4, s, true); CppCore::Hex::tostring(rr4, 4, ss, true); if (s != ss || s != std::string("A5FF3C74")) return false;
-            uint8_t rr5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 }; CppCore::Hex::tostring(rr5, 5, s, true); CppCore::Hex::tostring(rr5, 5, ss, true); if (s != ss || s != std::string("A5FF3C74E9")) return false;
+            uint8_t rr0[1] = { 0x00                     }; CppCore::Hex::encode(rr0, s, 1, false, true); CppCore::Hex::encode(rr0, ss, 1, false, true); if (s != ss || s != std::string("00")) return false;
+            uint8_t rr1[1] = { 0xA5                     }; CppCore::Hex::encode(rr1, s, 1, false, true); CppCore::Hex::encode(rr1, ss, 1, false, true); if (s != ss || s != std::string("A5")) return false;
+            uint8_t rr2[2] = { 0xA5,0xFF                }; CppCore::Hex::encode(rr2, s, 2, false, true); CppCore::Hex::encode(rr2, ss, 2, false, true); if (s != ss || s != std::string("A5FF")) return false;
+            uint8_t rr3[3] = { 0xA5,0xFF,0x3C           }; CppCore::Hex::encode(rr3, s, 3, false, true); CppCore::Hex::encode(rr3, ss, 3, false, true); if (s != ss || s != std::string("A5FF3C")) return false;
+            uint8_t rr4[4] = { 0xA5,0xFF,0x3C,0x74      }; CppCore::Hex::encode(rr4, s, 4, false, true); CppCore::Hex::encode(rr4, ss, 4, false, true); if (s != ss || s != std::string("A5FF3C74")) return false;
+            uint8_t rr5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 }; CppCore::Hex::encode(rr5, s, 5, false, true); CppCore::Hex::encode(rr5, ss, 5, false, true); if (s != ss || s != std::string("A5FF3C74E9")) return false;
             uint8_t rr6[9] = { 0xA5,0xFF,0x3C,0x74,0xE9,
-                               0xA5,0xFF,0x3C,0x04      }; CppCore::Hex::tostring(rr6, 9, s, true); CppCore::Hex::tostring(rr6, 9, ss, true); if (s != ss || s != std::string("A5FF3C74E9A5FF3C04")) return false;
+                               0xA5,0xFF,0x3C,0x04      }; CppCore::Hex::encode(rr6, s, 9, false, true); CppCore::Hex::encode(rr6, ss, 9, false, true); if (s != ss || s != std::string("A5FF3C74E9A5FF3C04")) return false;
 
-            uint8_t r0[1] = { 0x00                     }; CppCore::Hex::tostring(r0, 1, s, false); CppCore::Hex::tostring(r0, 1, ss, false); if (s != ss || s != std::string("00")) return false;
-            uint8_t r1[1] = { 0xA5                     }; CppCore::Hex::tostring(r1, 1, s, false); CppCore::Hex::tostring(r1, 1, ss, false); if (s != ss || s != std::string("A5")) return false;
-            uint8_t r2[2] = { 0xA5,0xFF                }; CppCore::Hex::tostring(r2, 2, s, false); CppCore::Hex::tostring(r2, 2, ss, false); if (s != ss || s != std::string("FFA5")) return false;
-            uint8_t r3[3] = { 0xA5,0xFF,0x3C           }; CppCore::Hex::tostring(r3, 3, s, false); CppCore::Hex::tostring(r3, 3, ss, false); if (s != ss || s != std::string("3CFFA5")) return false;
-            uint8_t r4[4] = { 0xA5,0xFF,0x3C,0x74      }; CppCore::Hex::tostring(r4, 4, s, false); CppCore::Hex::tostring(r4, 4, ss, false); if (s != ss || s != std::string("743CFFA5")) return false;
-            uint8_t r5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 }; CppCore::Hex::tostring(r5, 5, s, false); CppCore::Hex::tostring(r5, 5, ss, false); if (s != ss || s != std::string("E9743CFFA5")) return false;
+            uint8_t r0[1] = { 0x00                     }; CppCore::Hex::encode(r0, s, 1, true, true); CppCore::Hex::encode(r0, ss, 1, true, true); if (s != ss || s != std::string("00")) return false;
+            uint8_t r1[1] = { 0xA5                     }; CppCore::Hex::encode(r1, s, 1, true, true); CppCore::Hex::encode(r1, ss, 1, true, true); if (s != ss || s != std::string("A5")) return false;
+            uint8_t r2[2] = { 0xA5,0xFF                }; CppCore::Hex::encode(r2, s, 2, true, true); CppCore::Hex::encode(r2, ss, 2, true, true); if (s != ss || s != std::string("FFA5")) return false;
+            uint8_t r3[3] = { 0xA5,0xFF,0x3C           }; CppCore::Hex::encode(r3, s, 3, true, true); CppCore::Hex::encode(r3, ss, 3, true, true); if (s != ss || s != std::string("3CFFA5")) return false;
+            uint8_t r4[4] = { 0xA5,0xFF,0x3C,0x74      }; CppCore::Hex::encode(r4, s, 4, true, true); CppCore::Hex::encode(r4, ss, 4, true, true); if (s != ss || s != std::string("743CFFA5")) return false;
+            uint8_t r5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 }; CppCore::Hex::encode(r5, s, 5, true, true); CppCore::Hex::encode(r5, ss, 5, true, true); if (s != ss || s != std::string("E9743CFFA5")) return false;
             uint8_t r6[9] = { 0xA5,0xFF,0x3C,0x74,0xE9,
-                              0xA5,0xFF,0x3C,0x04      }; CppCore::Hex::tostring(r6, 9, s, false); CppCore::Hex::tostring(r6, 9, ss, false); if (s != ss || s != std::string("043CFFA5E9743CFFA5")) return false;
+                              0xA5,0xFF,0x3C,0x04      }; CppCore::Hex::encode(r6, s, 9, true, true); CppCore::Hex::encode(r6, ss, 9, true, true); if (s != ss || s != std::string("043CFFA5E9743CFFA5")) return false;
 
             return true;
          }
@@ -1044,7 +1044,7 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(BASEX_TRYPARSE32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse32()); }
       TEST_METHOD(BASEX_TRYPARSE64) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse64()); }
       TEST_METHOD(BASEX_TRYPARSE128){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse128()); }
-      TEST_METHOD(HEX_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring()); }
+      TEST_METHOD(HEX_ENCODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::encode()); }
       TEST_METHOD(HEX_TOSTRING16)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring16()); }
       TEST_METHOD(HEX_TOSTRING32)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring32()); }
       TEST_METHOD(HEX_TOSTRING64)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring64()); }
