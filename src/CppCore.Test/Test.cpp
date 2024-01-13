@@ -742,7 +742,8 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::Hex      " << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Encoding::Hex::encode,             "encode:   ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::encode,             "encode:     ", std::endl);
+   TEST(CppCore::Test::Encoding::Hex::decode,             "decode:     ", std::endl);
    TEST(CppCore::Test::Encoding::Hex::tostring16,         "tostring16: ", std::endl);
    TEST(CppCore::Test::Encoding::Hex::tostring32,         "tostring32: ", std::endl);
    TEST(CppCore::Test::Encoding::Hex::tostring64,         "tostring64: ", std::endl);

@@ -310,6 +310,14 @@ namespace CppCore { namespace Test
 
             return true;
          }
+         INLINE static bool decode()
+         {
+            uint8_t out[9];
+
+            uint8_t rr0[1] = { 0x00 }; CppCore::Hex::decode("00", out, 1, false); if (::memcmp(out, rr0, 1) != 0) return false;
+            uint8_t rr1[1] = { 0xA5 }; CppCore::Hex::decode("A5", out, 1, false); if (::memcmp(out, rr1, 1) != 0) return false;
+            return true;
+         }
          INLINE static bool tostring16()
          {
             char s[5];
@@ -1045,6 +1053,7 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(BASEX_TRYPARSE64) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse64()); }
       TEST_METHOD(BASEX_TRYPARSE128){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse128()); }
       TEST_METHOD(HEX_ENCODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::encode()); }
+      TEST_METHOD(HEX_DECODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::decode()); }
       TEST_METHOD(HEX_TOSTRING16)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring16()); }
       TEST_METHOD(HEX_TOSTRING32)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring32()); }
       TEST_METHOD(HEX_TOSTRING64)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring64()); }
