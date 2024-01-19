@@ -351,15 +351,16 @@ namespace CppCore
 
       /// <summary>
       /// Parses unsigned integer 'out' from n hex characters in 'in'.
+      /// Note that e.g. 0xFF1 is 0xFF01 (and neither 0x0FF1 nor 0xFF10) if 'in_be' is false.
       /// </summary>
       template<typename UINT>
-      INLINE static void parse(const char* in, size_t n, UINT& out, const bool bigendian = true)
+      INLINE static void parse(const char* in, size_t n, UINT& out, const bool in_be = true)
       {
          CppCore::clear(out);
          uint8_t* prs = (uint8_t*)&out;
          uint8_t* pre = prs + sizeof(UINT);
          const char* ine = in + n;
-         //if (bigendian)
+         if (in_be)
          {
             while (((in <= ine-2) & (prs < pre)) != 0)
             {
@@ -372,7 +373,7 @@ namespace CppCore
             if (((in < ine) & (prs < pre)) != 0)
                *prs++ = Util::valueofhexchar(*--ine);
          }
-         /*else
+         else
          {
             while (((in <= ine-2) & (prs < pre)) != 0)
             {
@@ -384,9 +385,7 @@ namespace CppCore
             }
             if (((in < ine) & (prs < pre)) != 0)
                *prs++ = Util::valueofhexchar(*in);
-         }*/
-         if (!bigendian)
-            CppCore::byteswap(out);
+         }
       }
 
 
