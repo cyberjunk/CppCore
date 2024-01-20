@@ -10,13 +10,12 @@ DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES) -I$(INCDIR)/
 CXXFLAGS  := $(CXXFLAGS) \
              -std=c++17 \
-             -fno-exceptions \
              -Wno-deprecated-declarations \
              -Wno-c++20-extensions \
              -Wno-c++2a-extensions \
              -Wno-unknown-warning-option
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Xlinker /STACK:0x1000000
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = main.o
