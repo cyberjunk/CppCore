@@ -608,29 +608,6 @@ namespace CppCore
 
          /// <summary>
          /// Template function for parsing unsigned integer from zero terminated hex string.
-         /// No overflow or invalid symbol check! No support for '0x' prefix!
-         /// For bigendian=true the first character must contain the highest bits.
-         /// N must be the number of max symbols for T (e.g. 8 for 32bit and 16 for 64bit).
-         /// </summary>
-         template<typename T, size_t N>
-         INLINE static T parse(const char* input, const bool bigendian = true)
-         {
-            T r = (T)0U;
-            char c;
-            CPPCORE_UNROLL
-            for (size_t i = 0; i != N && (c = *input++); i++) // pray for unroll
-            {
-               r <<= 4;
-               r |= Util::valueofhexchar(c);
-            }
-            if (!bigendian)
-               CppCore::byteswap(r);
-            return r;
-            //return bigendian ? r : CppCore::byteswap(r);
-         }
-
-         /// <summary>
-         /// Template function for parsing unsigned integer from zero terminated hex string.
          /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
          /// For bigendian=true the first character must contain the highest bits.
          /// N must be the number of overflow free symbols for T (e.g. 8 for 32bit and 16 for 64bit).
@@ -826,68 +803,6 @@ namespace CppCore
          }
          if (writeterm)
             *((char*)p) = (char)0x00;
-      }
-
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Parses 16-bit unsigned integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static uint16_t parse16u(const char* input, const bool bigendian = true)
-      {
-         return Util::parse<uint16_t, CPPCORE_MAXSYMBOLS_B16_16>(input, bigendian);
-      }
-
-      /// <summary>
-      /// Parses 32-bit unsigned integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static uint32_t parse32u(const char* input, const bool bigendian = true)
-      {
-         return Util::parse<uint32_t, CPPCORE_MAXSYMBOLS_B16_32>(input, bigendian);
-      }
-
-      /// <summary>
-      /// Parses 64-bit unsigned integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static uint64_t parse64u(const char* input, const bool bigendian = true)
-      {
-         return Util::parse<uint64_t, CPPCORE_MAXSYMBOLS_B16_64>(input, bigendian);
-      }
-
-      /// <summary>
-      /// Parses 16-bit signed integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static int16_t parse16s(const char* input, const bool bigendian = true)
-      {
-         return (int16_t)Hex::parse16u(input, bigendian);
-      }
-
-      /// <summary>
-      /// Parses 32-bit signed integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static int32_t parse32s(const char* input, const bool bigendian = true)
-      {
-         return (int32_t)Hex::parse32u(input, bigendian);
-      }
-
-      /// <summary>
-      /// Parses 64-bit signed integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static int64_t parse64s(const char* input, const bool bigendian = true)
-      {
-         return (int64_t)Hex::parse64u(input, bigendian);
       }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
