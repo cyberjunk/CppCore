@@ -510,21 +510,21 @@ namespace CppCore { namespace Test
          {
             uint32_t r;
 
-            if (CppCore::Hex::parse32u("0",        true) != 0x00000000U) return false;
-            if (CppCore::Hex::parse32u("00000000", true) != 0x00000000U) return false;
-            if (CppCore::Hex::parse32u("1",        true) != 0x00000001U) return false;
-            if (CppCore::Hex::parse32u("00000001", true) != 0x00000001U) return false;
-            if (CppCore::Hex::parse32u("FFFFFFFF", true) != 0xFFFFFFFFU) return false;
-            if (CppCore::Hex::parse32u("0FFFFFFF", true) != 0x0FFFFFFFU) return false;
-            if (CppCore::Hex::parse32u("BC3A19FA", true) != 0xBC3A19FAU) return false;
+            CppCore::Hex::parse("0",       r, true, true); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("00000000",r, true, true); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("1",       r, true, true); if (r != 0x00000001U) return false;
+            CppCore::Hex::parse("00000001",r, true, true); if (r != 0x00000001U) return false;
+            CppCore::Hex::parse("FFFFFFFF",r, true, true); if (r != 0xFFFFFFFFU) return false;
+            CppCore::Hex::parse("0FFFFFFF",r, true, true); if (r != 0x0FFFFFFFU) return false;
+            CppCore::Hex::parse("BC3A19FA",r, true, true); if (r != 0xBC3A19FAU) return false;
 
-            if (CppCore::Hex::parse32u("0",        false) != 0x00000000U) return false;
-            if (CppCore::Hex::parse32u("00000000", false) != 0x00000000U) return false;
-            if (CppCore::Hex::parse32u("1",        false) != 0x01000000U) return false;
-            if (CppCore::Hex::parse32u("00000001", false) != 0x01000000U) return false;
-            if (CppCore::Hex::parse32u("FFFFFFFF", false) != 0xFFFFFFFFU) return false;
-            if (CppCore::Hex::parse32u("0FFFFFFF", false) != 0xFFFFFF0FU) return false;
-            if (CppCore::Hex::parse32u("BC3A19FA", false) != 0xFA193ABCU) return false;
+            CppCore::Hex::parse("0",       r, true, false); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("00000000",r, true, false); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("1",       r, true, false); if (r != 0x01000000U) return false;
+            CppCore::Hex::parse("00000001",r, true, false); if (r != 0x01000000U) return false;
+            CppCore::Hex::parse("FFFFFFFF",r, true, false); if (r != 0xFFFFFFFFU) return false;
+            CppCore::Hex::parse("0FFFFFFF",r, true, false); if (r != 0xFFFFFF0FU) return false;
+            CppCore::Hex::parse("BC3A19FA",r, true, false); if (r != 0xFA193ABCU) return false;
 
             if (!CppCore::Hex::tryparse("0",        r, true) || r != 0x00000000U) return false;
             if (!CppCore::Hex::tryparse("00000000", r, true) || r != 0x00000000U) return false;
@@ -557,21 +557,21 @@ namespace CppCore { namespace Test
          {
             uint64_t r;
 
-            if (CppCore::Hex::parse64u("0",                true) != 0x0000000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("0000000000000000", true) != 0x0000000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("1",                true) != 0x0000000000000001ULL) return false;
-            if (CppCore::Hex::parse64u("0000000000000001", true) != 0x0000000000000001ULL) return false;
-            if (CppCore::Hex::parse64u("FFFFFFFFFFFFFFFF", true) != 0xFFFFFFFFFFFFFFFFULL) return false;
-            if (CppCore::Hex::parse64u("0FFFFFFFFFFFFFFF", true) != 0x0FFFFFFFFFFFFFFFULL) return false;
-            if (CppCore::Hex::parse64u("BC3A19FABC3A19FA", true) != 0xBC3A19FABC3A19FAULL) return false;
+            CppCore::Hex::parse("0",               r, true, true); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("0000000000000000",r, true, true); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("1",               r, true, true); if (r != 0x0000000000000001ULL) return false;
+            CppCore::Hex::parse("0000000000000001",r, true, true); if (r != 0x0000000000000001ULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFFFF",r, true, true); if (r != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("0FFFFFFFFFFFFFFF",r, true, true); if (r != 0x0FFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("BC3A19FABC3A19FA",r, true, true); if (r != 0xBC3A19FABC3A19FAULL) return false;
 
-            if (CppCore::Hex::parse64u("0",                false) != 0x0000000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("0000000000000000", false) != 0x0000000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("1",                false) != 0x0100000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("0000000000000001", false) != 0x0100000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("FFFFFFFFFFFFFFFF", false) != 0xFFFFFFFFFFFFFFFFULL) return false;
-            if (CppCore::Hex::parse64u("0FFFFFFFFFFFFFFF", false) != 0xFFFFFFFFFFFFFF0FULL) return false;
-            if (CppCore::Hex::parse64u("BC3A19FABC3A19FA", false) != 0xFA193ABCFA193ABCULL) return false;
+            CppCore::Hex::parse("0",               r, true, false); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("0000000000000000",r, true, false); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("1",               r, true, false); if (r != 0x0100000000000000ULL) return false;
+            CppCore::Hex::parse("0000000000000001",r, true, false); if (r != 0x0100000000000000ULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFFFF",r, true, false); if (r != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("0FFFFFFFFFFFFFFF",r, true, false); if (r != 0xFFFFFFFFFFFFFF0FULL) return false;
+            CppCore::Hex::parse("BC3A19FABC3A19FA",r, true, false); if (r != 0xFA193ABCFA193ABCULL) return false;
 
             if (!CppCore::Hex::tryparse("0",                r, true) || r != 0x0000000000000000ULL) return false;
             if (!CppCore::Hex::tryparse("0000000000000000", r, true) || r != 0x0000000000000000ULL) return false;
