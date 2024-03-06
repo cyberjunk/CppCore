@@ -222,10 +222,10 @@ namespace CppCore
          /// <summary>
          /// Fills memory m with random bytes
          /// </summary>
-         template<typename T>
-         INLINE void fill(T& m)
+         template<typename TSTRUCT>
+         INLINE void fill(TSTRUCT& m)
          {
-            thiss()->fill((void*)&m, sizeof(T));
+            thiss()->fill((void*)&m, sizeof(TSTRUCT));
          }
 
          /// <summary>
