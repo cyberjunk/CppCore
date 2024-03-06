@@ -406,7 +406,7 @@ namespace CppCore
       /// <summary>
       /// Specialization for uint8_t
       /// </summary>
-      INLINE static Primes::Result isprime(const uint8_t& n, Memory<uint8_t>& mem, uint32_t maxidx)
+      INLINE static Primes::Result isprime(const uint8_t& n, Memory<uint8_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
          return (Primes::Result)Primes::isprime32(n);
       }
@@ -414,7 +414,7 @@ namespace CppCore
       /// <summary>
       /// Specialization for uint16_t
       /// </summary>
-      INLINE static Primes::Result isprime(const uint16_t& n, Memory<uint16_t>& mem, uint32_t maxidx)
+      INLINE static Primes::Result isprime(const uint16_t& n, Memory<uint16_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
          return (Primes::Result)Primes::isprime32(n);
       }
@@ -422,7 +422,7 @@ namespace CppCore
       /// <summary>
       /// Specialization for uint32_t
       /// </summary>
-      INLINE static Primes::Result isprime(const uint32_t& n, Memory<uint32_t>& mem, uint32_t maxidx)
+      INLINE static Primes::Result isprime(const uint32_t& n, Memory<uint32_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
          return (Primes::Result)Primes::isprime32(n);
       }
@@ -430,7 +430,7 @@ namespace CppCore
       /// <summary>
       /// Specialization for uint64_t
       /// </summary>
-      INLINE static Primes::Result isprime(const uint64_t& n, Memory<uint64_t>& mem, uint32_t maxidx)
+      INLINE static Primes::Result isprime(const uint64_t& n, Memory<uint64_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
          return (Primes::Result)Primes::isprime64(n);
       }
@@ -438,7 +438,7 @@ namespace CppCore
       /// <summary>
       /// Specialization for int8_t
       /// </summary>
-      INLINE static Primes::Result isprime(const int8_t& n, Memory<int8_t>& mem, uint32_t maxidx)
+      INLINE static Primes::Result isprime(const int8_t& n, Memory<int8_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
          return n < 0 ? Primes::Result::NotPrime : (Primes::Result)Primes::isprime32((uint32_t)n);
       }
@@ -446,7 +446,7 @@ namespace CppCore
       /// <summary>
       /// Specialization for int16_t
       /// </summary>
-      INLINE static Primes::Result isprime(const int16_t& n, Memory<int16_t>& mem, uint32_t maxidx)
+      INLINE static Primes::Result isprime(const int16_t& n, Memory<int16_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
          return n < 0 ? Primes::Result::NotPrime : (Primes::Result)Primes::isprime32((uint32_t)n);
       }
@@ -454,7 +454,7 @@ namespace CppCore
       /// <summary>
       /// Specialization for int32_t
       /// </summary>
-      INLINE static Primes::Result isprime(const int32_t& n, Memory<int32_t>& mem, uint32_t maxidx)
+      INLINE static Primes::Result isprime(const int32_t& n, Memory<int32_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
          return n < 0 ? Primes::Result::NotPrime : (Primes::Result)Primes::isprime32((uint32_t)n);
       }
@@ -462,7 +462,7 @@ namespace CppCore
       /// <summary>
       /// Specialization for int64_t
       /// </summary>
-      INLINE static Primes::Result isprime(const int64_t& n, Memory<int64_t>& mem, uint32_t maxidx)
+      INLINE static Primes::Result isprime(const int64_t& n, Memory<int64_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
          return n < 0 ? Primes::Result::NotPrime : (Primes::Result)Primes::isprime64((uint64_t)n);
       }
@@ -482,7 +482,7 @@ namespace CppCore
       ///////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
-      /// Generates prime number in p
+      /// Generates large prime number in p using provided memory and PRNG
       /// </summary>
       template<typename INT, typename PRNG>
       INLINE static void genprime(INT& p, PRNG& prng, Primes::Memory<INT>& mem, bool sign, uint32_t maxidx = DEFAULTMAXIDX)
@@ -500,15 +500,14 @@ namespace CppCore
       }
 
       /// <summary>
-      /// 
+      /// Generates large prime number in p using stack memory and temporary default PRNG
       /// </summary>
-      template<typename UINT>
-      INLINE static void genprime(UINT& p, bool sign, uint32_t maxidx = DEFAULTMAXIDX)
+      template<typename INT>
+      INLINE static void genprime(INT& p, bool sign, uint32_t maxidx = DEFAULTMAXIDX)
       {
          Random::Default prng;
-         Primes::Memory<UINT> mem;
-         Primes::genprime<UINT>(p, prng, mem, sign, maxidx);
+         Primes::Memory<INT> mem;
+         Primes::genprime(p, prng, mem, sign, maxidx);
       }
-
    };
 }
