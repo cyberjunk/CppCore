@@ -2389,12 +2389,19 @@ namespace CppCore
       /////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
-      /// Like other variant, but with temporary work memory.
+      /// Test if this is a prime number.
+      /// </summary>
+      INLINE Primes::Result isprime(Primes::Memory<TC>& mem, uint32_t maxidx = 64) const
+      {
+         return Primes::isprime(*thiss(), mem, maxidx);
+      }
+
+      /// <summary>
+      /// Like other variant, but with temporary work memory on stack.
       /// </summary>
       INLINE Primes::Result isprime(uint32_t maxidx = 64) const
       {
-         Primes::Memory<TC> mem;
-         return Primes::isprime(*thiss(), mem, maxidx);
+         return Primes::isprime(*thiss(), maxidx);
       }
 
       /// <summary>
@@ -2407,7 +2414,7 @@ namespace CppCore
             thiss()->randomize(prng);
             d.i32[0]     |= 0x00000001U;
             d.i32[N32-1] |= 0x80000000U;
-         } while (Primes::isprime(*thiss(), mem, maxidx) == Primes::Composite);
+         } while (Primes::isprime(*thiss(), mem, maxidx) == Primes::NotPrime);
       }
 
       /// <summary>
