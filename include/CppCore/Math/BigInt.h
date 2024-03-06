@@ -2386,7 +2386,7 @@ namespace CppCore
       /// <summary>
       /// Test if this is a prime number.
       /// </summary>
-      INLINE Primes::Result isprime(Primes::Memory<TC>& mem, uint32_t maxidx = 64) const
+      INLINE Primes::Result isprime(Primes::Memory<TC>& mem, uint32_t maxidx = Primes::DEFAULTMAXIDX) const
       {
          return Primes::isprime(*thiss(), mem, maxidx);
       }
@@ -2394,7 +2394,7 @@ namespace CppCore
       /// <summary>
       /// Like other variant, but with temporary work memory on stack.
       /// </summary>
-      INLINE Primes::Result isprime(uint32_t maxidx = 64) const
+      INLINE Primes::Result isprime(uint32_t maxidx = Primes::DEFAULTMAXIDX) const
       {
          return Primes::isprime(*thiss(), maxidx);
       }
@@ -2403,7 +2403,7 @@ namespace CppCore
       /// Turn into a strong probable prime
       /// </summary>
       template<typename PRNG>
-      INLINE void genprime(PRNG& prng, Primes::Memory<TC>& mem, uint32_t maxidx = 64)
+      INLINE void genprime(PRNG& prng, Primes::Memory<TC>& mem, uint32_t maxidx = Primes::DEFAULTMAXIDX)
       {
          do {
             thiss()->randomize(prng);
@@ -2415,7 +2415,7 @@ namespace CppCore
       /// <summary>
       /// Turn into a strong probable prime
       /// </summary>
-      INLINE void genprime(uint32_t maxidx = 64)
+      INLINE void genprime(uint32_t maxidx = Primes::DEFAULTMAXIDX)
       {
          Primes::Memory<TC> mem;
          Random::Default prng;
