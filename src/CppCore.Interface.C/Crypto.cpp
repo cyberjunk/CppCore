@@ -190,19 +190,22 @@ CPPCORE_AES_IMPLEMENTATION(cppcore_aes256, CppCore::AES256)
 
 #include <CppCore/Memory.h>
 #include <CppCore/Math/BigInt.h>
+#include <CppCore/Math/Primes.h>
 
-#define CPPCORE_PRIME_IMPLEMENTATION(name, classname)          \
-  int  name ## _test(void* data, unsigned int certainty) {     \
-    classname v;                                               \
-    CppCore::Memory::singlecopy(&v, data);                     \
-    return v.isprime(certainty);                               \
-  }                                                            \
-  void name ## _generate(void* data, unsigned int certainty) { \
-    classname v;                                               \
-    v.genprime(certainty);                                     \
-    CppCore::Memory::singlecopy(data, &v);                     \
+#define CPPCORE_PRIME_IMPLEMENTATION(name, classname)                             \
+  int  name ## _test(void* data, unsigned int sign, unsigned int certainty) {     \
+    classname v;                                                                  \
+    CppCore::Memory::singlecopy(&v, data);                                        \
+    return CppCore::Primes::isprime(v, certainty);                                \
+  }                                                                               \
+  void name ## _generate(void* data, unsigned int sign, unsigned int certainty) { \
+    classname v;                                                                  \
+    CppCore::Primes::genprime(v, (bool)sign, certainty);                          \
+    CppCore::Memory::singlecopy(data, &v);                                        \
   }
 
+CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime32,       std::uint32_t)
+CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime64,       std::uint64_t)
 CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime128,  CppCore::uint128_t)
 CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime256,  CppCore::uint256_t)
 CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime512,  CppCore::uint512_t)

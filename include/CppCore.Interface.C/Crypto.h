@@ -82,9 +82,9 @@
   CPPCORE_EXPORT void  name ## _decrypt_ctr(name* aes, void* in, void* out, void* iv, unsigned int n);
 
 // macro for prime declarations
-#define CPPCORE_PRIME_DECLARATION(name)                                       \
-  CPPCORE_EXPORT int  name ## _test     (void* data, unsigned int certainty); \
-  CPPCORE_EXPORT void name ## _generate (void* data, unsigned int certainty);
+#define CPPCORE_PRIME_DECLARATION(name)                                                          \
+  CPPCORE_EXPORT int  name ## _test     (void* data, unsigned int sign, unsigned int certainty); \
+  CPPCORE_EXPORT void name ## _generate (void* data, unsigned int sign, unsigned int certainty);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +148,8 @@ extern "C" {
 
    // primes
 
+   CPPCORE_PRIME_DECLARATION(cppcore_prime32)
+   CPPCORE_PRIME_DECLARATION(cppcore_prime64)
    CPPCORE_PRIME_DECLARATION(cppcore_prime128)
    CPPCORE_PRIME_DECLARATION(cppcore_prime256)
    CPPCORE_PRIME_DECLARATION(cppcore_prime512)
