@@ -2357,7 +2357,7 @@ namespace CppCore
       /// Sets all bits to random ones using 
       /// provided pseudo random number generator.
       /// </summary>
-      template<typename PRNG = Random::Default64>
+      template<typename PRNG = Random::Default>
       INLINE void randomize(PRNG& prng)
       {
          static_assert(PRNG::GENSIZE == 8U || PRNG::GENSIZE == 4U);
@@ -2375,13 +2375,8 @@ namespace CppCore
       /// </summary>
       INLINE void randomize()
       {
-      #if defined(CPPCORE_CPU_64BIT)
-         Random::Default64 prng;
+         Random::Default prng;
          thiss()->randomize(prng);
-      #else
-         Random::Default32 prng;
-         thiss()->randomize(prng);
-      #endif
       }
 
       /////////////////////////////////////////////////////////////////////////////////////////////
@@ -2423,11 +2418,7 @@ namespace CppCore
       INLINE void genprime(uint32_t maxidx = 64)
       {
          Primes::Memory<TC> mem;
-      #if defined(CPPCORE_CPU_64BIT)
-         Random::Default64 prng;
-      #else
-         Random::Default32 prng;
-      #endif
+         Random::Default prng;
          thiss()->genprime(prng, mem, maxidx);
       }
    };
