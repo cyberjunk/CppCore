@@ -24,7 +24,8 @@ int main()
    //cppcore_prime512_generate(uint512, 100);
 
    intptr_t a = cppcore_basex_encode8192(d, s, 63, 10, "0123456789", 1);
-   cppcore_basex_decode8192(s, d, 10, "0123456789");
+   cppcore_basex_decode8192(s, d, "0123456789");
+
    return 0;
 }
 
