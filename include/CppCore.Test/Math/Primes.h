@@ -198,8 +198,8 @@ namespace CppCore { namespace Test { namespace Math
       {
          // test trivial cases
          const bool t1 =
-            uint128_t(0ULL).isprime() == CppCore::Primes::Result::Composite &&
-            uint128_t(1ULL).isprime() == CppCore::Primes::Result::Composite &&
+            uint128_t(0ULL).isprime() == CppCore::Primes::Result::NotPrime &&
+            uint128_t(1ULL).isprime() == CppCore::Primes::Result::NotPrime &&
             uint128_t(2ULL).isprime() == CppCore::Primes::Result::Prime &&
             uint128_t(3ULL).isprime() == CppCore::Primes::Result::Prime;
          if (!t1)
@@ -237,7 +237,7 @@ namespace CppCore { namespace Test { namespace Math
 
          // test some uncovered perfect squares of high primes
          const bool t5 = 
-            (uint128_t(CppCore::Primes::MAX64U) * uint128_t(CppCore::Primes::MAX64U)).isprime() == CppCore::Primes::Result::Composite;
+            (uint128_t(CppCore::Primes::MAX64U) * uint128_t(CppCore::Primes::MAX64U)).isprime() == CppCore::Primes::Result::NotPrime;
          if (!t5)
             return false;
 

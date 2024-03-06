@@ -2357,7 +2357,7 @@ namespace CppCore
       /// Sets all bits to random ones using 
       /// provided pseudo random number generator.
       /// </summary>
-      template<typename PRNG = Random::Default64>
+      template<typename PRNG = Random::Default>
       INLINE void randomize(PRNG& prng)
       {
          static_assert(PRNG::GENSIZE == 8U || PRNG::GENSIZE == 4U);
@@ -2375,13 +2375,8 @@ namespace CppCore
       /// </summary>
       INLINE void randomize()
       {
-      #if defined(CPPCORE_CPU_64BIT)
-         Random::Default64 prng;
+         Random::Default prng;
          thiss()->randomize(prng);
-      #else
-         Random::Default32 prng;
-         thiss()->randomize(prng);
-      #endif
       }
 
       /////////////////////////////////////////////////////////////////////////////////////////////
@@ -2389,38 +2384,41 @@ namespace CppCore
       /////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
-      /// Like other variant, but with temporary work memory.
+      /// Test if this is a prime number.
       /// </summary>
-      INLINE Primes::Result isprime(uint32_t maxidx = 64) const
+      INLINE Primes::Result isprime(Primes::Memory<TC>& mem, uint32_t maxidx = Primes::DEFAULTMAXIDX) const
       {
-         Primes::Memory<TC> mem;
          return Primes::isprime(*thiss(), mem, maxidx);
+      }
+
+      /// <summary>
+      /// Like other variant, but with temporary work memory on stack.
+      /// </summary>
+      INLINE Primes::Result isprime(uint32_t maxidx = Primes::DEFAULTMAXIDX) const
+      {
+         return Primes::isprime(*thiss(), maxidx);
       }
 
       /// <summary>
       /// Turn into a strong probable prime
       /// </summary>
       template<typename PRNG>
-      INLINE void genprime(PRNG& prng, Primes::Memory<TC>& mem, uint32_t maxidx = 64)
+      INLINE void genprime(PRNG& prng, Primes::Memory<TC>& mem, uint32_t maxidx = Primes::DEFAULTMAXIDX)
       {
          do {
             thiss()->randomize(prng);
             d.i32[0]     |= 0x00000001U;
             d.i32[N32-1] |= 0x80000000U;
-         } while (Primes::isprime(*thiss(), mem, maxidx) == Primes::Composite);
+         } while (Primes::isprime(*thiss(), mem, maxidx) == Primes::NotPrime);
       }
 
       /// <summary>
       /// Turn into a strong probable prime
       /// </summary>
-      INLINE void genprime(uint32_t maxidx = 64)
+      INLINE void genprime(uint32_t maxidx = Primes::DEFAULTMAXIDX)
       {
          Primes::Memory<TC> mem;
-      #if defined(CPPCORE_CPU_64BIT)
-         Random::Default64 prng;
-      #else
-         Random::Default32 prng;
-      #endif
+         Random::Default prng;
          thiss()->genprime(prng, mem, maxidx);
       }
    };

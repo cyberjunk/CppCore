@@ -196,6 +196,39 @@ namespace CppCore
          ///////////////////////////////////////////////////////////////////////////////////////////////////
 
          /// <summary>
+         /// Fills memory m with len random bytes
+         /// </summary>
+         INLINE void fill(void* m, size_t len)
+         {
+            INT* pm = (INT*)m;
+            while (len >= sizeof(INT))
+            {
+               *pm++ = thiss()->next();
+               len -= sizeof(INT);
+            }
+            if (len)
+            {
+               INT t = thiss()->next();
+               uint8_t* p8 = (uint8_t*)pm;
+               while (len)
+               {
+                  *p8++ = (uint8_t)t;
+                  t >>= 8;
+                  len--;
+               }
+            }
+         }
+
+         /// <summary>
+         /// Fills memory m with random bytes
+         /// </summary>
+         template<typename TSTRUCT>
+         INLINE void fill(TSTRUCT& m)
+         {
+            thiss()->fill((void*)&m, sizeof(TSTRUCT));
+         }
+
+         /// <summary>
          /// Fills memory m with n unsigned and unbound random integer values.
          /// </summary>
          INLINE void fill(INT* m, const size_t n)
@@ -598,6 +631,12 @@ namespace CppCore
 
       using Default32 = CPPCORE_PRNG_DEFAULT32;
       using Default64 = CPPCORE_PRNG_DEFAULT64;
+
+      #if defined(CPPCORE_CPU_64BIT)
+      using Default = Default64;
+      #else
+      using Default = Default32;
+      #endif
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
       // CUSTOM PACKED PSEUDO RANDOM NUMBER GENERATORS
