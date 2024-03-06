@@ -224,7 +224,7 @@ namespace CppCore
       ///////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
-      /// Fast Prime Test for 32-Bit using Trial Test first and then
+      /// Fast Prime Test for unsigned 32-Bit using Trial Test first and then
       /// SPRP (Determinstic Miller-Rabin Test).
       /// </summary>
       INLINE static bool isprime32(const uint32_t n)
@@ -239,7 +239,16 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Fast Prime Test for 64-Bit using Trial Test first and then
+      /// Fast Prime Test for signed 32-Bit using Trial Test first and then
+      /// SPRP (Determinstic Miller-Rabin Test).
+      /// </summary>
+      INLINE static bool isprime32(const int32_t n)
+      {
+         return n < 0 ? false : Primes::isprime32((uint32_t)n);
+      }
+
+      /// <summary>
+      /// Fast Prime Test for unsigned 64-Bit using Trial Test first and then
       /// SPRP (Determinstic Miller-Rabin Test).
       /// </summary>
       INLINE static bool isprime64(const uint64_t n)
@@ -272,6 +281,15 @@ namespace CppCore
          if (!sprp(n,(uint64_t)31U)) return false;
          if (!sprp(n,(uint64_t)37U)) return false;
          return true;
+      }
+
+      /// <summary>
+      /// Fast Prime Test for signed 64-Bit using Trial Test first and then
+      /// SPRP (Determinstic Miller-Rabin Test).
+      /// </summary>
+      INLINE static bool isprime64(const int64_t n)
+      {
+         return n < 0 ? false : Primes::isprime64((uint64_t)n);
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////////
@@ -335,8 +353,16 @@ namespace CppCore
       /// Adjust maxidx between 12 and 512 to balance MR-Test certainty vs. runtime
       /// </summary>
       template<typename UINT>
-      INLINE static Primes::Result isprime(const UINT& n, Memory<UINT>& mem, uint32_t maxidx = DEFAULTMAXIDX)
+      INLINE static Primes::Result isprime(const UINT& n, bool sign, Memory<UINT>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
+         // check for negative number if signed
+         if (sign)
+         {
+            uint8_t* pn = (uint8_t*)&n;
+            if ((pn[sizeof(UINT)-1] & 0x80) != 0)
+               return Primes::NotPrime;
+         }
+
          // trial test
          const uint16_t x = Primes::isprime_trial(n);
          if (x == 0) return Primes::NotPrime;
@@ -408,7 +434,7 @@ namespace CppCore
       /// </summary>
       INLINE static Primes::Result isprime(const uint8_t& n, Memory<uint8_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
-         return (Primes::Result)Primes::isprime32(n);
+         return (Primes::Result)Primes::isprime32((uint32_t)n);
       }
 
       /// <summary>
@@ -416,7 +442,7 @@ namespace CppCore
       /// </summary>
       INLINE static Primes::Result isprime(const uint16_t& n, Memory<uint16_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
-         return (Primes::Result)Primes::isprime32(n);
+         return (Primes::Result)Primes::isprime32((uint32_t)n);
       }
 
       /// <summary>
@@ -440,7 +466,7 @@ namespace CppCore
       /// </summary>
       INLINE static Primes::Result isprime(const int8_t& n, Memory<int8_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
-         return n < 0 ? Primes::Result::NotPrime : (Primes::Result)Primes::isprime32((uint32_t)n);
+         return (Primes::Result)Primes::isprime32((int32_t)n);
       }
 
       /// <summary>
@@ -448,7 +474,7 @@ namespace CppCore
       /// </summary>
       INLINE static Primes::Result isprime(const int16_t& n, Memory<int16_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
-         return n < 0 ? Primes::Result::NotPrime : (Primes::Result)Primes::isprime32((uint32_t)n);
+         return (Primes::Result)Primes::isprime32((int32_t)n);
       }
 
       /// <summary>
@@ -456,7 +482,7 @@ namespace CppCore
       /// </summary>
       INLINE static Primes::Result isprime(const int32_t& n, Memory<int32_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
-         return n < 0 ? Primes::Result::NotPrime : (Primes::Result)Primes::isprime32((uint32_t)n);
+         return (Primes::Result)Primes::isprime32(n);
       }
 
       /// <summary>
@@ -464,17 +490,17 @@ namespace CppCore
       /// </summary>
       INLINE static Primes::Result isprime(const int64_t& n, Memory<int64_t>& mem, uint32_t maxidx = DEFAULTMAXIDX)
       {
-         return n < 0 ? Primes::Result::NotPrime : (Primes::Result)Primes::isprime64((uint64_t)n);
+         return (Primes::Result)Primes::isprime64(n);
       }
 
       /// <summary>
       /// Same as other variant but using stack memory.
       /// </summary>
       template<typename UINT>
-      INLINE static Primes::Result isprime(const UINT& n, uint32_t maxidx = DEFAULTMAXIDX)
+      INLINE static Primes::Result isprime(const UINT& n, bool sign, uint32_t maxidx = DEFAULTMAXIDX)
       {
          Primes::Memory<UINT> mem;
-         return Primes::isprime(n, mem, maxidx);
+         return Primes::isprime(n, sign, mem, maxidx);
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////////
@@ -496,7 +522,7 @@ namespace CppCore
                p8[sizeof(INT)-1] |= 0x40; // make large
             }
             else p8[sizeof(INT)-1] |= 0x80; // make large
-         } while (Primes::isprime(p, mem, maxidx) == Primes::NotPrime);
+         } while (Primes::isprime(p, sign, mem, maxidx) == Primes::NotPrime);
       }
 
       /// <summary>

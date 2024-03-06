@@ -2388,7 +2388,7 @@ namespace CppCore
       /// </summary>
       INLINE Primes::Result isprime(Primes::Memory<TC>& mem, uint32_t maxidx = Primes::DEFAULTMAXIDX) const
       {
-         return Primes::isprime(*thiss(), mem, maxidx);
+         return Primes::isprime(*thiss(), false, mem, maxidx);
       }
 
       /// <summary>
@@ -2396,7 +2396,7 @@ namespace CppCore
       /// </summary>
       INLINE Primes::Result isprime(uint32_t maxidx = Primes::DEFAULTMAXIDX) const
       {
-         return Primes::isprime(*thiss(), maxidx);
+         return Primes::isprime(*thiss(), false, maxidx);
       }
 
       /// <summary>
@@ -2409,7 +2409,7 @@ namespace CppCore
             thiss()->randomize(prng);
             d.i32[0]     |= 0x00000001U;
             d.i32[N32-1] |= 0x80000000U;
-         } while (Primes::isprime(*thiss(), mem, maxidx) == Primes::NotPrime);
+         } while (Primes::isprime(*thiss(), false, mem, maxidx) == Primes::NotPrime);
       }
 
       /// <summary>
