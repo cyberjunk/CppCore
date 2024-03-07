@@ -1596,7 +1596,7 @@ namespace CppCore
 
       /// <summary>
       /// Automatically picks singlecopy() variant based on sizeof(T).
-      /// Only supports power-of-two sizes from 16 to 256 Bytes.
+      /// Only supports power-of-two sizes from 4 to 256 Bytes.
       /// </summary>
       template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
       INLINE static void singlecopy(T* dst, const void* src)
@@ -1606,12 +1606,14 @@ namespace CppCore
          else if constexpr (sizeof(T) == 64)  Memory::singlecopy512 <DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 32)  Memory::singlecopy256 <DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 16)  Memory::singlecopy128 <DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 8)   *(uint64_t*)dst = *(uint64_t*)src;
+         else if constexpr (sizeof(T) == 4)   *(uint32_t*)dst = *(uint32_t*)src;
          else static_assert(sizeof(T) == 0);
       }
 
       /// <summary>
       /// Automatically picks singlecopy() variant based on sizeof(T).
-      /// Only supports power-of-two sizes from 16 to 256 Bytes.
+      /// Only supports power-of-two sizes from 4 to 256 Bytes.
       /// </summary>
       template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
       INLINE static void singlecopy(void* dst, const T* src)
@@ -1621,6 +1623,8 @@ namespace CppCore
          else if constexpr (sizeof(T) == 64)  Memory::singlecopy512 <DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 32)  Memory::singlecopy256 <DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 16)  Memory::singlecopy128 <DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 8)   *(uint64_t*)dst = *(uint64_t*)src;
+         else if constexpr (sizeof(T) == 4)   *(uint32_t*)dst = *(uint32_t*)src;
          else static_assert(sizeof(T) == 0);
       }
 
