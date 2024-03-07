@@ -4,7 +4,6 @@
 #include <CppCore/Root.h>
 #include <CppCore/Memory.h>
 #include <CppCore/Math/Util.h>
-#include <CppCore/Math/Primes.h>
 #include <CppCore/Encoding.h>
 #include <CppCore/Random.h>
 
@@ -2381,49 +2380,6 @@ namespace CppCore
       {
          Random::Default prng;
          thiss()->randomize(prng);
-      }
-
-      /////////////////////////////////////////////////////////////////////////////////////////////
-      // PRIMES
-      /////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Test if this is a prime number.
-      /// </summary>
-      INLINE Primes::Result isprime(Primes::Memory<TC>& mem, uint32_t maxidx = Primes::DEFAULTMAXIDX) const
-      {
-         return Primes::isprime(*thiss(), mem, maxidx);
-      }
-
-      /// <summary>
-      /// Like other variant, but with temporary work memory on stack.
-      /// </summary>
-      INLINE Primes::Result isprime(uint32_t maxidx = Primes::DEFAULTMAXIDX) const
-      {
-         return Primes::isprime(*thiss(), maxidx);
-      }
-
-      /// <summary>
-      /// Turn into a strong probable prime
-      /// </summary>
-      template<typename PRNG>
-      INLINE void genprime(PRNG& prng, Primes::Memory<TC>& mem, uint32_t maxidx = Primes::DEFAULTMAXIDX)
-      {
-         do {
-            thiss()->randomize(prng);
-            d.i32[0]     |= 0x00000001U;
-            d.i32[N32-1] |= 0x80000000U;
-         } while (Primes::isprime(*thiss(), mem, maxidx) == Primes::NotPrime);
-      }
-
-      /// <summary>
-      /// Turn into a strong probable prime
-      /// </summary>
-      INLINE void genprime(uint32_t maxidx = Primes::DEFAULTMAXIDX)
-      {
-         Primes::Memory<TC> mem;
-         Random::Default prng;
-         thiss()->genprime(prng, mem, maxidx);
       }
    };
 

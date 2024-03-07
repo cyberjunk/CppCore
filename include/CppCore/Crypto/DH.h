@@ -2,6 +2,7 @@
 
 #include <CppCore/Root.h>
 #include <CppCore/Math/BigInt.h>
+#include <CppCore/Math/Primes.h>
 
 namespace CppCore
 {
@@ -40,7 +41,7 @@ namespace CppCore
       }
       INLINE void genprime(uint32_t certainty)
       {
-         p.genprime(certainty);
+         CppCore::Primes::genprime(p, false, certainty);
       }
       INLINE void genpubkey()
       {
@@ -67,7 +68,7 @@ namespace CppCore
       INLINE void reset(const UINT& p, const UINT& g)
       {
          assert(CppCore::lzcnt(p) == 0);
-         assert(p.isprime(1));
+         assert(CppCore::Primes::isprime(p, false, 1));
          assert(g < p);
          CppCore::clone(this->p, p);
          CppCore::clone(this->g, g);
@@ -83,7 +84,7 @@ namespace CppCore
          Memory::singlecopy(&this->p, p);
          Memory::singlecopy(&this->g, g);
          assert(CppCore::lzcnt(this->p) == 0);
-         assert(this->p.isprime(1));
+         assert(CppCore::Primes::isprime(this->p, false, 1));
          assert(this->g < this->p);
          this->genrnd(v);
          this->genpubkey();
@@ -95,7 +96,7 @@ namespace CppCore
       /// </summary>
       INLINE void reset(const UINT& p, const UINT& g, const UINT& v)
       {
-         assert(p.isprime(1));
+         assert(CppCore::Primes::isprime(p, false, 1));
          assert(g < p);
          assert(v < p);
          CppCore::clone(this->p, p);
@@ -112,7 +113,7 @@ namespace CppCore
          Memory::singlecopy(&this->p, p);
          Memory::singlecopy(&this->g, g);
          Memory::singlecopy(&this->v, v);
-         assert(this->p.isprime(1));
+         assert(CppCore::Primes::isprime(this->p, false, 1));
          assert(this->g < this->p);
          assert(this->v < this->p);
          this->genpubkey();
