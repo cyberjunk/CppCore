@@ -198,46 +198,46 @@ namespace CppCore { namespace Test { namespace Math
       {
          // test trivial cases
          const bool t1 =
-            uint128_t(0ULL).isprime() == CppCore::Primes::Result::NotPrime &&
-            uint128_t(1ULL).isprime() == CppCore::Primes::Result::NotPrime &&
-            uint128_t(2ULL).isprime() == CppCore::Primes::Result::Prime &&
-            uint128_t(3ULL).isprime() == CppCore::Primes::Result::Prime;
+            CppCore::Primes::isprime(uint128_t(0ULL), false) == CppCore::Primes::Result::NotPrime &&
+            CppCore::Primes::isprime(uint128_t(1ULL), false) == CppCore::Primes::Result::NotPrime &&
+            CppCore::Primes::isprime(uint128_t(2ULL), false) == CppCore::Primes::Result::Prime &&
+            CppCore::Primes::isprime(uint128_t(3ULL), false) == CppCore::Primes::Result::Prime;
          if (!t1)
             return false;
 
          // test precomputed 512 first odd primes
          for (size_t i = 0; i < CppCore::Primes::NUMODDPRIMES; i++)
-            if (uint128_t((uint64_t)CppCore::Primes::ODDPRIMES[i]).isprime() != CppCore::Primes::Result::Prime)
+            if (CppCore::Primes::isprime(uint128_t((uint64_t)CppCore::Primes::ODDPRIMES[i]), false) != CppCore::Primes::Result::Prime)
                return false;
 
          // test some covered primes which are guaranteed to be true or false
          const bool t2 =
-            uint128_t(20771ULL).isprime()                          == CppCore::Primes::Result::Prime &&
-            uint128_t(40487ULL).isprime()                          == CppCore::Primes::Result::Prime &&
-            uint128_t(2481757ULL).isprime()                        == CppCore::Primes::Result::Prime &&
-            uint128_t((uint64_t)CppCore::Primes::MAX32S).isprime() == CppCore::Primes::Result::Prime &&
-            uint128_t((uint64_t)CppCore::Primes::MAX32U).isprime() == CppCore::Primes::Result::Prime &&
-            uint128_t((uint64_t)CppCore::Primes::MAX64S).isprime() == CppCore::Primes::Result::Prime &&
-            uint128_t((uint64_t)CppCore::Primes::MAX64U).isprime() == CppCore::Primes::Result::Prime &&
-            uint128_t(CppCore::Primes::SMALL128).isprime()         == CppCore::Primes::Result::Prime;
+            CppCore::Primes::isprime(uint128_t(20771ULL), false)                          == CppCore::Primes::Result::Prime &&
+            CppCore::Primes::isprime(uint128_t(40487ULL), false)                          == CppCore::Primes::Result::Prime &&
+            CppCore::Primes::isprime(uint128_t(2481757ULL), false)                        == CppCore::Primes::Result::Prime &&
+            CppCore::Primes::isprime(uint128_t((uint64_t)CppCore::Primes::MAX32S), false) == CppCore::Primes::Result::Prime &&
+            CppCore::Primes::isprime(uint128_t((uint64_t)CppCore::Primes::MAX32U), false) == CppCore::Primes::Result::Prime &&
+            CppCore::Primes::isprime(uint128_t((uint64_t)CppCore::Primes::MAX64S), false) == CppCore::Primes::Result::Prime &&
+            CppCore::Primes::isprime(uint128_t((uint64_t)CppCore::Primes::MAX64U), false) == CppCore::Primes::Result::Prime &&
+            CppCore::Primes::isprime(uint128_t(CppCore::Primes::SMALL128), false)         == CppCore::Primes::Result::Prime;
          if (!t2)
             return false;
 
          // test mersenne primes (any size gives true)
          const bool t3 =
-            uint128_t(CppCore::Primes::MERSENNE128).isprime() == CppCore::Primes::Result::Prime;
+            CppCore::Primes::isprime(uint128_t(CppCore::Primes::MERSENNE128), false) == CppCore::Primes::Result::Prime;
          if (!t3)
             return false;
 
          // test some uncovered high known primes
          const bool t4 =
-            uint128_t(CppCore::Primes::LARGE128).isprime() == CppCore::Primes::Result::LikelyPrime;
+            CppCore::Primes::isprime(uint128_t(CppCore::Primes::LARGE128), false) == CppCore::Primes::Result::LikelyPrime;
          if (!t4)
             return false;
 
          // test some uncovered perfect squares of high primes
          const bool t5 = 
-            (uint128_t(CppCore::Primes::MAX64U) * uint128_t(CppCore::Primes::MAX64U)).isprime() == CppCore::Primes::Result::NotPrime;
+            CppCore::Primes::isprime(uint128_t(CppCore::Primes::MAX64U) * uint128_t(CppCore::Primes::MAX64U), false) == CppCore::Primes::Result::NotPrime;
          if (!t5)
             return false;
 
