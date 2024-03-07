@@ -157,23 +157,23 @@ namespace CppCore { namespace Test { namespace Math
       {
          // test trivial cases
          const bool t1 =
-            CppCore::Primes::isprime64(0ULL) == false &&
-            CppCore::Primes::isprime64(1ULL) == false &&
-            CppCore::Primes::isprime64(2ULL) == true  &&
-            CppCore::Primes::isprime64(3ULL) == true;
+            CppCore::Primes::isprime64((uint64_t)0ULL) == false &&
+            CppCore::Primes::isprime64((uint64_t)1ULL) == false &&
+            CppCore::Primes::isprime64((uint64_t)2ULL) == true  &&
+            CppCore::Primes::isprime64((uint64_t)3ULL) == true;
          if (!t1)
             return false;
 
-         // test precomputed 256 first odd primes
+         // test precomputed first odd primes
          for (size_t i = 0; i < CppCore::Primes::NUMODDPRIMES; i++)
             if (!CppCore::Primes::isprime64((uint64_t)CppCore::Primes::ODDPRIMES[i]))
                return false;
 
          // test some special primes
          const bool t2 = 
-            CppCore::Primes::isprime64(20771ULL)                          &&
-            CppCore::Primes::isprime64(40487ULL)                          &&
-            CppCore::Primes::isprime64(2481757ULL)                        &&
+            CppCore::Primes::isprime64((uint64_t)20771ULL)                &&
+            CppCore::Primes::isprime64((uint64_t)40487ULL)                &&
+            CppCore::Primes::isprime64((uint64_t)2481757ULL)              &&
             CppCore::Primes::isprime64((uint64_t)CppCore::Primes::MAX32S) &&
             CppCore::Primes::isprime64((uint64_t)CppCore::Primes::MAX32U) &&
             CppCore::Primes::isprime64((uint64_t)CppCore::Primes::MAX64S) &&
