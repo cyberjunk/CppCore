@@ -63,13 +63,28 @@ namespace CppCore { namespace Test
       public:
          INLINE static bool estimatebits()
          {
-            return 
-               CppCore::BaseX::estimateBits(0, 2) == 0 &&
-               CppCore::BaseX::estimateBits(1, 2) == 1;
+            return
+               CppCore::BaseX::estimateBits( 0,  2) ==  0 &&
+               CppCore::BaseX::estimateBits( 1,  2) ==  1 &&
+               CppCore::BaseX::estimateBits( 2,  2) ==  2 &&
+               CppCore::BaseX::estimateBits( 1,  3) ==  2 &&
+               CppCore::BaseX::estimateBits( 1, 12) ==  4 &&
+               CppCore::BaseX::estimateBits( 1, 16) ==  4 &&
+               CppCore::BaseX::estimateBits( 8, 16) == 32 &&
+               CppCore::BaseX::estimateBits(16, 16) == 64 &&
+               CppCore::BaseX::estimateBits( 6, 62) == 36 &&
+               CppCore::BaseX::estimateBits( 6, 64) == 36;
          }
          INLINE static bool estimatesymbols()
          {
-            return true;
+            return
+               CppCore::BaseX::estimateSymbols( 0,  2) ==  0 &&
+               CppCore::BaseX::estimateSymbols( 1,  2) ==  1 &&
+               CppCore::BaseX::estimateSymbols(32, 16) ==  8 &&
+               CppCore::BaseX::estimateSymbols(64, 16) == 16 &&
+               CppCore::BaseX::estimateSymbols(64, 32) == 13 &&
+               CppCore::BaseX::estimateSymbols(64, 62) == 13 &&
+               CppCore::BaseX::estimateSymbols(32, 64) ==  6;
          }
          INLINE static bool tostring8()
          {

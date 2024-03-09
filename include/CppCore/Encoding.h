@@ -145,7 +145,7 @@ namespace CppCore
       INLINE BaseX() { }
    public:
       /// <summary>
-      /// Returns an upper bound of bits required for symbols.
+      /// Returns an upper bound of decoded bits required for encoded symbols.
       /// </summary>
       INLINE static uint32_t estimateBits(uint32_t symbols, uint32_t base)
       {
@@ -156,7 +156,7 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Returns an upper bound of symbols required for bits.
+      /// Returns an upper bound of encoded symbols required for decoded bits.
       /// </summary>
       INLINE static uint32_t estimateSymbols(uint32_t bits, uint32_t base)
       {
