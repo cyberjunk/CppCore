@@ -63,6 +63,13 @@ CPPCORE_UINT_IMPLEMENTATION(cppcore_uint4096, CppCore::Block4096)
     return CppCore::BaseX::tryparse(in, *(block*)out, alphabet);                            \
   }
 
+unsigned int cppcore_basex_estimate_bits(unsigned int symbols, unsigned int base) {
+   return CppCore::BaseX::estimateBits(symbols, base);
+}
+unsigned int cppcore_basex_estimate_symbols(unsigned int bits, unsigned int base) {
+   return CppCore::BaseX::estimateSymbols(bits, base);
+}
+
 CPPCORE_BASEX_IMPLEMENTATION(128,  CppCore::Block128)
 CPPCORE_BASEX_IMPLEMENTATION(256,  CppCore::Block256)
 CPPCORE_BASEX_IMPLEMENTATION(512,  CppCore::Block512)

@@ -104,6 +104,9 @@ extern "C" {
 
    // basex
 
+   CPPCORE_EXPORT unsigned int cppcore_basex_estimate_bits(unsigned int symbols, unsigned int base);
+   CPPCORE_EXPORT unsigned int cppcore_basex_estimate_symbols(unsigned int bits, unsigned int base);
+
    CPPCORE_BASEX_DECLARATION(128)
    CPPCORE_BASEX_DECLARATION(256)
    CPPCORE_BASEX_DECLARATION(512)
