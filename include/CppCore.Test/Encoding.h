@@ -61,6 +61,16 @@ namespace CppCore { namespace Test
       class BaseX
       {
       public:
+         INLINE static bool estimatebits()
+         {
+            return 
+               CppCore::BaseX::estimateBits(0, 2) == 0 &&
+               CppCore::BaseX::estimateBits(1, 2) == 1;
+         }
+         INLINE static bool estimatesymbols()
+         {
+            return true;
+         }
          INLINE static bool tostring8()
          {
             std::string ss;
@@ -1046,6 +1056,8 @@ namespace CppCore { namespace Test { namespace VS
    public:
       TEST_METHOD(ISDIGIT)          { Assert::AreEqual(true, CppCore::Test::Encoding::isdigit()); }
       TEST_METHOD(ISXDIGIT)         { Assert::AreEqual(true, CppCore::Test::Encoding::isxdigit()); }
+      TEST_METHOD(BASEX_ESTIMATEBITS)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::estimatebits()); }
+      TEST_METHOD(BASEX_ESTIMATESYMBOLS) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::estimatesymbols()); }
       TEST_METHOD(BASEX_TOSTRING8)  { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring8()); }
       TEST_METHOD(BASEX_TOSTRING16) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring16()); }
       TEST_METHOD(BASEX_TOSTRING32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring32()); }

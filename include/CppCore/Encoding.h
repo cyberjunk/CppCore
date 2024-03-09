@@ -145,6 +145,30 @@ namespace CppCore
       INLINE BaseX() { }
    public:
       /// <summary>
+      /// Returns an upper bound of bits required for symbols.
+      /// </summary>
+      INLINE static uint32_t estimateBits(uint32_t symbols, uint32_t base)
+      {
+         assert(base >= 2);
+         uint32_t pow2b = CppCore::ngptwo32(base);
+         uint32_t nbits = CppCore::tzcnt32(pow2b);
+         return symbols * nbits;
+      }
+
+      /// <summary>
+      /// Returns an upper bound of symbols required for bits.
+      /// </summary>
+      INLINE static uint32_t estimateSymbols(uint32_t bits, uint32_t base)
+      {
+         assert(base >= 2);
+         uint32_t q, r;
+         uint32_t pow2b = CppCore::nlptwo32(base);
+         uint32_t nbits = CppCore::tzcnt32(pow2b);
+         CppCore::udivmod32(bits, nbits, q, r);
+         return r ? q + 1 : q;
+      }
+
+      /// <summary>
       /// Encodes unsigned integer v into string s using alphabet.
       /// </summary>
       template<typename UINT>
