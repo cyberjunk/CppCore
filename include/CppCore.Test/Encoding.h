@@ -77,7 +77,7 @@ namespace CppCore { namespace Test
          }
          INLINE static bool estimatesymbols()
          {
-            return
+            bool ok =
                CppCore::BaseX::estimateSymbols( 0,  2) ==  0 &&
                CppCore::BaseX::estimateSymbols( 1,  2) ==  1 &&
                CppCore::BaseX::estimateSymbols(32, 16) ==  8 &&
@@ -85,6 +85,18 @@ namespace CppCore { namespace Test
                CppCore::BaseX::estimateSymbols(64, 32) == 13 &&
                CppCore::BaseX::estimateSymbols(64, 62) == 13 &&
                CppCore::BaseX::estimateSymbols(32, 64) ==  6;
+            if (!ok) 
+               return false;
+            std::string alphabet;
+            for (uint32_t b = 2; b < 256; b++)
+            {
+               alphabet.resize(b, '0');
+               uint32_t e = CppCore::BaseX::estimateSymbols(64, b);
+               std::string s = CppCore::BaseX::tostring(UINT64_MAX, alphabet.c_str());
+               if (s.length() > e)
+                  return false;
+            }
+            return true;
          }
          INLINE static bool tostring8()
          {
