@@ -203,7 +203,7 @@ CPPCORE_AES_IMPLEMENTATION(cppcore_aes256, CppCore::AES256)
   int  name ## _test(void* data, unsigned int sign, unsigned int certainty) {     \
     classname v;                                                                  \
     CppCore::Memory::singlecopy(&v, data);                                        \
-    return CppCore::Primes::isprime(v, certainty);                                \
+    return CppCore::Primes::isprime(v, (bool)sign, certainty);                                \
   }                                                                               \
   void name ## _generate(void* data, unsigned int sign, unsigned int certainty) { \
     classname v;                                                                  \
