@@ -68,7 +68,7 @@ INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
              -dynamiclib \
-             -install_name @rpath/$(NAME)$(EXTDLL)
+             -install_name $(NAME)$(EXTDLL)
 LINKLIBS  := $(LINKLIBS)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
