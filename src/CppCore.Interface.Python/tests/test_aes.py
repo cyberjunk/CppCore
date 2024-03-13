@@ -1,4 +1,4 @@
-import aes
+import cppcore.aes
 
 dat1:bytes = b'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
 dat2:bytes = b'\xee\xee\xee\xee\xee\xee\xee\xee\xee\xee\xee\xee\xee\xee\xee\xee'
@@ -33,7 +33,7 @@ print("--------")
 #print(dat1)
 #print(dat2)
 
-test = aes.AES128CTR()
+test = cppcore.aes.AES128CTR()
 test.reset(key, iv)
 
 print(test.ivenc)

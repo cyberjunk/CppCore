@@ -1,4 +1,4 @@
-from clib import lib
+from cppcore.clib import lib
 import sys
 
 def encode(v:int, alphabet:str) -> str:

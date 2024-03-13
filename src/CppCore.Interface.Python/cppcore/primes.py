@@ -1,5 +1,5 @@
 from enum import IntEnum
-from clib import lib
+from cppcore.clib import lib
 import sys
 
 DEFAULT_CERTAINTY = 64

@@ -1,4 +1,4 @@
-from clib import lib
+from cppcore.clib import lib
 import ctypes
 
 lib.cppcore_aes128_init.restype = \
