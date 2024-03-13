@@ -37,9 +37,9 @@ def test_generate64():
     assert(p.bit_length() == 64)
     assert(r == cppcore.primes.Result.Prime)
 
-# FAILS !!!
-#def test_generate128():
-#    p = cppcore.primes.generate(128)
-#    r = cppcore.primes.test(p)
-#    assert(p.bit_length() == 128)
-#    assert(r == cppcore.primes.Result.LikelyPrime)
+
+def test_generate128():
+    p = cppcore.primes.generate(128)
+    r = cppcore.primes.test(p)
+    assert(p.bit_length() == 128)
+    assert(r == cppcore.primes.Result.LikelyPrime)
