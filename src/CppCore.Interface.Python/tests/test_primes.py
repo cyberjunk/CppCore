@@ -52,3 +52,21 @@ def test_generate256():
     r = cppcore.primes.test(p)
     assert(p.bit_length() == 256)
     assert(r == cppcore.primes.Result.LikelyPrime)
+
+def test_generate512():
+    p = cppcore.primes.generate(512)
+    r = cppcore.primes.test(p)
+    assert(p.bit_length() == 512)
+    assert(r == cppcore.primes.Result.LikelyPrime)
+
+def test_generate1024():
+    p = cppcore.primes.generate(1024)
+    r = cppcore.primes.test(p)
+    assert(p.bit_length() == 1024)
+    assert(r == cppcore.primes.Result.LikelyPrime)
+
+def test_generate2048():
+    p = cppcore.primes.generate(2048)
+    r = cppcore.primes.test(p)
+    assert(p.bit_length() == 2048)
+    assert(r == cppcore.primes.Result.LikelyPrime)
