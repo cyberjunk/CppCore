@@ -26,6 +26,8 @@ def test_test128():
            cppcore.primes.Result.LikelyPrime) # outside deterministic range
     assert(cppcore.primes.test(170141183460469231731687303715884105727) == 
            cppcore.primes.Result.Prime) # outside but mersenne prime
+    assert(cppcore.primes.test(18446744073709551557*18446744073709551557) == 
+           cppcore.primes.Result.NotPrime) # square root test
 
 # PRIME GENERATION
     
