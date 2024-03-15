@@ -7,4 +7,4 @@ elif sys.platform == 'linux':  ext = ".so"
 elif sys.platform == "darwin": ext = ".dylib"
 else: raise ImportError("Unsupported Platform")
 
-lib = ctypes.CDLL(os.path.abspath(os.path.join(os.path.dirname(__file__), "CppCore.Interface.C"+ext)))
+lib = ctypes.CDLL(os.path.abspath(os.path.join(os.path.dirname(__file__), "libcppcore"+ext)))
