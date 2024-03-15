@@ -7,7 +7,7 @@ def get_platname():
 
 setup(
     include_package_data=True,
-    package_data={'': ['CppCore.Interface.C.dll']},
+    package_data={'': ['libcppcore.dll', 'libcppcore.dylib', 'libcppcore.so']},
     options={
         "bdist_wheel": {
             "plat_name": get_platname(),
