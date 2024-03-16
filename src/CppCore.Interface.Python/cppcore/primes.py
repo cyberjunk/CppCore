@@ -1,6 +1,33 @@
 from cppcore.lib.libcppcore import lib
 from enum import IntEnum
+import ctypes
 import sys
+
+lib.cppcore_prime32_test.argtypes = \
+lib.cppcore_prime64_test.argtypes = \
+lib.cppcore_prime128_test.argtypes = \
+lib.cppcore_prime256_test.argtypes = \
+lib.cppcore_prime512_test.argtypes = \
+lib.cppcore_prime1024_test.argtypes = \
+lib.cppcore_prime2048_test.argtypes = \
+[
+    ctypes.c_void_p,  # input
+    ctypes.c_uint32,  # signed
+    ctypes.c_uint32   # certainty
+]
+
+lib.cppcore_prime32_generate.argtypes = \
+lib.cppcore_prime64_generate.argtypes = \
+lib.cppcore_prime128_generate.argtypes = \
+lib.cppcore_prime256_generate.argtypes = \
+lib.cppcore_prime512_generate.argtypes = \
+lib.cppcore_prime1024_generate.argtypes = \
+lib.cppcore_prime2048_generate.argtypes = \
+[
+    ctypes.c_void_p,  # output
+    ctypes.c_uint32,  # signed
+    ctypes.c_uint32   # certainty
+]
 
 DEFAULT_CERTAINTY = 64
 
