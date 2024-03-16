@@ -95,12 +95,15 @@ extern "C" {
 
    // large integer arithmetic
 
+   CPPCORE_UINT_DECLARATION(cppcore_uint32)
+   CPPCORE_UINT_DECLARATION(cppcore_uint64)
    CPPCORE_UINT_DECLARATION(cppcore_uint128)
    CPPCORE_UINT_DECLARATION(cppcore_uint256)
    CPPCORE_UINT_DECLARATION(cppcore_uint512)
    CPPCORE_UINT_DECLARATION(cppcore_uint1024)
    CPPCORE_UINT_DECLARATION(cppcore_uint2048)
    CPPCORE_UINT_DECLARATION(cppcore_uint4096)
+   CPPCORE_UINT_DECLARATION(cppcore_uint8192)
 
    // basex
 

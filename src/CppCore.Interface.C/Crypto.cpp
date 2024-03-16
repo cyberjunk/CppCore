@@ -39,12 +39,15 @@ int main(int argc, char* argv[])
   void name ## _mulmod(void* a, void* b, void* m, void* r){ CppCore::umulmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}\
   void name ## _powmod(void* a, void* b, void* m, void* r){ CppCore::upowmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}
 
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint32,       std::uint32_t)
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint64,       std::uint64_t)
 CPPCORE_UINT_IMPLEMENTATION(cppcore_uint128,  CppCore::Block128)
 CPPCORE_UINT_IMPLEMENTATION(cppcore_uint256,  CppCore::Block256)
 CPPCORE_UINT_IMPLEMENTATION(cppcore_uint512,  CppCore::Block512)
 CPPCORE_UINT_IMPLEMENTATION(cppcore_uint1024, CppCore::Block1024)
 CPPCORE_UINT_IMPLEMENTATION(cppcore_uint2048, CppCore::Block2048)
 CPPCORE_UINT_IMPLEMENTATION(cppcore_uint4096, CppCore::Block4096)
+CPPCORE_UINT_IMPLEMENTATION(cppcore_uint8192, CppCore::Block8192)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENCODING
