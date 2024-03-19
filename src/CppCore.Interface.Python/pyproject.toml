@@ -10,7 +10,7 @@ description = "A sample Python project"
 #readme = "README.md"
 requires-python = ">=3.8"
 #license = {file = "LICENSE.txt"}
-keywords = ["primes", "aes", "crypto", "encoding"]
+keywords = ["primes", "aes", "crypto", "encoding", "hash", "hmac", "pbkdf2", "dh"]
 authors = [
   {name = "Clint Banzhaf" }
 ]
@@ -38,7 +38,7 @@ dependencies = [
 
 [project.optional-dependencies]
 #dev = ["check-manifest"]
-#test = ["pytest"]
+test = ["pytest", "crc32c", "pbkdf2-reboot"]
 
 [project.urls]
 "Homepage" = "https://github.com/cyberjunk/cppcore"
