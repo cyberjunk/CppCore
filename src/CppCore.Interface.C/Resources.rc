@@ -1,0 +1,36 @@
+
+#include "winres.h"
+#include <CppCore/Version.h>
+
+VS_VERSION_INFO  VERSIONINFO
+FILEVERSION      CPPCORE_VERSION_RESRC
+PRODUCTVERSION   CPPCORE_VERSION_RESRC
+FILEFLAGSMASK    0x3fL
+#ifdef _DEBUG
+FILEFLAGS        VS_FF_DEBUG
+#else
+FILEFLAGS        0x0L
+#endif
+FILEOS           VOS_NT_WINDOWS32
+FILETYPE         VFT_DLL
+FILESUBTYPE      VFT2_UNKNOWN
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040004b0"
+    BEGIN
+      VALUE "CompanyName",      "Clint Banzhaf"
+      VALUE "FileDescription",  "CppCore.Interface.C"
+      VALUE "FileVersion",       CPPCORE_VERSION_STR4
+      VALUE "InternalName",     "CppCore.Interface.C"
+      VALUE "LegalCopyright",   "Copyright (C) 2022"
+      VALUE "OriginalFilename", ""
+      VALUE "ProductName",      "CppCore.Interface.C"
+      VALUE "ProductVersion",    CPPCORE_VERSION_STR4
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x400, 1200
+  END
+END

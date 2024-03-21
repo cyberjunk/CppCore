@@ -16,6 +16,7 @@ LINKFLAGS := $(LINKFLAGS) -shared
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = Crypto.o
+RESO       =
 
 ################################################################################################
 # CPU Specific
@@ -48,6 +49,7 @@ LINKFLAGS := $(LINKFLAGS) \
              -Xlinker /PDBALTPATH:$(NAME)$(SUFFIX)$(EXTPDB) \
              -DLL
 LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO) Resources.res
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES) 
 endif
@@ -70,6 +72,7 @@ LINKFLAGS := $(LINKFLAGS) \
              -dynamiclib \
              -install_name $(NAME)$(EXTDLL)
 LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
 endif
@@ -90,6 +93,7 @@ INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS)
 LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
 endif
@@ -109,6 +113,7 @@ DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS)
 LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
 endif
@@ -130,6 +135,7 @@ LINKFLAGS := $(LINKFLAGS) \
              -dynamiclib \
              -install_name @rpath/$(NAME)$(EXTDLL)
 LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
 endif
@@ -144,6 +150,8 @@ DEFINES   := $(DEFINES)
 endif
 endif
 
+################################################################################################
+
 OBJS  := $(patsubst %,$(OBJDIR)/%,$(OBJS))
 JOBJS := $(patsubst %,$(OBJDIR)/%,$(JOBJS))
 
@@ -151,11 +159,22 @@ $(OBJDIR)/%.o:
 	@echo [CXX] $@
 	$(CXX) $(CPUFLAGS) $(DEFINES) $(INCLUDES) $(CXXFLAGS) -c $(@:$(OBJDIR)%.o=$(SRCDIR)%.cpp) -o $@
 
-.DEFAULT_GOAL := build
+################################################################################################
 
-build: $(OBJS)
+RESO := $(patsubst %,$(OBJDIR)/%,$(RESO))
+
+$(OBJDIR)/%.res:
+	@echo [RC]  $@
+	$(RC) $(RCFLAGS) $(DEFINES) $(INCLUDES) -FO$@ $(@:$(OBJDIR)/%.res=$(SRCDIR)/%.rc)
+
+################################################################################################
+
+.DEFAULT_GOAL := build
+.PHONY: clean
+
+build: $(OBJS) $(RESO)
 	@echo [LNK] $(LIBDIR)/$(NAME)$(SUFFIX)$(EXTDLL)
-	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(LINKLIBS) -o $(LIBDIR)/$(NAME)$(SUFFIX)$(EXTDLL)
+	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(LIBDIR)/$(NAME)$(SUFFIX)$(EXTDLL)
 
 clean:
 	$(call deletefiles,$(OBJDIR),*.o)
