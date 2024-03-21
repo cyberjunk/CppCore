@@ -59,6 +59,11 @@ namespace CppCore
    };
 
    /// <summary>
+   /// PBKDF2 with HMAC-MD5
+   /// </summary>
+   using PBKDF2MD5 = PBKDF2<HMACMD5>;
+
+   /// <summary>
    /// PBKDF2 with HMAC-SHA256
    /// </summary>
    using PBKDF2SHA256 = PBKDF2<HMACSHA256>;
