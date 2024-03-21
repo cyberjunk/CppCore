@@ -145,6 +145,7 @@ CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_sha512, CppCore::HMACSHA512)
       digest, lendigest);                              \
   }
 
+CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_md5,    CppCore::PBKDF2MD5)
 CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha256, CppCore::PBKDF2SHA256)
 CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha512, CppCore::PBKDF2SHA512)
 

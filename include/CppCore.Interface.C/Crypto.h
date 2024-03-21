@@ -137,6 +137,7 @@ extern "C" {
 
    // pbkdf2
 
+   CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_md5)
    CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_sha256)
    CPPCORE_PBKDF2_DECLARATION(cppcore_pbkdf2_sha512)
 

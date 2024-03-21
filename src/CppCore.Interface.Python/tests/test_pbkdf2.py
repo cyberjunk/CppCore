@@ -15,5 +15,6 @@ def helper(own, ref):
             pbkdf2.PBKDF2(pw, salt, iter, ref).read(dlen)
         )
 
+def test_md5():    helper(cppcore.pbkdf2.pbkdf2_md5,    hashlib.md5)
 def test_sha256(): helper(cppcore.pbkdf2.pbkdf2_sha256, hashlib.sha256)
 def test_sha512(): helper(cppcore.pbkdf2.pbkdf2_sha512, hashlib.sha512)
