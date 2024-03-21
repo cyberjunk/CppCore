@@ -613,6 +613,7 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "    CppCore::Crypto::PBKDF2"       << std::endl;
    std::cout << "-------------------------------" << std::endl;
+   TEST(CppCore::Test::Crypto::PBKDF2::md5test1,    "md5test1:    ", std::endl);
    TEST(CppCore::Test::Crypto::PBKDF2::sha256test1, "sha256test1: ", std::endl);
    TEST(CppCore::Test::Crypto::PBKDF2::sha512test1, "sha512test1: ", std::endl);
    TEST(CppCore::Test::Crypto::PBKDF2::sha512test2, "sha512test2: ", std::endl);

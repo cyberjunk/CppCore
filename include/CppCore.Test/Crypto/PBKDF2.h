@@ -10,6 +10,23 @@ namespace CppCore { namespace Test { namespace Crypto
    class PBKDF2
    {
    public:
+      INLINE static bool md5test1()
+      {
+         uint8_t digest[16];
+         uint8_t expect[16] = {
+            0x3b,0x3e,0x22,0xac,0x59,0x98,0x7a,0x43,
+            0x9e,0x40,0x19,0xf9,0xda,0x8f,0x45,0x20
+         };
+
+         PBKDF2MD5 pbkdf2;
+         pbkdf2.create("Test", 4, "Hello", 5, 1000, digest, sizeof(digest));
+
+         if (::memcmp(digest, expect, 16) != 0)
+            return false;
+
+         return true;
+      }
+
       INLINE static bool sha256test1()
       {
          uint8_t digest[32];
@@ -88,6 +105,7 @@ namespace CppCore { namespace Test { namespace VS { namespace Crypto {
    TEST_CLASS(PBKDF2)
    {
    public:
+      TEST_METHOD(MD5TEST1)    { Assert::AreEqual(true, CppCore::Test::Crypto::PBKDF2::md5test1()); }
       TEST_METHOD(SHA256TEST1) { Assert::AreEqual(true, CppCore::Test::Crypto::PBKDF2::sha256test1()); }
       TEST_METHOD(SHA512TEST1) { Assert::AreEqual(true, CppCore::Test::Crypto::PBKDF2::sha512test1()); }
       TEST_METHOD(SHA512TEST2) { Assert::AreEqual(true, CppCore::Test::Crypto::PBKDF2::sha512test2()); }
