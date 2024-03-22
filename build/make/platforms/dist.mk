@@ -121,6 +121,40 @@ endif
 	$(ZIPPER) $(DISTDIR)/$(NAME).appxupload.zip $(DISTDIR)/$(NAME)/upload/*
 	$(call move,$(DISTDIR)/$(NAME).appxupload.zip,$(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxupload)	
 	$(call move,$(DISTDIR)/$(NAME).appxbundle,$(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxbundle)
+
+lib-dist-prep:
+	echo [VER] $(VERSION4)
+	echo [CPG] CodePage 1252
+	chcp 1252
+	echo [PUB] $(PUBLISHER)
+	echo [PFX] $(SIGN_PFX_FILE)
+	echo [RMD] $(DISTDIR)/$(NAME)
+	-$(call rmdir,$(DISTDIR)/$(NAME))
+	-$(call deletefiles,$(DISTDIR),$(NAME)*.zip)
+	echo [MKD] $(DISTDIR)/$(NAME)
+	-$(call mkdir,$(DISTDIR)/$(NAME))
+	-$(call mkdir,$(DISTDIR)/$(NAME)/x64)
+	-$(call mkdir,$(DISTDIR)/$(NAME)/x86)
+	-$(call mkdir,$(DISTDIR)/$(NAME)/arm64)
+	$(call copyfiles,$(INCDIR)/$(NAME)/*.h,$(DISTDIR)/$(NAME)/)
+lib-dist-%:
+	echo [MKD] $(DISTDIR)/$(NAME)/$*
+	$(call rmdir,$(DISTDIR)/$(NAME)/$*)
+	$(call mkdir,$(DISTDIR)/$(NAME)/$*)
+	$(call copyfiles,./lib/win-$*/$(NAME)$(EXTDLL),$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL))
+	$(call copyfiles,./lib/win-$*/$(NAME)$(EXTLIB),$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTLIB))
+	$(call copyfiles,./lib/win-$*/$(NAME)$(EXTPDB),$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTPDB))
+	echo [STR] $(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL)
+	$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL)
+	echo [SIG] $(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL)
+ifeq ($(SIGN_PFX_PASS),)
+	$(call sign,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL),$(SIGN_PFX_FILE))
+else
+	$(call signp,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL),$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+endif
+lib-dist: lib-dist-prep lib-dist-x64 lib-dist-x86 lib-dist-arm64
+	echo [ZIP] $(DISTDIR)/$(NAME)-$(VERSION3)-win-10.zip
+	$(ZIPPER) $(DISTDIR)/$(NAME)-$(VERSION3)-win-10.zip $(DISTDIR)/$(NAME)/*
 endif
 
 ##############################################################################################################

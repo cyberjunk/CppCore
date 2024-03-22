@@ -18,6 +18,11 @@ LINKLIBS  := $(LINKLIBS)
 OBJS       = Crypto.o
 RESO       =
 
+VERSIONFILE       = $(INCDIR)/CppCore/Version.h
+VERSIONMACROMAJOR = CPPCORE_VERSION_MAJOR
+VERSIONMACROMINOR = CPPCORE_VERSION_MINOR
+VERSIONMACROPATCH = CPPCORE_VERSION_PATCH
+
 ################################################################################################
 # CPU Specific
 
@@ -180,3 +185,7 @@ clean:
 	$(call deletefiles,$(OBJDIR),*.o)
 	$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTDLL))
 	$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTPDB))
+
+################################################################################################
+
+include ./platforms/dist.mk

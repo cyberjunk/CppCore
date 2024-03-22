@@ -63,7 +63,7 @@ CppCore.Interface.C-clean:
 
 CppCore.Interface.C-dist:
 	@echo [DST] CppCore.Interface.C
-	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk dist
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk lib-dist
 
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
