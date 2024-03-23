@@ -75,7 +75,8 @@ INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
              -dynamiclib \
-             -install_name $(NAME)$(EXTDLL)
+             -install_name $(NAME)$(EXTDLL) \
+             -Wl,-object_path_lto,$(OBJDIR)/lto.o
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)

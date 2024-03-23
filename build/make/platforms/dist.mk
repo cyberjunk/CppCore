@@ -177,6 +177,7 @@ XCODEVER     = $(shell xcodebuild -version | grep -E -m1 'Xcode' | sed 's/Xcode 
 XCODEBUILDV  = $(shell xcodebuild -version | grep -E -m1 'Build version' | sed 's/Build version //g')
 PKGSIGNED    = $(NAME)-$(VERSION3)-macOS-10.15-universal.pkg
 PKGUNSIGNED  = $(NAME)-$(VERSION3)-macOS-10.15-universal-unsigned.pkg
+TARNAME      = $(NAME)-$(VERSION3)-macOS-10.15-universal.tar.gz
 dist-prep:
 	@echo [VER] $(VERSION3)
 	@echo [OSX] $(OSXVER) - ${OSXBUILDV}
@@ -326,6 +327,33 @@ else
 endif
 endif
 endif
+lib-dist-%: dist-prep
+	@echo [DST] $(NAME)-$*
+lib-dist: dist-prep lib-dist-x64 lib-dist-arm64
+	@echo [MKD] $(APPNAME)
+	@mkdir -p $(DISTDIR)/$(NAME)/
+	@echo [LIP] $(NAME)$(EXTDLL)
+	@lipo -create -output $(DISTDIR)/$(NAME)/$(NAME)$(EXTDLL) \
+	  ./lib/osx-x64/$(NAME)$(EXTDLL) \
+	  ./lib/osx-arm64/$(NAME)$(EXTDLL)
+	@echo [SYM] $(NAME).dSYM
+	@dsymutil \
+	  -out $(DISTDIR)/$(NAME)/$(NAME).dSYM \
+	  $(DISTDIR)/$(NAME)/$(NAME)$(EXTDLL)
+	@echo [INF] $(NAME).dSYM
+	@dwarfdump --uuid $(DISTDIR)/$(NAME)/$(NAME).dSYM
+	@echo [SIG] $(NAME)$(EXTDLL)
+	@codesign --verbose \
+	  --sign "$(PUBLISHERCN)" \
+	  --keychain $(KEYCHAIN) \
+	  --timestamp \
+	  --options runtime \
+	  $(DISTDIR)/$(NAME)/$(NAME)$(EXTDLL)
+	@echo [VFY] $(NAME)$(EXTDLL)
+	@codesign --verify -vvvd $(DISTDIR)/$(NAME)/$(NAME)$(EXTDLL)
+	@cp $(INCDIR)/$(NAME)/*.h $(DISTDIR)/$(NAME)/
+	@echo [TAR] $(TARNAME) 
+	@tar -f $(DISTDIR)/$(TARNAME) -C $(DISTDIR)/$(NAME) -c .
 endif
 
 ##############################################################################################################
