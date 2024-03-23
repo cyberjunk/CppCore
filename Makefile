@@ -97,7 +97,8 @@ test: \
 dist: \
 	CppCore.Example.Server-dist \
 	CppCore.Example.Client-dist \
-	CppCore.Example.UI-dist
+	CppCore.Example.UI-dist \
+	CppCore.Interface.C-dist
 
 ##################################################################################
 

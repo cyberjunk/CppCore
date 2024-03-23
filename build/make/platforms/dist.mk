@@ -401,9 +401,31 @@ dist-%: dist-prep
 	cp ./bin/linux-$*/$(NAME)$(EXTBIN) $(DISTDIR)/$(NAME)-$*/usr/bin/$(NAME)$(EXTBIN)
 	chmod +x $(DISTDIR)/$(NAME)-$*/usr/bin/$(NAME)$(EXTBIN)
 	dpkg-deb --build $(DISTDIR)/$(NAME)-$* $(DISTDIR)/$(DEBFILE) > /dev/null 2>&1
-		
-#dist: dist-prep dist-x64 dist-x86 dist-arm64 dist-arm
 dist: dist-prep dist-$(TARGET_ARCH)
+
+lib-dist-prep:
+	echo [VER] $(VERSION3)
+lib-dist-%: lib-dist-prep
+	echo [DST] $(NAME)-$*
+	$(eval DISTDEBARCH:=$(shell \
+	  case $* in \
+	    (x64)   echo amd64;; \
+		(x86)   echo i386;; \
+		(arm64) echo arm64;; \
+		(arm)   echo armhf;; \
+	  esac))
+	$(eval DEBFILE=$(NAME)-$(VERSION3)-ubuntu-$(LSBREL)-$(DISTDEBARCH).deb)
+	echo [DEB] $(DEBFILE)
+	mkdir -p $(DISTDIR)/$(NAME)-$*/DEBIAN
+	mkdir -p $(DISTDIR)/$(NAME)-$*/usr/include
+	mkdir -p $(DISTDIR)/$(NAME)-$*/usr/lib
+	cp $(DISTDIR)/$(NAME).control $(DISTDIR)/$(NAME)-$*/DEBIAN/control
+	sed -i 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME)-$*/DEBIAN/control
+	sed -i 's/{ARCH}/${DEBARCH}/g' $(DISTDIR)/$(NAME)-$*/DEBIAN/control
+	cp $(INCDIR)/$(NAME)/*.h $(DISTDIR)/$(NAME)-$*/usr/include
+	cp ./lib/linux-$*/$(NAME)$(EXTDLL) $(DISTDIR)/$(NAME)-$*/usr/lib/$(NAME)$(EXTDLL)
+	dpkg-deb --build $(DISTDIR)/$(NAME)-$* $(DISTDIR)/$(DEBFILE) > /dev/null 2>&1
+lib-dist: lib-dist-prep lib-dist-$(TARGET_ARCH)
 endif
 
 ##############################################################################################################
