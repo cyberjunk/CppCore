@@ -64,6 +64,15 @@ jobs:
           ./build/make/bin/osx-${{ matrix.arch }}/*
           !./build/make/bin/osx-${{ matrix.arch }}/.gitignore
 
+    # Upload Libraries
+    - name: Upload Libraries
+      uses: actions/upload-artifact@v3
+      with:
+        name: Libraries (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
+        path: |
+          ./build/make/lib/osx-${{ matrix.arch }}/*
+          !./build/make/lib/osx-${{ matrix.arch }}/.gitignore
+
     # Upload lto.o
     - name: Upload lto.o
       uses: actions/upload-artifact@v3
@@ -88,12 +97,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    # Download X64 Build
-    - name: Download X64 Build
+    # Download X64 Binaries
+    - name: Download X64 Binaries
       uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-x64-default)
         path: ./build/make/bin/osx-x64/
+
+    # Download X64 Libraries
+    - name: Download X64 Libraries
+      uses: actions/download-artifact@v3
+      with:
+        name: Libraries (${{ matrix.os }}-x64-default)
+        path: ./build/make/lib/osx-x64/
 
     # Download X64 lto.o
     - name: Download X64 lto.o
@@ -102,12 +118,19 @@ jobs:
         name: lto.o (${{ matrix.os }}-x64-default)
         path: ./build/make/obj/osx-x64-release/
 
-    # Download ARM64 Build
-    - name: Download ARM64 Build
+    # Download ARM64 Binaries
+    - name: Download ARM64 Binaries
       uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-arm64-default)
         path: ./build/make/bin/osx-arm64/
+
+    # Download ARM64 Libraries
+    - name: Download ARM64 Libraries
+      uses: actions/download-artifact@v3
+      with:
+        name: Libraries (${{ matrix.os }}-arm64-default)
+        path: ./build/make/lib/osx-arm64/
 
     # Download ARM64 lto.o
     - name: Download ARM64 lto.o
