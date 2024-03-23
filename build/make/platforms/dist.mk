@@ -132,14 +132,11 @@ lib-dist-prep:
 	-$(call rmdir,$(DISTDIR)/$(NAME))
 	-$(call deletefiles,$(DISTDIR),$(NAME)*.zip)
 	echo [MKD] $(DISTDIR)/$(NAME)
-	-$(call mkdir,$(DISTDIR)/$(NAME))
-	-$(call mkdir,$(DISTDIR)/$(NAME)/x64)
-	-$(call mkdir,$(DISTDIR)/$(NAME)/x86)
-	-$(call mkdir,$(DISTDIR)/$(NAME)/arm64)
+	$(call mkdir,$(DISTDIR)/$(NAME))
 	$(call copyfiles,$(INCDIR)/$(NAME)/*.h,$(DISTDIR)/$(NAME)/)
 lib-dist-%: lib-dist-prep
 	echo [MKD] $(DISTDIR)/$(NAME)/$*
-	$(call rmdir,$(DISTDIR)/$(NAME)/$*)
+	-$(call rmdir,$(DISTDIR)/$(NAME)/$*)
 	$(call mkdir,$(DISTDIR)/$(NAME)/$*)
 	$(call copyfiles,./lib/win-$*/$(NAME)$(EXTDLL),$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL))
 	$(call copyfiles,./lib/win-$*/$(NAME)$(EXTLIB),$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTLIB))
