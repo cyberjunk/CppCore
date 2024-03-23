@@ -95,15 +95,24 @@ jobs:
       if: matrix.arch == 'x64' || matrix.arch == 'x86'
       run: make test
 
-    # Upload
-    - name: Upload
+    # Upload Binaries
+    - name: Upload Binaries
       uses: actions/upload-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
         path: |
           ./build/make/bin/win-${{ matrix.arch }}/*.exe
-          ./build/make/bin/win-${{ matrix.arch }}/*.dll
           ./build/make/bin/win-${{ matrix.arch }}/*.pdb
+
+    # Upload Libraries
+    - name: Upload Libraries
+      uses: actions/upload-artifact@v3
+      with:
+        name: Libraries (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
+        path: |
+          ./build/make/lib/win-${{ matrix.arch }}/*.dll
+          ./build/make/lib/win-${{ matrix.arch }}/*.lib
+          ./build/make/lib/win-${{ matrix.arch }}/*.pdb
 
 ###########################################################################         
 
@@ -121,26 +130,47 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    # Download X64 Build
-    - name: Download X64 Build
+    # Download X64 Binaries
+    - name: Download X64 Binaries
       uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-x64-default)
         path: ./build/make/bin/win-x64/
 
-    # Download X86 Build
-    - name: Download X86 Build
+    # Download X64 Libraries
+    - name: Download X64 Libraries
+      uses: actions/download-artifact@v3
+      with:
+        name: Libraries (${{ matrix.os }}-x64-default)
+        path: ./build/make/lib/win-x64/
+
+    # Download X86 Binaries
+    - name: Download X86 Binaries
       uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-x86-default)
         path: ./build/make/bin/win-x86/
 
-    # Download ARM64 Build
-    - name: Download ARM64 Build
+    # Download X86 Libraries
+    - name: Download X86 Libraries
+      uses: actions/download-artifact@v3
+      with:
+        name: Libraries (${{ matrix.os }}-x86-default)
+        path: ./build/make/lib/win-x86/
+
+    # Download ARM64 Binaries
+    - name: Download ARM64 Binaries
       uses: actions/download-artifact@v3
       with:
         name: Binaries (${{ matrix.os }}-arm64-default)
         path: ./build/make/bin/win-arm64/
+
+    # Download ARM64 Libraries
+    - name: Download ARM64 Libraries
+      uses: actions/download-artifact@v3
+      with:
+        name: Libraries (${{ matrix.os }}-arm64-default)
+        path: ./build/make/lib/win-arm64/
 
     # Developer Console (X64)
     - name: MSVC Developer Console (X64)
@@ -175,6 +205,7 @@ jobs:
         path: |
           ./dist/win-10/*.appxbundle
           ./dist/win-10/*.appxupload
+          ./dist/win-10/*.zip
 
     # Upload to Github Release
     - name: Upload to Github Release
@@ -182,4 +213,6 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         token: ${{ secrets.PAT_GITHUB_ACTIONS }}
-        files: ./dist/win-10/*.appxbundle
+        files: |
+          ./dist/win-10/*.appxbundle
+          ./dist/win-10/*.zip
