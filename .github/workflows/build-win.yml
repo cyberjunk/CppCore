@@ -120,6 +120,8 @@ jobs:
     needs: build
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
+    env:
+      JOBS: 4
     strategy:
       fail-fast: false
       matrix:
