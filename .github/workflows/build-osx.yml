@@ -167,7 +167,7 @@ jobs:
         name: Packages (${{ matrix.os }})
         path: |
           ./dist/osx-10.15/*-universal.pkg
-          ./dist/osx-10.15/*-universal.zip
+          ./dist/osx-10.15/*-universal.tar.gz
 
     # Upload to Github Release
     - name: Upload to Github Release
@@ -177,7 +177,7 @@ jobs:
         token: ${{ secrets.PAT_GITHUB_ACTIONS }}
         files: |
           ./dist/osx-10.15/*-universal.pkg
-          ./dist/osx-10.15/*-universal.zip
+          ./dist/osx-10.15/*-universal.tar.gz
 
 ###########################################################################
  
@@ -266,4 +266,4 @@ jobs:
         name: Packages Store (${{ matrix.os }})
         path: |
           ./dist/osx-10.15/*-universal.pkg
-          ./dist/osx-10.15/*-universal.zip
+          ./dist/osx-10.15/*-universal.tar.gz
