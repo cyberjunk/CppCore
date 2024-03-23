@@ -137,7 +137,7 @@ lib-dist-prep:
 	-$(call mkdir,$(DISTDIR)/$(NAME)/x86)
 	-$(call mkdir,$(DISTDIR)/$(NAME)/arm64)
 	$(call copyfiles,$(INCDIR)/$(NAME)/*.h,$(DISTDIR)/$(NAME)/)
-lib-dist-%:
+lib-dist-%: lib-dist-prep
 	echo [MKD] $(DISTDIR)/$(NAME)/$*
 	$(call rmdir,$(DISTDIR)/$(NAME)/$*)
 	$(call mkdir,$(DISTDIR)/$(NAME)/$*)
