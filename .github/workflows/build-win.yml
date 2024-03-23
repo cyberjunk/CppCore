@@ -195,9 +195,7 @@ jobs:
         PUBLISHERCN: Clint Banzhaf
         PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
       run: |
-        make CppCore.Interface.C-dist -j${{ env.JOBS }}
-
-#        make dist -j${{ env.JOBS }}
+        make dist -j${{ env.JOBS }}
 
     # Upload
     - name: Upload
