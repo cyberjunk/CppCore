@@ -1448,18 +1448,22 @@ namespace CppCore { namespace Test { namespace Math
 
       INLINE static bool gcd()
       {
+         uint128_t r;
+
+         CppCore::gcd(uint128_t(0),  uint128_t(0),  r); if (r != 0U) return false;
+         CppCore::gcd(uint128_t(1),  uint128_t(0),  r); if (r != 1U) return false;
+         CppCore::gcd(uint128_t(7),  uint128_t(5),  r); if (r != 1U) return false;
+         CppCore::gcd(uint128_t(20), uint128_t(16), r); if (r != 4U) return false;
+         
+         CppCore::gcd(uint128_t(CppCore::Primes::MERSENNE128), uint128_t(CppCore::Primes::LARGE128), r);
+         if (r != 1U) return false;
+
          const uint128_t l1 = uint128_t("2687293461875176346985679234");
          const uint128_t l2 = l1 * 3;
+         CppCore::gcd(l1, l2, r);
+         if (r != l1) return false;
 
-         bool t128 =
-            CppCore::gcd(uint128_t(0), uint128_t(0)) == 0U &&
-            CppCore::gcd(uint128_t(1), uint128_t(0)) == 1U &&
-            CppCore::gcd(uint128_t(7), uint128_t(5)) == 1U &&
-            CppCore::gcd(uint128_t(20), uint128_t(16)) == 4U &&
-            CppCore::gcd(uint128_t(CppCore::Primes::MERSENNE128), uint128_t(CppCore::Primes::LARGE128)) == 1U &&
-            CppCore::gcd(l1, l2) == l1;
-
-         return t128;
+         return true;
       }
    };
 }}}
