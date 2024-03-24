@@ -3886,20 +3886,39 @@ namespace CppCore
    /// GCD for any size
    /// </summary>
    template<typename UINT>
-   INLINE static UINT gcd(const UINT& x, const UINT& y)
+   INLINE static void gcd(const UINT& x, const UINT& y, UINT& r)
    {
-      UINT a, b, r;
+      UINT b, t;
       UINT un[2];
+
       if (CppCore::testzero(x))
-         return y;
-      CppCore::clone<UINT>(a, x);
-      CppCore::clone<UINT>(b, y);
-      while (!CppCore::testzero(b))
+         CppCore::clone(r, y);
+
+      else
       {
-         CppCore::umod<UINT, UINT>(r, a, b, un);
-         CppCore::clone<UINT>(a, b);
-         CppCore::clone<UINT>(b, r);
+         CppCore::clone(r, x);
+         CppCore::clone(b, y);
+         while (!CppCore::testzero(b))
+         {
+            CppCore::umod<UINT, UINT>(t, r, b, un);
+            CppCore::clone(r, b);
+            CppCore::clone(b, t);
+         }
       }
-      return a;
+   }
+
+   /// <summary>
+   /// Specialization for uint32_t
+   /// </summary>
+   template<> INLINE static void gcd(const uint32_t& x, const uint32_t& y, uint32_t& r)
+   {
+      r = CppCore::gcd32(x, y);
+   }
+   /// <summary>
+   /// Specialization for uint64_t
+   /// </summary>
+   template<> INLINE static void gcd(const uint64_t& x, const uint64_t& y, uint64_t& r)
+   {
+      r = CppCore::gcd64(x, y);
    }
 }
