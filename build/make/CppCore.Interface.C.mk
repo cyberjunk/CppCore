@@ -70,26 +70,34 @@ endif
 endif
 
 ifeq ($(TARGET_OS),osx)
-DEFINES   := $(DEFINES)
-INCLUDES  := $(INCLUDES)
-CXXFLAGS  := $(CXXFLAGS)
-LINKFLAGS := $(LINKFLAGS) \
-             -dynamiclib \
-             -install_name $(NAME)$(EXTDLL) \
-             -Wl,-object_path_lto,$(OBJDIR)/lto.o
-LINKLIBS  := $(LINKLIBS)
-RESO      := $(RESO)
+VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
+VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
+VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
+VERSION2     = $(VERSIONMAJOR).$(VERSIONMINOR)
+VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
+VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
+DEFINES     := $(DEFINES)
+INCLUDES    := $(INCLUDES)
+CXXFLAGS    := $(CXXFLAGS)
+LINKFLAGS   := $(LINKFLAGS) \
+               -dynamiclib \
+               -current_version $(VERSION3) \
+               -compatibility_version $(VERSION2) \
+               -install_name $(NAME)$(EXTDLL) \
+               -Wl,-object_path_lto,$(OBJDIR)/lto.o
+LINKLIBS    := $(LINKLIBS)
+RESO        := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
-DEFINES   := $(DEFINES)
+DEFINES     := $(DEFINES)
 endif
 ifeq ($(TARGET_ARCH),x64)
-DEFINES   := $(DEFINES)
+DEFINES     := $(DEFINES)
 endif
 ifeq ($(TARGET_ARCH),arm)
-DEFINES   := $(DEFINES)
+DEFINES     := $(DEFINES)
 endif
 ifeq ($(TARGET_ARCH),arm64)
-DEFINES   := $(DEFINES)
+DEFINES     := $(DEFINES)
 endif
 endif
 
