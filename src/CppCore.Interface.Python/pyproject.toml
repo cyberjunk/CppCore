@@ -3,49 +3,46 @@
 requires = ["setuptools", "packaging"]
 build-backend = "setuptools.build_meta"
 
-[project]
-name = "cppcore"
-version = "0.1.0"
-description = "A sample Python project"
+#[project]
+#name = "cppcore"
+#version = "0.1.0"
+#description = "A sample Python project"
 #readme = "README.md"
-requires-python = ">=3.8"
+#requires-python = ">=3.8"
 #license = {file = "LICENSE.txt"}
-keywords = ["primes", "aes", "crypto", "encoding", "hash", "hmac", "pbkdf2", "dh"]
-authors = [
-  {name = "Clint Banzhaf" }
-]
-maintainers = [
-  {name = "Clint Banzhaf" }
-]
-classifiers = [
-  "Development Status :: 5 - Production/Stable",
+#keywords = ["primes", "aes", "crypto", "encoding", "hash", "hmac", "pbkdf2", "dh"]
+#authors = [
+#  {name = "Clint Banzhaf" }
+#]
+#maintainers = [
+#  {name = "Clint Banzhaf" }
+#]
+#classifiers = [
+#  "Development Status :: 5 - Production/Stable",
+#  "Intended Audience :: Developers",
+#  "Topic :: Software Development :: Build Tools",
+#  "License :: OSI Approved :: MIT License",
+#  "Programming Language :: Python :: 3",
+#  "Programming Language :: Python :: 3.8",
+#  "Programming Language :: Python :: 3.9",
+#  "Programming Language :: Python :: 3.10",
+#  "Programming Language :: Python :: 3.11",
+#  "Programming Language :: Python :: 3.12",
+#  "Programming Language :: Python :: 3 :: Only",
+#]
+#dependencies = [
+#]
 
-  "Intended Audience :: Developers",
-  "Topic :: Software Development :: Build Tools",
-
-  "License :: OSI Approved :: MIT License",
-
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3 :: Only",
-]
-dependencies = [
-]
-
-[project.optional-dependencies]
+#[project.optional-dependencies]
 #dev = ["check-manifest"]
-test = ["pytest", "crc32c", "pbkdf2-reboot"]
+#test = ["pytest", "crc32c", "pbkdf2-reboot"]
 
-[project.urls]
-"Homepage" = "https://github.com/cyberjunk/cppcore"
-"Bug Reports" = "https://github.com/cyberjunk/cppcore/issues"
-"Source" = "https://github.com/cyberjunk/cppcore/"
+#[project.urls]
+#"Homepage" = "https://github.com/cyberjunk/cppcore"
+#"Bug Reports" = "https://github.com/cyberjunk/cppcore/issues"
+#"Source" = "https://github.com/cyberjunk/cppcore/"
 
-[tool.setuptools]
+#[tool.setuptools]
 #platforms = ["windows"]
 #package-data = {"cppcore" = ["*.dll"]}
 
