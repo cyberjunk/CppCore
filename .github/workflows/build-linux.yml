@@ -120,6 +120,7 @@ jobs:
       run: |
         cd src/CppCore.Interface.Python
         python --version
+        python -m pip install build
         python -m build --wheel
 
     # Upload   
