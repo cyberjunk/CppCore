@@ -128,6 +128,8 @@ jobs:
         python --version
         python -m pip install build
         python -m build --wheel
+        python -m pip install pytest crc32c pbkdf2-reboot
+        pytest
 
     # Upload   
     - name: Upload
