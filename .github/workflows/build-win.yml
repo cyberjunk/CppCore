@@ -207,11 +207,18 @@ jobs:
     # Make (dist-python)
     - name: Make (dist-python)
       run: |
+        cp dist/win-10/CppCore.Interface.C-x64/CppCore.Interface.C.dll src/CppCore.Interface.Python/cppcore/lib/libcppcore.dll
         cd src/CppCore.Interface.Python
         python --version
         python -m pip install build
         python -m build --wheel
-
+    # Test
+    - name: Test Python
+      run: |
+        cd src/CppCore.Interface.Python
+        python -m pip install pytest crc32c pbkdf2-reboot
+        pytest
+    
     # Upload
     - name: Upload
       uses: actions/upload-artifact@v3
