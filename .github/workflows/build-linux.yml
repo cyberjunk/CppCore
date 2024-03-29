@@ -123,7 +123,7 @@ jobs:
     # Make (dist-python)
     - name: Make (dist-python)
       run: |
-        cp dist/${{ matrix.os }}/CppCore.Interface.C-${{ matrix.arch }}/usr/lib/CppCore.Interface.C.so src/CppCore.Interface.Python/cppcore/lib/libcppcore.so
+        cp dist/${{ matrix.os }}/CppCore.Interface.C-${{ env.TARGET_ARCH }}/usr/lib/CppCore.Interface.C.so src/CppCore.Interface.Python/cppcore/lib/libcppcore.so
         cd src/CppCore.Interface.Python
         python --version
         python -m pip install build
