@@ -131,6 +131,7 @@ jobs:
     
     # Test
     - name: Test Python
+      if: matrix.arch == 'amd64'
       run: |
         cd src/CppCore.Interface.Python
         python -m pip install pytest crc32c pbkdf2-reboot

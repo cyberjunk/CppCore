@@ -35,7 +35,8 @@ setup(
         "hash", "hmac", "pbkdf2", "dh"
     ],
     include_package_data=True,
-    package_dir={'': 'cppcore'},
+    packages=['cppcore'],
+    package_dir={'cppcore': 'cppcore'},
     package_data={'': ['libcppcore.*']},
     #options={
     #    "bdist_wheel": {
