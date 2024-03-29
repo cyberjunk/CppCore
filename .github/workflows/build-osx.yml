@@ -160,6 +160,14 @@ jobs:
         APPLE_DIST_STORE: false
       run: make dist
 
+    # Make (dist-python)
+    - name: Make (dist-python)
+      run: |
+        cd src/CppCore.Interface.Python
+        python --version
+        python -m pip install build
+        python -m build --wheel
+
     # Upload
     - name: Upload
       uses: actions/upload-artifact@v3
