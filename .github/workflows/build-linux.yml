@@ -129,7 +129,7 @@ jobs:
         python -m pip install build
         python -m build --wheel
     
-      # Test
+    # Test
     - name: Test Python
       run: |
         cd src/CppCore.Interface.Python

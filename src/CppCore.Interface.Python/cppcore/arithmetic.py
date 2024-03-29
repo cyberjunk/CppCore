@@ -1,4 +1,4 @@
-from cppcore.lib.libcppcore import lib
+from cppcore import lib
 import ctypes
 import sys
 

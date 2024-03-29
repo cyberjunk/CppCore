@@ -1,4 +1,4 @@
-from cppcore.lib.libcppcore import lib
+from cppcore import lib
 from cppcore.primes import DEFAULT_CERTAINTY
 import ctypes
 import sys
