@@ -160,6 +160,11 @@ jobs:
         APPLE_DIST_STORE: false
       run: make dist
 
+    - name: Install Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' 
+
     # Make (dist-python)
     - name: Make (dist-python)
       run: |

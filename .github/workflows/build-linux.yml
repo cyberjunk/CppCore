@@ -115,6 +115,11 @@ jobs:
     - name: Make (dist)
       run: make dist -j${{ env.JOBS }}
 
+    - name: Install Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12' 
+
     # Make (dist-python)
     - name: Make (dist-python)
       run: |
