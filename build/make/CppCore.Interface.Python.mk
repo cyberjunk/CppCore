@@ -25,11 +25,11 @@ build:
 	$(eval CPPCORE_VERSION=$(VERSION3))
 ifeq ($(TARGET_OS),win)
 	$(eval VSCMD_ARG_TGT_ARCH=$(TARGET_ARCH))
-	$(call copyfiles,$(DISTDIR)/CppCore.Interface.C/$(TARGET_ARCH)/CppCore.Interface.C$(EXTDLL),$(SRCDIR)/libcppcore$(EXTDLL))
+	$(call copyfiles,$(DISTDIR)/CppCore.Interface.C/$(TARGET_ARCH)/CppCore.Interface.C$(EXTDLL),$(SRCDIR)/cppcore/libcppcore$(EXTDLL))
 endif
 ifeq ($(TARGET_OS),osx)
 	$(eval _PYTHON_HOST_PLATFORM=macosx-10.15-universal2)
-	cp $(DISTDIR)/CppCore.Interface.C/CppCore.Interface.C.dylib $(SRCDIR)/cppcore/libcppcore.dylib
+	cp $(DISTDIR)/CppCore.Interface.C/CppCore.Interface.C$(EXTDLL) $(SRCDIR)/cppcore/libcppcore$(EXTDLL)
 endif
 ifeq ($(TARGET_OS),linux)
 	$(eval _PYTHON_HOST_PLATFORM:=$(shell \
@@ -39,7 +39,7 @@ ifeq ($(TARGET_OS),linux)
 		(arm64) echo linux_aarch64;; \
 		(arm)   echo linux_armv7hl;; \
 	  esac))
-	cp $(DISTDIR)/CppCore.Interface.C-$(TARGET_ARCH)/usr/lib/CppCore.Interface.C.so $(SRCDIR)/cppcore/libcppcore.so
+	cp $(DISTDIR)/CppCore.Interface.C-$(TARGET_ARCH)/usr/lib/CppCore.Interface.C$(EXTDLL) $(SRCDIR)/cppcore/libcppcore$(EXTDLL)
 endif
 #	echo ${VSCMD_ARG_TGT_ARCH}
 #	echo ${CPPCORE_VERSION}
