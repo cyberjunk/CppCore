@@ -18,10 +18,14 @@ LINKLIBS  := $(LINKLIBS)
 OBJS       = Crypto.o
 RESO       =
 
+################################################################################################
+
 VERSIONFILE       = $(INCDIR)/CppCore/Version.h
 VERSIONMACROMAJOR = CPPCORE_VERSION_MAJOR
 VERSIONMACROMINOR = CPPCORE_VERSION_MINOR
 VERSIONMACROPATCH = CPPCORE_VERSION_PATCH
+
+include platforms/extract-version.mk
 
 ################################################################################################
 # CPU Specific
@@ -70,12 +74,6 @@ endif
 endif
 
 ifeq ($(TARGET_OS),osx)
-VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
-VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
-VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
-VERSION2     = $(VERSIONMAJOR).$(VERSIONMINOR)
-VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
-VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 DEFINES     := $(DEFINES)
 INCLUDES    := $(INCLUDES)
 CXXFLAGS    := $(CXXFLAGS)

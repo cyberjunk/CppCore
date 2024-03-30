@@ -1,5 +1,6 @@
 *.pkg
 *.tar.gz
+*.whl
 **/Contents/_CodeSignature/
 **/Contents/MacOS/
 **/Contents/Resources/
