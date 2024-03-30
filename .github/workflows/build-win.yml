@@ -207,11 +207,9 @@ jobs:
     # Make (dist-python)
     - name: Make (dist-python)
       run: |
-        cp dist/win-10/CppCore.Interface.C/x64/CppCore.Interface.C.dll src/CppCore.Interface.Python/cppcore/libcppcore.dll
-        cd src/CppCore.Interface.Python
         python --version
         python -m pip install build
-        python -m build --wheel
+        make CppCore.Interface.Python
     # Test
     - name: Test Python
       run: |

@@ -39,7 +39,7 @@ ifeq ($(TARGET_OS),linux)
 		(arm64) echo linux_aarch64;; \
 		(arm)   echo linux_armv7hl;; \
 	  esac))
-	cp $(DISTDIR)/CppCore.Interface.C/CppCore.Interface.C.so $(SRCDIR)/cppcore/libcppcore.so
+	cp $(DISTDIR)/CppCore.Interface.C-$(TARGET_ARCH)/usr/lib/CppCore.Interface.C.so $(SRCDIR)/cppcore/libcppcore.so
 endif
 #	echo ${VSCMD_ARG_TGT_ARCH}
 #	echo ${CPPCORE_VERSION}

@@ -168,11 +168,9 @@ jobs:
     # Make (dist-python)
     - name: Make (dist-python)
       run: |
-        cp dist/osx-10.15/CppCore.Interface.C/CppCore.Interface.C.dylib src/CppCore.Interface.Python/cppcore/libcppcore.dylib
-        cd src/CppCore.Interface.Python
         python --version
         python -m pip install build
-        python -m build --wheel
+        make CppCore.Interface.Python
     # Test
     - name: Test Python
       run: |

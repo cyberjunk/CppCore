@@ -65,6 +65,10 @@ CppCore.Interface.C-dist:
 	@echo [DST] CppCore.Interface.C
 	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk lib-dist
 
+CppCore.Interface.Python:
+	@echo [BLD] CppCore.Interface.Python
+	+@make -s -C ./build/make/ -f CppCore.Interface.Python.mk
+
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk
