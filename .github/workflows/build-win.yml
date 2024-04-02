@@ -29,7 +29,7 @@ jobs:
 
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Developer Console (X64)
     - name: MSVC Developer Console (X64)
@@ -85,8 +85,6 @@ jobs:
         llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Test.pdb        
         echo CppCore.Debug
         llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.pdb
-        echo CppCore.Debug
-        llvm-pdbutil dump --summary ./build/make/bin/win-${{ env.TARGET_ARCH }}/CppCore.Debug.pdb
         echo CppCore.Interface.C
         llvm-pdbutil dump --summary ./build/make/lib/win-${{ env.TARGET_ARCH }}/CppCore.Interface.C.pdb
 
@@ -97,7 +95,7 @@ jobs:
 
     # Upload Binaries
     - name: Upload Binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Binaries (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
         path: |
@@ -106,7 +104,7 @@ jobs:
 
     # Upload Libraries
     - name: Upload Libraries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Libraries (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
         path: |
@@ -130,46 +128,46 @@ jobs:
     
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Download X64 Binaries
     - name: Download X64 Binaries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Binaries (${{ matrix.os }}-x64-default)
         path: ./build/make/bin/win-x64/
 
     # Download X64 Libraries
     - name: Download X64 Libraries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Libraries (${{ matrix.os }}-x64-default)
         path: ./build/make/lib/win-x64/
 
     # Download X86 Binaries
     - name: Download X86 Binaries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Binaries (${{ matrix.os }}-x86-default)
         path: ./build/make/bin/win-x86/
 
     # Download X86 Libraries
     - name: Download X86 Libraries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Libraries (${{ matrix.os }}-x86-default)
         path: ./build/make/lib/win-x86/
 
     # Download ARM64 Binaries
     - name: Download ARM64 Binaries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Binaries (${{ matrix.os }}-arm64-default)
         path: ./build/make/bin/win-arm64/
 
     # Download ARM64 Libraries
     - name: Download ARM64 Libraries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Libraries (${{ matrix.os }}-arm64-default)
         path: ./build/make/lib/win-arm64/
@@ -199,6 +197,7 @@ jobs:
       run: |
         make dist -j${{ env.JOBS }}
 
+    # Install Python
     - name: Install Python
       uses: actions/setup-python@v5
       with:
@@ -210,7 +209,8 @@ jobs:
         python --version
         python -m pip install build
         make CppCore.Interface.Python
-    # Test
+
+    # Test Python
     - name: Test Python
       run: |
         cd src/CppCore.Interface.Python
@@ -219,13 +219,14 @@ jobs:
     
     # Upload
     - name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Packages (${{ matrix.os }})
         path: |
           ./dist/win-10/*.appxbundle
           ./dist/win-10/*.appxupload
           ./dist/win-10/*.zip
+          ./dist/win-10/*.whl
 
     # Upload to Github Release
     - name: Upload to Github Release
