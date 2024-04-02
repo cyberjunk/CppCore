@@ -107,8 +107,8 @@ jobs:
         echo CppCore.Interface.C
         ldd ./build/make/lib/linux-${{ env.TARGET_ARCH }}/CppCore.Interface.C.so
 
-    # Test
-    - name: Test
+    # Test Native
+    - name: Test Native
       run: make test
 
     # Make (dist)
@@ -128,7 +128,7 @@ jobs:
         python -m pip install build
         make CppCore.Interface.Python
     
-    # Test
+    # Test Python
     - name: Test Python
       if: matrix.arch == 'amd64'
       run: |
@@ -136,19 +136,14 @@ jobs:
         python -m pip install pytest crc32c pbkdf2-reboot
         pytest
     
-    # Upload Native Packages
-    - name: Upload Native Packages
+    # Upload Packages
+    - name: Upload Packages
       uses: actions/upload-artifact@v4
       with:
-        name: Packages Native (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
-        path: ./dist/${{ matrix.os }}/*.deb
-
-    # Upload Python Packages
-    - name: Upload Python Packages
-      uses: actions/upload-artifact@v4
-      with:
-        name: Packages Python (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
-        path: ./dist/${{ matrix.os }}/*.whl
+        name: Packages (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
+        path: |
+          ./dist/${{ matrix.os }}/*.deb
+          ./dist/${{ matrix.os }}/*.whl
 
     # Upload to Github Release
     - name: Upload to Github Release
