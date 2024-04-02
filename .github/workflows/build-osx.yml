@@ -28,7 +28,7 @@ jobs:
 
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Clang Version
     - name: Clang Version
@@ -57,7 +57,7 @@ jobs:
 
     # Upload Binaries
     - name: Upload Binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Binaries (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
         path: |
@@ -66,7 +66,7 @@ jobs:
 
     # Upload Libraries
     - name: Upload Libraries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Libraries (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
         path: |
@@ -75,7 +75,7 @@ jobs:
 
     # Upload lto.o
     - name: Upload lto.o
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         retention-days: 1
         name: lto.o (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
@@ -95,46 +95,46 @@ jobs:
 
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Download X64 Binaries
     - name: Download X64 Binaries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Binaries (${{ matrix.os }}-x64-default)
         path: ./build/make/bin/osx-x64/
 
     # Download X64 Libraries
     - name: Download X64 Libraries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Libraries (${{ matrix.os }}-x64-default)
         path: ./build/make/lib/osx-x64/
 
     # Download X64 lto.o
     - name: Download X64 lto.o
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: lto.o (${{ matrix.os }}-x64-default)
         path: ./build/make/obj/osx-x64-release/
 
     # Download ARM64 Binaries
     - name: Download ARM64 Binaries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Binaries (${{ matrix.os }}-arm64-default)
         path: ./build/make/bin/osx-arm64/
 
     # Download ARM64 Libraries
     - name: Download ARM64 Libraries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: Libraries (${{ matrix.os }}-arm64-default)
         path: ./build/make/lib/osx-arm64/
 
     # Download ARM64 lto.o
     - name: Download ARM64 lto.o
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: lto.o (${{ matrix.os }}-arm64-default)
         path: ./build/make/obj/osx-arm64-release/
@@ -160,6 +160,7 @@ jobs:
         APPLE_DIST_STORE: false
       run: make dist
 
+    # Install Python
     - name: Install Python
       uses: actions/setup-python@v5
       with:
@@ -171,6 +172,7 @@ jobs:
         python --version
         python -m pip install build
         make CppCore.Interface.Python
+
     # Test
     - name: Test Python
       run: |
@@ -180,12 +182,13 @@ jobs:
     
     # Upload
     - name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Packages (${{ matrix.os }})
         path: |
           ./dist/osx-10.15/*-universal.pkg
           ./dist/osx-10.15/*-universal.tar.gz
+          ./dist/osx-10.15/*.whl
 
     # Upload to Github Release
     - name: Upload to Github Release
@@ -211,7 +214,7 @@ jobs:
 
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Download X64 Binaries
     - name: Download X64 Binaries
@@ -279,7 +282,7 @@ jobs:
 
     # Upload
     - name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Packages Store (${{ matrix.os }})
         path: |
