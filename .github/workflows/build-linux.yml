@@ -28,7 +28,7 @@ jobs:
 
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Purge PPA
     - name: Purge PPA
@@ -115,6 +115,7 @@ jobs:
     - name: Make (dist)
       run: make dist -j${{ env.JOBS }}
 
+    # Install Python
     - name: Install Python
       uses: actions/setup-python@v5
       with:
@@ -135,12 +136,19 @@ jobs:
         python -m pip install pytest crc32c pbkdf2-reboot
         pytest
     
-    # Upload   
-    - name: Upload
-      uses: actions/upload-artifact@v3
+    # Upload Native Packages
+    - name: Upload Native Packages
+      uses: actions/upload-artifact@v4
       with:
-        name: Packages (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
+        name: Packages Native (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
         path: ./dist/${{ matrix.os }}/*.deb
+
+    # Upload Python Packages
+    - name: Upload Python Packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: Packages Python (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
+        path: ./dist/${{ matrix.os }}/*.whl
 
     # Upload to Github Release
     - name: Upload to Github Release
