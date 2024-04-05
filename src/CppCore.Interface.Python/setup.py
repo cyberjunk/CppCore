@@ -19,7 +19,7 @@ def get_platname():
     return sysconfig.get_platform()
 
 setup(
-    name="CppCore",
+    name="cppcore",
     version=os.environ.get("CPPCORE_VERSION", "0.0.0"),
     description="CppCore for Python",
     author="Clint Banzhaf",
