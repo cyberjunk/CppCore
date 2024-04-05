@@ -1,28 +1,8 @@
-from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext
+from setuptools import setup
 import sysconfig
 import os
 
-class my_build_ext(build_ext):
-    def build_extensions(self):
-        pass
-
-#WIN
-#set VSCMD_ARG_TGT_ARCH=x64
-#set VSCMD_ARG_TGT_ARCH=x86
-#set VSCMD_ARG_TGT_ARCH=arm64
-
-#MAC    
-#export _PYTHON_HOST_PLATFORM="macosx-10.15-universal2"
-
-#LINUX
-#export _PYTHON_HOST_PLATFORM=linux_x86_64
-#export _PYTHON_HOST_PLATFORM=linux_i686
-#export _PYTHON_HOST_PLATFORM=linux_aarch64
-#export _PYTHON_HOST_PLATFORM=linux_armv7hl
-
 def get_platname():
-    print(sysconfig.get_platform())
     TARGET_OS   = os.environ.get("TARGET_OS",   None)
     TARGET_ARCH = os.environ.get("TARGET_ARCH", None)
     if TARGET_OS == "win":
@@ -30,8 +10,7 @@ def get_platname():
         elif TARGET_ARCH == "x64":   return "win-amd64"
         elif TARGET_ARCH == "arm64": return "win-arm64"
     elif TARGET_OS == 'osx':
-        OSXMINVERSION = os.environ.get("OSXMINVERSION", "")
-        return "macosx-" + OSXMINVERSION + "-universal2"  
+        return "macosx-10.15-universal2"
     elif TARGET_OS == 'linux':
         if   TARGET_ARCH == "x86":   return "linux-i686"
         elif TARGET_ARCH == "x64":   return "linux-x86_64"
@@ -46,8 +25,8 @@ setup(
     author="Clint Banzhaf",
     url="https://github.com/cyberjunk/CppCore",
     keywords=[
-        "primes", "aes", "crypto", "encoding", 
-        "hash", "hmac", "pbkdf2", "dh"
+        "aes", "encoding", "bigint", "hash", "sha", "md5", 
+        "hmac", "pbkdf2", "dh", "primes"
     ],
     include_package_data=True,
     packages=['cppcore', 'cppcore.util'],
@@ -58,11 +37,14 @@ setup(
             "plat_name": get_platname(),
         },
     },
-    #ext_modules = [Extension("", [])],
-    #cmdclass = {'build_ext': my_build_ext},
     classifiers=[
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: Microsoft :: Windows",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: POSIX :: Linux",
+        "Topic :: Scientific/Engineering :: Mathematics",
+        "Topic :: Security :: Cryptography"
     ]
 )
