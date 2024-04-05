@@ -26,7 +26,7 @@ LINKLIBS   =
 
 # Apple M1 Flags (first arm64)
 # TODO: Optimized and add M2
-CPUFLAGS_M1 = -march=armv8-a+aes+crc+sha2+sha3
+CPUFLAGS_M1 = -march=armv8.4-a+aes+crc+sha2+sha3
 
 # CPU Flags
 ifeq ($(TARGET_CPUREV),legacy)
