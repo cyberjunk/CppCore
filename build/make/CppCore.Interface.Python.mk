@@ -23,6 +23,7 @@ include platforms/extract-version.mk
 
 build:
 	$(eval CPPCORE_VERSION=$(VERSION3))
+	echo [VER] $(CPPCORE_VERSION)
 ifeq ($(TARGET_OS),win)
 	$(eval VSCMD_ARG_TGT_ARCH=$(TARGET_ARCH))
 	$(call copyfiles,$(DISTDIR)/CppCore.Interface.C/$(TARGET_ARCH)/CppCore.Interface.C$(EXTDLL),$(SRCDIR)/cppcore/libcppcore$(EXTDLL))
@@ -41,6 +42,4 @@ ifeq ($(TARGET_OS),linux)
 	  esac))
 	cp $(DISTDIR)/CppCore.Interface.C-$(TARGET_ARCH)/usr/lib/CppCore.Interface.C$(EXTDLL) $(SRCDIR)/cppcore/libcppcore$(EXTDLL)
 endif
-#	echo ${VSCMD_ARG_TGT_ARCH}
-#	echo ${CPPCORE_VERSION}
 	python -m build --wheel --outdir $(DISTDIR) $(SRCDIR)
