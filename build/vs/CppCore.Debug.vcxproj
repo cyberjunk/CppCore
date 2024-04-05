@@ -121,12 +121,10 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ConformanceMode />
-      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>CppCore.Interface.C_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\x86</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
@@ -148,12 +146,10 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <OmitFramePointers>false</OmitFramePointers>
       <ConformanceMode />
-      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>CppCore.Interface.C_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\x64</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
     </Link>
@@ -179,14 +175,12 @@
       <OmitFramePointers>false</OmitFramePointers>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ConformanceMode />
-      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>CppCore.Interface.C.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\x86</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
       <SetChecksum>true</SetChecksum>
@@ -213,14 +207,12 @@
       <OmitFramePointers>false</OmitFramePointers>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ConformanceMode />
-      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>CppCore.Interface.C.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\x64</AdditionalLibraryDirectories>
       <MinimumRequiredVersion>10.00</MinimumRequiredVersion>
       <SetChecksum>true</SetChecksum>
