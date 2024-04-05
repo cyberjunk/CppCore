@@ -83,16 +83,16 @@ all: \
 	CppCore.Example.Server \
 	CppCore.Example.Client \
 	CppCore.Example.UI \
-	CppCore.Test \
 	CppCore.Interface.C \
+	CppCore.Test \
 	CppCore.Debug
 
 clean: \
 	CppCore.Example.Server-clean \
 	CppCore.Example.Client-clean \
 	CppCore.Example.UI-clean \
-	CppCore.Test-clean \
 	CppCore.Interface.C-clean \
+	CppCore.Test-clean \
 	CppCore.Debug-clean
 
 test: \

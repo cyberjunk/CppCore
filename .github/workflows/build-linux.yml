@@ -87,7 +87,6 @@ jobs:
         echo TARGET_CPUREV: $TARGET_CPUREV
         clang++ --target=$TARGET -v
         make -v
-        make CppCore.Interface.C -j${{ env.JOBS }}
         make -j${{ env.JOBS }}
 
     # Binary Info
