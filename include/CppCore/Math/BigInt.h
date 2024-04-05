@@ -2323,17 +2323,13 @@ namespace CppCore
       /// </summary>
       constexpr INLINE static TC parseDecimal(const char* input)
       {
-         TC r;
-         BaseX::parse(input, r, "0123456789");
-         return r;
-
-         /*TC r(0ULL);
+         TC r(0ULL);
          while(const char c = *input++)
          {
             r *= 10U;
             r += (c - '0');
          }
-         return r;*/
+         return r;
       }
 
       /// <summary>
