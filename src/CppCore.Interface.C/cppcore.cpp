@@ -1,6 +1,6 @@
 
 // public c interface
-#include <CppCore.Interface.C/Crypto.h>
+#include <CppCore.Interface.C/cppcore.h>
 
 // private c++ headers
 #include <CppCore/Root.h>

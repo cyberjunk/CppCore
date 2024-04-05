@@ -24,15 +24,19 @@ LINKFLAGS  = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk macosx --
 LINKPATH   =
 LINKLIBS   = 
 
+# Apple M1 Flags (first arm64)
+# TODO: Optimized and add M2
+CPUFLAGS_M1 = -march=armv8-a+aes+crc+sha2+sha3
+
 # CPU Flags
 ifeq ($(TARGET_CPUREV),legacy)
-CPUFLAGS   = -march=armv8-a -mtune=generic
+CPUFLAGS   = $(CPUFLAGS_M1) -mtune=generic
 endif
 ifeq ($(TARGET_CPUREV),default)
-CPUFLAGS   = -march=armv8-a -mtune=generic
+CPUFLAGS   = $(CPUFLAGS_M1) -mtune=generic
 endif
 ifeq ($(TARGET_CPUREV),modern)
-CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
+CPUFLAGS   = $(CPUFLAGS_M1) -mtune=generic
 endif
 
 # Debug vs. Release

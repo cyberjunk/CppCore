@@ -15,7 +15,7 @@ CXXFLAGS  := $(CXXFLAGS) \
 LINKFLAGS := $(LINKFLAGS) -shared
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
-OBJS       = Crypto.o
+OBJS       = cppcore.o
 RESO       =
 
 ################################################################################################
@@ -58,7 +58,7 @@ LINKFLAGS := $(LINKFLAGS) \
              -Xlinker /PDBALTPATH:$(NAME)$(SUFFIX)$(EXTPDB) \
              -DLL
 LINKLIBS  := $(LINKLIBS)
-RESO      := $(RESO) Resources.res
+RESO      := $(RESO) resources.res
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES) 
 endif

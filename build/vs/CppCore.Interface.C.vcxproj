@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\CppCore.Interface.C\Crypto.cpp" />
+    <ClInclude Include="..\..\include\CppCore.Interface.C\cppcore.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\CppCore.Interface.C\Crypto.h" />
+    <ClCompile Include="..\..\src\CppCore.Interface.C\cppcore.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\src\CppCore.Interface.C\Resources.rc" />
+    <ResourceCompile Include="..\..\src\CppCore.Interface.C\resources.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7c1a57cb-ae78-4c01-bd43-442314f5638b}</ProjectGuid>
