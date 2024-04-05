@@ -90,6 +90,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-12]
+        cpurev: [legacy, default, modern]
     steps:
 
     # Checkout
@@ -100,42 +101,42 @@ jobs:
     - name: Download X64 Binaries
       uses: actions/download-artifact@v4
       with:
-        name: Binaries (${{ matrix.os }}-x64-default)
+        name: Binaries (${{ matrix.os }}-x64-${{ matrix.cpurev }})
         path: ./build/make/bin/osx-x64/
 
     # Download X64 Libraries
     - name: Download X64 Libraries
       uses: actions/download-artifact@v4
       with:
-        name: Libraries (${{ matrix.os }}-x64-default)
+        name: Libraries (${{ matrix.os }}-x64-${{ matrix.cpurev }})
         path: ./build/make/lib/osx-x64/
 
     # Download X64 lto.o
     - name: Download X64 lto.o
       uses: actions/download-artifact@v4
       with:
-        name: lto.o (${{ matrix.os }}-x64-default)
+        name: lto.o (${{ matrix.os }}-x64-${{ matrix.cpurev }})
         path: ./build/make/obj/osx-x64-release/
 
     # Download ARM64 Binaries
     - name: Download ARM64 Binaries
       uses: actions/download-artifact@v4
       with:
-        name: Binaries (${{ matrix.os }}-arm64-default)
+        name: Binaries (${{ matrix.os }}-arm64-${{ matrix.cpurev }})
         path: ./build/make/bin/osx-arm64/
 
     # Download ARM64 Libraries
     - name: Download ARM64 Libraries
       uses: actions/download-artifact@v4
       with:
-        name: Libraries (${{ matrix.os }}-arm64-default)
+        name: Libraries (${{ matrix.os }}-arm64-${{ matrix.cpurev }})
         path: ./build/make/lib/osx-arm64/
 
     # Download ARM64 lto.o
     - name: Download ARM64 lto.o
       uses: actions/download-artifact@v4
       with:
-        name: lto.o (${{ matrix.os }}-arm64-default)
+        name: lto.o (${{ matrix.os }}-arm64-${{ matrix.cpurev }})
         path: ./build/make/obj/osx-arm64-release/
 
     # Load Code Signing Certificate
@@ -183,7 +184,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: Packages (${{ matrix.os }})
+        name: Packages (${{ matrix.os }}-${{ matrix.cpurev }})
         path: |
           ./dist/osx-10.15/*-universal.pkg
           ./dist/osx-10.15/*-universal.tar.gz
@@ -192,7 +193,7 @@ jobs:
     # Upload to Github Release
     - name: Upload to Github Release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+      if: matrix.cpurev == 'default' && startsWith(github.ref, 'refs/tags/')
       with:
         token: ${{ secrets.PAT_GITHUB_ACTIONS }}
         files: |
