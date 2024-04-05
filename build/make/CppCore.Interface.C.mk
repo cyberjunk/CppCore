@@ -189,9 +189,11 @@ build: $(OBJS) $(RESO)
 	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(LIBDIR)/$(NAME)$(SUFFIX)$(EXTDLL)
 
 clean:
-	$(call deletefiles,$(OBJDIR),*.o)
-	$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTDLL))
-	$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTPDB))
+	-$(call deletefiles,$(OBJDIR),*.o)
+	-$(call deletefiles,$(OBJDIR),*.res)
+	-$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTDLL))
+	-$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTLIB))
+	-$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTPDB))
 
 ################################################################################################
 
