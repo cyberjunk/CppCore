@@ -57,7 +57,7 @@ CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
              -Xlinker /SUBSYSTEM:CONSOLE",10.00" \
              -Xlinker /PDBALTPATH:$(NAME)$(SUFFIX)$(EXTPDB)
-LINKLIBS  := $(LINKLIBS) -lUser32.lib -lGdi32.lib ./lib/$(TARGET_OS)-$(TARGET_ARCH)/CppCore.Interface.C$(SUFFIX).lib
+LINKLIBS  := $(LINKLIBS) -lUser32.lib -lGdi32.lib
 RESO      := $(RESO) Resources.res
 endif
 
@@ -67,7 +67,7 @@ DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS) -fdeclspec -ObjC++
 CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
-LINKLIBS  := $(LINKLIBS) -framework AppKit ./lib/$(TARGET_OS)-$(TARGET_ARCH)/CppCore.Interface.C$(SUFFIX).dylib
+LINKLIBS  := $(LINKLIBS) -framework AppKit
 RESO      := $(RESO)
 endif
 
@@ -77,7 +77,7 @@ DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS)
-LINKLIBS  := $(LINKLIBS) -lpthread ./lib/$(TARGET_OS)-$(TARGET_ARCH)/CppCore.Interface.C$(SUFFIX).so
+LINKLIBS  := $(LINKLIBS) -lpthread
 RESO      := $(RESO)
 endif
 

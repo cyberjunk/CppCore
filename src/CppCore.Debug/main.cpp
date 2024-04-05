@@ -1,4 +1,5 @@
 #include <CppCore/Root.h>
+
 using namespace CppCore;
 
 int main()
