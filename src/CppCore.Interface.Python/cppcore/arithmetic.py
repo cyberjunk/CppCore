@@ -1,53 +1,5 @@
 from cppcore import lib
-import ctypes
 import sys
-
-lib.cppcore_uint32_mulmod.argtypes = \
-lib.cppcore_uint64_mulmod.argtypes = \
-lib.cppcore_uint128_mulmod.argtypes = \
-lib.cppcore_uint256_mulmod.argtypes = \
-lib.cppcore_uint512_mulmod.argtypes = \
-lib.cppcore_uint1024_mulmod.argtypes = \
-lib.cppcore_uint2048_mulmod.argtypes = \
-lib.cppcore_uint4096_mulmod.argtypes = \
-lib.cppcore_uint8192_mulmod.argtypes = \
-[
-    ctypes.c_void_p, # a
-    ctypes.c_void_p, # b
-    ctypes.c_void_p, # m
-    ctypes.c_void_p  # r
-]
-
-lib.cppcore_uint32_powmod.argtypes = \
-lib.cppcore_uint64_powmod.argtypes = \
-lib.cppcore_uint128_powmod.argtypes = \
-lib.cppcore_uint256_powmod.argtypes = \
-lib.cppcore_uint512_powmod.argtypes = \
-lib.cppcore_uint1024_powmod.argtypes = \
-lib.cppcore_uint2048_powmod.argtypes = \
-lib.cppcore_uint4096_powmod.argtypes = \
-lib.cppcore_uint8192_powmod.argtypes = \
-[
-    ctypes.c_void_p, # a
-    ctypes.c_void_p, # b
-    ctypes.c_void_p, # m
-    ctypes.c_void_p  # r
-]
-
-lib.cppcore_uint32_gcd.argtypes = \
-lib.cppcore_uint64_gcd.argtypes = \
-lib.cppcore_uint128_gcd.argtypes = \
-lib.cppcore_uint256_gcd.argtypes = \
-lib.cppcore_uint512_gcd.argtypes = \
-lib.cppcore_uint1024_gcd.argtypes = \
-lib.cppcore_uint2048_gcd.argtypes = \
-lib.cppcore_uint4096_gcd.argtypes = \
-lib.cppcore_uint8192_gcd.argtypes = \
-[
-    ctypes.c_void_p, # a
-    ctypes.c_void_p, # b
-    ctypes.c_void_p  # r
-]
 
 def umulmod(a:int, b:int, m:int) -> int:
     """Calculates (a*b) % m"""

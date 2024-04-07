@@ -1,39 +1,5 @@
 from cppcore import lib
-import ctypes
 import sys
-
-lib.cppcore_basex_encode32.argtypes = \
-lib.cppcore_basex_encode64.argtypes = \
-lib.cppcore_basex_encode128.argtypes = \
-lib.cppcore_basex_encode256.argtypes = \
-lib.cppcore_basex_encode512.argtypes = \
-lib.cppcore_basex_encode1024.argtypes = \
-lib.cppcore_basex_encode2048.argtypes = \
-lib.cppcore_basex_encode4096.argtypes = \
-lib.cppcore_basex_encode8192.argtypes = \
-[
-    ctypes.c_void_p,  # input
-    ctypes.c_char_p,  # output
-    ctypes.c_int32,   # len output
-    ctypes.c_uint32,  # base
-    ctypes.c_char_p,  # alphabet
-    ctypes.c_uint32   # write 0x00 term
-]
-
-lib.cppcore_basex_decode32.argtypes = \
-lib.cppcore_basex_decode64.argtypes = \
-lib.cppcore_basex_decode128.argtypes = \
-lib.cppcore_basex_decode256.argtypes = \
-lib.cppcore_basex_decode512.argtypes = \
-lib.cppcore_basex_decode1024.argtypes = \
-lib.cppcore_basex_decode2048.argtypes = \
-lib.cppcore_basex_decode4096.argtypes = \
-lib.cppcore_basex_decode8192.argtypes = \
-[
-    ctypes.c_char_p,  # input
-    ctypes.c_void_p,  # output
-    ctypes.c_char_p   # alphabet
-]
 
 def encode(v:int, alphabet:str) -> str:
     bitlen:int   = v.bit_length()
