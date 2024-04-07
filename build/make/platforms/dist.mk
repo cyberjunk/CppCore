@@ -37,7 +37,6 @@ include platforms/extract-version.mk
 ifeq ($(TARGET_OS),win)
 SCRIPTSFILE=Scripts.ps1
 PUBLISHERID = $(shell powershell -command "& {\
-  Import-Module Microsoft.PowerShell.Security;\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
   . $(DISTDIR)/$(SCRIPTSFILE);\
   Get-PublisherHash '$(PUBLISHER)'; }")
