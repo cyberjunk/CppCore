@@ -17,12 +17,12 @@ endef
 
 # Recursively remove folder
 define rmdir
-	powershell "Remove-Item $(1) -Force -Recurse"
+	powershell "Remove-Item $(1) -Force -Recurse -ErrorAction Ignore"
 endef
 
 # Create folder and all sub folders
 define mkdir
-	powershell "New-Item $(1) -ItemType Directory -Force"
+	powershell "$$null = New-Item $(1) -ItemType Directory -Force"
 endef
 
 # Replace string occurrences in file

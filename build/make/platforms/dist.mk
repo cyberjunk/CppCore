@@ -135,7 +135,6 @@ lib-dist-prep:
 	$(call copyfiles,$(INCDIR)/$(NAME)/*.h,$(DISTDIR)/$(NAME)/)
 lib-dist-%: lib-dist-prep
 	echo [MKD] $(DISTDIR)/$(NAME)/$*
-	-$(call rmdir,$(DISTDIR)/$(NAME)/$*)
 	$(call mkdir,$(DISTDIR)/$(NAME)/$*)
 	$(call copyfiles,./lib/win-$*/$(LIBNAME)$(EXTDLL),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL))
 	$(call copyfiles,./lib/win-$*/$(LIBNAME)$(EXTLIB),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTLIB))
