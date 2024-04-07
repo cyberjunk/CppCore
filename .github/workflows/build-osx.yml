@@ -39,15 +39,29 @@ jobs:
       run: |
         make -j${{ env.JOBS }}
 
-    # Binary Info
-    - name: Binary Info
-      run: |
-        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Server
-        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Client
-        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.UI
-        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Test
-        otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Debug
-        otool -l ./build/make/lib/osx-${{ matrix.arch }}/libcppcore.dylib
+    # Binary Info (CppCore.Example.Server)
+    - name: Binary Info (CppCore.Example.Server)
+      run: otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Server
+        
+    # Binary Info (CppCore.Example.Client)
+    - name: Binary Info (CppCore.Example.Client)
+      run: otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.Client
+
+    # Binary Info (CppCore.Example.UI)
+    - name: Binary Info (CppCore.Example.UI)
+      run: otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.UI
+
+    # Binary Info (CppCore.Test)
+    - name: Binary Info (CppCore.Test)
+      run: otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Test
+
+    # Binary Info (CppCore.Debug)
+    - name: Binary Info (CppCore.Debug)
+      run: otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Debug
+
+    # Binary Info (CppCore.Interface.C)
+    - name: Binary Info (CppCore.Interface.C)
+      run: otool -l ./build/make/lib/osx-${{ matrix.arch }}/libcppcore.dylib
 
     # Test (X64)
     - name: Test (X64)
