@@ -20,12 +20,12 @@ BEGIN
     BLOCK "040004b0"
     BEGIN
       VALUE "CompanyName",      "Clint Banzhaf"
-      VALUE "FileDescription",  "CppCore.Interface.C"
+      VALUE "FileDescription",  "libcppcore"
       VALUE "FileVersion",       CPPCORE_VERSION_STR4
-      VALUE "InternalName",     "CppCore.Interface.C"
+      VALUE "InternalName",     "libcppcore"
       VALUE "LegalCopyright",   "Copyright (C) 2022"
       VALUE "OriginalFilename", ""
-      VALUE "ProductName",      "CppCore.Interface.C"
+      VALUE "ProductName",      "libcppcore"
       VALUE "ProductVersion",    CPPCORE_VERSION_STR4
     END
   END

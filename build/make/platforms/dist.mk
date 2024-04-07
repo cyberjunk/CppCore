@@ -121,7 +121,6 @@ endif
 	$(ZIPPER) $(DISTDIR)/$(NAME).appxupload.zip $(DISTDIR)/$(NAME)/upload/*
 	$(call move,$(DISTDIR)/$(NAME).appxupload.zip,$(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxupload)	
 	$(call move,$(DISTDIR)/$(NAME).appxbundle,$(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxbundle)
-
 lib-dist-prep:
 	echo [VER] $(VERSION4)
 	echo [CPG] CodePage 1252
@@ -138,16 +137,16 @@ lib-dist-%: lib-dist-prep
 	echo [MKD] $(DISTDIR)/$(NAME)/$*
 	-$(call rmdir,$(DISTDIR)/$(NAME)/$*)
 	$(call mkdir,$(DISTDIR)/$(NAME)/$*)
-	$(call copyfiles,./lib/win-$*/$(NAME)$(EXTDLL),$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL))
-	$(call copyfiles,./lib/win-$*/$(NAME)$(EXTLIB),$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTLIB))
-	$(call copyfiles,./lib/win-$*/$(NAME)$(EXTPDB),$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTPDB))
-	echo [STR] $(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL)
-	$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL)
-	echo [SIG] $(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL)
+	$(call copyfiles,./lib/win-$*/$(LIBNAME)$(EXTDLL),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL))
+	$(call copyfiles,./lib/win-$*/$(LIBNAME)$(EXTLIB),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTLIB))
+	$(call copyfiles,./lib/win-$*/$(LIBNAME)$(EXTPDB),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTPDB))
+	echo [STR] $(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL)
+	$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL)
+	echo [SIG] $(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL)
 ifeq ($(SIGN_PFX_PASS),)
-	$(call sign,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL),$(SIGN_PFX_FILE))
+	$(call sign,$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL),$(SIGN_PFX_FILE))
 else
-	$(call signp,$(DISTDIR)/$(NAME)/$*/$(NAME)$(EXTDLL),$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+	$(call signp,$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL),$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
 endif
 lib-dist: lib-dist-prep lib-dist-x64 lib-dist-x86 lib-dist-arm64
 	echo [ZIP] $(DISTDIR)/$(NAME)-$(VERSION3)-win-10.zip
@@ -327,27 +326,27 @@ endif
 lib-dist-%: dist-prep
 	@echo [DST] $(NAME)-$*
 lib-dist: dist-prep lib-dist-x64 lib-dist-arm64
-	@echo [MKD] $(APPNAME)
+	@echo [MKD] $(LIBNAME)
 	@mkdir -p $(DISTDIR)/$(NAME)/
-	@echo [LIP] $(NAME)$(EXTDLL)
-	@lipo -create -output $(DISTDIR)/$(NAME)/$(NAME)$(EXTDLL) \
-	  ./lib/osx-x64/$(NAME)$(EXTDLL) \
-	  ./lib/osx-arm64/$(NAME)$(EXTDLL)
-	@echo [SYM] $(NAME).dSYM
+	@echo [LIP] $(LIBNAME)$(EXTDLL)
+	@lipo -create -output $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL) \
+	  ./lib/osx-x64/$(LIBNAME)$(EXTDLL) \
+	  ./lib/osx-arm64/$(LIBNAME)$(EXTDLL)
+	@echo [SYM] $(LIBNAME).dSYM
 	@dsymutil \
-	  -out $(DISTDIR)/$(NAME)/$(NAME).dSYM \
-	  $(DISTDIR)/$(NAME)/$(NAME)$(EXTDLL)
-	@echo [INF] $(NAME).dSYM
-	@dwarfdump --uuid $(DISTDIR)/$(NAME)/$(NAME).dSYM
-	@echo [SIG] $(NAME)$(EXTDLL)
+	  -out $(DISTDIR)/$(NAME)/$(LIBNAME).dSYM \
+	  $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
+	@echo [INF] $(LIBNAME).dSYM
+	@dwarfdump --uuid $(DISTDIR)/$(NAME)/$(LIBNAME).dSYM
+	@echo [SIG] $(LIBNAME)$(EXTDLL)
 	@codesign --verbose \
 	  --sign "$(PUBLISHERCN)" \
 	  --keychain $(KEYCHAIN) \
 	  --timestamp \
 	  --options runtime \
-	  $(DISTDIR)/$(NAME)/$(NAME)$(EXTDLL)
-	@echo [VFY] $(NAME)$(EXTDLL)
-	@codesign --verify -vvvd $(DISTDIR)/$(NAME)/$(NAME)$(EXTDLL)
+	  $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
+	@echo [VFY] $(LIBNAME)$(EXTDLL)
+	@codesign --verify -vvvd $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
 	@cp $(INCDIR)/$(NAME)/*.h $(DISTDIR)/$(NAME)/
 	@echo [TAR] $(TARNAME) 
 	@tar -f $(DISTDIR)/$(TARNAME) -C $(DISTDIR)/$(NAME) -c .
@@ -399,7 +398,6 @@ dist-%: dist-prep
 	chmod +x $(DISTDIR)/$(NAME)-$*/usr/bin/$(NAME)$(EXTBIN)
 	dpkg-deb --build $(DISTDIR)/$(NAME)-$* $(DISTDIR)/$(DEBFILE) > /dev/null 2>&1
 dist: dist-prep dist-$(TARGET_ARCH)
-
 lib-dist-prep:
 	echo [VER] $(VERSION3)
 lib-dist-%: lib-dist-prep
@@ -420,7 +418,7 @@ lib-dist-%: lib-dist-prep
 	sed -i 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME)-$*/DEBIAN/control
 	sed -i 's/{ARCH}/${DEBARCH}/g' $(DISTDIR)/$(NAME)-$*/DEBIAN/control
 	cp $(INCDIR)/$(NAME)/*.h $(DISTDIR)/$(NAME)-$*/usr/include
-	cp ./lib/linux-$*/$(NAME)$(EXTDLL) $(DISTDIR)/$(NAME)-$*/usr/lib/$(NAME)$(EXTDLL)
+	cp ./lib/linux-$*/$(LIBNAME)$(EXTDLL) $(DISTDIR)/$(NAME)-$*/usr/lib/$(LIBNAME)$(EXTDLL)
 	dpkg-deb --build $(DISTDIR)/$(NAME)-$* $(DISTDIR)/$(DEBFILE) > /dev/null 2>&1
 lib-dist: lib-dist-prep lib-dist-$(TARGET_ARCH)
 endif

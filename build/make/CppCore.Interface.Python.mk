@@ -2,7 +2,8 @@
 include platforms/detect-host.mk
 
 NAME       = CppCore.Interface.Python
-APPNAME    = CppCore.Interface.Python
+NATIVENAME = CppCore.Interface.C
+LIBNAME    = libcppcore
 INCDIR     = ../../include/
 SRCDIR     = ../../src/$(NAME)
 
@@ -26,11 +27,11 @@ build:
 	echo [VER] $(CPPCORE_VERSION)
 ifeq ($(TARGET_OS),win)
 	$(eval VSCMD_ARG_TGT_ARCH=$(TARGET_ARCH))
-	$(call copyfiles,$(DISTDIR)/CppCore.Interface.C/$(TARGET_ARCH)/CppCore.Interface.C$(EXTDLL),$(SRCDIR)/cppcore/libcppcore$(EXTDLL))
+	$(call copyfiles,$(DISTDIR)/$(NATIVENAME)/$(TARGET_ARCH)/$(LIBNAME)$(EXTDLL),$(SRCDIR)/cppcore/$(LIBNAME)e$(EXTDLL))
 endif
 ifeq ($(TARGET_OS),osx)
 	$(eval _PYTHON_HOST_PLATFORM=macosx-10.15-universal2)
-	cp $(DISTDIR)/CppCore.Interface.C/CppCore.Interface.C$(EXTDLL) $(SRCDIR)/cppcore/libcppcore$(EXTDLL)
+	cp $(DISTDIR)/$(NATIVENAME)/$(LIBNAME)$(EXTDLL) $(SRCDIR)/cppcore/$(LIBNAME)$(EXTDLL)
 endif
 ifeq ($(TARGET_OS),linux)
 	$(eval _PYTHON_HOST_PLATFORM:=$(shell \
@@ -40,6 +41,6 @@ ifeq ($(TARGET_OS),linux)
 		(arm64) echo linux_aarch64;; \
 		(arm)   echo linux_armv7hl;; \
 	  esac))
-	cp $(DISTDIR)/CppCore.Interface.C-$(TARGET_ARCH)/usr/lib/CppCore.Interface.C$(EXTDLL) $(SRCDIR)/cppcore/libcppcore$(EXTDLL)
+	cp $(DISTDIR)/$(NATIVENAME)-$(TARGET_ARCH)/usr/lib/$(LIBNAME)$(EXTDLL) $(SRCDIR)/cppcore/$(LIBNAME)$(EXTDLL)
 endif
 	python -m build --wheel --outdir $(DISTDIR) $(SRCDIR)

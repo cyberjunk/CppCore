@@ -2,7 +2,7 @@
 include platforms/detect-host.mk
 
 NAME       = CppCore.Interface.C
-APPNAME    = CppCore.Interface.C
+LIBNAME    = libcppcore
 INCDIR     = ../../include/
 SRCDIR     = ../../src/$(NAME)
 OBJDIR    := $(OBJDIR)/$(NAME)
@@ -55,7 +55,7 @@ INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
              -Xlinker /SUBSYSTEM:CONSOLE",10.00" \
-             -Xlinker /PDBALTPATH:$(NAME)$(SUFFIX)$(EXTPDB) \
+             -Xlinker /PDBALTPATH:$(LIBNAME)$(SUFFIX)$(EXTPDB) \
              -DLL
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO) resources.res
@@ -81,7 +81,7 @@ LINKFLAGS   := $(LINKFLAGS) \
                -dynamiclib \
                -current_version $(VERSION3) \
                -compatibility_version $(VERSION2) \
-               -install_name $(NAME)$(EXTDLL) \
+               -install_name $(LIBNAME)$(EXTDLL) \
                -Wl,-object_path_lto,$(OBJDIR)/lto.o
 LINKLIBS    := $(LINKLIBS)
 RESO        := $(RESO)
@@ -145,7 +145,7 @@ DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
              -dynamiclib \
-             -install_name @rpath/$(NAME)$(EXTDLL)
+             -install_name @rpath/$(LIBNAME)$(EXTDLL)
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
@@ -185,15 +185,15 @@ $(OBJDIR)/%.res:
 .PHONY: clean
 
 build: $(OBJS) $(RESO)
-	@echo [LNK] $(LIBDIR)/$(NAME)$(SUFFIX)$(EXTDLL)
-	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(LIBDIR)/$(NAME)$(SUFFIX)$(EXTDLL)
+	@echo [LNK] $(LIBDIR)/$(LIBNAME)$(SUFFIX)$(EXTDLL)
+	$(LINK) $(LINKFLAGS) $(LINKPATH) $(OBJS) $(RESO) $(LINKLIBS) -o $(LIBDIR)/$(LIBNAME)$(SUFFIX)$(EXTDLL)
 
 clean:
 	-$(call deletefiles,$(OBJDIR),*.o)
 	-$(call deletefiles,$(OBJDIR),*.res)
-	-$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTDLL))
-	-$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTLIB))
-	-$(call deletefiles,$(LIBDIR),$(NAME)$(SUFFIX)$(EXTPDB))
+	-$(call deletefiles,$(LIBDIR),$(LIBNAME)$(SUFFIX)$(EXTDLL))
+	-$(call deletefiles,$(LIBDIR),$(LIBNAME)$(SUFFIX)$(EXTLIB))
+	-$(call deletefiles,$(LIBDIR),$(LIBNAME)$(SUFFIX)$(EXTPDB))
 
 ################################################################################################
 
