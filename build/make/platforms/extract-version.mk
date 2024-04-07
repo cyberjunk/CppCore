@@ -2,14 +2,17 @@
 ifeq ($(TARGET_OS),win)
 SCRIPTSFILE=Scripts.ps1
 VERSIONMAJOR = $(shell powershell -command "& {\
+  Import-Module Microsoft.PowerShell.Security;\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
   . $(DISTDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMAJOR)'; }")
 VERSIONMINOR = $(shell powershell -command "& {\
+  Import-Module Microsoft.PowerShell.Security;\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
   . $(DISTDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMINOR)'; }")
 VERSIONPATCH = $(shell powershell -command "& {\
+  Import-Module Microsoft.PowerShell.Security;\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
   . $(DISTDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROPATCH)'; }")

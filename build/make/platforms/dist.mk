@@ -27,6 +27,9 @@ SIGN_PFX_PASS = CppCore
 endif
 endif
 
+# extract version
+include platforms/extract-version.mk
+
 ##############################################################################################################
 # WINDOWS
 ##############################################################################################################
@@ -34,23 +37,10 @@ endif
 ifeq ($(TARGET_OS),win)
 SCRIPTSFILE=Scripts.ps1
 PUBLISHERID = $(shell powershell -command "& {\
+  Import-Module Microsoft.PowerShell.Security;\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
   . $(DISTDIR)/$(SCRIPTSFILE);\
   Get-PublisherHash '$(PUBLISHER)'; }")
-VERSIONMAJOR = $(shell powershell -command "& {\
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
-  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMAJOR)'; }")
-VERSIONMINOR = $(shell powershell -command "& {\
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
-  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMINOR)'; }")
-VERSIONPATCH = $(shell powershell -command "& {\
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
-  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROPATCH)'; }")
-VERSION3 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
-VERSION4 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 ZIPPER   = $(DISTDIR)/7za.exe a -y -aoa -mx6 -bd -bb0
 dist-prep:
 	echo [VER] $(VERSION4)
@@ -158,11 +148,6 @@ endif
 
 ifeq ($(TARGET_OS),osx)
 KEYCHAIN     = sign-$(NAME).keychain-db
-VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
-VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
-VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
-VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
-VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 DISTDIRAPP   = "$(DISTDIR)/$(NAME)/$(APPNAME).app"
 OSXVER       = $(shell sw_vers -productVersion)
 OSXBUILDV    = $(shell sw_vers -buildVersion)
@@ -356,11 +341,6 @@ endif
 ##############################################################################################################
 
 ifeq ($(TARGET_OS),linux)
-VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
-VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
-VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
-VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
-VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 dist-prep:
 	echo [VER] $(VERSION3)
 	echo [DEB] $(NAME).Resources-$(VERSION3)-ubuntu-$(LSBREL)-all.deb
