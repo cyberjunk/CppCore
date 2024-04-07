@@ -27,7 +27,7 @@ build:
 	echo [VER] $(CPPCORE_VERSION)
 ifeq ($(TARGET_OS),win)
 	$(eval VSCMD_ARG_TGT_ARCH=$(TARGET_ARCH))
-	$(call copyfiles,$(DISTDIR)/$(NATIVENAME)/$(TARGET_ARCH)/$(LIBNAME)$(EXTDLL),$(SRCDIR)/cppcore/$(LIBNAME)e$(EXTDLL))
+	$(call copyfiles,$(DISTDIR)/$(NATIVENAME)/$(TARGET_ARCH)/$(LIBNAME)$(EXTDLL),$(SRCDIR)/cppcore/$(LIBNAME)$(EXTDLL))
 endif
 ifeq ($(TARGET_OS),osx)
 	$(eval _PYTHON_HOST_PLATFORM=macosx-10.15-universal2)
