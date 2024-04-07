@@ -104,7 +104,7 @@ jobs:
         echo CppCore.Debug
         ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Debug
         echo CppCore.Interface.C
-        ldd ./build/make/lib/linux-${{ env.TARGET_ARCH }}/CppCore.Interface.C.so
+        ldd ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
 
     # Test Native
     - name: Test Native

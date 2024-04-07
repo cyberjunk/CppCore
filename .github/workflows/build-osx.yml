@@ -47,7 +47,7 @@ jobs:
         otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Example.UI
         otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Test
         otool -l ./build/make/bin/osx-${{ matrix.arch }}/CppCore.Debug
-        otool -l ./build/make/lib/osx-${{ matrix.arch }}/CppCore.Interface.C.dylib
+        otool -l ./build/make/lib/osx-${{ matrix.arch }}/libcppcore.dylib
 
     # Test (X64)
     - name: Test (X64)
