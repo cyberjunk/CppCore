@@ -22,7 +22,7 @@ endef
 
 # Create folder and all sub folders
 define mkdir
-	powershell "$$null = New-Item $(1) -ItemType Directory -Force"
+	powershell "[void](New-Item $(1) -ItemType Directory -Force)"
 endef
 
 # Replace string occurrences in file
