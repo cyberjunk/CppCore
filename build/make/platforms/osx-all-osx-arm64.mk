@@ -26,13 +26,13 @@ LINKLIBS   =
 
 # CPU Flags
 ifeq ($(TARGET_CPUREV),legacy)
-CPUFLAGS   = -march=armv8-a -mtune=generic
+CPUFLAGS   = -mcpu=apple-m1 -mtune=generic
 endif
 ifeq ($(TARGET_CPUREV),default)
-CPUFLAGS   = -march=armv8-a -mtune=generic
+CPUFLAGS   = -mcpu=apple-m1 -mtune=generic
 endif
 ifeq ($(TARGET_CPUREV),modern)
-CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
+CPUFLAGS   = -mcpu=apple-m1 -mtune=generic
 endif
 
 # Debug vs. Release

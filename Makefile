@@ -53,6 +53,22 @@ CppCore.Test-run:
 	@echo [RUN] CppCore.Test
 	+@make -s -C ./build/make/ -f CppCore.Test.mk run
 
+CppCore.Interface.C:
+	@echo [BLD] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk
+
+CppCore.Interface.C-clean:
+	@echo [CLN] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk clean
+
+CppCore.Interface.C-dist:
+	@echo [DST] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk lib-dist
+
+CppCore.Interface.Python:
+	@echo [BLD] CppCore.Interface.Python
+	+@make -s -C ./build/make/ -f CppCore.Interface.Python.mk
+
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk
@@ -67,6 +83,7 @@ all: \
 	CppCore.Example.Server \
 	CppCore.Example.Client \
 	CppCore.Example.UI \
+	CppCore.Interface.C \
 	CppCore.Test \
 	CppCore.Debug
 
@@ -74,6 +91,7 @@ clean: \
 	CppCore.Example.Server-clean \
 	CppCore.Example.Client-clean \
 	CppCore.Example.UI-clean \
+	CppCore.Interface.C-clean \
 	CppCore.Test-clean \
 	CppCore.Debug-clean
 
@@ -83,7 +101,8 @@ test: \
 dist: \
 	CppCore.Example.Server-dist \
 	CppCore.Example.Client-dist \
-	CppCore.Example.UI-dist
+	CppCore.Example.UI-dist \
+	CppCore.Interface.C-dist
 
 ##################################################################################
 

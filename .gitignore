@@ -10,3 +10,5 @@
 **/.DS_Store
 **/*.log
 **/*.aps
+
+**/__pycache__

@@ -267,7 +267,7 @@ namespace CppCore
       /// <summary>
       /// Finish hash calculations.
       /// </summary>
-      INLINE void finish(Digest& digest)
+      INLINE void finish(MD5::Digest& digest)
       {
          this->thiss().finish();
          CppCore::clone(digest, mState);

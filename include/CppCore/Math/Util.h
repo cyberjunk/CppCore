@@ -3910,14 +3910,14 @@ namespace CppCore
    /// <summary>
    /// Specialization for uint32_t
    /// </summary>
-   template<> INLINE static void gcd(const uint32_t& x, const uint32_t& y, uint32_t& r)
+   template<> INLINE void gcd(const uint32_t& x, const uint32_t& y, uint32_t& r)
    {
       r = CppCore::gcd32(x, y);
    }
    /// <summary>
    /// Specialization for uint64_t
    /// </summary>
-   template<> INLINE static void gcd(const uint64_t& x, const uint64_t& y, uint64_t& r)
+   template<> INLINE void gcd(const uint64_t& x, const uint64_t& y, uint64_t& r)
    {
       r = CppCore::gcd64(x, y);
    }

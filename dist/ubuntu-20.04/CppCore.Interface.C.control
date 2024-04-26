@@ -1,0 +1,10 @@
+Package: CppCore.Interface.C
+Version: {VERSION}-1
+Section: base
+Priority: optional
+Architecture: {ARCH}
+Depends: libc6:{ARCH} (>= 2.31)
+Maintainer: Clint Banzhaf <clint@banzhaf.pro>
+Description: CppCore Interface for C
+  Provides access to CppCore from C
+
