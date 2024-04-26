@@ -66,20 +66,11 @@ jobs:
     # Test
     - name: Test
       if: |
+        (matrix.os == 'macos-12' && matrix.arch == 'x64') ||
         (matrix.os == 'macos-13' && matrix.arch == 'x64') ||
         (matrix.os == 'macos-14' && matrix.arch == 'arm64') ||
         (matrix.os == 'macos-14' && matrix.arch == 'x64' && matrix.cpurev == 'legacy')
       run: make test
-
-    # Test (ARM64)
-    #- name: Test (ARM64)
-    #  if: 
-    #  run: make test
-
-    # Test (ROSETTA)
-    #- name: Test (ROSETTA)
-    #  if: matrix.os == 'macos-14' && matrix.arch == 'x64' && matrix.cpurev == 'legacy'
-    #  run: make test
 
     # Upload Binaries
     - name: Upload Binaries
