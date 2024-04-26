@@ -21,14 +21,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-11]
+        os: [windows-2019,windows-2022,macos-13,macos-14]
         arch: [x64,x86,arm64,arm]
         cpurev: [default]
     steps:
     
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Clang Version
     - name: Clang Version
@@ -42,7 +42,9 @@ jobs:
     # Note: x64 and x86 require VT-x on Windows.
     # But it is disabled on Github Hyper-V runners.
     - name: Test
-      if: matrix.os != 'windows-2019' || (matrix.arch != 'x64' && matrix.arch != 'x86')
+      if: |
+        (matrix.os == 'windows-2019' && matrix.arch != 'x64' && matrix.arch != 'x86') ||
+        (matrix.os == 'macos-13')
       env:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
       run: make test
