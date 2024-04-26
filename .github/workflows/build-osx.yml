@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12,macos-13,macos-14]
+        os: [macos-13,macos-14]
         arch: [x64,arm64]
         cpurev: [legacy, default, modern]
     steps:
@@ -63,9 +63,9 @@ jobs:
     - name: Binary Info (CppCore.Interface.C)
       run: otool -l ./build/make/lib/osx-${{ matrix.arch }}/libcppcore.dylib
 
-    # Test (X64)
+    # Test
     - name: Test (X64)
-      if: matrix.arch == 'x64' && matrix.cpurev != 'modern'
+#      if: matrix.arch == 'x64' && matrix.cpurev != 'modern'
       run: make test
 
     # Upload Binaries
@@ -103,7 +103,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12]
+        os: [macos-13]
         cpurev: [legacy, default, modern]
     steps:
 
@@ -224,7 +224,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12]
+        os: [macos-13]
     steps:
 
     # Checkout
