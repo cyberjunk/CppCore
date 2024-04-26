@@ -32,7 +32,7 @@ ifeq ($(TARGET_CPUREV),default)
 CPUFLAGS   = -mcpu=apple-m1 -mtune=generic
 endif
 ifeq ($(TARGET_CPUREV),modern)
-CPUFLAGS   = -mcpu=apple-m1 -mtune=generic
+CPUFLAGS   = -mcpu=apple-m2 -mtune=generic
 endif
 
 # Debug vs. Release
