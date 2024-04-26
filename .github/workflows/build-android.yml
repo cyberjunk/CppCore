@@ -37,7 +37,7 @@ jobs:
     # Test
     - name: Folders
       run: |
-        ls -la $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/
+        ls -la $ANDROID_NDK_HOME/toolchains/llvm/prebuilt/
 
     # Build
     - name: Build
