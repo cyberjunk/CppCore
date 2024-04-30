@@ -126,7 +126,7 @@
 #define CPPCORE_CPUFEAT_AES
 #endif
 #if defined(__AVX__) && !defined(CPPCORE_CPUFEAT_AVX)
-//#define CPPCORE_CPUFEAT_AVX
+#define CPPCORE_CPUFEAT_AVX
 #endif
 #if defined(__XSAVE__) && !defined(CPPCORE_CPUFEAT_XSAVE)
 #define CPPCORE_CPUFEAT_XSAVE
