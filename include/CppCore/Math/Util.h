@@ -1420,8 +1420,13 @@ namespace CppCore
          printf("OTHER CASE!!\n");
          CppCore::clone(ta, *(UINT3*)&a);
       }
-      CppCore::clone(tb, b);
-      CppCore::clear(r);
+      //CppCore::clone(tb, b);
+      //CppCore::clear(r);
+      
+      tb = b;
+      ::memset(&r, 0, sizeof(r));
+
+
       while (!CppCore::testzero(tb))
       {
          if (CppCore::bittest(tb, 0))
