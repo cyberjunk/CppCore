@@ -1424,7 +1424,7 @@ namespace CppCore
       //CppCore::clone(tb, b);
       tb = b;
 
-      printf("CLEARING\n");
+      printf("CLEARING %i\n", sizeof(r));
       CppCore::clear(r);
       //std::cout << std::hex << r.l << std::endl;
       //std::cout << std::hex << r.h << std::endl;
@@ -1434,6 +1434,7 @@ namespace CppCore
 
       while (!CppCore::testzero(tb))
       {
+         std::cout << "looping" << std::endl;
          if (CppCore::bittest(tb, 0))
             CppCore::xor_(r, ta, r);
          CppCore::shr(tb, tb, 1);
