@@ -1426,8 +1426,8 @@ namespace CppCore
 
       printf("CLEARING\n");
       CppCore::clear(r);
-      std::cout << std::hex << r.l << std::endl;
-      std::cout << std::hex << r.h << std::endl;
+      //std::cout << std::hex << r.l << std::endl;
+      //std::cout << std::hex << r.h << std::endl;
 
       //::memset(&r, 0, sizeof(r));
 
