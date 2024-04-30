@@ -1424,6 +1424,7 @@ namespace CppCore
       //CppCore::clone(tb, b);
       tb = b;
 
+      printf("CLEARING\n");
       CppCore::clear(r);
       //::memset(&r, 0, sizeof(r));
 
