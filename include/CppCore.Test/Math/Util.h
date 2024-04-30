@@ -1299,6 +1299,9 @@ namespace CppCore { namespace Test { namespace Math
          //uint64_t r[2];
          t r;
          size_t s = sizeof(r);
+         std::cout << std::hex << r.l << std::endl;
+         std::cout << std::hex << r.h << std::endl;
+
          CppCore::clmul((uint64_t)0x0000000000000000ULL, (uint64_t)0x0000000000000000ULL, r);
          if (r.l != (uint64_t)0x0000000000000000ULL || r.h != (uint64_t)0x0000000000000000ULL) {
             std::cout << std::hex << r.l << std::endl;
