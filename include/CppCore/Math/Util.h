@@ -1412,7 +1412,8 @@ namespace CppCore
       UINT2 tb;
       if constexpr (sizeof(a) < sizeof(ta)) {
          CppCore::clear(ta);
-         CppCore::clone(*(UINT1*)&ta, a);
+         *(UINT1*)&ta = a;
+         //CppCore::clone(*(UINT1*)&ta, a);
       }
       else CppCore::clone(ta, *(UINT3*)&a);
       CppCore::clone(tb, b);
