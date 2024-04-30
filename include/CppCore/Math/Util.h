@@ -1424,8 +1424,8 @@ namespace CppCore
       //CppCore::clone(tb, b);
       tb = b;
 
-      //CppCore::clear(r);
-      ::memset(&r, 0, sizeof(r));
+      CppCore::clear(r);
+      //::memset(&r, 0, sizeof(r));
 
 
       while (!CppCore::testzero(tb))
