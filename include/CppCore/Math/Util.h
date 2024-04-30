@@ -1411,9 +1411,10 @@ namespace CppCore
       UINT3 ta;
       UINT2 tb;
       if constexpr (sizeof(a) < sizeof(ta)) {
-         ::memset(&ta, 0, sizeof(ta));
+         //::memset(&ta, 0, sizeof(ta));
+         CppCore::clear(ta);
+
          *(UINT1*)&ta = a;
-         //CppCore::clear(ta);
          //CppCore::clone(*(UINT1*)&ta, a);
       }
       else {
@@ -1421,10 +1422,10 @@ namespace CppCore
          CppCore::clone(ta, *(UINT3*)&a);
       }
       //CppCore::clone(tb, b);
-      //CppCore::clear(r);
-      
       tb = b;
-      ::memset(&r, 0, sizeof(r));
+
+      CppCore::clear(r);
+      //::memset(&r, 0, sizeof(r));
 
 
       while (!CppCore::testzero(tb))
