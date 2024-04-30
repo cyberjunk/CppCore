@@ -1424,12 +1424,8 @@ namespace CppCore
       //CppCore::clone(tb, b);
       tb = b;
 
-      std::cout << std::hex << r.l << std::endl;
-      std::cout << std::hex << r.h << std::endl;
-
       printf("CLEARING\n");
       CppCore::clear(r);
-
       std::cout << std::hex << r.l << std::endl;
       std::cout << std::hex << r.h << std::endl;
 
