@@ -965,7 +965,7 @@ namespace CppCore
    /// Sets x = 0
    /// </summary>
    template<typename UINT>
-   static INLINE void clear(UINT& x)
+   static NOINLINE void clear(UINT& x)
    {
    #if defined(CPPCORE_CPUFEAT_AVX512F)
       const __m512i ZERO512 = _mm512_setzero_si512();
