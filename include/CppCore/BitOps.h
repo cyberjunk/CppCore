@@ -1006,13 +1006,11 @@ namespace CppCore
          CppCore::clear16 (*px16); ,
          CppCore::clear8  (*px8);)
    #else
-      printf("START CLEAR\n");
       CPPCORE_CHUNK_PROCESS_X(x, true,
-         printf("CLEAR64\n"); CppCore::clear64(*px64); ,
-         printf("CLEAR32\n"); CppCore::clear32(*px32); ,
-         printf("CLEAR16\n"); CppCore::clear16(*px16); ,
-         printf("CLEAR8\n"); CppCore::clear8 (*px8);)
-      printf("DONE CLEAR\n");
+         CppCore::clear64(*px64); ,
+         CppCore::clear32(*px32); ,
+         CppCore::clear16(*px16); ,
+         CppCore::clear8 (*px8);)
    #endif
    }
 
