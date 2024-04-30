@@ -227,12 +227,14 @@ int main()
 #endif
 
    std::cout << "-------------------------------" << std::endl;
-   std::cout << "ALIGNMENT" << std::endl;
+   std::cout << "ALIGNMENT"                       << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   std::cout << "uint8_t:  " << alignof(uint8_t)  << std::endl;
-   std::cout << "uint16_t: " << alignof(uint16_t) << std::endl;
-   std::cout << "uint32_t: " << alignof(uint32_t) << std::endl;
-   std::cout << "uint64_t: " << alignof(uint64_t) << std::endl;
+   std::cout << "uint8_t:     " << alignof(uint8_t)     << std::endl;
+   std::cout << "uint16_t:    " << alignof(uint16_t)    << std::endl;
+   std::cout << "uint32_t:    " << alignof(uint32_t)    << std::endl;
+   std::cout << "uint32_t[2]: " << alignof(uint32_t[2]) << std::endl;
+   std::cout << "uint64_t:    " << alignof(uint64_t)    << std::endl;
+   std::cout << "uint64_t[2]: " << alignof(uint64_t[2]) << std::endl;
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "FOLDERS"                         << std::endl;
