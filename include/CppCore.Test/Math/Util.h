@@ -1302,7 +1302,9 @@ namespace CppCore { namespace Test { namespace Math
          std::cout << std::hex << r.l << std::endl;
          std::cout << std::hex << r.h << std::endl;
 
-         CppCore::clmul((uint64_t)0x0000000000000000ULL, (uint64_t)0x0000000000000000ULL, r);
+         uint64_t a = (uint64_t)0x0000000000000000ULL;
+         uint64_t b = (uint64_t)0x0000000000000000ULL;
+         CppCore::clmul(a, b, r);
          if (r.l != (uint64_t)0x0000000000000000ULL || r.h != (uint64_t)0x0000000000000000ULL) {
             std::cout << std::hex << r.l << std::endl;
             std::cout << std::hex << r.h << std::endl;
