@@ -56,11 +56,11 @@
    constexpr size_t N8   = ((x) % 2);
 
 // Select which one to use based on CPU
-#if defined(CPPCORE_CPU_64BIT)
-#define CPPCORE_CHUNK_COUNT(x) CPPCORE_CHUNK_COUNT64(x)
-#else
+//#if defined(CPPCORE_CPU_64BIT)
+//#define CPPCORE_CHUNK_COUNT(x) CPPCORE_CHUNK_COUNT64(x)
+//#else
 #define CPPCORE_CHUNK_COUNT(x) CPPCORE_CHUNK_COUNT32(x)
-#endif
+//#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
