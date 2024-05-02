@@ -48,6 +48,11 @@ jobs:
     - name: Ubuntu Packages
       run: sudo apt-get install clang llvm libx11-dev:$ARCH
     
+    # CLANG15
+    - name: CLANG15
+      if: matrix.os == 'ubuntu-22.04'
+      run: sudo apt-get install clang-15
+
     # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
       if: matrix.arch == 'arm64' || matrix.arch == 'armhf' || matrix.arch == 'armel' 
