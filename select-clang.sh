@@ -60,7 +60,6 @@ function register_clang_version {
     update-alternatives \
          --verbose \
         --install /usr/bin/clang                clang                /usr/bin/clang-${version} ${priority} \
-        --slave   /usr/bin/clang++              clang++              /usr/bin/clang++-${version}  \
         --slave   /usr/bin/clang-format         clang-format         /usr/bin/clang-format-${version}  \
         --slave   /usr/bin/clang-cpp            clang-cpp            /usr/bin/clang-cpp-${version} \
         --slave   /usr/bin/clang-cl             clang-cl             /usr/bin/clang-cl-${version} \
