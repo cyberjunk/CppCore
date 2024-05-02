@@ -1307,7 +1307,6 @@ namespace CppCore { namespace Test { namespace Math
          //std::cout << std::hex << pr << std::endl;
          
          constexpr size_t N32 = sizeof(r) / 4;
-         CPPCORE_UNROLL
          for (size_t i = 0; i < N32; i++)
          {
             *pr32 = 0U;
