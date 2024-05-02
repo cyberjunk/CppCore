@@ -58,7 +58,7 @@ jobs:
     - name: Install LLVM and Clang
       uses: KyleMayes/install-llvm-action@v2
       with:
-        version: "15.0"
+        version: "10.0"
 
     # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
