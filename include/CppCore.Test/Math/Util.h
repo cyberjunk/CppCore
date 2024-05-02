@@ -1293,11 +1293,11 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
-      INLINE static bool clmul64to128()
+      NOINLINE static bool clmul64to128()
       {
          struct t { uint64_t l; uint64_t h; };
          //uint64_t r[2];
-         CPPCORE_ALIGN32 t r;
+         t r;
          size_t s = sizeof(r);
          std::cout << std::hex << r.l << std::endl;
          std::cout << std::hex << r.h << std::endl;
