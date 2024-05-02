@@ -1297,7 +1297,7 @@ namespace CppCore { namespace Test { namespace Math
       {
          struct t { uint64_t l; uint64_t h; };
          //uint64_t r[2];
-         t r;
+         CPPCORE_ALIGN32 t r;
          size_t s = sizeof(r);
          std::cout << std::hex << r.l << std::endl;
          std::cout << std::hex << r.h << std::endl;
