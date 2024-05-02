@@ -1314,7 +1314,7 @@ namespace CppCore { namespace Test { namespace Math
             pr += 4U;
          }*/
          constexpr size_t N8 = sizeof(r);
-         CPPCORE_UNROLL
+         //CPPCORE_UNROLL
          for (size_t i = 0; i < N8; i++)
          {
             //uint16_t* p16 = (uint16_t*)pr;
