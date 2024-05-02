@@ -46,7 +46,7 @@ jobs:
 
     # Ubuntu Packages
     - name: Ubuntu Packages
-      run: sudo apt-get install clang llvm libx11-dev:$ARCH
+      run: sudo apt-get install llvm libx11-dev:$ARCH
     
     # CLANG15
     - name: CLANG15
