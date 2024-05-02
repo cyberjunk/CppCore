@@ -52,6 +52,7 @@ jobs:
     - name: CLANG15
       if: matrix.os == 'ubuntu-22.04'
       run: |
+        sudo apt-get remove clang
         bash select-clang.sh 15 1
 
     #- name: Install LLVM and Clang
