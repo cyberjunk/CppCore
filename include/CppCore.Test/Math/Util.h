@@ -1301,8 +1301,16 @@ namespace CppCore { namespace Test { namespace Math
          struct t { uint64_t l; uint64_t h; };
          //uint64_t r[2];
          t r;
-         CppCore::clear(r);
-
+         //CppCore::clear(r);
+         uint8_t* pr = (uint8_t*)&r;
+         constexpr size_t N32 = sizeof(r) / 4;
+         CPPCORE_UNROLL
+         for (size_t i = 0; i < N32; i++)
+         {
+            uint32_t* p32 = (uint32_t*)pr;
+            CppCore::clear32(*p32);
+            pr += 4U;
+         }
          /*uint32_t* pr = (uint32_t*)&r;
          *pr = 0U; pr++;
          *pr = 0U; pr++;
