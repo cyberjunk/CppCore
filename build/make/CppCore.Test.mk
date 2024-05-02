@@ -15,7 +15,7 @@ CXXFLAGS  := $(CXXFLAGS) -fstack-protector \
              -Wno-c++2a-extensions \
              -Wno-unknown-warning-option
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS) -stack_size -Wl,0x1000000
+LINKFLAGS := $(LINKFLAGS) -Wl,-stack_size -Wl,0x1000000
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = Test.o
