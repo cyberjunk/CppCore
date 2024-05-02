@@ -1301,6 +1301,8 @@ namespace CppCore { namespace Test { namespace Math
          struct t { uint64_t l; uint64_t h; };
          //uint64_t r[2];
          t r;
+         r.l = 0;
+         r.h = 0;
          size_t s = sizeof(r);
          std::cout << std::hex << r.l << std::endl;
          std::cout << std::hex << r.h << std::endl;
