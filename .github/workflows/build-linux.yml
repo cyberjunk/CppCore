@@ -52,13 +52,12 @@ jobs:
     - name: CLANG15
       if: matrix.os == 'ubuntu-22.04'
       run: |
-        ls -la /usr/bin/clang*
-        clang-15 --version
+        bash select-clang.sh 15 1
 
-    - name: Install LLVM and Clang
-      uses: KyleMayes/install-llvm-action@v2
-      with:
-        version: "11.0"
+    #- name: Install LLVM and Clang
+    #  uses: KyleMayes/install-llvm-action@v2
+    #  with:
+    #    version: "11.0"
 
     # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
