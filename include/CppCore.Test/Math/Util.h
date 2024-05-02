@@ -1304,17 +1304,24 @@ namespace CppCore { namespace Test { namespace Math
          //CppCore::clear(r);
          uint8_t* pr = (uint8_t*)&r;
          //std::cout << std::hex << pr << std::endl;
-         constexpr size_t N32 = sizeof(r) / 4;
+         
+         /*constexpr size_t N32 = sizeof(r) / 4;
          CPPCORE_UNROLL
          for (size_t i = 0; i < N32; i++)
          {
             uint32_t* p32 = (uint32_t*)pr;
-            //CppCore::clear32(*p32);
             *p32 = 0U;
-            //std::cout << std::hex << *p32 << std::endl;
-
             pr += 4U;
+         }*/
+         constexpr size_t N16 = sizeof(r) / 2;
+         CPPCORE_UNROLL
+         for (size_t i = 0; i < N16; i++)
+         {
+            uint16_t* p16 = (uint16_t*)pr;
+            *p16 = 0U;
+            pr += 2U;
          }
+         
          /*uint32_t* pr = (uint32_t*)&r;
          *pr = 0U; pr++;
          *pr = 0U; pr++;
