@@ -8,14 +8,14 @@ SRCDIR     = ../../src/$(NAME)
 OBJDIR    := $(OBJDIR)/$(NAME)
 DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES) -I$(INCDIR)/
-CXXFLAGS  := $(CXXFLAGS) \
+CXXFLAGS  := $(CXXFLAGS) -fstack-protector \
              -std=c++17 \
              -Wno-deprecated-declarations \
              -Wno-c++20-extensions \
              -Wno-c++2a-extensions \
              -Wno-unknown-warning-option
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -stack_size -Wl,0x1000000
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = Test.o
