@@ -1303,6 +1303,7 @@ namespace CppCore { namespace Test { namespace Math
          t r;
          //CppCore::clear(r);
          uint8_t* pr = (uint8_t*)&r;
+         std::cout << std::hex << pr << std::endl;
          constexpr size_t N32 = sizeof(r) / 4;
          CPPCORE_UNROLL
          for (size_t i = 0; i < N32; i++)
@@ -1310,6 +1311,8 @@ namespace CppCore { namespace Test { namespace Math
             uint32_t* p32 = (uint32_t*)pr;
             //CppCore::clear32(*p32);
             *p32 = 0U;
+            std::cout << std::hex << *p32 << std::endl;
+
             pr += 4U;
          }
          /*uint32_t* pr = (uint32_t*)&r;
@@ -1317,6 +1320,7 @@ namespace CppCore { namespace Test { namespace Math
          *pr = 0U; pr++;
          *pr = 0U; pr++;
          *pr = 0U; pr++;*/
+         std::cout << std::hex << "-----------" << std::endl;
 
          size_t s = sizeof(r);
          std::cout << std::hex << r.l << std::endl;
