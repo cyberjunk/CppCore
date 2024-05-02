@@ -1299,18 +1299,19 @@ namespace CppCore { namespace Test { namespace Math
          //std::cout << std::hex << av << std::endl;
 
          struct t { uint64_t l; uint64_t h; };
-         //uint64_t r[2];
          t r;
-         //CppCore::clear(r);
-         //uint8_t* pr = (uint8_t*)&r;
-         uint32_t* pr32 = (uint32_t*)&r;
-         //std::cout << std::hex << pr << std::endl;
-         
-         //constexpr size_t N32 = sizeof(r) / 4;
+
+         /*uint32_t* pr32 = (uint32_t*)&r;
          for (size_t i = 0; i < 4; i++)
          {
             *pr32++ = 0U;
+         }*/
+         uint64_t* pr64 = (uint64_t*)&r;
+         for (size_t i = 0; i < 2; i++)
+         {
+            *pr64++ = 0ULL;
          }
+
          /*constexpr size_t N8 = sizeof(r);
          CPPCORE_UNROLL
          for (size_t i = 0; i < N8; i++)
