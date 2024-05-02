@@ -51,7 +51,11 @@ jobs:
     # CLANG15
     - name: CLANG15
       if: matrix.os == 'ubuntu-22.04'
-      run: sudo apt-get install clang-15
+      run: |
+        sudo apt-get install clang-15
+        which clang
+        ls -la /usr/bin/clang*
+        clang-15 --version
 
     # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
