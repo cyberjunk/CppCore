@@ -1313,13 +1313,13 @@ namespace CppCore { namespace Test { namespace Math
             *p32 = 0U;
             pr += 4U;
          }*/
-         constexpr size_t N16 = sizeof(r) / 2;
+         constexpr size_t N8 = sizeof(r);
          CPPCORE_UNROLL
-         for (size_t i = 0; i < N16; i++)
+         for (size_t i = 0; i < N8; i++)
          {
-            uint16_t* p16 = (uint16_t*)pr;
-            *p16 = 0U;
-            pr += 2U;
+            //uint16_t* p16 = (uint16_t*)pr;
+            *pr = 0U;
+            pr += 1U;
          }
          
          /*uint32_t* pr = (uint32_t*)&r;
