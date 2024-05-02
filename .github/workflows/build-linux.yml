@@ -52,16 +52,13 @@ jobs:
     - name: CLANG15
       if: matrix.os == 'ubuntu-22.04'
       run: |
-        sudo apt-get remove clang-14
-        sudo apt-get install clang-15
         ls -la /usr/bin/clang*
         clang-15 --version
 
-    - name: Set up Clang
-      uses: egor-tensin/setup-clang@v1
+    - name: Install LLVM and Clang
+      uses: KyleMayes/install-llvm-action@v2
       with:
-        version: 15
-        platform: x64
+        version: "15.0"
 
     # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
