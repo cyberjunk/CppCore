@@ -60,27 +60,7 @@ function register_clang_version {
     update-alternatives \
          --verbose \
         --install /usr/bin/clang                clang                /usr/bin/clang-${version} ${priority} \
-        --slave   /usr/bin/clang-format         clang-format         /usr/bin/clang-format-${version}  \
-        --slave   /usr/bin/clang-cpp            clang-cpp            /usr/bin/clang-cpp-${version} \
-        --slave   /usr/bin/clang-cl             clang-cl             /usr/bin/clang-cl-${version} \
-        --slave   /usr/bin/clangd               clangd               /usr/bin/clangd-${version} \
-        --slave   /usr/bin/clang-tidy           clang-tidy           /usr/bin/clang-tidy-${version} \
-        --slave   /usr/bin/clang-check          clang-check          /usr/bin/clang-check-${version} \
-        --slave   /usr/bin/clang-query          clang-query          /usr/bin/clang-query-${version} \
-        --slave   /usr/bin/asan_symbolize       asan_symbolize       /usr/bin/asan_symbolize-${version} \
-        --slave   /usr/bin/bugpoint             bugpoint             /usr/bin/bugpoint-${version} \
-        --slave   /usr/bin/dsymutil             dsymutil             /usr/bin/dsymutil-${version} \
-        --slave   /usr/bin/lld                  lld                  /usr/bin/lld-${version} \
-        --slave   /usr/bin/ld.lld               ld.lld               /usr/bin/ld.lld-${version} \
-        --slave   /usr/bin/lld-link             lld-link             /usr/bin/lld-link-${version} \
-        --slave   /usr/bin/llc                  llc                  /usr/bin/llc-${version} \
-        --slave   /usr/bin/lli                  lli                  /usr/bin/lli-${version} \
-        --slave   /usr/bin/obj2yaml             obj2yaml             /usr/bin/obj2yaml-${version} \
-        --slave   /usr/bin/opt                  opt                  /usr/bin/opt-${version} \
-        --slave   /usr/bin/sanstats             sanstats             /usr/bin/sanstats-${version} \
-        --slave   /usr/bin/verify-uselistorder  verify-uselistorder  /usr/bin/verify-uselistorder-${version} \
-        --slave   /usr/bin/wasm-ld              wasm-ld              /usr/bin/wasm-ld-${version} \
-        --slave   /usr/bin/yaml2obj             yaml2obj             /usr/bin/yaml2obj-${version}
+        
     
     update-alternatives \
          --verbose \
