@@ -1295,6 +1295,9 @@ namespace CppCore { namespace Test { namespace Math
 
       NOINLINE static bool clmul64to128()
       {
+         //size_t av = ::stackavail();
+         //std::cout << std::hex << av << std::endl;
+
          struct t { uint64_t l; uint64_t h; };
          //uint64_t r[2];
          t r;
@@ -1305,6 +1308,9 @@ namespace CppCore { namespace Test { namespace Math
          uint64_t a = (uint64_t)0x0000000000000000ULL;
          uint64_t b = (uint64_t)0x0000000000000000ULL;
          CppCore::clmul(a, b, r);
+         std::cout << std::hex << r.l << std::endl;
+         std::cout << std::hex << r.h << std::endl;
+
          if (r.l != (uint64_t)0x0000000000000000ULL || r.h != (uint64_t)0x0000000000000000ULL) {
             std::cout << std::hex << r.l << std::endl;
             std::cout << std::hex << r.h << std::endl;
