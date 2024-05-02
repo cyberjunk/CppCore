@@ -1302,7 +1302,7 @@ namespace CppCore { namespace Test { namespace Math
          //uint64_t r[2];
          t r;
          //CppCore::clear(r);
-         uint8_t* pr = (uint8_t*)&r;
+         //uint8_t* pr = (uint8_t*)&r;
          uint32_t* pr32 = (uint32_t*)&r;
          //std::cout << std::hex << pr << std::endl;
          
@@ -1321,11 +1321,10 @@ namespace CppCore { namespace Test { namespace Math
             pr += 1U;
          }*/
          
-         /*uint32_t* pr = (uint32_t*)&r;
-         *pr = 0U; pr++;
-         *pr = 0U; pr++;
-         *pr = 0U; pr++;
-         *pr = 0U; pr++;*/
+         /**pr32 = 0U; pr32++;
+         *pr32 = 0U; pr32++;
+         *pr32 = 0U; pr32++;
+         *pr32 = 0U; pr32++;*/
          std::cout << std::hex << "-----------" << std::endl;
 
          size_t s = sizeof(r);
