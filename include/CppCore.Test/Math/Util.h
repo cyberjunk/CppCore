@@ -1311,7 +1311,7 @@ namespace CppCore { namespace Test { namespace Math
             uint32_t* p32 = (uint32_t*)pr;
             //CppCore::clear32(*p32);
             *p32 = 0U;
-            std::cout << std::hex << *p32 << std::endl;
+            //std::cout << std::hex << *p32 << std::endl;
 
             pr += 4U;
          }
