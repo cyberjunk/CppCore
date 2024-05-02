@@ -1308,7 +1308,8 @@ namespace CppCore { namespace Test { namespace Math
          for (size_t i = 0; i < N32; i++)
          {
             uint32_t* p32 = (uint32_t*)pr;
-            CppCore::clear32(*p32);
+            //CppCore::clear32(*p32);
+            *p32 = 0U;
             pr += 4U;
          }
          /*uint32_t* pr = (uint32_t*)&r;
