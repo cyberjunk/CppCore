@@ -52,9 +52,11 @@ jobs:
     - name: CLANG15
       if: matrix.os == 'ubuntu-22.04'
       run: |
-        update-alternatives --list clang++
         sudo bash select-clang.sh 15 1
-
+        update-alternatives --list clang++
+        update-alternatives --list clang
+        clang --version
+        
     #- name: Install LLVM and Clang
     #  uses: KyleMayes/install-llvm-action@v2
     #  with:
