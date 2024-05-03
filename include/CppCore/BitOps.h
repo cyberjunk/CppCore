@@ -1019,7 +1019,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void clear<uint8_t>(uint8_t& x)
    {
-      return CppCore::clear8(x);
+      CppCore::clear8(x);
    }
 
    /// <summary>
@@ -1027,7 +1027,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void clear<uint16_t>(uint16_t& x)
    {
-      return CppCore::clear16(x);
+      CppCore::clear16(x);
    }
 
    /// <summary>
@@ -1035,7 +1035,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void clear<uint32_t>(uint32_t& x)
    {
-      return CppCore::clear32(x);
+      CppCore::clear32(x);
    }
 
    /// <summary>
@@ -1043,7 +1043,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void clear<uint64_t>(uint64_t& x)
    {
-      return CppCore::clear64(x);
+      CppCore::clear64(x);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

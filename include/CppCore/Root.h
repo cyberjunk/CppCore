@@ -779,6 +779,15 @@ static_assert(sizeof(double) == 8U, "double not 8 bytes");
 #endif
 #endif
 
+// No Inline Macro
+#ifndef NOINLINE
+#if defined(CPPCORE_COMPILER_MSVC)
+#define NOINLINE  __declspec(noinline)
+#else
+#define NOINLINE  __attribute__((noinline))
+#endif
+#endif
+
 // Macro for constexpr when CLANG supports it but MSVC does not
 #if defined(CPPCORE_COMPILER_CLANG)
 #define CONSTEXPR constexpr
@@ -823,6 +832,13 @@ static_assert(sizeof(double) == 8U, "double not 8 bytes");
 #define CPPCORE_UNROLL   _Pragma("unroll")
 #else
 #define CPPCORE_UNROLL
+#endif
+
+// No Loop Unrolling (#pragma nounroll)
+#if defined(CPPCORE_COMPILER_CLANG)
+#define CPPCORE_NO_UNROLL _Pragma("nounroll")
+#else
+#define CPPCORE_NO_UNROLL
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
