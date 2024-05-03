@@ -711,7 +711,6 @@ namespace CppCore
       }
       else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::addcarry<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
       else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::addcarry<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
-      else throw;
    }
 
    /// <summary>
@@ -1084,7 +1083,6 @@ namespace CppCore
       }
       else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::subborrow<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
       else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::subborrow<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
-      else throw;
    }
 
    /// <summary>
@@ -2745,7 +2743,6 @@ namespace CppCore
                *rp = k;
          }
       }
-      else throw;
    }
 
    /// <summary>
