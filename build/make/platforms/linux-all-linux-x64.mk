@@ -10,15 +10,15 @@ TARGET     = x86_64-linux-gnu
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -fPIC -static -fsanitize=type
+CXXFLAGS   = -target $(TARGET) -fPIC -static -fsanitize=address
 CC         = clang
-CFLAGS     = -target $(TARGET) -fPIC -static -fsanitize=type
+CFLAGS     = -target $(TARGET) -fPIC -static -fsanitize=address
 AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
-LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc -fsanitize=type
+LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc -fsanitize=address
 LINKPATH   =
 LINKLIBS   = 
 DEBARCH    = amd64
