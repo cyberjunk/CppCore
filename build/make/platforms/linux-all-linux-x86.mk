@@ -10,15 +10,15 @@ TARGET     = i686-linux-gnu
 DEFINES    = 
 INCLUDES   = -I/usr/$(TARGET)/include
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -fPIC -static -fno-strict-aliasing
+CXXFLAGS   = -target $(TARGET) -fPIC -static -fsanitize=type
 CC         = clang
-CFLAGS     = -target $(TARGET) -fPIC -static -fno-strict-aliasing
+CFLAGS     = -target $(TARGET) -fPIC -static -fsanitize=type
 AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
-LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc -fno-strict-aliasing
+LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc -fsanitize=type
 LINKPATH   =
 LINKLIBS   = 
 DEBARCH    = i386
