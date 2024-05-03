@@ -49,32 +49,32 @@ jobs:
       run: sudo apt-get install llvm libx11-dev:$ARCH
     
     # CLANG15
-    - name: CLANG15
-      if: matrix.os == 'ubuntu-22.04'
-      run: |
-        sudo bash select-clang.sh 13 101
-        update-alternatives --display clang++
-        update-alternatives --display clang
-        sudo update-alternatives --auto clang
-        sudo update-alternatives --auto clang++
-        clang --version
-        clang++ --version
+    #- name: CLANG15
+    #  if: matrix.os == 'ubuntu-22.04'
+    #  run: |
+    #    sudo bash select-clang.sh 13 101
+    #    update-alternatives --display clang++
+    #    update-alternatives --display clang
+    #    sudo update-alternatives --auto clang
+    #    sudo update-alternatives --auto clang++
+    #    clang --version
+    #    clang++ --version
 
-    - name: CLANG17
-      if: matrix.os == 'ubuntu-22.04'
-      run: |
-        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-        echo 'deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-18 main' | sudo tee -a /etc/apt/sources.list.d/llvm.list
-        echo 'deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-18 main' | sudo tee -a /etc/apt/sources.list.d/llvm.list
-        sudo apt-get update
-        sudo apt-get install llvm-18 clang-18 lld-18
-        sudo bash select-clang.sh 18 102
-        update-alternatives --display clang++
-        update-alternatives --display clang
-        sudo update-alternatives --auto clang
-        sudo update-alternatives --auto clang++
-        clang --version
-        clang++ --version
+    #- name: CLANG17
+    #  if: matrix.os == 'ubuntu-22.04'
+    #  run: |
+    #    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+    #    echo 'deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-18 main' | sudo tee -a /etc/apt/sources.list.d/llvm.list
+    #    echo 'deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-18 main' | sudo tee -a /etc/apt/sources.list.d/llvm.list
+    #    sudo apt-get update
+    #    sudo apt-get install llvm-18 clang-18 lld-18
+    #    sudo bash select-clang.sh 18 102
+    #    update-alternatives --display clang++
+    #    update-alternatives --display clang
+    #    sudo update-alternatives --auto clang
+    #    sudo update-alternatives --auto clang++
+    #    clang --version
+    #    clang++ --version
         
     #- name: Install LLVM and Clang
     #  uses: KyleMayes/install-llvm-action@v2
