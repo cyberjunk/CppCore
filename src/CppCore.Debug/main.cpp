@@ -2,7 +2,9 @@
 
 int main()
 {
-   uint64_t r[2];
+   //uint64_t r[2];
+   struct t { uint64_t l; uint64_t h; };
+   t r;
 
    uint32_t* pr32 = (uint32_t*)&r;
    for (size_t i = 0; i < 4; i++)
@@ -10,10 +12,10 @@ int main()
       *pr32++ = 0U;
    }
 
-   std::cout << r[0] << std::endl;
-   std::cout << r[1] << std::endl;
+   std::cout << r.l << std::endl;
+   std::cout << r.h << std::endl;
 
-   if (r[0] != 0 || r[1] != 0)
+   if (r.l != 0 || r.h != 0)
    {
       std::cout << "ERROR" << std::endl;
       return 1;
