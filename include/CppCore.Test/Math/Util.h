@@ -1346,12 +1346,12 @@ namespace CppCore { namespace Test { namespace Math
 
             return false;
          }
-
+         uint64_t a1, b1;
          //CppCore::clmul((uint64_t)0x0000000000000001ULL, (uint64_t)0x0000000000000000ULL, r); if (r.l != (uint64_t)0x0000000000000000ULL || r.h != (uint64_t)0x0000000000000000ULL) return false;
          //CppCore::clmul((uint64_t)0x0000000000000000ULL, (uint64_t)0x0000000000000001ULL, r); if (r.l != (uint64_t)0x0000000000000000ULL || r.h != (uint64_t)0x0000000000000000ULL) return false;
          //CppCore::clmul((uint64_t)0x0000000000000001ULL, (uint64_t)0x0000000000000001ULL, r); if (r.l != (uint64_t)0x0000000000000001ULL || r.h != (uint64_t)0x0000000000000000ULL) return false;
          a = (uint64_t)0x0000000000000002ULL; b = (uint64_t)0x0000000000000003ULL; CppCore::clmul(a, b, r); if (r.l != (uint64_t)0x0000000000000006ULL || r.h != (uint64_t)0x0000000000000000ULL) return false;
-         a = (uint64_t)0x5b477565726f6e5dULL; b = (uint64_t)0x63746f725d53475dULL; CppCore::clmul(a, b, r); if (r.l != (uint64_t)0x929633d5d36f0451ULL || r.h != (uint64_t)0x1d4d84c85c3440c0ULL) return false;
+         a1 = (uint64_t)0x5b477565726f6e5dULL; b1 = (uint64_t)0x63746f725d53475dULL; CppCore::clmul(a1, b1, r); if (r.l != (uint64_t)0x929633d5d36f0451ULL || r.h != (uint64_t)0x1d4d84c85c3440c0ULL) return false;
          //a = (uint64_t)0x4869285368617929ULL; b = (uint64_t)0x63746f725d53475dULL; CppCore::clmul(a, b, r); if (r.l != (uint64_t)0x7fa540ac2a281315ULL || r.h != (uint64_t)0x1bd17c8d556ab5a1ULL) return false;
          /*CppCore::clmul((uint64_t)0x5b477565726f6e5dULL, (uint64_t)0x7b5b546573745665ULL, r); if (r.l != (uint64_t)0xbabf262df4b7d5c9ULL || r.h != (uint64_t)0x1a2bf6db3a30862fULL) return false;
          CppCore::clmul((uint64_t)0x4869285368617929ULL, (uint64_t)0x7b5b546573745665ULL, r); if (r.l != (uint64_t)0xd66ee03e410fd4edULL || r.h != (uint64_t)0x1d1e1f2c592e7c45ULL) return false;*/
