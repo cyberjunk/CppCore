@@ -3102,7 +3102,7 @@ namespace CppCore
             }
          }
          if (S) { CppCore::shr64x(unp, rp, n, S); }
-         else   { r = *(UINT2*)&mem[0]; }
+         else   { CppCore::clone(r, *(UINT2*)&mem[0]); }
       }
       else
    #endif
@@ -3192,7 +3192,7 @@ namespace CppCore
             }
          }
          if (S) { CppCore::shr32x(unp, rp, n, S); }
-         else   { r = *(UINT2*)&mem[0]; }
+         else   { CppCore::clone(r, *(UINT2*)&mem[0]); }
       }
       return true;
    }
@@ -3344,7 +3344,7 @@ namespace CppCore
                *unpj = kl;
          }
          if (S) { CppCore::shr64x(unp, rp, n, S); }
-         else   { r = *(UINT2*)mem; }
+         else   { CppCore::clone(r, *(UINT2*)mem); }
       }
       else
    #endif
@@ -3439,7 +3439,7 @@ namespace CppCore
                *unpj = kl;
          }
          if (S) { CppCore::shr32x(unp, rp, n, S); }
-         else   { r = *(UINT2*)mem; }
+         else   { CppCore::clone(r, *(UINT2*)mem); }
       }
    }
 
@@ -3529,7 +3529,7 @@ namespace CppCore
             else
                unpj[N] = kl;
          }
-         r = *(UINT2*)mem;
+         CppCore::clone(r, *(UINT2*)mem);
       }
       else
    #endif
@@ -3598,7 +3598,7 @@ namespace CppCore
             else
                unpj[N] = kl;
          }
-         r = *(UINT2*)mem;
+         CppCore::clone(r, *(UINT2*)mem);
       }
    }
 
