@@ -64,10 +64,10 @@ jobs:
       if: matrix.os == 'ubuntu-22.04'
       run: |
         wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-        echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main" > /etc/apt/sources.list.d/llvm.list
-        echo "deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main" >> /etc/apt/sources.list.d/llvm.list
-        apt-get update
-        apt-get install llvm-17 clang-17
+        sudo echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main" > /etc/apt/sources.list.d/llvm.list
+        sudo echo "deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main" >> /etc/apt/sources.list.d/llvm.list
+        sudo apt-get update
+        sudo apt-get install llvm-17 clang-17
         sudo bash select-clang.sh 17 102
         update-alternatives --display clang++
         update-alternatives --display clang
