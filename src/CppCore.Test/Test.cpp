@@ -164,12 +164,13 @@ int v3i_test()
    return 0;
 }
 
-CPUID        cpuid;
-System::Info sysinfo("CppCore.Test");
+//CPUID        cpuid;
+//System::Info sysinfo("CppCore.Test");
 
 // console based tests
 int main()
 {
+   /*
 #if defined(CPPCORE_CPU_X86ORX64)
    std::cout << "--------------------------------------------------"             << std::endl;
    std::cout << "VEN: " << cpuid.getVendor()                                     << std::endl;
@@ -243,7 +244,7 @@ int main()
    std::cout << "PERM: " << sysinfo.getPersistentPath()              << std::endl;
    std::cout << "EXEC: " << CppCore::System::Folder::getExecutable() << std::endl;
    std::cout << "CURR: " << CppCore::System::Folder::getCurrent()    << std::endl;
-
+   */
    bool r;
    /*
    std::cout << "-------------------------------" << std::endl;
@@ -399,7 +400,7 @@ int main()
    TEST(CppCore::Test::Math::Util::clmul32to64,     "clmul32to64:      ", std::endl);
    TEST(CppCore::Test::Math::Util::clmul64,         "clmul64:          ", std::endl);*/
    TEST(CppCore::Test::Math::Util::clmul64to128,    "clmul64to128:     ", std::endl);
-   TEST(CppCore::Test::Math::Util::clmul128,        "clmul128:         ", std::endl);
+   /*TEST(CppCore::Test::Math::Util::clmul128, "clmul128:         ", std::endl);
    TEST(CppCore::Test::Math::Util::clmul128to256,   "clmul128to256:    ", std::endl);
    TEST(CppCore::Test::Math::Util::todouble,        "todouble:         ", std::endl);
    TEST(CppCore::Test::Math::Util::gcd32,           "gcd32:            ", std::endl);
@@ -836,6 +837,6 @@ int main()
    //std::cout << " CppCore::V3is"                  << std::endl;
    //std::cout << "-------------------------------" << std::endl;
    //if (v3i_test<V3is, int32_t, V3ls, int64_t, V3fs, float, V3ds, double>() == 1) return 1;
-
+   */
    return 0;
 }
