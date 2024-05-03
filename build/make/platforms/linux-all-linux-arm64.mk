@@ -10,15 +10,15 @@ TARGET     = aarch64-linux-gnu
 DEFINES    =
 INCLUDES   = -I/usr/$(TARGET)/include
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -fPIC -static
+CXXFLAGS   = -target $(TARGET) -fPIC -static -fno-strict-aliasing
 CC         = clang
-CFLAGS     = -target $(TARGET) -fPIC -static
+CFLAGS     = -target $(TARGET) -fPIC -static -fno-strict-aliasing
 AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
-LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc
+LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc -fno-strict-aliasing
 LINKPATH   = 
 LINKLIBS   = 
 DEBARCH    = arm64

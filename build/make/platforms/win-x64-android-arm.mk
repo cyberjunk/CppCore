@@ -25,10 +25,12 @@ DEFINES    = -DANDROID -D__ANDROID_API__=$(ANDROID_API) -DANDROID_ARM_NEON=ON
 INCLUDES   = -I$(ANDROID_NDK_HOME)/sources/android/cpufeatures
 CXX        = $(ANDROID_TOOLCHAIN)/bin/armv7a-linux-androideabi$(ANDROID_API)-clang++.cmd
 CXXFLAGS   = -static -fPIC \
+             -fno-strict-aliasing \
              -target $(TARGET) \
              -isystem $(ANDROID_TOOLCHAIN)/sysroot/usr/include/$(TARGET)
 CC         = $(ANDROID_TOOLCHAIN)/bin/armv7a-linux-androideabi$(ANDROID_API)-clang.cmd
 CFLAGS     = -static -fPIC \
+             -fno-strict-aliasing \
              -target $(TARGET) \
              -isystem $(ANDROID_TOOLCHAIN)/sysroot/usr/include/$(TARGET)
 AR         = $(ANDROID_TOOLCHAIN)/bin/llvm-ar.exe
@@ -36,7 +38,7 @@ ARFLAGS    = rcs
 STRIP      = $(ANDROID_TOOLCHAIN)/bin/llvm-strip.exe
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
-LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -static-libstdc++ -static-libgcc -nostartfiles \
+LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -static-libstdc++ -static-libgcc -nostartfiles -fno-strict-aliasing \
              $(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API)/crtbegin_static.o \
              $(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API)/crtend_android.o
 LINKPATH   = -L$(ANDROID_TOOLCHAIN)/sysroot/usr/lib/$(TARGET)/$(ANDROID_API) \

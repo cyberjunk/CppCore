@@ -12,15 +12,15 @@ MINVER     = -miphoneos-version-min=13.0
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
-CXXFLAGS   = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -static
+CXXFLAGS   = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -static -fno-strict-aliasing
 CC         = clang
-CFLAGS     = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -static
+CFLAGS     = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -static -fno-strict-aliasing
 AR         = ar
 ARFLAGS    = rcs
 STRIP      = strip
 STRIPFLAGS = -S
 LINK       = $(CXX)
-LINKFLAGS  = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path)
+LINKFLAGS  = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -fno-strict-aliasing
 LINKPATH   =
 LINKLIBS   = 
 

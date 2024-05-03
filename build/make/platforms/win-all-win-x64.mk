@@ -11,15 +11,15 @@ TARGET     = x86_64-pc-windows-msvc
 DEFINES    = -DWIN32 -DWIN64 -D_MT
 INCLUDES   = 
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -static
+CXXFLAGS   = -target $(TARGET) -static -fno-strict-aliasing
 CC         = clang
-CFLAGS     = -target $(TARGET) -static
+CFLAGS     = -target $(TARGET) -static -fno-strict-aliasing
 AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
-LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -Xlinker /MACHINE:X64
+LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -Xlinker /MACHINE:X64 -fno-strict-aliasing
 LINKPATH   =
 LINKLIBS   = 
 
