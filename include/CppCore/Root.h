@@ -835,7 +835,7 @@ static_assert(sizeof(double) == 8U, "double not 8 bytes");
 #endif
 
 #if defined(CPPCORE_COMPILER_CLANG)
-#define CPPCORE_NO_UNROLL #pragma nounroll
+#define CPPCORE_NO_UNROLL _Pragma("nounroll")
 #else
 #define CPPCORE_NO_UNROLL
 #endif
