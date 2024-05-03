@@ -53,10 +53,10 @@ jobs:
       if: matrix.os == 'ubuntu-22.04'
       run: |
         sudo bash select-clang.sh 15 99
-        update-alternatives --list clang++
-        update-alternatives --list clang
+        update-alternatives --display clang++
+        update-alternatives --display clang
         clang --version
-        update-alternatives --auto clang
+        update-alternatives --set clang /usr/bin/clang-15
         clang --version
         
     #- name: Install LLVM and Clang
