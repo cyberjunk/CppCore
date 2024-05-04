@@ -114,8 +114,8 @@ namespace CppCore
       {
          t = n - 1U;
          s = CppCore::tzcnt(t);
-         d = t;
-         if (s) d >>= s;
+         CppCore::clone(d, t);
+         if (s) CppCore::shr(d, d, s);
       }
 
       /// <summary>
@@ -417,7 +417,8 @@ namespace CppCore
 
          // perfect square root test
          t = CppCore::isqrt(n);
-         if (n == t*t)
+         CppCore::umul(t, t, d);
+         if (CppCore::equal(n, d))
             return Primes::NotPrime;
 
          // lucas-lehmer mersenne prime check
