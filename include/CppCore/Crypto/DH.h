@@ -50,6 +50,11 @@ namespace CppCore
       }
    public:
       /// <summary>
+      /// Constructor
+      /// </summary>
+      INLINE DH() { }
+
+      /// <summary>
       /// Automatically generate prime, constant and private key.
       /// You must share prime (p), constant (g) and public key (V).
       /// </summary>

@@ -12,7 +12,9 @@ INCLUDES  := $(INCLUDES) \
              -I$(SRCDIR)
 CXXFLAGS  := $(CXXFLAGS) \
              -std=c++17 \
-             -fno-exceptions
+             -fno-exceptions \
+             -fno-stack-protector \
+             -fno-stack-check
 LINKFLAGS := $(LINKFLAGS) -shared
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
