@@ -112,7 +112,7 @@ namespace CppCore
       template<typename UINT>
       INLINE static void sprp_tsd(const UINT& n, UINT& t, uint32_t& s, UINT& d)
       {
-         t = n - 1U;
+         CppCore::usub(n, (size_t)1U, t);
          s = CppCore::tzcnt(t);
          CppCore::clone(d, t);
          if (s) CppCore::shr(d, d, s);
