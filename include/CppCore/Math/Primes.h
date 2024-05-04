@@ -328,7 +328,7 @@ namespace CppCore
       /// Memory used by Prime Check algorithm.
       /// </summary>
       template<typename UINT>
-      struct Memory
+      struct CPPCORE_ALIGN64 Memory
       {
          union {
             struct {
