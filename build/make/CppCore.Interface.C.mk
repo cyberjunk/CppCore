@@ -82,8 +82,6 @@ INCLUDES    := $(INCLUDES)
 CXXFLAGS    := $(CXXFLAGS) -fno-builtin
 LINKFLAGS   := $(LINKFLAGS) \
                -fno-builtin \
-               -nostdlib \
-               -lSystem \
                -dynamiclib \
                -current_version $(VERSION3) \
                -compatibility_version $(VERSION2) \
@@ -96,6 +94,7 @@ DEFINES     := $(DEFINES)
 endif
 ifeq ($(TARGET_ARCH),x64)
 DEFINES     := $(DEFINES)
+LINKFLAGS   := $(LINKFLAGS) -nostdlib -lSystem
 endif
 ifeq ($(TARGET_ARCH),arm)
 DEFINES     := $(DEFINES)
