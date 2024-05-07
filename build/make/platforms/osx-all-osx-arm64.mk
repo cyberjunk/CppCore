@@ -38,9 +38,9 @@ endif
 # Debug vs. Release
 ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
-CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections
-CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections
-LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -dead_strip -dead_strip_dylibs
+CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer
+CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer
+LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -dead_strip -dead_strip_dylibs -fomit-frame-pointer
 else
 DEFINES   := $(DEFINES) -D_DEBUG
 CXXFLAGS  := $(CXXFLAGS) -Og -g3
