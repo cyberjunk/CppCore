@@ -79,8 +79,11 @@ endif
 ifeq ($(TARGET_OS),osx)
 DEFINES     := $(DEFINES)
 INCLUDES    := $(INCLUDES)
-CXXFLAGS    := $(CXXFLAGS)
+CXXFLAGS    := $(CXXFLAGS) -fno-builtin
 LINKFLAGS   := $(LINKFLAGS) \
+               -fno-builtin \
+               -nostdlib \
+               -lSystem \
                -dynamiclib \
                -current_version $(VERSION3) \
                -compatibility_version $(VERSION2) \
