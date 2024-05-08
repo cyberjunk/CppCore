@@ -83,6 +83,8 @@ CXXFLAGS    := $(CXXFLAGS) -fno-builtin
 LINKFLAGS   := $(LINKFLAGS) \
                -fno-builtin \
                -dynamiclib \
+               -nostdlib \
+               -lSystem \
                -current_version $(VERSION3) \
                -compatibility_version $(VERSION2) \
                -install_name $(LIBNAME)$(EXTDLL) \
@@ -94,7 +96,7 @@ DEFINES     := $(DEFINES)
 endif
 ifeq ($(TARGET_ARCH),x64)
 DEFINES     := $(DEFINES)
-LINKFLAGS   := $(LINKFLAGS) -nostdlib -lSystem
+LINKFLAGS   := $(LINKFLAGS)
 endif
 ifeq ($(TARGET_ARCH),arm)
 DEFINES     := $(DEFINES)
