@@ -107,7 +107,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13]
+        os: [macos-13, macos-14]
         cpurev: [legacy, default, modern]
     steps:
 
