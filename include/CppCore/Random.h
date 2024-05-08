@@ -54,6 +54,10 @@ namespace CppCore
          v ^= seedmix32((uint32_t)(size_t)&v);
       #if defined(CPPCORE_CPU_X86ORX64)
          v ^= seedmix32((uint32_t)__rdtsc());
+      #elif defined(CPPCORE_CPU_ARM64) && defined(CPPCORE_COMPILER_CLANG)
+         uint64_t t;
+         __asm volatile ("MRS %0, CNTVCT_EL0;" : "=r"(t) :: "memory");
+         v ^= seedmix32((uint32_t)t);
       #else
          v ^= seedmix32((uint32_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count());
       #endif
@@ -81,6 +85,10 @@ namespace CppCore
          v ^= seedmix64((uint64_t)&v);
       #if defined(CPPCORE_CPU_X86ORX64)
          v ^= seedmix64((uint64_t)__rdtsc());
+      #elif defined(CPPCORE_CPU_ARM64) && defined(CPPCORE_COMPILER_CLANG)
+         uint64_t t;
+         __asm volatile ("MRS %0, CNTVCT_EL0;" : "=r"(t) :: "memory");
+         v ^= seedmix64(t);
       #else
          v ^= seedmix64((uint64_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count());
       #endif
