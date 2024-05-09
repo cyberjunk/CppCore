@@ -710,6 +710,22 @@
 #define CPPCORE_ALIGN64_INTRIN CPPCORE_ALIGN64
 #endif
 
+// Optimal Alignment for enabled Instructions
+#if defined(CPPCORE_CPUFEAT_AVX512F)
+#define CPPCORE_ALIGN_OPTIM_SIZE 64
+#elif defined(CPPCORE_CPUFEAT_AVX)
+#define CPPCORE_ALIGN_OPTIM_SIZE 32
+#elif defined(CPPCORE_CPUFEAT_SSE) || defined(CPPCORE_CPUFEAT_ARM_NEON)
+#define CPPCORE_ALIGN_OPTIM_SIZE 16
+#elif defined(CPPCORE_CPU_64BIT)
+#define CPPCORE_ALIGN_OPTIM_SIZE 8
+#else
+#define CPPCORE_ALIGN_OPTIM_SIZE 4
+#endif
+
+// Optimal Alignment for type
+#define CPPCORE_ALIGN_OPTIM(type) alignas(MAX(alignof(type), CPPCORE_ALIGN_OPTIM_SIZE)) type
+
 // Aligned Memory Allocation
 #if defined(CPPCORE_OS_WINDOWS)
 #define CPPCORE_ALIGNED_ALLOC(S, A) ::_aligned_malloc(S, A)

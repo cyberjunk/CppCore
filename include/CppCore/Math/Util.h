@@ -2871,7 +2871,7 @@ namespace CppCore
    template<typename UINT, typename UINT2>
    INLINE static UINT upow(UINT a, UINT2 b)
    {
-      UINT r(1U);
+      CPPCORE_ALIGN_OPTIM(UINT) r(1U);
       while (b != 0U)
       {
          if (((uint32_t)b & 1U) != 0U)
@@ -3198,7 +3198,7 @@ namespace CppCore
    template<typename UINT1, typename UINT2>
    INLINE static bool udivmod(UINT1& q, UINT2& r, const UINT1& u, const UINT2& v)
    {
-      UINT1 mem[2];
+      CPPCORE_ALIGN_OPTIM(UINT1) mem[2];
       return CppCore::udivmod(q, r, u, v, mem);
    }
 
@@ -3444,7 +3444,7 @@ namespace CppCore
    template<typename UINT1, typename UINT2>
    INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v)
    {
-      UINT1 mem[2];
+      CPPCORE_ALIGN_OPTIM(UINT1) mem[2];
       CppCore::umod(r, u, v, mem);
    }
 
@@ -3642,7 +3642,7 @@ namespace CppCore
    template<typename UINT>
    INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
-      UINT p[3]; 
+      CPPCORE_ALIGN_OPTIM(UINT) p[3];
       CppCore::umulmod(a, b, m, r, p);
    }
 
@@ -3765,7 +3765,7 @@ namespace CppCore
    template<typename UINT>
    INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
-      UINT t[3];
+      CPPCORE_ALIGN_OPTIM(UINT) t[3];
       CppCore::upowmod(a, b, m, r, t);
    }
 
@@ -3883,8 +3883,8 @@ namespace CppCore
    template<typename UINT>
    INLINE static void gcd(const UINT& x, const UINT& y, UINT& r)
    {
-      UINT b, t;
-      UINT un[2];
+      CPPCORE_ALIGN_OPTIM(UINT) b, t;
+      CPPCORE_ALIGN_OPTIM(UINT) un[2];
 
       if (CppCore::testzero(x))
          CppCore::clone(r, y);
