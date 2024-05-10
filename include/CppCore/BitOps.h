@@ -2540,23 +2540,6 @@ namespace CppCore
          if (*px32) { r += CppCore::lzcnt32(*px32); return r;} else r += 32;,
          if (*px16) { r += CppCore::lzcnt16(*px16); return r;} else r += 16;,
          if (*px8)  { r += CppCore::lzcnt8 (*px8);  return r;} else r +=  8;
-         // 64-Bit
-         //const auto c = CppCore::lzcnt64(*px64);
-         //r += c;
-         //if (c != 64U)
-         //   return r;,
-         // 32-Bit
-         /*const auto c = CppCore::lzcnt32(*px32);
-         r += c;
-         if (c != 32U)
-            return r;,
-         // 16-Bit
-         const auto c = CppCore::lzcnt16(*px16);
-         r += c;
-         if (c != 16U)
-            return r;,
-         // 8-Bit
-         r += CppCore::lzcnt8(*px8);*/
       )
       return r;
    }
@@ -2621,27 +2604,6 @@ namespace CppCore
    #endif
    }
 
-   
-
-   /*INLINE uint64_t countTrailingZeroes1(uint64_t b) {
-      uint64_t ret;
-      asm("bsf %1, %0\n\t"
-          "cmove %2, %0"
-          : "=&r" (ret)
-          : "r" (b), "rm" (64));
-      return ret;
-   }
-
-   INLINE uint64_t countTrailingZeroes2(uint64_t b) {
-      uint64_t ret;
-      uint8_t  zf;
-      asm("bsf %2, %0" : "=r" (ret), "=@ccz" (zf) : "r" (b));
-      if (zf) ret = 64;
-      return ret;
-   }*/
-
-
-
    /// <summary>
    /// Counts the number of trailing zeros in 64-bit integer.
    /// Uses BMI1 if available.
@@ -2686,23 +2648,10 @@ namespace CppCore
    {
       uint32_t r = 0U;
       CPPCORE_CHUNK_PROCESS_X(x, true,
-         // 64-Bit
-         const auto c = CppCore::tzcnt64(*px64);
-         r += c;
-         if (c != 64U)
-            return r;,
-         // 32-Bit
-         const auto c = CppCore::tzcnt32(*px32);
-         r += c;
-         if (c != 32U)
-            return r;,
-         // 16-Bit
-         const auto c = CppCore::tzcnt16(*px16);
-         r += c;
-         if (c != 16U)
-            return r;,
-         // 8-Bit
-         r += CppCore::tzcnt8(*px8);
+         if (*px64) { r += CppCore::tzcnt64(*px64); return r;} else r += 64;,
+         if (*px32) { r += CppCore::tzcnt32(*px32); return r;} else r += 32;,
+         if (*px16) { r += CppCore::tzcnt16(*px16); return r;} else r += 16;,
+         if (*px8)  { r += CppCore::tzcnt8 (*px8);  return r;} else r +=  8;
       )
       return r;
    }
