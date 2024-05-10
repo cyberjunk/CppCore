@@ -2536,13 +2536,17 @@ namespace CppCore
    {
       uint32_t r = 0U;
       CPPCORE_CHUNK_PROCESS_X(x, false,
+         if (*px64) { r += CppCore::lzcnt64(*px64); return r;} else r += 64;,
+         if (*px32) { r += CppCore::lzcnt32(*px32); return r;} else r += 32;,
+         if (*px16) { r += CppCore::lzcnt16(*px16); return r;} else r += 16;,
+         if (*px8)  { r += CppCore::lzcnt8 (*px8);  return r;} else r +=  8;
          // 64-Bit
-         const auto c = CppCore::lzcnt64(*px64);
-         r += c;
-         if (c != 64U)
-            return r;,
+         //const auto c = CppCore::lzcnt64(*px64);
+         //r += c;
+         //if (c != 64U)
+         //   return r;,
          // 32-Bit
-         const auto c = CppCore::lzcnt32(*px32);
+         /*const auto c = CppCore::lzcnt32(*px32);
          r += c;
          if (c != 32U)
             return r;,
@@ -2552,7 +2556,7 @@ namespace CppCore
          if (c != 16U)
             return r;,
          // 8-Bit
-         r += CppCore::lzcnt8(*px8);
+         r += CppCore::lzcnt8(*px8);*/
       )
       return r;
    }
@@ -2617,12 +2621,34 @@ namespace CppCore
    #endif
    }
 
+   
+
+   /*INLINE uint64_t countTrailingZeroes1(uint64_t b) {
+      uint64_t ret;
+      asm("bsf %1, %0\n\t"
+          "cmove %2, %0"
+          : "=&r" (ret)
+          : "r" (b), "rm" (64));
+      return ret;
+   }
+
+   INLINE uint64_t countTrailingZeroes2(uint64_t b) {
+      uint64_t ret;
+      uint8_t  zf;
+      asm("bsf %2, %0" : "=r" (ret), "=@ccz" (zf) : "r" (b));
+      if (zf) ret = 64;
+      return ret;
+   }*/
+
+
+
    /// <summary>
    /// Counts the number of trailing zeros in 64-bit integer.
    /// Uses BMI1 if available.
    /// </summary>
    static INLINE uint32_t tzcnt64(uint64_t v)
    {
+      //return countTrailingZeroes1(v);
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_BMI1)
       return (uint32_t)_tzcnt_u64(v);
    #elif defined(CPPCORE_CPU_64BIT) && defined(CPPCORE_COMPILER_MSVC)
