@@ -838,7 +838,7 @@ namespace CppCore
          if (!CppCore::testzero32 (*px32 )) return false;,
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
-   #elif defined(CPPCORE_CPUFEAT_AVX2)
+   #elif defined(CPPCORE_CPUFEAT_AVX)
       CPPCORE_CHUNK_PROCESS256_X(x, true,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
