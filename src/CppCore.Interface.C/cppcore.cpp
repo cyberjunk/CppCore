@@ -4,6 +4,16 @@
 
 // private c++ headers
 #include <CppCore/Root.h>
+#include <CppCore/Math/Util.h>
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// INTERNAL MACROS
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define _CPPCORE_ALIGN 64
+#define _CPPCORE_ALLOC(name, cname) \
+  (name*)CPPCORE_ALIGNED_ALLOC(CppCore::rupptwo32(sizeof(cname), _CPPCORE_ALIGN), _CPPCORE_ALIGN)
+#define _CPPCORE_FREE(ptr) CPPCORE_ALIGNED_FREE(ptr)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ENTRY POINT
@@ -16,11 +26,6 @@ BOOL WINAPI DllMain(
    LPVOID lpvReserved)  // reserved
 {
    return TRUE;
-}
-#else
-int main(int argc, char* argv[])
-{
-   return 0;
 }
 #endif
 
@@ -93,13 +98,13 @@ CPPCORE_BASEX_IMPLEMENTATION(8192, CppCore::Block8192)
 #include <CppCore/Hash/CRC32.h>
 #include <CppCore/Hash/Murmur3.h>
 
-#define CPPCORE_HASH_IMPLEMENTATION(name, classname)                                                             \
-  name* name ## _init     ()                                        { return (name*) new classname();          } \
-  void  name ## _destroy  (name* hsh)                               { delete (classname*)hsh;                  } \
-  void  name ## _reset    (name* hsh)                               { ((classname*)hsh)->reset();              } \
-  void  name ## _blockstep(name* hsh, void* data, unsigned int len) { ((classname*)hsh)->blockstep(data, len); } \
-  void  name ## _step     (name* hsh, void* data, unsigned int len) { ((classname*)hsh)->step(data, len);      } \
-  void  name ## _finish   (name* hsh, void* digest)                 { ((classname*)hsh)->finish(digest);       }
+#define CPPCORE_HASH_IMPLEMENTATION(name, cname)                                                             \
+  name* name ## _init     ()                                        { return _CPPCORE_ALLOC(name, cname);  } \
+  void  name ## _destroy  (name* hsh)                               { _CPPCORE_FREE(hsh);                  } \
+  void  name ## _reset    (name* hsh)                               { ((cname*)hsh)->reset();              } \
+  void  name ## _blockstep(name* hsh, void* data, unsigned int len) { ((cname*)hsh)->blockstep(data, len); } \
+  void  name ## _step     (name* hsh, void* data, unsigned int len) { ((cname*)hsh)->step(data, len);      } \
+  void  name ## _finish   (name* hsh, void* digest)                 { ((cname*)hsh)->finish(digest);       }
 
 CPPCORE_HASH_IMPLEMENTATION(cppcore_md5,     CppCore::MD5)
 CPPCORE_HASH_IMPLEMENTATION(cppcore_sha256,  CppCore::SHA256)
@@ -114,12 +119,12 @@ CPPCORE_HASH_IMPLEMENTATION(cppcore_murmur3, CppCore::Murmur3)
 
 #include <CppCore/Crypto/HMAC.h>
 
-#define CPPCORE_HMAC_IMPLEMENTATION(name, classname)                                                           \
-  name* name ## _init   ()                                        { return (name*) new classname();          } \
-  void  name ## _destroy(name* hsh)                               { delete (classname*)hsh;                  } \
-  void  name ## _reset  (name* hsh, void* key,  unsigned int len) { ((classname*)hsh)->reset(key, len);      } \
-  void  name ## _step   (name* hsh, void* data, unsigned int len) { ((classname*)hsh)->step(data, len);      } \
-  void  name ## _finish (name* hsh, void* digest)                 { ((classname*)hsh)->finish(digest);       }
+#define CPPCORE_HMAC_IMPLEMENTATION(name, cname)                                                           \
+  name* name ## _init   ()                                        { return _CPPCORE_ALLOC(name, cname);  } \
+  void  name ## _destroy(name* hsh)                               { _CPPCORE_FREE(hsh);                  } \
+  void  name ## _reset  (name* hsh, void* key,  unsigned int len) { ((cname*)hsh)->reset(key, len);      } \
+  void  name ## _step   (name* hsh, void* data, unsigned int len) { ((cname*)hsh)->step(data, len);      } \
+  void  name ## _finish (name* hsh, void* digest)                 { ((cname*)hsh)->finish(digest);       }
 
 CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_md5,    CppCore::HMACMD5)
 CPPCORE_HMAC_IMPLEMENTATION(cppcore_hmac_sha256, CppCore::HMACSHA256)
@@ -159,8 +164,8 @@ CPPCORE_PBKDF2_IMPLEMENTATION(cppcore_pbkdf2_sha512, CppCore::PBKDF2SHA512)
 
 // macro for dh declarations
 #define CPPCORE_DH_IMPLEMENTATION(name, cname)                                                                           \
-  name* name ## _init         ()                                   { return (name*) new cname();                       } \
-  void  name ## _destroy      (name* dh)                           { delete (cname*)dh;                                } \
+  name* name ## _init         ()                                   { return _CPPCORE_ALLOC(name, cname);               } \
+  void  name ## _destroy      (name* dh)                           { _CPPCORE_FREE((cname*)dh);                        } \
   void  name ## _reset        (name* dh, unsigned int certainty)   { ((cname*)dh)->reset(certainty);                   } \
   void  name ## _reset_pg     (name* dh, void* p, void* g)         { ((cname*)dh)->reset(p,g);                         } \
   void  name ## _reset_pgv    (name* dh, void* p, void* g, void* v){ ((cname*)dh)->reset(p,g,v);                       } \
@@ -184,8 +189,8 @@ CPPCORE_DH_IMPLEMENTATION(cppcore_dh2048, CppCore::DH2048)
 #include <CppCore/Crypto/AES.h>
 
 #define CPPCORE_AES_IMPLEMENTATION(name, cname)                                                                                  \
-  name* name ## _init       ()                                                    { return (name*) new cname();                } \
-  void  name ## _destroy    (name* aes)                                           { delete (cname*)aes;                        } \
+  name* name ## _init       ()                                                    { return _CPPCORE_ALLOC(name, cname);        } \
+  void  name ## _destroy    (name* aes)                                           { _CPPCORE_FREE(aes);                        } \
   void  name ## _reset      (name* aes,void* key)                                 { ((cname*)aes)->reset(key);                 } \
   void  name ## _encrypt_ecb(name* aes,void* in,void* out,unsigned int n)         { ((cname*)aes)->encryptECB(in, out, n);     } \
   void  name ## _decrypt_ecb(name* aes,void* in,void* out,unsigned int n)         { ((cname*)aes)->decryptECB(in, out, n);     } \
@@ -210,7 +215,7 @@ CPPCORE_AES_IMPLEMENTATION(cppcore_aes256, CppCore::AES256)
   int  name ## _test(void* data, unsigned int sign, unsigned int certainty) {     \
     classname v;                                                                  \
     CppCore::Memory::singlecopy(&v, data);                                        \
-    return CppCore::Primes::isprime(v, (bool)sign, certainty);                                \
+    return CppCore::Primes::isprime(v, (bool)sign, certainty);                    \
   }                                                                               \
   void name ## _generate(void* data, unsigned int sign, unsigned int certainty) { \
     classname v;                                                                  \

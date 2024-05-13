@@ -12,7 +12,9 @@ INCLUDES  := $(INCLUDES) \
              -I$(SRCDIR)
 CXXFLAGS  := $(CXXFLAGS) \
              -std=c++17 \
-             -fno-exceptions
+             -fno-exceptions \
+             -fno-stack-protector \
+             -fno-stack-check
 LINKFLAGS := $(LINKFLAGS) -shared
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
@@ -77,9 +79,12 @@ endif
 ifeq ($(TARGET_OS),osx)
 DEFINES     := $(DEFINES)
 INCLUDES    := $(INCLUDES)
-CXXFLAGS    := $(CXXFLAGS)
+CXXFLAGS    := $(CXXFLAGS) -fno-builtin
 LINKFLAGS   := $(LINKFLAGS) \
+               -fno-builtin \
                -dynamiclib \
+               -nostdlib \
+               -lSystem \
                -current_version $(VERSION3) \
                -compatibility_version $(VERSION2) \
                -install_name $(LIBNAME)$(EXTDLL) \
@@ -91,6 +96,7 @@ DEFINES     := $(DEFINES)
 endif
 ifeq ($(TARGET_ARCH),x64)
 DEFINES     := $(DEFINES)
+LINKFLAGS   := $(LINKFLAGS)
 endif
 ifeq ($(TARGET_ARCH),arm)
 DEFINES     := $(DEFINES)

@@ -176,7 +176,7 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         CPPCORE_ALIGN64 UINT v;
+         CPPCORE_ALIGN_OPTIM(UINT) v;
          uint32_t r;
          uint32_t n = 0U;
          bool     z;
@@ -203,7 +203,7 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         CPPCORE_ALIGN64 UINT v;
+         CPPCORE_ALIGN_OPTIM(UINT) v;
          uint32_t r;
          uint32_t n = 0U;
          bool     z;
@@ -236,10 +236,10 @@ namespace CppCore
       INLINE static void parse(const char* input, UINT& r, const char* alphabet)
       {
          assert(::strlen(alphabet) >= 2);
-         uint8_t tbl[256];
          uint8_t n = 0;
-         CppCore::clear(r);
+         CPPCORE_ALIGN64 uint8_t tbl[256];
          CppCore::clear(tbl);
+         CppCore::clear(r);
          while (const char c = *alphabet++)
             tbl[c] = n++;
          if (const char c = *input++)
@@ -262,8 +262,8 @@ namespace CppCore
       {
          if (!input || !alphabet)
             return false; // null pointer
-         uint8_t tbl[256];
          uint8_t n = 0;
+         CPPCORE_ALIGN64 uint8_t tbl[256];
          CppCore::bytedup(0xFF, tbl);
          while (const char c = *alphabet++)
             tbl[c] = n++;

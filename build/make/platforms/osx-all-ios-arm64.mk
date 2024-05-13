@@ -12,15 +12,21 @@ MINVER     = -miphoneos-version-min=13.0
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
-CXXFLAGS   = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -static -fno-strict-aliasing
+CXXFLAGS   = $(MINVER) -target $(TARGET) -static \
+             -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) \
+             -fno-strict-aliasing
 CC         = clang
-CFLAGS     = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -static -fno-strict-aliasing
+CFLAGS     = $(MINVER) -target $(TARGET) -static \
+             -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) \
+             -fno-strict-aliasing
 AR         = ar
 ARFLAGS    = rcs
 STRIP      = strip
 STRIPFLAGS = -S
 LINK       = $(CXX)
-LINKFLAGS  = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) -fno-strict-aliasing
+LINKFLAGS  = $(MINVER) -target $(TARGET) \
+             -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) \
+             -fno-strict-aliasing
 LINKPATH   =
 LINKLIBS   = 
 
@@ -38,9 +44,9 @@ endif
 # Debug vs. Release
 ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
-CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections
-CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections
-LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -dead_strip
+CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer
+CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer
+LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -dead_strip -dead_strip_dylibs -fomit-frame-pointer
 else
 DEFINES   := $(DEFINES) -D_DEBUG
 CXXFLAGS  := $(CXXFLAGS) -Og -g3

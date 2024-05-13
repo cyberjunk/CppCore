@@ -838,7 +838,7 @@ namespace CppCore
          if (!CppCore::testzero32 (*px32 )) return false;,
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
-   #elif defined(CPPCORE_CPUFEAT_AVX2)
+   #elif defined(CPPCORE_CPUFEAT_AVX)
       CPPCORE_CHUNK_PROCESS256_X(x, true,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
@@ -2536,23 +2536,10 @@ namespace CppCore
    {
       uint32_t r = 0U;
       CPPCORE_CHUNK_PROCESS_X(x, false,
-         // 64-Bit
-         const auto c = CppCore::lzcnt64(*px64);
-         r += c;
-         if (c != 64U)
-            return r;,
-         // 32-Bit
-         const auto c = CppCore::lzcnt32(*px32);
-         r += c;
-         if (c != 32U)
-            return r;,
-         // 16-Bit
-         const auto c = CppCore::lzcnt16(*px16);
-         r += c;
-         if (c != 16U)
-            return r;,
-         // 8-Bit
-         r += CppCore::lzcnt8(*px8);
+         if (*px64) { r += CppCore::lzcnt64(*px64); return r;} else r += 64;,
+         if (*px32) { r += CppCore::lzcnt32(*px32); return r;} else r += 32;,
+         if (*px16) { r += CppCore::lzcnt16(*px16); return r;} else r += 16;,
+         if (*px8)  { r += CppCore::lzcnt8 (*px8);  return r;} else r +=  8;
       )
       return r;
    }
@@ -2660,23 +2647,10 @@ namespace CppCore
    {
       uint32_t r = 0U;
       CPPCORE_CHUNK_PROCESS_X(x, true,
-         // 64-Bit
-         const auto c = CppCore::tzcnt64(*px64);
-         r += c;
-         if (c != 64U)
-            return r;,
-         // 32-Bit
-         const auto c = CppCore::tzcnt32(*px32);
-         r += c;
-         if (c != 32U)
-            return r;,
-         // 16-Bit
-         const auto c = CppCore::tzcnt16(*px16);
-         r += c;
-         if (c != 16U)
-            return r;,
-         // 8-Bit
-         r += CppCore::tzcnt8(*px8);
+         if (*px64) { r += CppCore::tzcnt64(*px64); return r;} else r += 64;,
+         if (*px32) { r += CppCore::tzcnt32(*px32); return r;} else r += 32;,
+         if (*px16) { r += CppCore::tzcnt16(*px16); return r;} else r += 16;,
+         if (*px8)  { r += CppCore::tzcnt8 (*px8);  return r;} else r +=  8;
       )
       return r;
    }

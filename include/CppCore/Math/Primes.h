@@ -112,10 +112,10 @@ namespace CppCore
       template<typename UINT>
       INLINE static void sprp_tsd(const UINT& n, UINT& t, uint32_t& s, UINT& d)
       {
-         t = n - 1U;
+         CppCore::usub(n, (size_t)1U, t);
          s = CppCore::tzcnt(t);
-         d = t;
-         if (s) d >>= s;
+         CppCore::clone(d, t);
+         if (s) CppCore::shr(d, d, s);
       }
 
       /// <summary>
@@ -328,7 +328,7 @@ namespace CppCore
       /// Memory used by Prime Check algorithm.
       /// </summary>
       template<typename UINT>
-      struct Memory
+      struct CPPCORE_ALIGN64 Memory
       {
          union {
             struct {
@@ -417,7 +417,8 @@ namespace CppCore
 
          // perfect square root test
          t = CppCore::isqrt(n);
-         if (n == t*t)
+         CppCore::umul(t, t, d);
+         if (CppCore::equal(n, d))
             return Primes::NotPrime;
 
          // lucas-lehmer mersenne prime check
