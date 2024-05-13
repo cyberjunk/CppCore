@@ -2610,7 +2610,6 @@ namespace CppCore
    /// </summary>
    static INLINE uint32_t tzcnt64(uint64_t v)
    {
-      //return countTrailingZeroes1(v);
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_BMI1)
       return (uint32_t)_tzcnt_u64(v);
    #elif defined(CPPCORE_CPU_64BIT) && defined(CPPCORE_COMPILER_MSVC)
