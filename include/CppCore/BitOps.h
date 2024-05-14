@@ -1803,8 +1803,9 @@ namespace CppCore
    static INLINE uint32_t shld32(uint32_t a, const uint32_t b, const uint8_t n)
    {
    #if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("SHLDL %[n], %[b], %[a]" : "=Rm"(a) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
-      return a;
+      uint32_t r;
+      __asm("SHLDL %[n], %[b], %[a]" : "=Rm"(r) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
+      return r;
    #else
       return (a << n) | (b >> (uint8_t)(32U-n));
    #endif
@@ -1817,8 +1818,9 @@ namespace CppCore
    static INLINE uint64_t shld64(uint64_t a, const uint64_t b, const uint8_t n)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("SHLDQ %[n], %[b], %[a]" : "=Rm"(a) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
-      return a;
+      uint64_t r;
+      __asm("SHLDQ %[n], %[b], %[a]" : "=Rm"(r) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
+      return r;
    #elif defined(CPPCORE_CPU_64BIT) && defined(CPPCORE_COMPILER_MSVC)
       return __shiftleft128(b, a, n);
    #else
@@ -1867,8 +1869,9 @@ namespace CppCore
    static INLINE uint32_t shrd32(uint32_t a, const uint32_t b, const uint8_t n)
    {
    #if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("SHRDL %[n], %[b], %[a]" : "=Rm"(a) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
-      return a;
+      uint32_t r;
+      __asm("SHRDL %[n], %[b], %[a]" : "=Rm"(r) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
+      return r;
    #else
       return (a >> n) | (b << (uint8_t)(32U-n));
    #endif
@@ -1881,8 +1884,9 @@ namespace CppCore
    static INLINE uint64_t shrd64(uint64_t a, const uint64_t b, const uint8_t n)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("SHRDQ %[n], %[b], %[a]" : "=Rm"(a) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
-      return a;
+      uint64_t r;
+      __asm("SHRDQ %[n], %[b], %[a]" : "=Rm"(r) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
+      return r;
    #elif defined(CPPCORE_CPU_64BIT) && defined(CPPCORE_COMPILER_MSVC)
       return __shiftright128(a, b, n);
    #else
@@ -1963,9 +1967,17 @@ namespace CppCore
    static INLINE void shl32x(const uint32_t* a, uint32_t* r, const uint32_t n32, const uint8_t s)
    {
       assert(a && r && n32 && s > 0 && s < 32);
-      for (uint32_t i = n32-1U; i != 0U; i--)
-         r[i] = CppCore::shld32(a[i], a[i-1], s);
-      r[0] = a[0] << s;
+      if (n32 > 1) {
+         uint32_t t1 = a[n32-1];
+         for (uint32_t i = n32-1U; i != 0U; i--) {
+            uint32_t t2 = a[i-1];
+            r[i] = CppCore::shld32(t1, t2, s);
+            t1 = t2;
+         }
+         r[0] = t1 << s;
+      }
+      else
+         r[0] = a[0] << s;
    }
 
    /// <summary>
@@ -1975,9 +1987,17 @@ namespace CppCore
    static INLINE void shl64x(const uint64_t* a, uint64_t* r, const uint32_t n64, const uint8_t s)
    {
       assert(a && r && n64 && s > 0 && s < 64);
-      for (uint32_t i = n64-1U; i != 0U; i--)
-         r[i] = CppCore::shld64(a[i], a[i-1], s);
-      r[0] = a[0] << s;
+      if (n64 > 1) {
+         uint64_t t1 = a[n64-1];
+         for (uint32_t i = n64-1U; i != 0U; i--){
+            uint64_t t2 = a[i-1];
+            r[i] = CppCore::shld64(t1, t2, s);
+            t1 = t2;
+         }
+         r[0] = t1 << s;
+      }
+      else
+         r[0] = a[0] << s;
    }
 
 #if defined(CPPCORE_CPUFEAT_SSE2)
