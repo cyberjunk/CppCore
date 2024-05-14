@@ -14,6 +14,8 @@
 
 // macro for large integer arithmetic function declarations
 #define CPPCORE_UINT_DECLARATION(name)                                     \
+  CPPCORE_EXPORT void name ## _shl   (void* a, unsigned int b, void* r);   \
+  CPPCORE_EXPORT void name ## _shr   (void* a, unsigned int b, void* r);   \
   CPPCORE_EXPORT void name ## _add   (void* a, void* b, void* r);          \
   CPPCORE_EXPORT void name ## _sub   (void* a, void* b, void* r);          \
   CPPCORE_EXPORT void name ## _mul   (void* a, void* b, void* r);          \
