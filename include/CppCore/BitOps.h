@@ -1964,7 +1964,7 @@ namespace CppCore
    /// Left shifts a into r (both n32 * 32 bit chunks) by s bits.
    /// Uses shld32 and s must be larger 0 and less than 32.
    /// </summary>
-   static INLINE void shl32x(const uint32_t* a, uint32_t* r, const uint32_t n32, const uint8_t s)
+   static INLINE void shl32x(const uint32_t* a, uint32_t* r, const uint32_t n32, const size_t s)
    {
       assert(a && r && n32 && s > 0 && s < 32);
       uint32_t t1 = a[n32-1];
@@ -1980,7 +1980,7 @@ namespace CppCore
    /// Left shifts a into r (both n64 * 64 bit chunks) by s bits.
    /// Uses shld64 and s must be larger 0 and less than 64.
    /// </summary>
-   static INLINE void shl64x(const uint64_t* a, uint64_t* r, const uint32_t n64, const uint8_t s)
+   static INLINE void shl64x(const uint64_t* a, uint64_t* r, const uint32_t n64, const size_t s)
    {
       assert(a && r && n64 && s > 0 && s < 64);
       uint64_t t1 = a[n64-1];
