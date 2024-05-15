@@ -2163,8 +2163,12 @@ namespace CppCore
    static INLINE void shl(UINT& r, const UINT& a,const size_t b)
    {
       static_assert(sizeof(UINT) % 4 == 0);
-      if (b >= (sizeof(UINT) << 3)) {
+      if (b >= (sizeof(UINT) << 3)) CPPCORE_UNLIKELY {
          CppCore::clear(r);
+         return;
+      }
+      if (b == 0U) CPPCORE_UNLIKELY {
+         CppCore::clone(r, a);
          return;
       }
    #if defined(CPPCORE_CPU_64BIT)
@@ -2212,8 +2216,12 @@ namespace CppCore
    static INLINE void shr(UINT& r, const UINT& a,const size_t b)
    {
       static_assert(sizeof(UINT) % 4 == 0);
-      if (b >= (sizeof(UINT) << 3)) {
+      if (b >= (sizeof(UINT) << 3)) CPPCORE_UNLIKELY {
          CppCore::clear(r);
+         return;
+      }
+      if (b == 0U) CPPCORE_UNLIKELY {
+         CppCore::clone(r, a);
          return;
       }
    #if defined(CPPCORE_CPU_64BIT)
