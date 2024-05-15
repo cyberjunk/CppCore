@@ -37,6 +37,8 @@ BOOL WINAPI DllMain(
 #include <CppCore/Block.h>
 
 #define CPPCORE_UINT_IMPLEMENTATION(name, cname)                                                                           \
+  void name ## _shl   (void* a, unsigned int b, void* r)  { CppCore::shl(*(cname*)r,  *(cname*)a, b);}                     \
+  void name ## _shr   (void* a, unsigned int b, void* r)  { CppCore::shr(*(cname*)r,  *(cname*)a, b);}                     \
   void name ## _add   (void* a, void* b, void* r)         { CppCore::uadd(*(cname*)a, *(cname*)b, *(cname*)r);}            \
   void name ## _sub   (void* a, void* b, void* r)         { CppCore::usub(*(cname*)a, *(cname*)b, *(cname*)r);}            \
   void name ## _mul   (void* a, void* b, void* r)         { CppCore::umul(*(cname*)a, *(cname*)b, *(cname*)r);}            \
