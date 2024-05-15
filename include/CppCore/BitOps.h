@@ -1967,17 +1967,13 @@ namespace CppCore
    static INLINE void shl32x(const uint32_t* a, uint32_t* r, const uint32_t n32, const uint8_t s)
    {
       assert(a && r && n32 && s > 0 && s < 32);
-      if (n32 > 1) {
-         uint32_t t1 = a[n32-1];
-         for (uint32_t i = n32-1U; i != 0U; i--) {
-            uint32_t t2 = a[i-1];
-            r[i] = CppCore::shld32(t1, t2, s);
-            t1 = t2;
-         }
-         r[0] = t1 << s;
+      uint32_t t1 = a[n32-1];
+      for (uint32_t i = n32-1U; i != 0U; i--) {
+         uint32_t t2 = a[i-1];
+         r[i] = CppCore::shld32(t1, t2, s);
+         t1 = t2;
       }
-      else
-         r[0] = a[0] << s;
+      r[0] = t1 << s;
    }
 
    /// <summary>
@@ -1987,17 +1983,13 @@ namespace CppCore
    static INLINE void shl64x(const uint64_t* a, uint64_t* r, const uint32_t n64, const uint8_t s)
    {
       assert(a && r && n64 && s > 0 && s < 64);
-      if (n64 > 1) {
-         uint64_t t1 = a[n64-1];
-         for (uint32_t i = n64-1U; i != 0U; i--){
-            uint64_t t2 = a[i-1];
-            r[i] = CppCore::shld64(t1, t2, s);
-            t1 = t2;
-         }
-         r[0] = t1 << s;
+      uint64_t t1 = a[n64-1];
+      for (uint32_t i = n64-1U; i != 0U; i--){
+         uint64_t t2 = a[i-1];
+         r[i] = CppCore::shld64(t1, t2, s);
+         t1 = t2;
       }
-      else
-         r[0] = a[0] << s;
+      r[0] = t1 << s;
    }
 
 #if defined(CPPCORE_CPUFEAT_SSE2)
@@ -2089,9 +2081,13 @@ namespace CppCore
    static INLINE void shr32x(const uint32_t* a, uint32_t* r, const uint32_t n32, const uint8_t s)
    {
       assert(a && r && n32 && s > 0 && s < 32);
-      for (uint32_t i = 0; i < n32-1U; i++)
-         r[i] = CppCore::shrd32(a[i], a[i+1], s);
-      r[n32-1] = a[n32-1] >> s;
+      uint32_t t1 = a[0];
+      for (uint32_t i = 0; i < n32-1U; i++) {
+         uint32_t t2 = a[i+1];
+         r[i] = CppCore::shrd32(t1, t2, s);
+         t1 = t2;
+      }
+      r[n32-1] = t1 >> s;
    }
 
    /// <summary>
@@ -2101,9 +2097,13 @@ namespace CppCore
    static INLINE void shr64x(const uint64_t* a, uint64_t* r, const uint32_t n64, const uint8_t s)
    {
       assert(a && r && n64 && s > 0 && s < 64);
-      for (uint32_t i = 0; i < n64-1U; i++)
-         r[i] = CppCore::shrd64(a[i], a[i+1], s);
-      r[n64-1] = a[n64-1] >> s;
+      uint64_t t1 = a[0];
+      for (uint32_t i = 0; i < n64-1U; i++) {
+         uint64_t t2 = a[i+1];
+         r[i] = CppCore::shrd64(t1, t2, s);
+         t1 = t2;
+      }
+      r[n64-1] = t1 >> s;
    }
 
 #if defined(CPPCORE_CPUFEAT_SSE2)
