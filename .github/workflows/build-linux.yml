@@ -31,11 +31,11 @@ jobs:
       uses: actions/checkout@v4
 
     # Purge PPA
-    - name: Purge PPA
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ppa-purge aptitude
-        sudo ppa-purge -y ppa:ubuntu-toolchain-r/test
+    #- name: Purge PPA
+    #  run: |
+    #    sudo apt-get update
+    #    sudo apt-get install -y ppa-purge aptitude
+    #    sudo ppa-purge -y ppa:ubuntu-toolchain-r/test
 
     # Cross-Compile Support
     - name: Cross-Compile Support
@@ -46,7 +46,9 @@ jobs:
 
     # Ubuntu Packages
     - name: Ubuntu Packages
-      run: sudo apt-get install clang llvm libx11-dev:$ARCH
+      run: |
+        sudo apt-get update
+        sudo apt-get install clang llvm libx11-dev:$ARCH
     
     # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
