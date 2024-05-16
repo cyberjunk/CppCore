@@ -109,10 +109,8 @@ jobs:
         ls -la ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
         ldd ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
         objdump -p ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
-        llvm-strip --strip-all ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
-        ls -la ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
-        objdump -p ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
-        
+        objdump -T ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
+
     # Test Native
     - name: Test Native
       run: make test
