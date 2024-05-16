@@ -108,6 +108,7 @@ jobs:
         echo CppCore.Interface.C
         ls -la ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
         ldd ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
+        objdump ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
 
     # Test Native
     - name: Test Native
