@@ -179,6 +179,7 @@ namespace CppCore
       template<typename UINT>
       INLINE static bool isprime_trivial(const UINT& n)
       {
+         UINT m;
          if ( n < 2U)                  return false; // 0 and 1 not prime
          if ( n < 4U)                  return true;  // 2 and 3 are prime
          if (((uint32_t)n & 1U) == 0U) return false; // even never prime
@@ -186,9 +187,9 @@ namespace CppCore
          if ( n % 3U  == 0U)           return false; // test 3 (const div replaced by compiler)
          if ( n % 5U  == 0U)           return false; // test 5 (const div replaced by compiler)
          if ( n % 7U  == 0U)           return false; // test 7 (const div replaced by compiler)
-         UINT p(11U);                      // min. divisor (prime) to test
-         const UINT& m = CppCore::isqrt(n);// max. divisor to test
-         return !hasoddfactor(n, p, m);    // test odd numbers in range
+         UINT p(11U);                   // min. divisor (prime) to test
+         CppCore::isqrt(n, m);          // max. divisor to test
+         return !hasoddfactor(n, p, m); // test odd numbers in range
       }
 
       /// <summary>
@@ -416,7 +417,7 @@ namespace CppCore
          }
 
          // perfect square root test
-         t = CppCore::isqrt(n);
+         CppCore::isqrt(n, t);
          CppCore::umul(t, t, d);
          if (CppCore::equal(n, d))
             return Primes::NotPrime;

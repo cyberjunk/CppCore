@@ -1640,7 +1640,7 @@ namespace CppCore
          /// </summary>
          INLINE static void sqrt(const TC& a, TC& r)
          {
-            r = CppCore::isqrt(a);
+            CppCore::isqrt(a, r);
          }
 
          /// <summary>

@@ -1372,24 +1372,23 @@ namespace CppCore
    /// that support shift, or, sub and comparison ops.
    /// </summary>
    template<typename T, size_t NBITS = sizeof(T) * 8U>
-   INLINE static T isqrt(const T& a)
+   INLINE static void isqrt(const T& a, T& r)
    {
       // From Hacker's Delight
-      T m, x, y, b;
+      T m, x, b;
       x = a;
       m = 1;
       m <<= (NBITS - 2U);
-      y = 0;
+      r = 0;
       while (m != 0) {
-         b = y | m;
-         y >>= 1;
+         b = r | m;
+         r >>= 1;
          if (x >= b) {
             x -= b;
-            y |= m;
+            r |= m;
          }
          m >>= 2;
       }
-      return y;
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
