@@ -77,7 +77,7 @@ OUTDIST   := $(DISTDIR)/$(NAME)-$(TARGET_ARCH)/usr/bin/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -static-libstdc++ -static-libgcc 
 LINKLIBS  := $(LINKLIBS) -lpthread
 RESO      := $(RESO)
 endif

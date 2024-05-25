@@ -89,12 +89,11 @@ LINKFLAGS   := $(LINKFLAGS) \
                -fno-builtin \
                -dynamiclib \
                -nostdlib \
-               -lSystem \
                -current_version $(VERSION3) \
                -compatibility_version $(VERSION2) \
                -install_name $(LIBNAME)$(EXTDLL) \
                -Wl,-object_path_lto,$(OBJDIR)/lto.o
-LINKLIBS    := $(LINKLIBS)
+LINKLIBS    := $(LINKLIBS) -lSystem
 RESO        := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES     := $(DEFINES)
@@ -114,9 +113,12 @@ endif
 ifeq ($(TARGET_OS),linux)
 DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
-CXXFLAGS  := $(CXXFLAGS)
-LINKFLAGS := $(LINKFLAGS) -Wl,--no-eh-frame-hdr
-LINKLIBS  := $(LINKLIBS)
+CXXFLAGS  := $(CXXFLAGS) -fno-builtin
+LINKFLAGS := $(LINKFLAGS) \
+             -fno-builtin \
+             -nostdlib \
+             -Wl,--no-eh-frame-hdr
+LINKLIBS  := $(LINKLIBS) -lc
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
