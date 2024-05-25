@@ -11,8 +11,10 @@ INCLUDES  := $(INCLUDES) \
              -I$(INCDIR) \
              -I$(SRCDIR)
 CXXFLAGS  := $(CXXFLAGS) \
-             -std=c++17 \
+             -std=c++17  \
              -fno-exceptions \
+             -fno-unwind-tables \
+             -fno-asynchronous-unwind-tables \
              -fno-stack-protector \
              -fno-stack-check
 LINKFLAGS := $(LINKFLAGS) -shared
@@ -20,6 +22,9 @@ LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = cppcore.o
 RESO       =
+
+#-fno-builtin -nostdlib -fno-common 
+# -Wl,-no-pie -Wl,--no-dynamic-linker
 
 ################################################################################################
 
@@ -110,7 +115,7 @@ ifeq ($(TARGET_OS),linux)
 DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
-LINKFLAGS := $(LINKFLAGS) -static
+LINKFLAGS := $(LINKFLAGS) -Wl,--no-eh-frame-hdr
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
