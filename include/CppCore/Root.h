@@ -571,9 +571,6 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
-#include <ios>
-#include <iostream>
-#include <iomanip>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -585,6 +582,11 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#ifndef CPPCORE_NO_INCLUDE_IO
+#include <ios>
+#include <iostream>
+#include <iomanip>
+#endif
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
