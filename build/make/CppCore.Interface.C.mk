@@ -92,7 +92,10 @@ LINKFLAGS   := $(LINKFLAGS) \
                -current_version $(VERSION3) \
                -compatibility_version $(VERSION2) \
                -install_name $(LIBNAME)$(EXTDLL) \
-               -Wl,-object_path_lto,$(OBJDIR)/lto.o
+               -Wl,-object_path_lto,$(OBJDIR)/lto.o \
+               -Wl,-no_function_starts \
+               -Wl,-no_keep_dwarf_unwind \
+               -Wl,-no_compact_unwind
 LINKLIBS    := $(LINKLIBS) -lSystem
 RESO        := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
