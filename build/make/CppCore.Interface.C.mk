@@ -160,11 +160,13 @@ endif
 
 ifeq ($(TARGET_OS),ios)
 DEFINES   := $(DEFINES)
-CXXFLAGS  := $(CXXFLAGS)
+CXXFLAGS  := $(CXXFLAGS) -fno-builtin
 LINKFLAGS := $(LINKFLAGS) \
+             -fno-builtin \
              -dynamiclib \
+             -nostdlib \
              -install_name @rpath/$(LIBNAME)$(EXTDLL)
-LINKLIBS  := $(LINKLIBS)
+LINKLIBS  := $(LINKLIBS) -lSystem
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
