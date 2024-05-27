@@ -93,6 +93,7 @@ LINKFLAGS   := $(LINKFLAGS) \
                -compatibility_version $(VERSION2) \
                -install_name $(LIBNAME)$(EXTDLL) \
                -Wl,-object_path_lto,$(OBJDIR)/lto.o \
+               -Wl,-no_data_in_code_info \
                -Wl,-no_function_starts \
                -Wl,-no_keep_dwarf_unwind \
                -Wl,-no_compact_unwind
