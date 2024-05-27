@@ -321,6 +321,8 @@ lib-dist: dist-prep lib-dist-x64 lib-dist-arm64
 	  $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
 	@echo [INF] $(LIBNAME).dSYM
 	@dwarfdump --uuid $(DISTDIR)/$(NAME)/$(LIBNAME).dSYM
+	@echo [STR] $(LIBNAME)$(EXTDLL)
+	@$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
 	@echo [SIG] $(LIBNAME)$(EXTDLL)
 	@codesign --verbose \
 	  --sign "$(PUBLISHERCN)" \
