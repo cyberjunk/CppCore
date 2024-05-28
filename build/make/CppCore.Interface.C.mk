@@ -11,7 +11,7 @@ INCLUDES  := $(INCLUDES) \
              -I$(INCDIR) \
              -I$(SRCDIR)
 CXXFLAGS  := $(CXXFLAGS) \
-             -std=c++17  \
+             -std=c++17 \
              -fno-exceptions \
              -fno-unwind-tables \
              -fno-asynchronous-unwind-tables \
