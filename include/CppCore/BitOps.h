@@ -2171,6 +2171,14 @@ namespace CppCore
          CppCore::clone(r, a);
          return;
       }
+      if constexpr (sizeof(UINT) == 8) {
+         *(uint64_t*)&r = *(uint64_t*)&a << b;
+         return;
+      }
+      if constexpr (sizeof(UINT) == 4) {
+         *(uint32_t*)&r = *(uint32_t*)&a << b;
+         return;
+      }
    #if defined(CPPCORE_CPU_64BIT)
       if constexpr (sizeof(UINT) % 8 == 0)
       {
@@ -2222,6 +2230,14 @@ namespace CppCore
       }
       if (b == 0U) CPPCORE_UNLIKELY {
          CppCore::clone(r, a);
+         return;
+      }
+      if constexpr (sizeof(UINT) == 8) {
+         *(uint64_t*)&r = *(uint64_t*)&a >> b;
+         return;
+      }
+      if constexpr (sizeof(UINT) == 4) {
+         *(uint32_t*)&r = *(uint32_t*)&a >> b;
          return;
       }
    #if defined(CPPCORE_CPU_64BIT)
