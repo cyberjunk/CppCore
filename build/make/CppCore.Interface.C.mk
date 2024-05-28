@@ -16,7 +16,8 @@ CXXFLAGS  := $(CXXFLAGS) \
              -fno-unwind-tables \
              -fno-asynchronous-unwind-tables \
              -fno-stack-protector \
-             -fno-stack-check
+             -fno-stack-check \
+             -mno-stack-arg-probe
 LINKFLAGS := $(LINKFLAGS) -shared
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
@@ -60,12 +61,20 @@ endif
 ifeq ($(TARGET_OS),win)
 DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
-CXXFLAGS  := $(CXXFLAGS)
+CXXFLAGS  := $(CXXFLAGS) -fno-builtin
 LINKFLAGS := $(LINKFLAGS) \
+             -fno-builtin \
+             -nostdlib \
+             -Xlinker /ENTRY:DllMain \
+             -Xlinker /SAFESEH:NO \
              -Xlinker /SUBSYSTEM:CONSOLE",10.00" \
              -Xlinker /PDBALTPATH:$(LIBNAME)$(SUFFIX)$(EXTPDB) \
              -DLL
-LINKLIBS  := $(LINKLIBS)
+ifeq ($(MODE),release)
+LINKLIBS  := $(LINKLIBS) -lUCRT -lMSVCRT
+else
+LINKLIBS  := $(LINKLIBS) -lUCRTD -lMSVCRTD
+endif
 RESO      := $(RESO) resources.res
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES) 
