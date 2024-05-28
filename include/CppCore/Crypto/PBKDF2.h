@@ -16,6 +16,11 @@ namespace CppCore
 
    public:
       /// <summary>
+      /// Constructor
+      /// </summary>
+      INLINE PBKDF2() { }
+
+      /// <summary>
       /// Created digest using pw, salt and iterations.
       /// </summary>
       INLINE void create(
@@ -39,7 +44,7 @@ namespace CppCore
             hmac.step(&ctrbe, 4);
             hmac.finish(md1);
 
-            mdx = md1;
+            CppCore::clone(mdx, md1);
 
             for (size_t i = 1; i < iterations; i++)
             {

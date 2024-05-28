@@ -26,6 +26,11 @@ namespace CppCore
 
    public:
       /// <summary>
+      /// Constructor
+      /// </summary>
+      INLINE HMAC() { }
+
+      /// <summary>
       /// Reset HMAC.
       /// </summary>
       INLINE void reset(
