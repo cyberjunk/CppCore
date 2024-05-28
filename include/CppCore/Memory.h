@@ -1598,7 +1598,7 @@ namespace CppCore
       /// Automatically picks singlecopy() variant based on sizeof(T).
       /// Only supports power-of-two sizes from 4 to 256 Bytes.
       /// </summary>
-      template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
+      template<typename T, size_t DSTALIGN=alignof(T), size_t SRCALIGN=1>
       INLINE static void singlecopy(T* dst, const void* src)
       {
          if      constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
@@ -1615,7 +1615,7 @@ namespace CppCore
       /// Automatically picks singlecopy() variant based on sizeof(T).
       /// Only supports power-of-two sizes from 4 to 256 Bytes.
       /// </summary>
-      template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
+      template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=alignof(T)>
       INLINE static void singlecopy(void* dst, const T* src)
       {
          if      constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
