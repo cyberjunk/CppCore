@@ -1376,12 +1376,12 @@ namespace CppCore
    {
       // From Hacker's Delight
       T m, x, b;
-      x = a;
+      CppCore::clone(x, a);
+      CppCore::clear(r);
       m = 1;
       m <<= (NBITS - 2U);
-      r = 0;
       while (m != 0) {
-         b = r | m;
+         CppCore::or_(r, m, b);
          r >>= 1;
          if (x >= b) {
             x -= b;
