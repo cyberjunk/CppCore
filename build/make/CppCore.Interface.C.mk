@@ -11,13 +11,13 @@ INCLUDES  := $(INCLUDES) \
              -I$(INCDIR) \
              -I$(SRCDIR)
 CXXFLAGS  := $(CXXFLAGS) \
-             -std=c++17 \
+             -std=c++17  \
+             -fvisibility=hidden \
              -fno-exceptions \
              -fno-unwind-tables \
              -fno-asynchronous-unwind-tables \
              -fno-stack-protector \
-             -fno-stack-check \
-             -mno-stack-arg-probe
+             -fno-stack-check
 LINKFLAGS := $(LINKFLAGS) -shared
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
@@ -61,20 +61,12 @@ endif
 ifeq ($(TARGET_OS),win)
 DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
-CXXFLAGS  := $(CXXFLAGS) -fno-builtin
+CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
-             -fno-builtin \
-             -nostdlib \
-             -Xlinker /ENTRY:DllMain \
-             -Xlinker /SAFESEH:NO \
              -Xlinker /SUBSYSTEM:CONSOLE",10.00" \
              -Xlinker /PDBALTPATH:$(LIBNAME)$(SUFFIX)$(EXTPDB) \
              -DLL
-ifeq ($(MODE),release)
-LINKLIBS  := $(LINKLIBS) -lUCRT -lMSVCRT
-else
-LINKLIBS  := $(LINKLIBS) -lUCRTD -lMSVCRTD
-endif
+LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO) resources.res
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES) 
@@ -169,7 +161,7 @@ endif
 
 ifeq ($(TARGET_OS),ios)
 DEFINES   := $(DEFINES)
-CXXFLAGS  := $(CXXFLAGS) -fno-builtin
+CXXFLAGS  := $(CXXFLAGS) -fno-builtin -fno-builtin-memcpy
 LINKFLAGS := $(LINKFLAGS) \
              -fno-builtin \
              -dynamiclib \
