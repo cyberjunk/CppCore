@@ -906,15 +906,23 @@ namespace CppCore
          INLINE static bool lt(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return true;  // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return false; // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return true;  // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return false; // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return false;                                      // equal
+            return false; // equal
          }
 
          /// <summary>
@@ -951,15 +959,23 @@ namespace CppCore
          INLINE static bool lte(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return true;  // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return false; // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return true;  // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return false; // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return true;                                       // equal
+            return true; // equal
          }
 
          /// <summary>
@@ -996,15 +1012,23 @@ namespace CppCore
          INLINE static bool gt(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return false; // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return true;  // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return false; // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return true;  // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return false;                                      // equal
+            return false; // equal
          }
 
          /// <summary>
@@ -1041,15 +1065,23 @@ namespace CppCore
          INLINE static bool gte (const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return false; // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return true;  // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return false; // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return true;  // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return true;                                       // equal
+            return true; // equal
          }
 
          /// <summary>
