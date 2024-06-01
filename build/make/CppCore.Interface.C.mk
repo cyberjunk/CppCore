@@ -12,13 +12,15 @@ INCLUDES  := $(INCLUDES) \
              -I$(SRCDIR)
 CXXFLAGS  := $(CXXFLAGS) \
              -std=c++17  \
+             -fno-builtin \
              -fvisibility=hidden \
              -fno-exceptions \
              -fno-unwind-tables \
              -fno-asynchronous-unwind-tables \
+             -mno-stack-arg-probe \
              -fno-stack-protector \
              -fno-stack-check
-LINKFLAGS := $(LINKFLAGS) -shared
+LINKFLAGS := $(LINKFLAGS) -shared -fno-builtin
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = cppcore.o
@@ -63,10 +65,13 @@ DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
+             -nostdlib \
+             -Xlinker /SAFESEH:NO \
+             -Xlinker /ENTRY:DllMain \
              -Xlinker /SUBSYSTEM:CONSOLE",10.00" \
              -Xlinker /PDBALTPATH:$(LIBNAME)$(SUFFIX)$(EXTPDB) \
              -DLL
-LINKLIBS  := $(LINKLIBS)
+LINKLIBS  := $(LINKLIBS) -lUCRT -lMSVCRT
 RESO      := $(RESO) resources.res
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES) 
@@ -85,9 +90,8 @@ endif
 ifeq ($(TARGET_OS),osx)
 DEFINES     := $(DEFINES)
 INCLUDES    := $(INCLUDES)
-CXXFLAGS    := $(CXXFLAGS) -fno-builtin
+CXXFLAGS    := $(CXXFLAGS)
 LINKFLAGS   := $(LINKFLAGS) \
-               -fno-builtin \
                -dynamiclib \
                -nostdlib \
                -current_version $(VERSION3) \
@@ -118,9 +122,8 @@ endif
 ifeq ($(TARGET_OS),linux)
 DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
-CXXFLAGS  := $(CXXFLAGS) -fno-builtin
+CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
-             -fno-builtin \
              -nostdlib \
              -Wl,--no-eh-frame-hdr
 LINKLIBS  := $(LINKLIBS) -lc
@@ -161,9 +164,8 @@ endif
 
 ifeq ($(TARGET_OS),ios)
 DEFINES   := $(DEFINES)
-CXXFLAGS  := $(CXXFLAGS) -fno-builtin -fno-builtin-memcpy
+CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
-             -fno-builtin \
              -dynamiclib \
              -nostdlib \
              -install_name @rpath/$(LIBNAME)$(EXTDLL) \
