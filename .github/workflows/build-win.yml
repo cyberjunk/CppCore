@@ -31,11 +31,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    # Upgrade clang
-    - name: Setup LLVM
-      run: |
-        choco install llvm -y
-        echo "LLVM_PATH=C:\Program Files\LLVM\bin" >> $GITHUB_ENV
+    # Upgrade LLVM
+    - name: Upgrade LLVM
+      run: choco upgrade llvm -y
+    #echo "LLVM_PATH=C:\Program Files\LLVM\bin" >> $GITHUB_ENV
     
     # Developer Console (X64)
     - name: MSVC Developer Console (X64)
