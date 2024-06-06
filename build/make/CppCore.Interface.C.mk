@@ -26,9 +26,6 @@ LINKLIBS  := $(LINKLIBS)
 OBJS       = cppcore.o
 RESO       =
 
-#-fno-builtin -nostdlib -fno-common 
-# -Wl,-no-pie -Wl,--no-dynamic-linker
-
 ################################################################################################
 
 VERSIONFILE       = $(INCDIR)/CppCore/Version.h
