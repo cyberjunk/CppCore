@@ -8,12 +8,12 @@ LIBDIR     = lib/win-x64
 BINDIR     = bin/win-x64
 DISTDIR    = ../../dist/win-10
 TARGET     = x86_64-pc-windows-msvc
-DEFINES    = -DWIN32 -DWIN64 -D_MT
+DEFINES    = -DWIN32 -DWIN64
 INCLUDES   = 
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -static -fno-strict-aliasing
+CXXFLAGS   = -target $(TARGET) -fno-strict-aliasing
 CC         = clang
-CFLAGS     = -target $(TARGET) -static -fno-strict-aliasing
+CFLAGS     = -target $(TARGET) -fno-strict-aliasing
 AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
@@ -42,14 +42,14 @@ endif
 # Debug vs. Release
 ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
-CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer -Xclang -MT
-CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer -Xclang -MT
+CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer -fno-plt
+CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer -fno-plt
 LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -o optimized.bc -fomit-frame-pointer -RELEASE \
-             -Xlinker /OPT:ref \
-             -Xlinker /OPT:icf \
+             -Xlinker /OPT:REF \
+             -Xlinker /OPT:ICF=3 \
              -Xlinker /DEBUG:FULL \
              -Xlinker /MANIFEST:EMBED
-LINKLIBS  := $(LINKLIBS) -llibcmt.lib
+LINKLIBS  := $(LINKLIBS)
 else
 DEFINES   := $(DEFINES) -D_DEBUG
 CXXFLAGS  := $(CXXFLAGS) -Og -g3 -Xclang -MTd

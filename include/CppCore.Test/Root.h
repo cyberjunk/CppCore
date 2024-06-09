@@ -1,6 +1,7 @@
 #pragma once
 
 // CppCore Headers
+#include <CppCore/Version.h>
 #include <CppCore/Containers/Array.h>
 #include <CppCore/Containers/Queue.h>
 #include <CppCore/Containers/LinkedList.h>

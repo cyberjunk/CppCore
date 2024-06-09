@@ -170,6 +170,9 @@ System::Info sysinfo("CppCore.Test");
 // console based tests
 int main()
 {
+   std::cout << "--------------------------------------------------" << std::endl;
+   std::cout << "VERSION: " << CPPCORE_VERSION_MAJOR << "." << CPPCORE_VERSION_MINOR << "." << CPPCORE_VERSION_PATCH << std::endl;
+
 #if defined(CPPCORE_CPU_X86ORX64)
    std::cout << "--------------------------------------------------"             << std::endl;
    std::cout << "VEN: " << cpuid.getVendor()                                     << std::endl;
@@ -177,6 +180,7 @@ int main()
    std::cout << "COR: " << sysinfo.getCpuCoresPhysical()          << " PHYSICAL" << std::endl;
    std::cout << "COR: " << sysinfo.getCpuCoresLogical()           << " LOGICAL"  << std::endl;
    std::cout << "RAM: " << sysinfo.getRamSize()/(1024ULL*1024ULL) << " MB"       << std::endl;
+   std::cout << "SUP: " << (cpuid.isCompatible() ? "YES" : "NO")                 << std::endl;
    std::cout << "--------------------------------------------------"             << std::endl;
    std::cout << "                 ENABLED " << "SUPPORTED" << std::endl;
    std::cout << "MMX:             " << (CPPCORE_CPUFEAT_MMX_ENABLED             ? "YES" : "NO ") << "     " << (cpuid.MMX()             ? "YES" : "NO") << std::endl;

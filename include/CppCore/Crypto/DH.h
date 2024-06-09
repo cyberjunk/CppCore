@@ -3,6 +3,7 @@
 #include <CppCore/Root.h>
 #include <CppCore/Math/BigInt.h>
 #include <CppCore/Math/Primes.h>
+#include <CppCore/Random.h>
 
 namespace CppCore
 {
@@ -33,15 +34,23 @@ namespace CppCore
       using TYPE = UINT;
 
    protected:
-      INLINE void genrnd(UINT& x)
+      template<typename PRNG>
+      INLINE void genrnd(UINT& x, PRNG& prng)
       {
-         x.randomize();
+         x.randomize(prng);
          x.d.i32[UINT::N32-1] &= 0x7FFFFFFFU; // make smaller than p
          x.d.i32[UINT::N32-1] |= 0x40000000U; // make large and not zero
       }
-      INLINE void genprime(uint32_t certainty)
+      INLINE void genrnd(UINT& x)
       {
-         CppCore::Primes::genprime(p, false, certainty);
+         Random::Default prng;
+         this->genrnd(x, prng);
+      }
+      template<typename PRNG>
+      INLINE void genprime(uint32_t certainty, PRNG& prng)
+      {
+         CppCore::Primes::Memory<UINT> mem;
+         CppCore::Primes::genprime(p, prng, mem, false, certainty);
       }
       INLINE void genpubkey()
       {
@@ -60,9 +69,10 @@ namespace CppCore
       /// </summary>
       INLINE void reset(uint32_t certainty = 0)
       {
-         this->genprime(certainty);
-         this->genrnd(g);
-         this->genrnd(v);
+         Random::Default prng;
+         this->genprime(certainty, prng);
+         this->genrnd(g, prng);
+         this->genrnd(v, prng);
          this->genpubkey();
       }
 

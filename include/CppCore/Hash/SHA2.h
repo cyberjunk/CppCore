@@ -34,6 +34,11 @@ namespace CppCore
 
    public:
       /// <summary>
+      /// Constructor
+      /// </summary>
+      INLINE SHA2b() { }
+
+      /// <summary>
       /// Digest/Hash Output Size in Bytes
       /// </summary>
       static constexpr const size_t DIGESTSIZE = sizeof(TSTATE);
@@ -148,6 +153,11 @@ namespace CppCore
       }
 
    public:
+      /// <summary>
+      /// Constructor
+      /// </summary>
+      INLINE SHA256b() { }
+
       /// <summary>
       /// Resets to new seeds.
       /// </summary>
@@ -292,6 +302,11 @@ namespace CppCore
       }
 
    public:
+      /// <summary>
+      /// Constructor
+      /// </summary>
+      INLINE SHA512b() { }
+
       /// <summary>
       /// Resets to new seeds.
       /// </summary>

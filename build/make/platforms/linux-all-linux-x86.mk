@@ -18,7 +18,7 @@ ARFLAGS    = rcs
 STRIP      = llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
-LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc -fno-strict-aliasing
+LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -fno-strict-aliasing
 LINKPATH   =
 LINKLIBS   = 
 DEBARCH    = i386

@@ -1,4 +1,7 @@
 
+// don't include <ios> and related
+#define CPPCORE_NO_INCLUDE_IO
+
 // public c interface
 #include <CppCore.Interface.C/cppcore.h>
 

@@ -906,15 +906,23 @@ namespace CppCore
          INLINE static bool lt(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return true;  // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return false; // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return true;  // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return false; // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return false;                                      // equal
+            return false; // equal
          }
 
          /// <summary>
@@ -951,15 +959,23 @@ namespace CppCore
          INLINE static bool lte(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return true;  // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return false; // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return true;  // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return false; // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return true;                                       // equal
+            return true; // equal
          }
 
          /// <summary>
@@ -996,15 +1012,23 @@ namespace CppCore
          INLINE static bool gt(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return false; // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return true;  // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return false; // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return true;  // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return false;                                      // equal
+            return false; // equal
          }
 
          /// <summary>
@@ -1041,15 +1065,23 @@ namespace CppCore
          INLINE static bool gte (const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return false; // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return true;  // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return false; // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return true;  // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return true;                                       // equal
+            return true; // equal
          }
 
          /// <summary>
@@ -1640,7 +1672,7 @@ namespace CppCore
          /// </summary>
          INLINE static void sqrt(const TC& a, TC& r)
          {
-            r = CppCore::isqrt(a);
+            CppCore::isqrt(a, r);
          }
 
          /// <summary>
@@ -2851,6 +2883,7 @@ namespace CppCore
    {
    public:
       using uint128_bg::uint128_bg;
+      INLINE uint128_tg() { }
       INLINE uint128_tg(const uint64_t l, const uint64_t h = 0ULL) : uint128_bg(uint128_tgd(l, h)) { }
    };
 
@@ -2903,6 +2936,7 @@ namespace CppCore
    {
    public:
       using uint128_bs::uint128_bs;
+      INLINE uint128_ts() { }
       INLINE uint128_ts(const uint64_t l, const uint64_t h = 0ULL) : uint128_bs(uint128_tsd(l, h)) { }
    #if defined(CPPCORE_CPUFEAT_SSE2)
       INLINE uint128_ts(const __m128i& other) : uint128_bs(uint128_tsd(other)) { }
@@ -2963,6 +2997,7 @@ namespace CppCore
    {
    public:
       using uint256_bg::uint256_bg;
+      INLINE uint256_tg() { }
       INLINE uint256_tg(const uint128_tg& l, const uint128_tg& h = 0ULL) : uint256_bg(uint256_tgd(l, h)) { }
       INLINE uint256_tg(const uint64_t v1, const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0) : uint256_bg(uint256_tgd(v1, v2, v3, v4)) { }
       INLINE explicit operator const uint128_tg& () const { return d.i128[0]; }
@@ -2992,6 +3027,7 @@ namespace CppCore
    {
    public:
       using uint256_bs::uint256_bs;
+      INLINE uint256_ts() { }
       INLINE uint256_ts(const uint128_ts& l, const uint128_ts& h = 0ULL) : uint256_bs(uint256_tsd(l, h)) { }
       INLINE uint256_ts(const uint64_t v1, const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0) :
          uint256_bs(uint256_tsd(v1, v2, v3, v4)) { }
@@ -3030,6 +3066,7 @@ namespace CppCore
    {
    public:
       using uint512_bg::uint512_bg;
+      INLINE uint512_tg() { }
       INLINE uint512_tg(const uint256_tg& l, const uint256_tg& h = 0ULL) : uint512_bg(uint512_tgd(l, h)) { }
       INLINE uint512_tg(
          const uint64_t v1,     const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0, 
@@ -3063,6 +3100,7 @@ namespace CppCore
    {
    public:
       using uint512_bs::uint512_bs;
+      INLINE uint512_ts() { }
       INLINE uint512_ts(const uint256_ts& l, const uint256_ts& h = 0ULL) : uint512_bs(uint512_tsd(l, h)) { }
       INLINE uint512_ts(
          const uint64_t v1,     const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0, 
@@ -3104,6 +3142,7 @@ namespace CppCore
    {
    public:
       using uint1024_bg::uint1024_bg;
+      INLINE uint1024_tg() { }
       INLINE uint1024_tg(const uint512_tg& l, const uint512_tg& h = 0ULL) : uint1024_bg(uint1024_tgd(l, h)) { }
       INLINE uint1024_tg(
          const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0, 
@@ -3140,6 +3179,7 @@ namespace CppCore
    {
    public:
       using uint1024_bs::uint1024_bs;
+      INLINE uint1024_ts() { }
       INLINE uint1024_ts(const uint512_ts& l, const uint512_ts& h = 0ULL) : uint1024_bs(uint1024_tsd(l, h)) { }
       INLINE uint1024_ts(
          const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0, 
@@ -3180,6 +3220,7 @@ namespace CppCore
    {
    public:
       using uint2048_bg::uint2048_bg;
+      INLINE uint2048_tg() { }
       INLINE uint2048_tg(const uint1024_tg& l, const uint1024_tg& h = 0ULL) : uint2048_bg(uint2048_tgd(l, h)) { }
       INLINE uint2048_tg(
          const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0, 
@@ -3223,6 +3264,7 @@ namespace CppCore
    {
    public:
       using uint2048_bs::uint2048_bs;
+      INLINE uint2048_ts() { }
       INLINE uint2048_ts(const uint1024_ts& l, const uint1024_ts& h = 0ULL) : uint2048_bs(uint2048_tsd(l, h)) { }
       INLINE uint2048_ts(
          const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0, 

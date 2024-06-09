@@ -11,11 +11,16 @@ INCLUDES  := $(INCLUDES) \
              -I$(INCDIR) \
              -I$(SRCDIR)
 CXXFLAGS  := $(CXXFLAGS) \
-             -std=c++17 \
+             -std=c++17  \
+             -fno-builtin \
+             -fvisibility=hidden \
              -fno-exceptions \
+             -fno-unwind-tables \
+             -fno-asynchronous-unwind-tables \
+             -mno-stack-arg-probe \
              -fno-stack-protector \
              -fno-stack-check
-LINKFLAGS := $(LINKFLAGS) -shared
+LINKFLAGS := $(LINKFLAGS) -shared -fno-builtin
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = cppcore.o
@@ -57,10 +62,13 @@ DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
+             -nostdlib \
+             -Xlinker /SAFESEH:NO \
+             -Xlinker /ENTRY:DllMain \
              -Xlinker /SUBSYSTEM:CONSOLE",10.00" \
              -Xlinker /PDBALTPATH:$(LIBNAME)$(SUFFIX)$(EXTPDB) \
              -DLL
-LINKLIBS  := $(LINKLIBS)
+LINKLIBS  := $(LINKLIBS) -lUCRT -lMSVCRT
 RESO      := $(RESO) resources.res
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES) 
@@ -79,17 +87,19 @@ endif
 ifeq ($(TARGET_OS),osx)
 DEFINES     := $(DEFINES)
 INCLUDES    := $(INCLUDES)
-CXXFLAGS    := $(CXXFLAGS) -fno-builtin
+CXXFLAGS    := $(CXXFLAGS)
 LINKFLAGS   := $(LINKFLAGS) \
-               -fno-builtin \
                -dynamiclib \
                -nostdlib \
-               -lSystem \
                -current_version $(VERSION3) \
                -compatibility_version $(VERSION2) \
                -install_name $(LIBNAME)$(EXTDLL) \
-               -Wl,-object_path_lto,$(OBJDIR)/lto.o
-LINKLIBS    := $(LINKLIBS)
+               -Wl,-object_path_lto,$(OBJDIR)/lto.o \
+               -Wl,-no_data_in_code_info \
+               -Wl,-no_function_starts \
+               -Wl,-no_keep_dwarf_unwind \
+               -Wl,-no_compact_unwind
+LINKLIBS    := $(LINKLIBS) -lSystem
 RESO        := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES     := $(DEFINES)
@@ -110,8 +120,10 @@ ifeq ($(TARGET_OS),linux)
 DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
-LINKFLAGS := $(LINKFLAGS)
-LINKLIBS  := $(LINKLIBS)
+LINKFLAGS := $(LINKFLAGS) \
+             -nostdlib \
+             -Wl,--no-eh-frame-hdr
+LINKLIBS  := $(LINKLIBS) -lc
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
@@ -152,8 +164,14 @@ DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
              -dynamiclib \
-             -install_name @rpath/$(LIBNAME)$(EXTDLL)
-LINKLIBS  := $(LINKLIBS)
+             -nostdlib \
+             -install_name @rpath/$(LIBNAME)$(EXTDLL) \
+             -Wl,-object_path_lto,$(OBJDIR)/lto.o \
+             -Wl,-no_data_in_code_info \
+             -Wl,-no_function_starts \
+             -Wl,-no_keep_dwarf_unwind \
+             -Wl,-no_compact_unwind
+LINKLIBS  := $(LINKLIBS) -lSystem
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
 DEFINES   := $(DEFINES)
