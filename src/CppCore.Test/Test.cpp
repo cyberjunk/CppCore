@@ -224,7 +224,10 @@ int main()
    std::cout << "AVX512VBMI2:     " << (CPPCORE_CPUFEAT_AVX512VBMI2_ENABLED     ? "YES" : "NO ") << "     " << (cpuid.AVX512VBMI2()     ? "YES" : "NO") << std::endl;
    std::cout << "AVX512BITALG:    " << (CPPCORE_CPUFEAT_AVX512BITALG_ENABLED    ? "YES" : "NO ") << "     " << (cpuid.AVX512BITALG()    ? "YES" : "NO") << std::endl;
    std::cout << "AVX512VPOPCNTDQ: " << (CPPCORE_CPUFEAT_AVX512VPOPCNTDQ_ENABLED ? "YES" : "NO ") << "     " << (cpuid.AVX512VPOPCNTDQ() ? "YES" : "NO") << std::endl;
+
+   if (!cpuid.isCompatible()) return 1;
 #endif
+
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "FOLDERS"                         << std::endl;
