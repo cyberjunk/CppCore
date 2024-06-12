@@ -193,13 +193,15 @@ lib.cppcore_dh128_init.restype = \
 lib.cppcore_dh256_init.restype = \
 lib.cppcore_dh512_init.restype = \
 lib.cppcore_dh1024_init.restype = \
-lib.cppcore_dh2048_init.restype = ctypes.c_void_p
+lib.cppcore_dh2048_init.restype = \
+lib.cppcore_dh4096_init.restype = ctypes.c_void_p
 
 lib.cppcore_dh128_destroy.argtypes = \
 lib.cppcore_dh256_destroy.argtypes = \
 lib.cppcore_dh512_destroy.argtypes = \
 lib.cppcore_dh1024_destroy.argtypes = \
 lib.cppcore_dh2048_destroy.argtypes = \
+lib.cppcore_dh4096_destroy.argtypes = \
 [
     ctypes.c_void_p  # handle
 ]
@@ -209,6 +211,7 @@ lib.cppcore_dh256_reset.argtypes = \
 lib.cppcore_dh512_reset.argtypes = \
 lib.cppcore_dh1024_reset.argtypes = \
 lib.cppcore_dh2048_reset.argtypes = \
+lib.cppcore_dh4096_reset.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_uint32   # certainty
@@ -219,6 +222,7 @@ lib.cppcore_dh256_reset_pg.argtypes = \
 lib.cppcore_dh512_reset_pg.argtypes = \
 lib.cppcore_dh1024_reset_pg.argtypes = \
 lib.cppcore_dh2048_reset_pg.argtypes = \
+lib.cppcore_dh4096_reset_pg.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_void_p,  # p: large prime
@@ -230,6 +234,7 @@ lib.cppcore_dh256_reset_pgv.argtypes = \
 lib.cppcore_dh512_reset_pgv.argtypes = \
 lib.cppcore_dh1024_reset_pgv.argtypes = \
 lib.cppcore_dh2048_reset_pgv.argtypes = \
+lib.cppcore_dh4096_reset_pgv.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_void_p,  # p: large prime
@@ -242,6 +247,7 @@ lib.cppcore_dh256_genkey.argtypes = \
 lib.cppcore_dh512_genkey.argtypes = \
 lib.cppcore_dh1024_genkey.argtypes = \
 lib.cppcore_dh2048_genkey.argtypes = \
+lib.cppcore_dh4096_genkey.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_void_p   # V: public key of other party
@@ -252,6 +258,7 @@ lib.cppcore_dh256_getprime.argtypes = \
 lib.cppcore_dh512_getprime.argtypes = \
 lib.cppcore_dh1024_getprime.argtypes = \
 lib.cppcore_dh2048_getprime.argtypes = \
+lib.cppcore_dh4096_getprime.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_void_p   # p: large prime
@@ -262,6 +269,7 @@ lib.cppcore_dh256_getconstant.argtypes = \
 lib.cppcore_dh512_getconstant.argtypes = \
 lib.cppcore_dh1024_getconstant.argtypes = \
 lib.cppcore_dh2048_getconstant.argtypes = \
+lib.cppcore_dh4096_getconstant.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_void_p   # g: random < large prime
@@ -272,6 +280,7 @@ lib.cppcore_dh256_getprivkey.argtypes = \
 lib.cppcore_dh512_getprivkey.argtypes = \
 lib.cppcore_dh1024_getprivkey.argtypes = \
 lib.cppcore_dh2048_getprivkey.argtypes = \
+lib.cppcore_dh4096_getprivkey.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_void_p   # v: private key
@@ -282,6 +291,7 @@ lib.cppcore_dh256_getpubkey.argtypes = \
 lib.cppcore_dh512_getpubkey.argtypes = \
 lib.cppcore_dh1024_getpubkey.argtypes = \
 lib.cppcore_dh2048_getpubkey.argtypes = \
+lib.cppcore_dh4096_getpubkey.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_void_p   # V: public key of other party
@@ -292,6 +302,7 @@ lib.cppcore_dh256_getsessionkey.argtypes = \
 lib.cppcore_dh512_getsessionkey.argtypes = \
 lib.cppcore_dh1024_getsessionkey.argtypes = \
 lib.cppcore_dh2048_getsessionkey.argtypes = \
+lib.cppcore_dh4096_getsessionkey.argtypes = \
 [
     ctypes.c_void_p,  # handle
     ctypes.c_void_p   # k: session key

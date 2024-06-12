@@ -33,6 +33,7 @@ def test_dh256_gen():  helper(cppcore.dh.DH256)
 def test_dh512_gen():  helper(cppcore.dh.DH512)
 def test_dh1024_gen(): helper(cppcore.dh.DH1024)
 def test_dh2048_gen(): helper(cppcore.dh.DH2048)
+def test_dh4096_gen(): helper(cppcore.dh.DH4096)
 
 # TESTS WITH PREDEFINED PRIME AND CONSTANT
 
@@ -41,3 +42,4 @@ def test_dh256_def():  helper(cppcore.dh.DH256,  7, 2)
 def test_dh512_def():  helper(cppcore.dh.DH512,  7, 2)
 def test_dh1024_def(): helper(cppcore.dh.DH1024, 7, 2)
 def test_dh2048_def(): helper(cppcore.dh.DH2048, 7, 2)
+def test_dh4096_def(): helper(cppcore.dh.DH4096, 7, 2)

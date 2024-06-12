@@ -168,6 +168,7 @@ extern "C" {
    CPPCORE_PRIME_DECLARATION(cppcore_prime512)
    CPPCORE_PRIME_DECLARATION(cppcore_prime1024)
    CPPCORE_PRIME_DECLARATION(cppcore_prime2048)
+   CPPCORE_PRIME_DECLARATION(cppcore_prime4096)
 
 #ifdef __cplusplus
 }

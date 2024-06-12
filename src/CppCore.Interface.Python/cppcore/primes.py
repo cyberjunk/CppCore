@@ -20,11 +20,12 @@ def test(v:int, certainty:int=DEFAULT_CERTAINTY) -> Result:
     elif bitlen <=  512: return Result(lib.cppcore_prime512_test (v.to_bytes( 64, byteorder=sys.byteorder, signed=neg), neg, certainty))
     elif bitlen <= 1024: return Result(lib.cppcore_prime1024_test(v.to_bytes(128, byteorder=sys.byteorder, signed=neg), neg, certainty))
     elif bitlen <= 2048: return Result(lib.cppcore_prime2048_test(v.to_bytes(256, byteorder=sys.byteorder, signed=neg), neg, certainty))
-    else:                raise  ValueError("Too big. Maximum is 2048 bits.")
+    elif bitlen <= 4096: return Result(lib.cppcore_prime4096_test(v.to_bytes(512, byteorder=sys.byteorder, signed=neg), neg, certainty))
+    else:                raise  ValueError("Too big. Maximum is 4096 bits.")
 
 def generate(bitlen:int, certainty:int=DEFAULT_CERTAINTY) -> int:
     """Returns large random prime number with provided bit length."""
-    if   bitlen >  2048: raise ValueError("Too big. Maximum is 2048 bits.")
+    if   bitlen >  4096: raise ValueError("Too big. Maximum is 4096 bits.")
     elif bitlen <=   32: v=bytes(  4); lib.cppcore_prime32_generate  (v, False, certainty)
     elif bitlen <=   64: v=bytes(  8); lib.cppcore_prime64_generate  (v, False, certainty)
     elif bitlen <=  128: v=bytes( 16); lib.cppcore_prime128_generate (v, False, certainty)
@@ -32,4 +33,5 @@ def generate(bitlen:int, certainty:int=DEFAULT_CERTAINTY) -> int:
     elif bitlen <=  512: v=bytes( 64); lib.cppcore_prime512_generate (v, False, certainty)
     elif bitlen <= 1024: v=bytes(128); lib.cppcore_prime1024_generate(v, False, certainty)
     elif bitlen <= 2048: v=bytes(256); lib.cppcore_prime2048_generate(v, False, certainty)
+    elif bitlen <= 4096: v=bytes(512); lib.cppcore_prime4096_generate(v, False, certainty)
     return int.from_bytes(v, byteorder=sys.byteorder, signed=False)
