@@ -186,6 +186,7 @@ CPPCORE_DH_IMPLEMENTATION(cppcore_dh256,  CppCore::DH256)
 CPPCORE_DH_IMPLEMENTATION(cppcore_dh512,  CppCore::DH512)
 CPPCORE_DH_IMPLEMENTATION(cppcore_dh1024, CppCore::DH1024)
 CPPCORE_DH_IMPLEMENTATION(cppcore_dh2048, CppCore::DH2048)
+CPPCORE_DH_IMPLEMENTATION(cppcore_dh4096, CppCore::DH4096)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AES

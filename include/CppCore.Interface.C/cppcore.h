@@ -151,6 +151,7 @@ extern "C" {
    CPPCORE_DH_DECLARATION(cppcore_dh512)
    CPPCORE_DH_DECLARATION(cppcore_dh1024)
    CPPCORE_DH_DECLARATION(cppcore_dh2048)
+   CPPCORE_DH_DECLARATION(cppcore_dh4096)
 
    // aes
 
