@@ -601,11 +601,13 @@ int main()
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH512>,  "test1dh512:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH1024>, "test1dh1024:   ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH2048>, "test1dh2048:   ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH4096>, "test1dh4096:   ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH128>,  "test2dh128:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH256>,  "test2dh256:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH512>,  "test2dh512:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH1024>, "test2dh1024:   ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH2048>, "test2dh2048:   ", std::endl);
+   TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH4096>, "test2dh4096:   ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "    CppCore::Crypto::HMAC"       << std::endl;

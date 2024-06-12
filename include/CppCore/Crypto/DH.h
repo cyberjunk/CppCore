@@ -158,4 +158,5 @@ namespace CppCore
    using DH512  = DH<uint512_t>;  // Diffi-Hellman 512 Bit Key Exchange
    using DH1024 = DH<uint1024_t>; // Diffi-Hellman 1024 Bit Key Exchange
    using DH2048 = DH<uint2048_t>; // Diffi-Hellman 2048 Bit Key Exchange
+   using DH4096 = DH<uint4096_t>; // Diffi-Hellman 4096 Bit Key Exchange
 }
