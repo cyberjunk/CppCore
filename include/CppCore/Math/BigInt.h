@@ -912,7 +912,7 @@ namespace CppCore
          sse4 (_mm_set_epi64x(v9, v8)),  sse5 (_mm_set_epi64x(v11,v10)), sse6 (_mm_set_epi64x(v13,v12)), sse7 (_mm_set_epi64x(v15,v14)),
          sse8 (_mm_set_epi64x(v17,v16)), sse9 (_mm_set_epi64x(v19,v18)), sse10(_mm_set_epi64x(v21,v20)), sse11(_mm_set_epi64x(v23,v22)),
          sse12(_mm_set_epi64x(v25,v24)), sse13(_mm_set_epi64x(v27,v26)), sse14(_mm_set_epi64x(v29,v28)), sse15(_mm_set_epi64x(v31,v30)),
-         sse16(_mm_set_epi64x(v33,v32)), sse17(_mm_set_epi64x(v35,v34))  sse18(_mm_set_epi64x(v37,v36)), sse19(_mm_set_epi64x(v39,v38)),
+         sse16(_mm_set_epi64x(v33,v32)), sse17(_mm_set_epi64x(v35,v34)), sse18(_mm_set_epi64x(v37,v36)), sse19(_mm_set_epi64x(v39,v38)),
          sse20(_mm_set_epi64x(v41,v40)), sse21(_mm_set_epi64x(v43,v42)), sse22(_mm_set_epi64x(v45,v44)), sse23(_mm_set_epi64x(v47,v46)),
          sse24(_mm_set_epi64x(v49,v48)), sse25(_mm_set_epi64x(v51,v50)), sse26(_mm_set_epi64x(v53,v52)), sse27(_mm_set_epi64x(v55,v54)),
          sse28(_mm_set_epi64x(v57,v56)), sse29(_mm_set_epi64x(v59,v58)), sse30(_mm_set_epi64x(v61,v60)), sse31(_mm_set_epi64x(v63,v62)) { }
