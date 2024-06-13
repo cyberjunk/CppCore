@@ -247,8 +247,8 @@ namespace CppCore
       #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
          return [[NSProcessInfo processInfo] physicalMemory];
       #else
-         uint64_t pages = sysconf(_SC_PHYS_PAGES);
-         uint64_t page_size = sysconf(_SC_PAGE_SIZE);
+         uint64_t pages = ::get_phys_pages();
+         uint64_t page_size = ::getpagesize();
          return pages * page_size;
       #endif
       }
@@ -374,8 +374,8 @@ namespace CppCore
             mLogFile(mPathPerm / (appname + extlog)),
             mConfigFile(mPathPerm / (appname + extcfg))
          {
-            if (!std::filesystem::exists(mPathPerm))
-               std::filesystem::create_directories(mPathPerm);
+            //if (!std::filesystem::exists(mPathPerm))
+            //   std::filesystem::create_directories(mPathPerm);
          }
 
          INLINE uint32_t    getCpuCoresPhysical( ) const { return mCoresPhysical; }
