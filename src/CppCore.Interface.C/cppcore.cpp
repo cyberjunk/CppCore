@@ -186,6 +186,7 @@ CPPCORE_DH_IMPLEMENTATION(cppcore_dh256,  CppCore::DH256)
 CPPCORE_DH_IMPLEMENTATION(cppcore_dh512,  CppCore::DH512)
 CPPCORE_DH_IMPLEMENTATION(cppcore_dh1024, CppCore::DH1024)
 CPPCORE_DH_IMPLEMENTATION(cppcore_dh2048, CppCore::DH2048)
+CPPCORE_DH_IMPLEMENTATION(cppcore_dh4096, CppCore::DH4096)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AES
@@ -235,3 +236,4 @@ CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime256,  CppCore::uint256_t)
 CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime512,  CppCore::uint512_t)
 CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime1024, CppCore::uint1024_t)
 CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime2048, CppCore::uint2048_t)
+CPPCORE_PRIME_IMPLEMENTATION(cppcore_prime4096, CppCore::uint4096_t)

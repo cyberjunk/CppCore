@@ -135,3 +135,20 @@ class DH2048(DH):
         self._getpubkey     = lib.cppcore_dh2048_getpubkey
         self._getsessionkey = lib.cppcore_dh2048_getsessionkey
         super().__init__()
+
+class DH4096(DH):
+    """Diffie-Hellman 4096-Bit Key Exchange"""
+    def __init__(self):
+        self._nbytes        = 512
+        self._init          = lib.cppcore_dh4096_init
+        self._destroy       = lib.cppcore_dh4096_destroy
+        self._reset         = lib.cppcore_dh4096_reset
+        self._reset_pg      = lib.cppcore_dh4096_reset_pg
+        self._reset_pgv     = lib.cppcore_dh4096_reset_pgv
+        self._genkey        = lib.cppcore_dh4096_genkey
+        self._getprime      = lib.cppcore_dh4096_getprime
+        self._getconstant   = lib.cppcore_dh4096_getconstant
+        self._getprivkey    = lib.cppcore_dh4096_getprivkey
+        self._getpubkey     = lib.cppcore_dh4096_getpubkey
+        self._getsessionkey = lib.cppcore_dh4096_getsessionkey
+        super().__init__()
