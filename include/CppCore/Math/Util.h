@@ -1526,14 +1526,20 @@ namespace CppCore
       // apply rounding based on selected mode
       switch (rounding)
       {
+   #if defined(FE_DOWNWARD)
       case FE_DOWNWARD:
+         break; // nothing to do
+   #endif
+   #if defined(FE_TOWARDZERO)
       case FE_TOWARDZERO:
-         // nothing to do, also both identical in our case
-         break;
+         break; // nothing to do
+   #endif
+   #if defined(FE_UPWARD)
       case FE_UPWARD:
          // round up if we lost anything
          if (lost) man++;
          break;
+   #endif
       case FE_TONEAREST:
          // round up for upper range (break tie by only rounding odd up)
          man += ((lost > 2048U) | ((lost == 2048U) & man & 1U));
