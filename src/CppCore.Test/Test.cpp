@@ -760,6 +760,7 @@ int main()
    TEST(CppCore::Test::Encoding::Hex::parse64,            "parse64:    ", std::endl);
    TEST(CppCore::Test::Encoding::Hex::Util::bytetohexstr, "bytetohexstr: ", std::endl);
 
+#ifndef CPPCORE_NO_SOCKET
    std::cout << "-------------------------------" << std::endl;
    std::cout << "        CppCore::Socket"         << std::endl;
    std::cout << "-------------------------------" << std::endl;
@@ -774,6 +775,7 @@ int main()
    TEST(CppCore::Test::Network::Socket::bindlistenipv6dstcp,  "bindlistenipv6dstcp:  ", std::endl);
    TEST(CppCore::Test::Network::Socket::setoptsipv4tcp,       "setoptsipv4tcp:       ", std::endl);
    TEST(CppCore::Test::Network::Socket::setoptsipv6tcp,       "setoptsipv6tcp:       ", std::endl);
+#endif
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << " CppCore::V2fg                 " << std::endl;

@@ -580,5 +580,12 @@ namespace CppCore
    class CPUID
    {
    };
+#else
+   /// <summary>
+   /// Empty Stub
+   /// </summary>
+   class CPUID
+   {
+   };
 #endif
 }

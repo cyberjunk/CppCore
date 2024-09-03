@@ -170,6 +170,8 @@ namespace CppCore
          #elif defined(CPPCORE_OS_ANDROID)
             return path("/data/media/0");
             //return path("/storage/self/primary");
+         #elif defined(CPPCORE_OS_WASI)
+            return path("."); //TODO
          #else
             struct passwd* pw = ::getpwuid(::getuid());
             return path(pw->pw_dir);
@@ -206,6 +208,8 @@ namespace CppCore
             char name[PATH_MAX+1];
             uint32_t size = sizeof(name);
             return _NSGetExecutablePath(name, &size) == 0 ? path(name) : path();
+         #elif defined(CPPCORE_OS_WASI)
+            return path(); //TODO
          #else
             return std::filesystem::canonical("/proc/self/exe");
          #endif
@@ -246,6 +250,8 @@ namespace CppCore
          return GetPhysicallyInstalledSystemMemory(&m) ? m * 1024U : 0;
       #elif defined(CPPCORE_OS_OSX) || defined(CPPCORE_OS_IPHONE)
          return [[NSProcessInfo processInfo] physicalMemory];
+      #elif defined(CPPCORE_OS_WASI)
+         return 0;
       #else
          uint64_t pages = sysconf(_SC_PHYS_PAGES);
          uint64_t page_size = sysconf(_SC_PAGE_SIZE);
