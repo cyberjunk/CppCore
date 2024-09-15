@@ -100,6 +100,16 @@ LINKLIBS  := $(LINKLIBS) -framework Foundation
 RESO      := $(RESO)
 endif
 
+ifeq ($(TARGET_OS),wasi)
+OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
+DEFINES   := $(DEFINES) -DCPPCORE_NO_SOCKET -D_WASI_EMULATED_SIGNAL
+CXXFLAGS  := $(CXXFLAGS)
+CFLAGS    := $(CFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Wl,-z,stack-size=0x00100000
+LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO)
+endif
+
 ################################################################################################
 
 OBJS := $(patsubst %,$(OBJDIR)/%,$(OBJS))

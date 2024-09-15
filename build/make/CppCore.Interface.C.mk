@@ -20,7 +20,7 @@ CXXFLAGS  := $(CXXFLAGS) \
              -mno-stack-arg-probe \
              -fno-stack-protector \
              -fno-stack-check
-LINKFLAGS := $(LINKFLAGS) -shared -fno-builtin
+LINKFLAGS := $(LINKFLAGS) -fno-builtin
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = cppcore.o
@@ -62,6 +62,7 @@ DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
+             -shared \
              -nostdlib \
              -Xlinker /SAFESEH:NO \
              -Xlinker /ENTRY:DllMain \
@@ -89,6 +90,7 @@ DEFINES     := $(DEFINES)
 INCLUDES    := $(INCLUDES)
 CXXFLAGS    := $(CXXFLAGS)
 LINKFLAGS   := $(LINKFLAGS) \
+               -shared \
                -dynamiclib \
                -nostdlib \
                -current_version $(VERSION3) \
@@ -121,6 +123,7 @@ DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
+             -shared \
              -nostdlib \
              -Wl,--no-eh-frame-hdr
 LINKLIBS  := $(LINKLIBS) -lc
@@ -142,7 +145,7 @@ endif
 ifeq ($(TARGET_OS),android)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -shared
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
@@ -163,6 +166,7 @@ ifeq ($(TARGET_OS),ios)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
+             -shared \
              -dynamiclib \
              -nostdlib \
              -install_name @rpath/$(LIBNAME)$(EXTDLL) \
@@ -185,6 +189,19 @@ endif
 ifeq ($(TARGET_ARCH),arm64)
 DEFINES   := $(DEFINES)
 endif
+endif
+
+ifeq ($(TARGET_OS),wasi)
+OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
+DEFINES   := $(DEFINES) -DCPPCORE_NO_SOCKET -D_WASI_EMULATED_SIGNAL
+CXXFLAGS  := $(CXXFLAGS)
+CFLAGS    := $(CFLAGS)
+LINKFLAGS := $(LINKFLAGS) \
+             -Wl,-z,stack-size=0x00100000 \
+             -Wl,--export-dynamic \
+             -Wl,--no-entry
+LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO)
 endif
 
 ################################################################################################
