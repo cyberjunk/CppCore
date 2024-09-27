@@ -85,15 +85,30 @@ export class CString extends Buffer {
         super(enc.length+1);
         this.set(enc);
         this[enc.length] = 0x00;
+
+        this.usedLength = enc.length;
+    }
+    fromString(str) {
+        const enc = encoder.encode(str);
+        if (this.byteLength-1 < enc.length)
+            throw new Error('String too big');
+
+        this.set(enc);
+        this[enc.length] = 0x00;
+        this.usedLength = enc.length;
     }
     toString() {
-        const buf = new ArrayBuffer(this.byteLength-1);
+        //const buf = new ArrayBuffer(this.byteLength-1);
+        const buf = new ArrayBuffer(this.usedLength);
         const dst = new Uint8Array(buf);
         const src = new Uint8Array(this);
         /*console.debug("this byteLength: " + this.byteLength);
         console.debug("src byteLength:" + src.byteLength);
         console.debug("dst byteLength: " + dst.byteLength);*/
-        dst.set(src.slice(0, this.byteLength-1));
+        
+        //dst.set(src.slice(0, this.byteLength-1));
+        dst.set(src.slice(0, this.usedLength));
+
         return decoder.decode(dst);
     }
 }
@@ -107,11 +122,16 @@ export class BaseX {
         let outbuf = new CString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
         let r = handle.instance.exports.cppcore_basex_encode128(
-            v._ptr, outbuf._ptr, 64, 
+            v._ptr, outbuf._ptr, outbuf.usedLength, 
             this._alphabet.byteLength-1, 
             this._alphabet._ptr, 1);
+        if (r < 0)
+            throw new Error('Buffer too small');
+        
         console.log("LEN:" + r);
+        console.log("DIFF:" + (outbuf.usedLength - r));
 
+        //outbuf.usedLength = 
         //console.log(outbuf.toString());
         return outbuf.toString();
     }
