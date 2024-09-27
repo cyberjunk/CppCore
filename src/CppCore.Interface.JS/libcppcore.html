@@ -10,11 +10,22 @@
     <script type="module">
       import { 
         Buffer,
+        CString,
+        BaseX,
         AES
       } from './libcppcore.mjs'
       
-      function testFill() {
+      function testBaseX() {
         
+        console.log("decoding...");
+        var str1 = new CString("hello world");
+        console.log(str1.toString());
+        //console.log(str1);
+        console.log("----------");
+        
+        //var basex = new BaseX("0123456789");
+        //basex.decode128("1024");
+
       }
 
       function testAES() {
@@ -54,7 +65,7 @@
         console.log(data_in.getUint32(0));
       }
 
-      testFill();
+      testBaseX();
       //testAES();
 
     </script>

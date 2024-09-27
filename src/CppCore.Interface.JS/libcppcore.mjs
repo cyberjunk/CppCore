@@ -32,13 +32,12 @@ const handle = await WebAssembly
         console.debug("__heap_base: " + _heap_base.toString(16));
         console.debug("__stack_pointer: " + _stack_pointer.toString(16));
 
-        var ptr = lib.instance.exports.cppcore_alloc(16);
+        /*var ptr = lib.instance.exports.cppcore_alloc(16);
         var t1 = new Uint8Array(lib.instance.exports.memory.buffer, ptr, 16);
         console.log("testing...")
         console.log(t1[0]);
         t1[0] = 0xFF;
         console.log(t1[0]);
-        //console.log(lib.instance.exports.memory.buffer.getUint8(ptr));
         var t2 = new Uint8Array(lib.instance.exports.memory.buffer, ptr, 16);
         console.log(t2[0]);
         var t3 = new DataView(lib.instance.exports.memory.buffer, ptr, 16);
@@ -49,7 +48,7 @@ const handle = await WebAssembly
         console.log(t3.byteLength);
 
         console.log(t1);
-        console.log(t3);
+        console.log(t3);*/
 
         return lib;
     });
@@ -59,30 +58,68 @@ const registry = new FinalizationRegistry((ptr) => {
     handle.instance.exports.cppcore_free(ptr);
 });
 
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
 /////////////////////////////////////////////////////////////////////////////////
 
-export class Buffer extends DataView {
+export class Buffer extends Uint8Array {
     constructor(size) {
         console.log("Constructing Buffer...");
         const ptr = handle.instance.exports.cppcore_alloc(size);
         super(handle.instance.exports.memory.buffer, ptr, size);
+        // if (ptr == 0) throw OOM
         console.log("Constructed Buffer at: " + ptr);
         registry.register(this, ptr);
         this._ptr=ptr;
     }
 }
 
-export class BaseX {
-    constructor() {
-        this._encoder = new TextEncoder();
-        this._decoder = new TextDecoder();
+export class CString extends Buffer {
+    constructor(str) {
+        console.debug("CString Constructor: " + str);
+        const enc = encoder.encode(str);
+        super(enc.length+1);
+        this.set(enc);
+        this[enc.length] = 0x00;
     }
-    decode2048() {
-        let encoder = new TextEncoder();
-        let alphabet = encoder.encode("0123456789");
-        let buf = new Buffer(alphabet.length);
-        let output = new Buffer(64);
-        handle.instance.exports.cppcore_basex_decode2048(input, output, buf._ptr)
+    toString() {
+        const buf = new ArrayBuffer(this.byteLength-1);
+        const dst = new Uint8Array(buf);
+        const src = new Uint8Array(this);
+        console.debug("this byteLength: " + this.byteLength);
+        console.debug("src byteLength:" + src.byteLength);
+        console.debug("dst byteLength: " + dst.byteLength);
+        dst.set(src.slice(0, this.byteLength-1));
+        return decoder.decode(dst);
+    }
+}
+
+export class BaseX {
+    constructor(alphabet) {
+        //this._encoder = new TextEncoder();
+        //this._decoder = new TextDecoder();
+
+        var enc = encoder.encode(alphabet);
+        console.log(enc);
+        console.log(alphabet.length);
+        console.log(enc.length);
+
+        this._alphabet = new Buffer(enc.length+1);
+        this._alphabet.set(enc);
+        this._alphabet[enc.length] = 0x00;
+    }
+    decode128(str) {
+        var enc = encoder.encode(str);
+        let inbuf = new Buffer(enc.length+1);
+        inbuf.set(enc);
+        inbuf[enc.length] = 0x00;
+
+        let outbuf = new Buffer(16);
+        let r = handle.instance.exports.cppcore_basex_decode128(
+            inbuf._ptr, outbuf._ptr, this._alphabet._ptr);
+        console.log(r);
+        console.log(outbuf);
     }
 }
 
