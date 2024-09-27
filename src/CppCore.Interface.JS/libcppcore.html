@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World - AssemblyScript</title>
+    <!--<script type="module" src="test2.mjs"></script>-->
+  </head>
+  <body>
+
+    <script type="module">
+      import { 
+        Buffer,
+        AES
+      } from './libcppcore.mjs'
+      
+      function testFill() {
+        
+      }
+
+      function testAES() {
+        var aes = new AES();
+        var key = new AES.Key();
+        key.setUint32(0, 4294967295);
+
+        aes.reset(key);
+        var data_in = new Buffer(16);
+        var data_out = new Buffer(16);
+        
+        data_out.setUint32(0, 0);
+        data_out.setUint32(4, 0);
+        data_out.setUint32(8, 0);
+        data_out.setUint32(12, 0);
+        
+        data_in.setUint32(0, 4294967295);
+        data_in.setUint32(4, 4294967295);
+        data_in.setUint32(8, 4294967295);
+        data_in.setUint32(12, 4294967295);
+
+        console.log("Before:")
+        console.log(data_out.getUint32(0));
+        aes.encrypt(data_in, data_out, 1);
+        console.log("After:")
+        console.log(data_out.getUint32(0));
+
+        data_in.setUint32(0, 0);
+        data_in.setUint32(4, 0);
+        data_in.setUint32(8, 0);
+        data_in.setUint32(12, 0);
+
+        console.log("Before:")
+        console.log(data_in.getUint32(0));
+        aes.decrypt(data_out, data_in, 1);
+        console.log("After:")
+        console.log(data_in.getUint32(0));
+      }
+
+      testFill();
+      //testAES();
+
+    </script>
+  </body>
+</html>
