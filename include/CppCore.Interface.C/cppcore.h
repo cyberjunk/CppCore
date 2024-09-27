@@ -96,6 +96,11 @@
 extern "C" {
 #endif
 
+   // memory
+
+   CPPCORE_EXPORT void* cppcore_alloc(unsigned int size);
+   CPPCORE_EXPORT void  cppcore_free(void* ptr);
+
    // large integer arithmetic
 
    CPPCORE_UINT_DECLARATION(cppcore_uint32)
