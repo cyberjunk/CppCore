@@ -78,21 +78,14 @@ export class Buffer extends Uint8Array {
 
 export class CString extends Buffer {
     constructor(str) {
-        //if (!(str instanceof String))
-        //    throw new Error('Expecting string');
         console.debug("CString Constructor: " + str);
-        const enc = encoder.encode(str);
-        super(enc.length+1);
-        this.set(enc);
-        this[enc.length] = 0x00;
-
-        this.usedLength = enc.length;
+        super(str.length+1);
+        this.fromString(str);
     }
     fromString(str) {
         const enc = encoder.encode(str);
         if (this.byteLength-1 < enc.length)
             throw new Error('String too big');
-
         this.set(enc);
         this[enc.length] = 0x00;
         this.usedLength = enc.length;
