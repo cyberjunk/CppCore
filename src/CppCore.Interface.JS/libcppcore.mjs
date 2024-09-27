@@ -65,11 +65,12 @@ const decoder = new TextDecoder();
 
 export class Buffer extends Uint8Array {
     constructor(size) {
-        console.log("Constructing Buffer...");
+        console.debug("Constructing Buffer...");
         const ptr = handle.instance.exports.cppcore_alloc(size);
         super(handle.instance.exports.memory.buffer, ptr, size);
-        // if (ptr == 0) throw OOM
-        console.log("Constructed Buffer at: " + ptr);
+        if (ptr == 0) 
+            throw new Error('Out of heap memory');
+        console.debug("Constructed Buffer at: " + ptr);
         registry.register(this, ptr);
         this._ptr=ptr;
     }
@@ -87,9 +88,9 @@ export class CString extends Buffer {
         const buf = new ArrayBuffer(this.byteLength-1);
         const dst = new Uint8Array(buf);
         const src = new Uint8Array(this);
-        console.debug("this byteLength: " + this.byteLength);
+        /*console.debug("this byteLength: " + this.byteLength);
         console.debug("src byteLength:" + src.byteLength);
-        console.debug("dst byteLength: " + dst.byteLength);
+        console.debug("dst byteLength: " + dst.byteLength);*/
         dst.set(src.slice(0, this.byteLength-1));
         return decoder.decode(dst);
     }
@@ -97,29 +98,29 @@ export class CString extends Buffer {
 
 export class BaseX {
     constructor(alphabet) {
-        //this._encoder = new TextEncoder();
-        //this._decoder = new TextDecoder();
+        this._alphabet = new CString(alphabet);
+    }
+    encode128(v) {
+        //void* in, char* out, int len, unsigned int base, char* alphabet, unsigned int writeterm
+        let outbuf = new CString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
-        var enc = encoder.encode(alphabet);
-        console.log(enc);
-        console.log(alphabet.length);
-        console.log(enc.length);
+        let r = handle.instance.exports.cppcore_basex_encode128(
+            v._ptr, outbuf._ptr, 64, 
+            this._alphabet.byteLength-1, 
+            this._alphabet._ptr, 1);
+        console.log("LEN:" + r);
 
-        this._alphabet = new Buffer(enc.length+1);
-        this._alphabet.set(enc);
-        this._alphabet[enc.length] = 0x00;
+        //console.log(outbuf.toString());
+        return outbuf.toString();
     }
     decode128(str) {
-        var enc = encoder.encode(str);
-        let inbuf = new Buffer(enc.length+1);
-        inbuf.set(enc);
-        inbuf[enc.length] = 0x00;
-
-        let outbuf = new Buffer(16);
-        let r = handle.instance.exports.cppcore_basex_decode128(
-            inbuf._ptr, outbuf._ptr, this._alphabet._ptr);
-        console.log(r);
-        console.log(outbuf);
+        const ibuf = new CString(str);
+        const obuf = new Buffer(16);
+        const r = handle.instance.exports.cppcore_basex_decode128(
+            ibuf._ptr, obuf._ptr, this._alphabet._ptr);
+        if (r == 0)
+            throw new Error('Invalid symbol or overflow');
+        return obuf;
     }
 }
 
