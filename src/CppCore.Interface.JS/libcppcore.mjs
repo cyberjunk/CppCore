@@ -78,8 +78,8 @@ export class Buffer extends Uint8Array {
 
 export class CString extends Buffer {
     constructor(str) {
-        if (!(str instanceof String))
-            throw new Error('Expecting string');
+        //if (!(str instanceof String))
+        //    throw new Error('Expecting string');
         console.debug("CString Constructor: " + str);
         const enc = encoder.encode(str);
         super(enc.length+1);
