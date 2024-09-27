@@ -79,8 +79,13 @@ export class Buffer extends Uint8Array {
 export class CString extends Buffer {
     constructor(str) {
         console.debug("CString Constructor: " + str);
-        super(str.length+1);
-        this.fromString(str);
+        if (str) {
+            super(str.length+1);
+            this.fromString(str);
+        } else {
+            super(16);
+            this.usedLength = 0;
+        }
     }
     fromString(str) {
         const enc = encoder.encode(str);
