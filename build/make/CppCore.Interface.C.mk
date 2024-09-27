@@ -196,13 +196,33 @@ OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES) -DCPPCORE_NO_SOCKET -D_WASI_EMULATED_SIGNAL
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
+DEC1MB    := 1048576
+DEC8MB    := 8388608
+HEX1MB    := 0x00100000
 LINKFLAGS := $(LINKFLAGS) \
-             -Wl,-z,stack-size=0x00100000 \
+             -mexec-model=reactor \
+             -Wl,-z,stack-size=$(HEX1MB) \
+             -Wl,--initial-heap=$(DEC1MB) \
+             -Wl,--max-memory=$(DEC8MB) \
+             -Wl,--export,__data_end \
+             -Wl,--export,__heap_base \
+             -Wl,--export,__tls_base \
+             -Wl,--export,__stack_pointer \
              -Wl,--export-dynamic \
              -Wl,--no-entry
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 endif
+
+#-Wl,--import-memory \
+#-Wl,--global-base=2048 \
+#-Wl,-z,stack-size=0x00100000 \
+#-Wl,--max-memory=8388608 \
+#-Wl,--initial-memory=1179648 \
+#-Wl,--initial-heap=1048576 \
+#-Wl,--export-all \
+#-Wl,--export,__tls_base \
+#-Wl,--export,__stack_pointer \
 
 ################################################################################################
 
