@@ -17,19 +17,19 @@
       
       function testBaseX() {
         
-        var s = new CString();
-        
+        /*var s = new CString(31);
+        console.log("LEN: " + s.byteLength);
         console.log("decoding...");
         var str1 = new CString("hello world");
         console.log(str1.toString());
         console.log("----------");
         str1.fromString("blabla");
-        console.log(str1.toString());
+        console.log(str1.toString());*/
                 
-        /*var basex = new BaseX("0123456789");
+        var basex = new BaseX("0123456789");
         var v = basex.decode128("1024");
         console.log(v);
-        console.log(basex.encode128(v));*/
+        console.log(basex.encode128(v));
 
         //var v = basex.decode128("9999999999999999999999999999999999999999999999999");
         //console.log(v);

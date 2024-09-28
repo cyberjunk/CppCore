@@ -67,9 +67,9 @@ export class Buffer extends Uint8Array {
     constructor(size) {
         console.debug("Constructing Buffer...");
         const ptr = handle.instance.exports.cppcore_alloc(size);
-        super(handle.instance.exports.memory.buffer, ptr, size);
-        if (ptr == 0) 
+        if (ptr == 0)
             throw new Error('Out of heap memory');
+        super(handle.instance.exports.memory.buffer, ptr, size);
         console.debug("Constructed Buffer at: " + ptr);
         registry.register(this, ptr);
         this._ptr=ptr;
@@ -77,14 +77,23 @@ export class Buffer extends Uint8Array {
 }
 
 export class CString extends Buffer {
-    constructor(str) {
-        console.debug("CString Constructor: " + str);
-        if (str) {
-            super(str.length+1);
-            this.fromString(str);
-        } else {
+    constructor(v) {
+        console.debug("CString Constructor: " + v);
+        const type = typeof(v);
+        if (type === 'string') {
+            super(v.length+1);
+            this.fromString(v);
+        }
+        else if (type === 'undefined') {
             super(16);
             this.usedLength = 0;
+        }
+        else if (Number.isInteger(v)) {
+            super(v+1);
+            this.usedLength = 0;
+        }
+        else {
+            throw new Error('Invalid value for CString');
         }
     }
     fromString(str) {
@@ -116,21 +125,17 @@ export class BaseX {
         this._alphabet = new CString(alphabet);
     }
     encode128(v) {
-        //void* in, char* out, int len, unsigned int base, char* alphabet, unsigned int writeterm
-        let outbuf = new CString("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
+        let outbuf = new CString(15);
         let r = handle.instance.exports.cppcore_basex_encode128(
-            v._ptr, outbuf._ptr, outbuf.usedLength, 
+            v._ptr, outbuf._ptr, outbuf.byteLength-1, 
             this._alphabet.byteLength-1, 
             this._alphabet._ptr, 1);
         if (r < 0)
             throw new Error('Buffer too small');
         
         console.log("LEN:" + r);
-        console.log("DIFF:" + (outbuf.usedLength - r));
-
-        //outbuf.usedLength = 
-        //console.log(outbuf.toString());
+        console.log("DIFF:" + (outbuf.byteLength-1-r));
+        outbuf.usedLength = (outbuf.byteLength-1-r);
         return outbuf.toString();
     }
     decode128(str) {
