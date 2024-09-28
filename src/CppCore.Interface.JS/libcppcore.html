@@ -27,9 +27,12 @@
         console.log(str1.toString());*/
                 
         var basex = new BaseX("0123456789");
-        var v = basex.decode128("1024");
-        console.log(v);
-        console.log(basex.encode128(v));
+        var dec = basex.decode128("1024");
+        var enc = basex.encode128(dec);
+        //basex.decode128("1024");
+        console.log(dec);
+        console.log(enc);
+        //console.log(dec._ptr);
 
         //var v = basex.decode128("9999999999999999999999999999999999999999999999999");
         //console.log(v);
@@ -74,7 +77,6 @@
       }
 
       testBaseX();
-      //testAES();
 
     </script>
   </body>
