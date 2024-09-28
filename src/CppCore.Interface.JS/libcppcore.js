@@ -72,20 +72,10 @@ export class Buffer extends Uint8Array {
             this.set(parm1);
 
             registry.register(this, ptr);
-            
-            //this._ptr=ptr;
         }
         else if (parm1 == handle.instance.exports.memory.buffer) {
             console.log("VIEW ON BUFFER AT " + parm2 + " LENGTH " + parm3);
             super(handle.instance.exports.memory.buffer, parm2, parm3);
-            //console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));        
-            //registry.register(this, ptr);
-            
-            if (parm2) {
-                if (parm3) {
-
-                }
-            }
         }
         else if (!isNaN(parm1)) {
             console.log("FROM NUMBER");
@@ -98,17 +88,13 @@ export class Buffer extends Uint8Array {
             console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));
                     
             registry.register(this, ptr);
-            
-            //this._ptr=ptr;
         }
-
         else {
             console.log(parm1);
             throw new Error("Not supported");
         }
-
-
     }
+    
     get _ptr() {
         return this.byteOffset;
     }
