@@ -123,26 +123,28 @@ export class CString extends Buffer {
 export class BaseX {
     constructor(alphabet) {
         this._alphabet = new CString(alphabet);
+        this._strbuf = new CString(8192);
     }
     encode128(v) {
-        let outbuf = new CString(15);
-        let r = handle.instance.exports.cppcore_basex_encode128(
-            v._ptr, outbuf._ptr, outbuf.byteLength-1, 
-            this._alphabet.byteLength-1, 
-            this._alphabet._ptr, 1);
-        if (r < 0)
-            throw new Error('Buffer too small');
-        
-        console.log("LEN:" + r);
-        console.log("DIFF:" + (outbuf.byteLength-1-r));
-        outbuf.usedLength = (outbuf.byteLength-1-r);
-        return outbuf.toString();
+        const MAXSYMBOLS = this._strbuf.byteLength-1;
+        const r = handle.instance.exports.cppcore_basex_encode128(
+            v._ptr,                        // inbuf ptr
+            this._strbuf._ptr,             // outbuf ptr
+            MAXSYMBOLS,                    // outbuf max symbols
+            this._alphabet.byteLength-1,   // base
+            this._alphabet._ptr,           // alphabet ptr
+            1                              // write term 0x00
+        );
+        if (r < 0) throw new Error('_strbuf too small');
+        this._strbuf.usedLength = (MAXSYMBOLS-r);
+        return this._strbuf.toString();
     }
     decode128(str) {
-        const ibuf = new CString(str);
+        //const ibuf = new CString(str);
+        this._strbuf.fromString(str);
         const obuf = new Buffer(16);
         const r = handle.instance.exports.cppcore_basex_decode128(
-            ibuf._ptr, obuf._ptr, this._alphabet._ptr);
+            this._strbuf._ptr, obuf._ptr, this._alphabet._ptr);
         if (r == 0)
             throw new Error('Invalid symbol or overflow');
         return obuf;
