@@ -53,15 +53,18 @@ function hexStrFromInt(v) {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export class Buffer extends Uint8Array {
-    constructor(size) {
-        if (!size) {
-            size = 64;
+    constructor(parm1, parm2, parm3) {
+        if (!parm1) {
+            parm1 = 64;
         }
-        console.debug("libcppcore: Constructing Buffer with size " + size);
-        const ptr = handle.instance.exports.cppcore_alloc(size);
+        console.log(typeof(parm1));
+        console.log(typeof(parm2));
+        console.log(typeof(parm3));
+        console.debug("libcppcore: Constructing Buffer with size " + parm1);
+        const ptr = handle.instance.exports.cppcore_alloc(parm1);
         if (ptr == 0)
             throw new Error('Out of heap memory');
-        super(handle.instance.exports.memory.buffer, ptr, size);
+        super(handle.instance.exports.memory.buffer, ptr, parm1);
         console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));
         registry.register(this, ptr);
         this._ptr=ptr;
