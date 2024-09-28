@@ -46,14 +46,23 @@ const decoder = new TextDecoder();
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
+function hexStrFromInt(v) {
+    return "0x" + v.toString(16).padStart(8, '0');
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 export class Buffer extends Uint8Array {
     constructor(size) {
-        console.debug("Constructing Buffer...");
+        if (!size) {
+            size = 64;
+        }
+        console.debug("libcppcore: Constructing Buffer with size " + size);
         const ptr = handle.instance.exports.cppcore_alloc(size);
         if (ptr == 0)
             throw new Error('Out of heap memory');
         super(handle.instance.exports.memory.buffer, ptr, size);
-        console.debug("Constructed Buffer at: " + ptr);
+        console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));
         registry.register(this, ptr);
         this._ptr=ptr;
     }

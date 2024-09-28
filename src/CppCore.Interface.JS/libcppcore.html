@@ -15,6 +15,35 @@
         AES
       } from './libcppcore.js'
       
+      function testBuffer() {
+
+          /*const b = new ArrayBuffer(16);
+          const b2 = new Uint8Array(b);
+          console.log("ORIG");
+          console.log(typeof(b2));
+          console.log(b2);
+          console.log("SLICE");
+          const bsl1 = b2.slice(0, 1);
+          console.log(typeof(bsl1));
+          console.log(bsl1);
+          console.log("SUBARRAY");
+          const bsl2 = b2.subarray(0, 1);
+          console.log(typeof(bsl2));
+          console.log(bsl2);*/
+
+
+          const buf = new Buffer();
+          console.log(buf);
+
+          const t1 = buf.slice(0, 1);
+          console.log(typeof(t1));
+          console.log(t1);
+
+          //const t2 = buf.subarray(0, 1);
+          //console.log(typeof(t2));
+          //console.log(t2);
+      }
+
       function testBaseX() {
         
         /*var s = new CString(31);
@@ -76,8 +105,9 @@
         console.log(data_in.getUint32(0));
       }
 
-      testBaseX();
-
+      testBuffer();
+      //testBaseX();
+      
     </script>
   </body>
 </html>
