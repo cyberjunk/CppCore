@@ -17,10 +17,11 @@
       
       function testBuffer() {
 
-          const bb = new Uint8Array(16);
+          /*const bb = new Uint8Array(16.9);
           console.log(bb);
-          const bb2 = new Uint8Array(bb.buffer, 0, 3);
-          console.log(bb2);
+          const bb2 = new Uint8Array(bb);
+          bb[0] = 0xFF;
+          console.log(bb2);*/
 
           /*const b = new ArrayBuffer(16);
           const b2 = new Uint8Array(b);
@@ -40,21 +41,21 @@
           console.log(bsl2);*/
 
 
-          /*const buf = new Buffer();
-          buf[0] = 0xFF;
-          buf[1] = 0xFF;
+          const buf = new Buffer(16);
           console.log(buf);
 
           const buf2 = new Buffer(buf);
-          console.log(buf2);*/AES
-
-          /*const t1 = buf.slice(0, 1);
+          buf[0] = 0xFF;
+          buf[1] = 0xFF;
+          console.log(buf2);
+     
+          const t1 = buf.slice(0, 1);
           console.log(typeof(t1));
-          console.log(t1);*/
+          console.log(t1);
 
-          /*const t2 = buf.subarray(0, 1);
+          const t2 = buf.subarray(0, 1);
           console.log(typeof(t2));
-          console.log(t2);*/
+          console.log(t2);
       }
 
       function testBaseX() {
@@ -118,8 +119,8 @@
         console.log(data_in.getUint32(0));
       }
 
-      //testBuffer();
-      testBaseX();
+      testBuffer();
+      //testBaseX();
       
     </script>
   </body>

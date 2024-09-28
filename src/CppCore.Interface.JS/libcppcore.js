@@ -54,6 +54,66 @@ function hexStrFromInt(v) {
 
 export class Buffer extends Uint8Array {
     constructor(parm1, parm2, parm3) {
+        console.debug("libcppcore: Constructing Buffer (" + typeof(parm1) + "," + typeof(parm2) + "," + typeof(parm3) + ")");
+        
+        //onsole.log("parm1: " + typeof(parm1));
+        //console.log("parm2: " + typeof(parm2));
+        //console.log("parm3: " + typeof(parm3));
+
+        if (parm1 instanceof Uint8Array) {
+            console.log("COPY FROM OTHER Uint8Array");
+            const ptr = handle.instance.exports.cppcore_alloc(parm1.byteLength);
+            
+            if (ptr == 0)
+                throw new Error('Out of heap memory');
+            
+            super(handle.instance.exports.memory.buffer, ptr, parm1.byteLength);
+            
+            this.set(parm1);
+
+            registry.register(this, ptr);
+            
+            //this._ptr=ptr;
+        }
+        else if (parm1 == handle.instance.exports.memory.buffer) {
+            console.log("VIEW ON BUFFER AT " + parm2 + " LENGTH " + parm3);
+            super(handle.instance.exports.memory.buffer, parm2, parm3);
+            //console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));        
+            //registry.register(this, ptr);
+            
+            if (parm2) {
+                if (parm3) {
+
+                }
+            }
+        }
+        else if (!isNaN(parm1)) {
+            console.log("FROM NUMBER");
+            const ptr = handle.instance.exports.cppcore_alloc(parm1);
+            if (ptr == 0)
+                throw new Error('Out of heap memory');
+            
+            super(handle.instance.exports.memory.buffer, ptr, parm1);
+            
+            console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));
+                    
+            registry.register(this, ptr);
+            
+            //this._ptr=ptr;
+        }
+
+        else {
+            console.log(parm1);
+            throw new Error("Not supported");
+        }
+
+
+    }
+    get _ptr() {
+        return this.byteOffset;
+    }
+
+    /*constructor(parm1, parm2, parm3) {
         if (!parm1) {
             parm1 = 64;
         }
@@ -68,7 +128,7 @@ export class Buffer extends Uint8Array {
         console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));
         registry.register(this, ptr);
         this._ptr=ptr;
-    }
+    }*/
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
