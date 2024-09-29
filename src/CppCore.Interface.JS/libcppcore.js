@@ -14,7 +14,7 @@ const handle = await WebAssembly
         console.debug("libcppcore: Library loaded")
         console.debug("libcppcore: Exports")
         console.debug(lib.instance.exports);
-
+        
         /*console.debug("Memory Buffer Size")
         console.debug(lib.instance.exports.memory.buffer.byteLength.toString(16));
         console.debug(lib.instance.exports.memory.buffer.maxByteLength.toString(16));*/
@@ -46,6 +46,13 @@ const decoder = new TextDecoder();
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
+function alloc(size) {
+    const ptr = handle.instance.exports.cppcore_alloc(size);     
+    if (ptr == 0)
+        throw new Error('Out of heap memory');
+    return ptr;
+}
+
 function hexStrFromInt(v) {
     return "0x" + v.toString(16).padStart(8, '0');
 }
@@ -54,23 +61,15 @@ function hexStrFromInt(v) {
 
 export class Buffer extends Uint8Array {
     constructor(parm1, parm2, parm3) {
-        console.debug("libcppcore: Constructing Buffer (" + typeof(parm1) + "," + typeof(parm2) + "," + typeof(parm3) + ")");
-        
-        //onsole.log("parm1: " + typeof(parm1));
-        //console.log("parm2: " + typeof(parm2));
-        //console.log("parm3: " + typeof(parm3));
-
+        console.debug("libcppcore: Constructing Buffer (" + 
+            typeof(parm1) + "," + 
+            typeof(parm2) + "," + 
+            typeof(parm3) + ")");
         if (parm1 instanceof Uint8Array) {
             console.log("COPY FROM OTHER Uint8Array");
-            const ptr = handle.instance.exports.cppcore_alloc(parm1.byteLength);
-            
-            if (ptr == 0)
-                throw new Error('Out of heap memory');
-            
+            const ptr = alloc(parm1.byteLength);
             super(handle.instance.exports.memory.buffer, ptr, parm1.byteLength);
-            
             this.set(parm1);
-
             registry.register(this, ptr);
         }
         else if (parm1 == handle.instance.exports.memory.buffer) {
@@ -79,18 +78,12 @@ export class Buffer extends Uint8Array {
         }
         else if (!isNaN(parm1)) {
             console.log("FROM NUMBER");
-            const ptr = handle.instance.exports.cppcore_alloc(parm1);
-            if (ptr == 0)
-                throw new Error('Out of heap memory');
-            
+            const ptr = alloc(parm1);
             super(handle.instance.exports.memory.buffer, ptr, parm1);
-            
-            console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));
-                    
+            console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));      
             registry.register(this, ptr);
         }
         else {
-            console.log(parm1);
             throw new Error("Not supported");
         }
     }
