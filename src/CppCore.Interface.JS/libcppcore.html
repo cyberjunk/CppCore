@@ -58,6 +58,27 @@
           console.log(t2);
       }
 
+      function testCString() {
+        var s = new CString("hello");
+        console.log(s);
+        /*console.log(s.toString());
+        console.log(s.usedLength);
+        console.log(s.maxLength);
+        console.log(s._ptr);*/
+
+
+        /*var s2 = s.slice(0, 1);
+        console.log(s2);
+        console.log(s2.usedLength);*/
+
+        var s3 = new CString(s);
+        //console.log(s3.toString());
+        console.log(s3.usedLength);
+
+        //var s4 = s.subarray(0, 1);
+        //console.log(s4);
+      }
+
       function testBaseX() {
         
         /*var s = new CString(31);
@@ -119,8 +140,9 @@
         console.log(data_in.getUint32(0));
       }
 
-      testBuffer();
-      //testBaseX();
+      //testBuffer();
+      testCString();
+      testBaseX();
       
     </script>
   </body>

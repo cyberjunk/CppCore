@@ -66,87 +66,77 @@ export class Buffer extends Uint8Array {
             typeof(parm2) + "," + 
             typeof(parm3) + ")");
         if (parm1 instanceof Uint8Array) {
-            console.log("COPY FROM OTHER Uint8Array");
+            console.debug("libcppcore: Copy Buffer from Uint8Array");
             const ptr = alloc(parm1.byteLength);
             super(handle.instance.exports.memory.buffer, ptr, parm1.byteLength);
             this.set(parm1);
             registry.register(this, ptr);
         }
         else if (parm1 == handle.instance.exports.memory.buffer) {
-            console.log("VIEW ON BUFFER AT " + parm2 + " LENGTH " + parm3);
+            console.debug("libcppcore: Creating view on existing Buffer");
             super(handle.instance.exports.memory.buffer, parm2, parm3);
         }
         else if (!isNaN(parm1)) {
-            console.log("FROM NUMBER");
+            console.debug("libcppcore: Creating Buffer from size=" + parm1);              
             const ptr = alloc(parm1);
             super(handle.instance.exports.memory.buffer, ptr, parm1);
-            console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));      
+            //console.debug("libcppcore: Allocated Buffer at: " + hexStrFromInt(ptr));
             registry.register(this, ptr);
         }
         else {
             throw new Error("Not supported");
         }
     }
-    
     get _ptr() {
         return this.byteOffset;
     }
-
-    /*constructor(parm1, parm2, parm3) {
-        if (!parm1) {
-            parm1 = 64;
-        }
-        console.log(typeof(parm1));
-        console.log(typeof(parm2));
-        console.log(typeof(parm3));
-        console.debug("libcppcore: Constructing Buffer with size " + parm1);
-        const ptr = handle.instance.exports.cppcore_alloc(parm1);
-        if (ptr == 0)
-            throw new Error('Out of heap memory');
-        super(handle.instance.exports.memory.buffer, ptr, parm1);
-        console.debug("libcppcore: Constructed Buffer at: " + hexStrFromInt(ptr));
-        registry.register(this, ptr);
-        this._ptr=ptr;
-    }*/
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-export class CString extends Buffer {
+export class CString {
     constructor(v) {
-        console.debug("CString Constructor: " + v);
+        console.debug("libcppcore: CString from " + v);
         const type = typeof(v);
         if (type === 'string') {
-            super(v.length+1);
+            this._buffer = new Buffer(v.length+1);
             this.fromString(v);
         }
         else if (type === 'undefined') {
-            super(16);
+            this._buffer = new Buffer(16);
             this.usedLength = 0;
         }
         else if (Number.isInteger(v)) {
-            super(v+1);
+            this._buffer = new Buffer(v+1);
             this.usedLength = 0;
         }
+        else if (v instanceof CString) {
+            console.log("FROM OTHER CSTRING");
+            this._buffer = new Buffer(v._buffer);
+            this.usedLength = v.usedLength;
+        }
         else {
+            console.log(type);
             throw new Error('Invalid value for CString');
         }
     }
+    get maxLength() {
+      return this._buffer.byteLength - 1;
+    }
+    get _ptr() {
+      return this._buffer._ptr;
+    }
     fromString(str) {
         const enc = encoder.encode(str);
-        if (this.byteLength-1 < enc.length)
+        if (this.maxLength < enc.length)
             throw new Error('String too big');
-        this.set(enc);
-        this[enc.length] = 0x00;
+        this._buffer.set(enc);
+        this._buffer[enc.length] = 0x00;
         this.usedLength = enc.length;
     }
     toString() {
         const dst = new Uint8Array(this.usedLength);
-        const src = new Uint8Array(this);
-        /*console.debug("this byteLength: " + this.byteLength);
-        console.debug("src byteLength:" + src.byteLength);
-        console.debug("dst byteLength: " + dst.byteLength);*/
-        dst.set(src.subarray(0, this.usedLength));
+        dst.set(this._buffer.subarray(0, this.usedLength));
         return decoder.decode(dst);
     }
 }
@@ -159,14 +149,14 @@ export class BaseX {
         this._strbuf = new CString(8192);
     }
     encode128(v) {
-        const MAXSYMBOLS = this._strbuf.byteLength-1;
+        const MAXSYMBOLS = this._strbuf.maxLength;
         const r = handle.instance.exports.cppcore_basex_encode128(
-            v._ptr,                        // inbuf ptr
-            this._strbuf._ptr,             // outbuf ptr
-            MAXSYMBOLS,                    // outbuf max symbols
-            this._alphabet.byteLength-1,   // base
-            this._alphabet._ptr,           // alphabet ptr
-            1                              // write term 0x00
+            v._ptr,                     // inbuf ptr
+            this._strbuf._ptr,          // outbuf ptr
+            MAXSYMBOLS,                 // outbuf max symbols
+            this._alphabet.usedLength,  // base
+            this._alphabet._ptr,        // alphabet ptr
+            1                           // write term 0x00
         );
         if (r < 0) throw new Error('_strbuf too small');
         this._strbuf.usedLength = (MAXSYMBOLS-r);
