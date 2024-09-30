@@ -74,6 +74,7 @@
         var s3 = new CString(s);
         //console.log(s3.toString());
         console.log(s3.usedLength);
+        console.log(s3.maxLength);
 
         //var s4 = s.subarray(0, 1);
         //console.log(s4);
@@ -89,13 +90,30 @@
         console.log("----------");
         str1.fromString("blabla");
         console.log(str1.toString());*/
-                
-        var basex = new BaseX("0123456789");
-        var dec = basex.decode128("1024");
-        var enc = basex.encode128(dec);
-        //basex.decode128("1024");
+             
+        /*console.log("32B,B10:" + BaseX.estimateSymbols(32, 10));
+        console.log("32B,B02:" + BaseX.estimateSymbols(32,  2));
+        console.log("32B,B16:" + BaseX.estimateSymbols(32, 16));
+
+        console.log("32B,B10:" + BaseX.estimateBits(11, 10));
+        console.log("32B,B02:" + BaseX.estimateBits(32,  2));
+        console.log("32B,B16:" + BaseX.estimateBits(8, 16));*/
+
+        //
+
+        /*var basex = new BaseX("0123456789");
+        var dec = basex.decode("1024");
         console.log(dec);
+        var enc = basex.encode(dec);
+        console.log(enc);*/
+
+        var basex = new BaseX("0123456789ABCDEF");
+        var dec = basex.decode("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+        console.log(dec);
+        var enc = basex.encode(dec);
         console.log(enc);
+
+
         //console.log(dec._ptr);
 
         //var v = basex.decode128("9999999999999999999999999999999999999999999999999");
@@ -141,7 +159,7 @@
       }
 
       //testBuffer();
-      testCString();
+      //testCString();
       testBaseX();
       
     </script>
