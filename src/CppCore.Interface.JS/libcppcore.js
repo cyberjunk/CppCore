@@ -87,6 +87,9 @@ export class Buffer extends Uint8Array {
             throw new Error("Not supported");
         }
     }
+    get bitLength() {
+        return this.byteLength << 3;
+    }
     get _ptr() {
         return this.byteOffset;
     }
