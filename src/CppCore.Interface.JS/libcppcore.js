@@ -146,6 +146,94 @@ export class CString {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
+export class UInt {
+    constructor(parm1) {
+        if (Number.isInteger(parm1)) {
+            if (parm1 <= 32) {
+                this._buffer = new Buffer(4);
+                this._add = handle.instance.exports.cppcore_uint32_add;
+                this._sub = handle.instance.exports.cppcore_uint32_sub;
+                this._mul = handle.instance.exports.cppcore_uint32_mul;
+            }
+            else if (parm1 <= 64) {
+                this._buffer = new Buffer(8);
+                this._add = handle.instance.exports.cppcore_uint64_add;
+                this._sub = handle.instance.exports.cppcore_uint64_sub;
+                this._mul = handle.instance.exports.cppcore_uint64_mul;
+            }
+            else if (parm1 <= 128) {
+                this._buffer = new Buffer(16);
+                this._add = handle.instance.exports.cppcore_uint128_add;
+                this._sub = handle.instance.exports.cppcore_uint128_sub;
+                this._mul = handle.instance.exports.cppcore_uint128_mul;
+            }
+            else if (parm1 <= 256) {
+                this._buffer = new Buffer(32);
+                this._add = handle.instance.exports.cppcore_uint256_add;
+                this._sub = handle.instance.exports.cppcore_uint256_sub;
+                this._mul = handle.instance.exports.cppcore_uint256_mul;
+            }
+            else if (parm1 <= 512) {
+                this._buffer = new Buffer(64);
+                this._add = handle.instance.exports.cppcore_uint512_add;
+                this._sub = handle.instance.exports.cppcore_uint512_sub;
+                this._mul = handle.instance.exports.cppcore_uint512_mul;
+            }
+            else if (parm1 <= 1024) {
+                this._buffer = new Buffer(128);
+                this._add = handle.instance.exports.cppcore_uint1024_add;
+                this._sub = handle.instance.exports.cppcore_uint1024_sub;
+                this._mul = handle.instance.exports.cppcore_uint1024_mul;
+            }
+            else if (parm1 <= 2048) {
+                this._buffer = new Buffer(256);
+                this._add = handle.instance.exports.cppcore_uint2048_add;
+                this._sub = handle.instance.exports.cppcore_uint2048_sub;
+                this._mul = handle.instance.exports.cppcore_uint2048_mul;
+            }
+            else if (parm1 <= 4096) {
+                this._buffer = new Buffer(512);
+                this._add = handle.instance.exports.cppcore_uint4096_add;
+                this._sub = handle.instance.exports.cppcore_uint4096_sub;
+                this._mul = handle.instance.exports.cppcore_uint4096_mul;
+            }
+            else if (parm1 <= 8192) {
+                this._buffer = new Buffer(1024);
+                this._add = handle.instance.exports.cppcore_uint8192_add;
+                this._sub = handle.instance.exports.cppcore_uint8192_sub;
+                this._mul = handle.instance.exports.cppcore_uint8192_mul;
+            }
+            else {
+                throw new Error("Invalid bitlength for UInt");
+            }
+        }
+        else if (parm1 instanceof UInt) {
+            this._buffer = new Buffer(parm1._buffer);
+            this._add = parm1._add;
+            this._sub = parm1._sub;
+            this._mul = parm1._mul;
+        }
+        else {
+            throw new Error("Invalid constructor parameter 1");
+        }
+    }
+    add(v) {
+        this._add(this._ptr, v._ptr, this._ptr);
+        return this;
+    }
+    get byteLength() {
+        return this._buffer.byteLength;
+    }
+    get bitLength() {
+        return this._buffer.bitLength;
+    }
+    get _ptr() {
+        return this._buffer.byteOffset;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 export class BaseX {
     constructor(alphabet) {
         this._alphabet = new CString(alphabet);
@@ -187,23 +275,21 @@ export class BaseX {
     decode(str, bits) {
         this._strbuf.fromString(str);
         let f = null;
-        let l = null;
         if (!bits) bits = BaseX.estimateBits(str.length, this._alphabet.usedLength);
-        if (bits < 32) bits = 32;
-        if      (bits <= 32)   { l = 4;    f = handle.instance.exports.cppcore_basex_decode32; }
-        else if (bits <= 64)   { l = 8;    f = handle.instance.exports.cppcore_basex_decode64; }
-        else if (bits <= 128)  { l = 16;   f = handle.instance.exports.cppcore_basex_decode128; }
-        else if (bits <= 256)  { l = 32;   f = handle.instance.exports.cppcore_basex_decode256; }
-        else if (bits <= 512)  { l = 64;   f = handle.instance.exports.cppcore_basex_decode512; }
-        else if (bits <= 1024) { l = 128;  f = handle.instance.exports.cppcore_basex_decode1024; }
-        else if (bits <= 2048) { l = 256;  f = handle.instance.exports.cppcore_basex_decode2048; }
-        else if (bits <= 4096) { l = 512;  f = handle.instance.exports.cppcore_basex_decode4096; }
-        else if (bits <= 8192) { l = 1024; f = handle.instance.exports.cppcore_basex_decode8192; }
+        if      (bits <= 32)   { bits = 32;   f = handle.instance.exports.cppcore_basex_decode32; }
+        else if (bits <= 64)   { bits = 64;   f = handle.instance.exports.cppcore_basex_decode64; }
+        else if (bits <= 128)  { bits = 128;  f = handle.instance.exports.cppcore_basex_decode128; }
+        else if (bits <= 256)  { bits = 256;  f = handle.instance.exports.cppcore_basex_decode256; }
+        else if (bits <= 512)  { bits = 512;  f = handle.instance.exports.cppcore_basex_decode512; }
+        else if (bits <= 1024) { bits = 1024; f = handle.instance.exports.cppcore_basex_decode1024; }
+        else if (bits <= 2048) { bits = 2048; f = handle.instance.exports.cppcore_basex_decode2048; }
+        else if (bits <= 4096) { bits = 4096; f = handle.instance.exports.cppcore_basex_decode4096; }
+        else if (bits <= 8192) { bits = 8192; f = handle.instance.exports.cppcore_basex_decode8192; }
         else throw new Error('invalid bitlength');
-        const obuf = new Buffer(l);
-        const r = f(this._strbuf._ptr, obuf._ptr, this._alphabet._ptr);
+        const uint = new UInt(bits);
+        const r = f(this._strbuf._ptr, uint._ptr, this._alphabet._ptr);
         if (r == 0) throw new Error('Invalid symbol or overflow');
-        return obuf;
+        return uint;
     }
 }
 

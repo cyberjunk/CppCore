@@ -12,6 +12,7 @@
         Buffer,
         CString,
         BaseX,
+        UInt,
         AES
       } from './libcppcore.js'
       
@@ -42,20 +43,23 @@
 
 
           const buf = new Buffer(16);
-          console.log(buf);
-
-          const buf2 = new Buffer(buf);
           buf[0] = 0xFF;
           buf[1] = 0xFF;
+          console.log(buf);
+          console.log(buf.bitLength);
+          buf.fill(0);
+          console.log(buf);
+          
+          /*const buf2 = new Buffer(buf);
           console.log(buf2);
-     
+          
           const t1 = buf.slice(0, 1);
           console.log(typeof(t1));
           console.log(t1);
 
           const t2 = buf.subarray(0, 1);
           console.log(typeof(t2));
-          console.log(t2);
+          console.log(t2);*/
       }
 
       function testCString() {
@@ -121,6 +125,19 @@
 
       }
 
+      function testUInt() {
+          var basex = new BaseX("0123456789");
+
+          var a = basex.decode("9999", 8192);
+          var b = basex.decode("1111", 8192);
+          var c = new UInt(a);
+
+          a.add(b);
+          console.log(basex.encode(a));
+          console.log(basex.encode(c));
+
+      }
+
       function testAES() {
         var aes = new AES();
         var key = new AES.Key();
@@ -160,8 +177,9 @@
 
       //testBuffer();
       //testCString();
-      testBaseX();
-      
+      //testBaseX();
+      testUInt();
+
     </script>
   </body>
 </html>
