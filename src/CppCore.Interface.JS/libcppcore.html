@@ -153,8 +153,9 @@
         console.log("d: " + d.toString(16));
         console.log("b: " + b.toString(16));
 
-        UInt128.divmod(d, b, q, r);
-        console.log("q: " + d.toString(16));
+        //UInt128.divmod(d, b, q, r);
+        d.mod(b);
+        console.log("d: " + d.toString(16));
         console.log("r: " + r.toString(16));
 
         /*var c = new UInt128("568562345231");

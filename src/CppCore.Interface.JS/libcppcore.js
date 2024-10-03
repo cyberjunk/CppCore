@@ -242,6 +242,7 @@ class UInt {
             this.set(oth);
         }
     }
+    static create(v) { return new this(v); }
     set(v) {
         if (v instanceof UInt) {
             if (v.byteLength <= this.byteLength) {
@@ -275,12 +276,11 @@ class UInt {
     add(v) { this.constructor.add(this, v, this); return this; }
     sub(v) { this.constructor.sub(this, v, this); return this; }
     mul(v) { this.constructor.mul(this, v, this); return this; }
-    div(b, r) { this.constructor.divmod(this, b, this, r); return this; }
-    mod(b, q) { this.constructor.divmod(this, b, q, this); return this; }
+    div(v, r) { if (!r) r = this.constructor.create(); this.constructor.divmod(this, v, this, r); return this; }
+    mod(v, q) { if (!q) q = this.constructor.create(); this.constructor.divmod(this, v, q, this); return this; }
     //mulmod(b,m) { this.constructor.mulmod(this, b, m, this); return this; }
     //powmod(b,m) { this.constructor.powmod(this, b, m, this); return this; }
-    
-    gcd(v) { this.constructor.gcd(this, v, this); return this; }
+    //gcd(v) { this.constructor.gcd(this, v, this); return this; }
 
     get byteLength() { return this._buffer.byteLength; }
     get bitLength()  { return this._buffer.bitLength; }
