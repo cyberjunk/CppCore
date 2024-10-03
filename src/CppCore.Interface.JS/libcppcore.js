@@ -297,6 +297,18 @@ export class BaseX {
     }
 }
 
+export class Base10 extends BaseX {
+    constructor() {
+        super("0123456789");
+    }
+}
+
+export class Base16 extends BaseX {
+    constructor() {
+        super("0123456789ABCDEF");
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export class AES {

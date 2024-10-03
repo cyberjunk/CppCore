@@ -12,6 +12,7 @@
         Buffer,
         CString,
         BaseX,
+        Base10,
         UInt64,
         UInt128,
         UInt8192,
@@ -129,7 +130,8 @@
 
       function testUInt() {
           
-        var basex = new BaseX("0123456789");
+        //var basex = new BaseX("0123456789");
+        var basex = new Base10();
         /*var a = basex.decode("9999", 128);
         var b = basex.decode("1111", 128);
         var c = new UInt128(a);
