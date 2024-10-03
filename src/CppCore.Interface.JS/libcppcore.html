@@ -13,6 +13,9 @@
         CString,
         BaseX,
         Base10,
+        BASE10,
+        BASE16,
+        UInt32,
         UInt64,
         UInt128,
         UInt8192,
@@ -129,11 +132,14 @@
       }
 
       function testUInt() {
-          
+        
+        var c = new UInt128("568562345231");
+        console.log(c.toString());
+        var hex = new UInt128("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+        console.log(hex.toString(16));
+        
         //var basex = new BaseX("0123456789");
-        var basex = new Base10();
-        var nsym = Base10.estimateSymbols(32);
-        console.log(nsym);
+        //var basex = new Base10();
         /*var a = basex.decode("9999", 128);
         var b = basex.decode("1111", 128);
         var c = new UInt128(a);
@@ -142,11 +148,11 @@
         console.log(basex.encode(a));
         console.log(basex.encode(c));*/
         
-        var a = basex.decode("9999", 128);
+        var a = BASE10.decode("9999", 128);
         var b = new UInt64(a);
-        console.log(basex.encode(a));
-        console.log(basex.encode(b));
-        
+        console.log(BASE10.encode(a));
+        console.log(BASE10.encode(b));
+
         //console.log(basex.encode(b.test()));
       }
 

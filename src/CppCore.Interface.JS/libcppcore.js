@@ -146,97 +146,6 @@ export class CString {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-class UInt {
-    constructor(size, oth) {
-        this._buffer = new Buffer(size);
-        if (oth) {
-            this.set(oth);
-        }
-    }
-    set(v) {
-        if (v instanceof UInt) {
-            if (v.byteLength <= this.byteLength) {
-                this._buffer.set(v._buffer);
-                this._buffer.fill(0, v.byteLength);
-            }
-            else {
-                this._buffer.set(v._buffer.subarray(0, this.byteLength));
-            }
-        }
-        else throw new Exception("Can't set UInt from parameter.")
-    }
-    add(v) { this.constructor.add(this, v, this); return this; }
-    sub(v) { this.constructor.sub(this, v, this); return this; }
-    mul(v) { this.constructor.mul(this, v, this); return this; }
-
-    get byteLength() {
-        return this._buffer.byteLength;
-    }
-    get bitLength() {
-        return this._buffer.bitLength;
-    }
-    get _ptr() {
-        return this._buffer.byteOffset;
-    }
-}
-
-export class UInt32 extends UInt {
-    constructor(v) { super(4, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint32_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint32_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint32_mul(a._ptr, b._ptr, r._ptr); }
-}
-export class UInt64 extends UInt {
-    constructor(v) { super(8, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint64_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint64_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint64_mul(a._ptr, b._ptr, r._ptr); }
-}
-export class UInt128 extends UInt {
-    constructor(v) { super(16, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint128_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint128_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint128_mul(a._ptr, b._ptr, r._ptr); }
-}
-export class UInt256 extends UInt {
-    constructor(v) { super(32, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint256_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint256_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint256_mul(a._ptr, b._ptr, r._ptr); }
-}
-export class UInt512 extends UInt {
-    constructor(v) { super(64, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint512_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint512_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint512_mul(a._ptr, b._ptr, r._ptr); }
-}
-export class UInt1024 extends UInt {
-    constructor(v) { super(128, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint1024_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint1024_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint1024_mul(a._ptr, b._ptr, r._ptr); }
-}
-export class UInt2048 extends UInt {
-    constructor(v) { super(256, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint2048_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint2048_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint2048_mul(a._ptr, b._ptr, r._ptr); }
-}
-export class UInt4096 extends UInt {
-    constructor(v) { super(512, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint4096_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint4096_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint4096_mul(a._ptr, b._ptr, r._ptr); }
-}
-export class UInt8192 extends UInt {
-    constructor(v) { super(1024, v); }
-    static add(a, b, r) { handle.instance.exports.cppcore_uint8192_add(a._ptr, b._ptr, r._ptr); }
-    static sub(a, b, r) { handle.instance.exports.cppcore_uint8192_sub(a._ptr, b._ptr, r._ptr); }
-    static mul(a, b, r) { handle.instance.exports.cppcore_uint8192_mul(a._ptr, b._ptr, r._ptr); }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
 export class BaseX {
     constructor(alphabet) {
         this._alphabet = new CString(alphabet);
@@ -319,6 +228,110 @@ export class Base16 extends BaseX {
     static estimateSymbols(bits) {
         return super.estimateSymbols(bits, 16);
     }
+}
+
+export const BASE10 = new Base10();
+export const BASE16 = new Base16();
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+class UInt {
+    constructor(size, oth) {
+        this._buffer = new Buffer(size);
+        if (oth) {
+            this.set(oth);
+        }
+    }
+    set(v) {
+        if (v instanceof UInt) {
+            if (v.byteLength <= this.byteLength) {
+                this._buffer.set(v._buffer);
+                this._buffer.fill(0, v.byteLength);
+            }
+            else {
+                this._buffer.set(v._buffer.subarray(0, this.byteLength));
+            }
+        }
+        else if (typeof v === "string") {
+            if (v.startsWith("0x")) {
+                // TODO: AVOID COPY
+                this.set(BASE16.decode(v.substring(2), this.bitLength));
+            }
+            else {
+                // TODO: AVOID COPY
+                this.set(BASE10.decode(v, this.bitLength));
+            }
+        }
+        else throw new Error("Can't set UInt from parameter.")
+    }
+    toString(b) {
+        if   (!b || b == 10) return BASE10.encode(this);
+        else if (b == 16)    return BASE16.encode(this);
+        else throw new Error("Unsupported base for toString() on UInt");
+    }
+    
+    add(v) { this.constructor.add(this, v, this); return this; }
+    sub(v) { this.constructor.sub(this, v, this); return this; }
+    mul(v) { this.constructor.mul(this, v, this); return this; }
+
+    get byteLength() { return this._buffer.byteLength; }
+    get bitLength()  { return this._buffer.bitLength; }
+    get _ptr() { return this._buffer.byteOffset; }
+}
+
+export class UInt32 extends UInt {
+    constructor(v) { super(4, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint32_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint32_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint32_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt64 extends UInt {
+    constructor(v) { super(8, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint64_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint64_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint64_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt128 extends UInt {
+    constructor(v) { super(16, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint128_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint128_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint128_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt256 extends UInt {
+    constructor(v) { super(32, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint256_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint256_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint256_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt512 extends UInt {
+    constructor(v) { super(64, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint512_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint512_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint512_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt1024 extends UInt {
+    constructor(v) { super(128, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint1024_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint1024_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint1024_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt2048 extends UInt {
+    constructor(v) { super(256, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint2048_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint2048_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint2048_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt4096 extends UInt {
+    constructor(v) { super(512, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint4096_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint4096_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint4096_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt8192 extends UInt {
+    constructor(v) { super(1024, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint8192_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint8192_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint8192_mul(a._ptr, b._ptr, r._ptr); }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
