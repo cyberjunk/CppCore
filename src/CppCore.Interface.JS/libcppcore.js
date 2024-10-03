@@ -146,81 +146,27 @@ export class CString {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-export class UInt {
-    constructor(parm1) {
-        if (Number.isInteger(parm1)) {
-            if (parm1 <= 32) {
-                this._buffer = new Buffer(4);
-                this._add = handle.instance.exports.cppcore_uint32_add;
-                this._sub = handle.instance.exports.cppcore_uint32_sub;
-                this._mul = handle.instance.exports.cppcore_uint32_mul;
-            }
-            else if (parm1 <= 64) {
-                this._buffer = new Buffer(8);
-                this._add = handle.instance.exports.cppcore_uint64_add;
-                this._sub = handle.instance.exports.cppcore_uint64_sub;
-                this._mul = handle.instance.exports.cppcore_uint64_mul;
-            }
-            else if (parm1 <= 128) {
-                this._buffer = new Buffer(16);
-                this._add = handle.instance.exports.cppcore_uint128_add;
-                this._sub = handle.instance.exports.cppcore_uint128_sub;
-                this._mul = handle.instance.exports.cppcore_uint128_mul;
-            }
-            else if (parm1 <= 256) {
-                this._buffer = new Buffer(32);
-                this._add = handle.instance.exports.cppcore_uint256_add;
-                this._sub = handle.instance.exports.cppcore_uint256_sub;
-                this._mul = handle.instance.exports.cppcore_uint256_mul;
-            }
-            else if (parm1 <= 512) {
-                this._buffer = new Buffer(64);
-                this._add = handle.instance.exports.cppcore_uint512_add;
-                this._sub = handle.instance.exports.cppcore_uint512_sub;
-                this._mul = handle.instance.exports.cppcore_uint512_mul;
-            }
-            else if (parm1 <= 1024) {
-                this._buffer = new Buffer(128);
-                this._add = handle.instance.exports.cppcore_uint1024_add;
-                this._sub = handle.instance.exports.cppcore_uint1024_sub;
-                this._mul = handle.instance.exports.cppcore_uint1024_mul;
-            }
-            else if (parm1 <= 2048) {
-                this._buffer = new Buffer(256);
-                this._add = handle.instance.exports.cppcore_uint2048_add;
-                this._sub = handle.instance.exports.cppcore_uint2048_sub;
-                this._mul = handle.instance.exports.cppcore_uint2048_mul;
-            }
-            else if (parm1 <= 4096) {
-                this._buffer = new Buffer(512);
-                this._add = handle.instance.exports.cppcore_uint4096_add;
-                this._sub = handle.instance.exports.cppcore_uint4096_sub;
-                this._mul = handle.instance.exports.cppcore_uint4096_mul;
-            }
-            else if (parm1 <= 8192) {
-                this._buffer = new Buffer(1024);
-                this._add = handle.instance.exports.cppcore_uint8192_add;
-                this._sub = handle.instance.exports.cppcore_uint8192_sub;
-                this._mul = handle.instance.exports.cppcore_uint8192_mul;
-            }
-            else {
-                throw new Error("Invalid bitlength for UInt");
-            }
-        }
-        else if (parm1 instanceof UInt) {
-            this._buffer = new Buffer(parm1._buffer);
-            this._add = parm1._add;
-            this._sub = parm1._sub;
-            this._mul = parm1._mul;
-        }
-        else {
-            throw new Error("Invalid constructor parameter 1");
+class UInt {
+    constructor(size, oth) {
+        this._buffer = new Buffer(size);
+        if (oth) {
+            this.set(oth);
         }
     }
-    add(v) {
-        this._add(this._ptr, v._ptr, this._ptr);
-        return this;
+    set(v) {
+        if (v instanceof UInt) {
+            if (v.byteLength <= this.byteLength) {
+                this._buffer.set(v._buffer);
+                this._buffer.fill(0, v.byteLength);
+            }
+            else throw new Exception("Source Integer too big.")
+        }
+        else throw new Exception("Can't set UInt from parameter.")
     }
+    add(v) { this.constructor.add(this, v, this); return this; }
+    sub(v) { this.constructor.sub(this, v, this); return this; }
+    mul(v) { this.constructor.mul(this, v, this); return this; }
+
     get byteLength() {
         return this._buffer.byteLength;
     }
@@ -230,6 +176,61 @@ export class UInt {
     get _ptr() {
         return this._buffer.byteOffset;
     }
+}
+
+export class UInt32 extends UInt {
+    constructor(v) { super(4, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint32_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint32_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint32_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt64 extends UInt {
+    constructor(v) { super(8, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint64_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint64_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint64_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt128 extends UInt {
+    constructor(v) { super(16, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint128_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint128_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint128_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt256 extends UInt {
+    constructor(v) { super(32, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint256_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint256_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint256_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt512 extends UInt {
+    constructor(v) { super(64, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint512_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint512_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint512_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt1024 extends UInt {
+    constructor(v) { super(128, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint1024_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint1024_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint1024_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt2048 extends UInt {
+    constructor(v) { super(256, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint2048_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint2048_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint2048_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt4096 extends UInt {
+    constructor(v) { super(512, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint4096_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint4096_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint4096_mul(a._ptr, b._ptr, r._ptr); }
+}
+export class UInt8192 extends UInt {
+    constructor(v) { super(1024, v); }
+    static add(a, b, r) { handle.instance.exports.cppcore_uint8192_add(a._ptr, b._ptr, r._ptr); }
+    static sub(a, b, r) { handle.instance.exports.cppcore_uint8192_sub(a._ptr, b._ptr, r._ptr); }
+    static mul(a, b, r) { handle.instance.exports.cppcore_uint8192_mul(a._ptr, b._ptr, r._ptr); }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,18 +276,19 @@ export class BaseX {
     decode(str, bits) {
         this._strbuf.fromString(str);
         let f = null;
+        let t = null;
         if (!bits) bits = BaseX.estimateBits(str.length, this._alphabet.usedLength);
-        if      (bits <= 32)   { bits = 32;   f = handle.instance.exports.cppcore_basex_decode32; }
-        else if (bits <= 64)   { bits = 64;   f = handle.instance.exports.cppcore_basex_decode64; }
-        else if (bits <= 128)  { bits = 128;  f = handle.instance.exports.cppcore_basex_decode128; }
-        else if (bits <= 256)  { bits = 256;  f = handle.instance.exports.cppcore_basex_decode256; }
-        else if (bits <= 512)  { bits = 512;  f = handle.instance.exports.cppcore_basex_decode512; }
-        else if (bits <= 1024) { bits = 1024; f = handle.instance.exports.cppcore_basex_decode1024; }
-        else if (bits <= 2048) { bits = 2048; f = handle.instance.exports.cppcore_basex_decode2048; }
-        else if (bits <= 4096) { bits = 4096; f = handle.instance.exports.cppcore_basex_decode4096; }
-        else if (bits <= 8192) { bits = 8192; f = handle.instance.exports.cppcore_basex_decode8192; }
+        if      (bits <= 32)   { t = UInt32;   f = handle.instance.exports.cppcore_basex_decode32; }
+        else if (bits <= 64)   { t = UInt64;   f = handle.instance.exports.cppcore_basex_decode64; }
+        else if (bits <= 128)  { t = UInt128;  f = handle.instance.exports.cppcore_basex_decode128; }
+        else if (bits <= 256)  { t = UInt256;  f = handle.instance.exports.cppcore_basex_decode256; }
+        else if (bits <= 512)  { t = UInt512;  f = handle.instance.exports.cppcore_basex_decode512; }
+        else if (bits <= 1024) { t = UInt1024; f = handle.instance.exports.cppcore_basex_decode1024; }
+        else if (bits <= 2048) { t = UInt2048; f = handle.instance.exports.cppcore_basex_decode2048; }
+        else if (bits <= 4096) { t = UInt4096; f = handle.instance.exports.cppcore_basex_decode4096; }
+        else if (bits <= 8192) { t = UInt8192; f = handle.instance.exports.cppcore_basex_decode8192; }
         else throw new Error('invalid bitlength');
-        const uint = new UInt(bits);
+        const uint = new t();
         const r = f(this._strbuf._ptr, uint._ptr, this._alphabet._ptr);
         if (r == 0) throw new Error('Invalid symbol or overflow');
         return uint;

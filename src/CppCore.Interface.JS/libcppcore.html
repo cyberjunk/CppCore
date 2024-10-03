@@ -12,7 +12,9 @@
         Buffer,
         CString,
         BaseX,
-        UInt,
+        UInt64,
+        UInt128,
+        UInt8192,
         AES
       } from './libcppcore.js'
       
@@ -126,16 +128,22 @@
       }
 
       function testUInt() {
-          var basex = new BaseX("0123456789");
-
-          var a = basex.decode("9999", 8192);
-          var b = basex.decode("1111", 8192);
-          var c = new UInt(a);
-
-          a.add(b);
-          console.log(basex.encode(a));
-          console.log(basex.encode(c));
-
+          
+        var basex = new BaseX("0123456789");
+        /*var a = basex.decode("9999", 128);
+        var b = basex.decode("1111", 128);
+        var c = new UInt128(a);
+        console.log(basex.encode(a));
+        a.add(b);
+        console.log(basex.encode(a));
+        console.log(basex.encode(c));*/
+        
+        var a = basex.decode("9999", 128);
+        var b = new UInt8192(a);
+        console.log(basex.encode(a));
+        console.log(basex.encode(b));
+        
+        //console.log(basex.encode(b.test()));
       }
 
       function testAES() {
