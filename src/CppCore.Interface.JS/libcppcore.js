@@ -301,11 +301,23 @@ export class Base10 extends BaseX {
     constructor() {
         super("0123456789");
     }
+    static estimateBits(symbols) {
+        return super.estimateBits(symbols, 10);
+    }
+    static estimateSymbols(bits) {
+        return super.estimateSymbols(bits, 10);
+    }
 }
 
 export class Base16 extends BaseX {
     constructor() {
         super("0123456789ABCDEF");
+    }
+    static estimateBits(symbols) {
+        return super.estimateBits(symbols, 16);
+    }
+    static estimateSymbols(bits) {
+        return super.estimateSymbols(bits, 16);
     }
 }
 

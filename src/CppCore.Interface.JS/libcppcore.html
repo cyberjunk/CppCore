@@ -132,6 +132,8 @@
           
         //var basex = new BaseX("0123456789");
         var basex = new Base10();
+        var nsym = Base10.estimateSymbols(32);
+        console.log(nsym);
         /*var a = basex.decode("9999", 128);
         var b = basex.decode("1111", 128);
         var c = new UInt128(a);
