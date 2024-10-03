@@ -32,8 +32,8 @@ jobs:
       uses: actions/checkout@v4
 
     # Upgrade LLVM
-    - name: Upgrade LLVM
-      run: choco upgrade llvm -y
+    #- name: Upgrade LLVM
+    #  run: choco upgrade llvm -y
 
     # Developer Console (X64)
     - name: MSVC Developer Console (X64)

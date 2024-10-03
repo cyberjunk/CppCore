@@ -972,14 +972,14 @@ namespace CppCore
             {
                uint32_t r;
                uint32_t n;
-               CppCore::udivmod(v, 10U, v, r);
+               CppCore::udivmod(v, r, v, 10U);
                *s++ = CPPCORE_ALPHABET_B10[r];
                CPPCORE_UNROLL
                for (n = 1U; n != N; n++)
                {
                   if (!CppCore::testzero(v))
                   {
-                     CppCore::udivmod(v, 10U, v, r);
+                     CppCore::udivmod(v, r, v, 10U);
                      *s++ = CPPCORE_ALPHABET_B10[r];
                   }
                   else
@@ -1021,7 +1021,7 @@ namespace CppCore
             if (v > 0)
             {
                u = (UINT)v;
-               CppCore::udivmod(u, 10U, u, r);
+               CppCore::udivmod(u, r, u, 10U);
                *s++ = CPPCORE_ALPHABET_B10[r];
             }
             else if (v < 0)
@@ -1045,7 +1045,7 @@ namespace CppCore
             {
                if (!CppCore::testzero(u))
                {
-                  CppCore::udivmod(u, 10U, u, r);
+                  CppCore::udivmod(u, r, u, 10U);
                   *s++ = CPPCORE_ALPHABET_B10[r];
                }
                else
