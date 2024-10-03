@@ -2272,7 +2272,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 8/8=8,8
    /// </summary>
-   INLINE static void udivmod(uint8_t a, uint8_t b, uint8_t& q, uint8_t& r)
+   INLINE static void udivmod(uint8_t& q, uint8_t& r, uint8_t a, uint8_t b)
    {
       CppCore::udivmod8(a, b, q, r);
    }
@@ -2280,7 +2280,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 8/16=8,16
    /// </summary>
-   INLINE static void udivmod(uint8_t a, uint16_t b, uint8_t& q, uint16_t& r)
+   INLINE static void udivmod(uint8_t& q, uint16_t& r, uint8_t a, uint16_t b)
    {
       uint16_t t;
       CppCore::udivmod16(a, b, t, r);
@@ -2290,7 +2290,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 8/32=8,32
    /// </summary>
-   INLINE static void udivmod(uint8_t a, uint32_t b, uint8_t& q, uint32_t& r)
+   INLINE static void udivmod(uint8_t& q, uint32_t& r, uint8_t a, uint32_t b)
    {
       uint32_t t;
       CppCore::udivmod32(a, b, t, r);
@@ -2300,7 +2300,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 8/64=8,64
    /// </summary>
-   INLINE static void udivmod(uint8_t a, uint64_t b, uint8_t& q, uint64_t& r)
+   INLINE static void udivmod(uint8_t& q, uint64_t& r, uint8_t a, uint64_t b)
    {
       uint64_t t;
       CppCore::udivmod64(a, b, t, r);
@@ -2310,7 +2310,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 16/16=16,16
    /// </summary>
-   INLINE static void udivmod(uint16_t a, uint16_t b, uint16_t& q, uint16_t& r)
+   INLINE static void udivmod(uint16_t& q, uint16_t& r, uint16_t a, uint16_t b)
    {
       CppCore::udivmod16(a, b, q, r);
    }
@@ -2318,7 +2318,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 16/32=16,32
    /// </summary>
-   INLINE static void udivmod(uint16_t a, uint32_t b, uint16_t& q, uint32_t& r)
+   INLINE static void udivmod(uint16_t& q, uint32_t& r, uint16_t a, uint32_t b)
    {
       uint32_t t;
       CppCore::udivmod32(a, b, t, r);
@@ -2328,7 +2328,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 16/64=16,64
    /// </summary>
-   INLINE static void udivmod(uint16_t a, uint64_t b, uint16_t& q, uint64_t& r)
+   INLINE static void udivmod(uint16_t& q, uint64_t& r, uint16_t a, uint64_t b)
    {
       uint64_t t;
       CppCore::udivmod64(a, b, t, r);
@@ -2338,7 +2338,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 32/32=32,32
    /// </summary>
-   INLINE static void udivmod(uint32_t a, uint32_t b, uint32_t& q, uint32_t& r)
+   INLINE static void udivmod(uint32_t& q, uint32_t& r, uint32_t a, uint32_t b)
    {
       CppCore::udivmod32(a, b, q, r);
    }
@@ -2346,7 +2346,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 32/64=32,64
    /// </summary>
-   INLINE static void udivmod(uint32_t a, uint64_t b, uint32_t& q, uint64_t& r)
+   INLINE static void udivmod(uint32_t& q, uint64_t& r, uint32_t a, uint64_t b)
    {
       uint64_t t;
       CppCore::udivmod64(a, b, t, r);
@@ -2356,7 +2356,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 64/64=64,64
    /// </summary>
-   INLINE static void udivmod(uint64_t a, uint64_t b, uint64_t& q, uint64_t& r)
+   INLINE static void udivmod(uint64_t& q, uint64_t& r, uint64_t a, uint64_t b)
    {
       CppCore::udivmod64(a, b, q, r);
    }
@@ -2365,7 +2365,7 @@ namespace CppCore
    /// a/b=q,r with N32/32=N32,32
    /// </summary>
    template<typename UINT>
-   INLINE static void udivmod(const UINT& a, uint32_t b, UINT& q, uint32_t& r)
+   INLINE static void udivmod(UINT& q, uint32_t& r, const UINT& a, uint32_t b)
    {
       static_assert(sizeof(UINT) % 4 == 0);
    #if defined(CPPCORE_CPU_X64)
@@ -2387,7 +2387,7 @@ namespace CppCore
    /// a/b=q,r with N64/64=N64,64
    /// </summary>
    template<typename UINT>
-   INLINE static void udivmod(const UINT& a, uint64_t b, UINT& q, uint64_t& r)
+   INLINE static void udivmod(UINT& q, uint64_t& r, const UINT& a, uint64_t b)
    {
       static_assert(sizeof(UINT) % 8 == 0);
       CppCore::udivmod128_64x((const uint64_t*)&a, b, (uint64_t*)&q, r, sizeof(UINT)/8);
