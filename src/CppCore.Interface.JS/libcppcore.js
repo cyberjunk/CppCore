@@ -149,7 +149,7 @@ export class CString {
 export class BaseX {
     constructor(alphabet) {
         this._alphabet = new CString(alphabet);
-        this._strbuf = new CString(8192);
+        this._strbuf = new CString(BaseX.estimateSymbols(8192, this._alphabet.usedLength));
     }
     static estimateBits(symbols, base) {
         return handle.instance.exports.cppcore_basex_estimate_bits(
@@ -269,7 +269,7 @@ class UInt {
         else if (b == 16)    return BASE16.encode(this);
         else throw new Error("Unsupported base for toString() on UInt");
     }
-    
+
     add(v) { this.constructor.add(this, v, this); return this; }
     sub(v) { this.constructor.sub(this, v, this); return this; }
     mul(v) { this.constructor.mul(this, v, this); return this; }
