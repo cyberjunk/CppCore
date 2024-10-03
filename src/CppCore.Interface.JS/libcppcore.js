@@ -270,6 +270,8 @@ class UInt {
         else throw new Error("Unsupported base for toString() on UInt");
     }
 
+    shl(v) { this.constructor.shl(this, v, this); return this; }
+    shr(v) { this.constructor.shr(this, v, this); return this; }
     add(v) { this.constructor.add(this, v, this); return this; }
     sub(v) { this.constructor.sub(this, v, this); return this; }
     mul(v) { this.constructor.mul(this, v, this); return this; }
@@ -281,54 +283,72 @@ class UInt {
 
 export class UInt32 extends UInt {
     constructor(v) { super(4, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint32_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint32_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint32_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint32_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint32_mul(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt64 extends UInt {
     constructor(v) { super(8, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint64_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint64_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint64_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint64_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint64_mul(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt128 extends UInt {
     constructor(v) { super(16, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint128_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint128_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint128_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint128_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint128_mul(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt256 extends UInt {
     constructor(v) { super(32, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint256_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint256_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint256_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint256_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint256_mul(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt512 extends UInt {
     constructor(v) { super(64, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint512_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint512_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint512_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint512_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint512_mul(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt1024 extends UInt {
     constructor(v) { super(128, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint1024_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint1024_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint1024_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint1024_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint1024_mul(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt2048 extends UInt {
     constructor(v) { super(256, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint2048_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint2048_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint2048_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint2048_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint2048_mul(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt4096 extends UInt {
     constructor(v) { super(512, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint4096_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint4096_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint4096_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint4096_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint4096_mul(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt8192 extends UInt {
     constructor(v) { super(1024, v); }
+    static shl(a, b, r) { handle.instance.exports.cppcore_uint8192_shl(a._ptr, b, r._ptr);}
+    static shr(a, b, r) { handle.instance.exports.cppcore_uint8192_shr(a._ptr, b, r._ptr);}
     static add(a, b, r) { handle.instance.exports.cppcore_uint8192_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint8192_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint8192_mul(a._ptr, b._ptr, r._ptr); }

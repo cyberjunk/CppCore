@@ -133,10 +133,16 @@
 
       function testUInt() {
         
-        var c = new UInt128("568562345231");
+        var sh = new UInt8192("0xFF");
+        UInt32.shl(sh, 8, sh);
+        console.log(sh.toString(16));
+        sh.shr(8);
+        console.log(sh.toString(16));
+        
+        /*var c = new UInt128("568562345231");
         console.log(c.toString());
         var hex = new UInt128("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-        console.log(hex.toString(16));
+        console.log(hex.toString(16));*/
         
         //var basex = new BaseX("0123456789");
         //var basex = new Base10();
