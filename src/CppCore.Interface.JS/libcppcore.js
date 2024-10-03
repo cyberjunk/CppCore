@@ -159,7 +159,9 @@ class UInt {
                 this._buffer.set(v._buffer);
                 this._buffer.fill(0, v.byteLength);
             }
-            else throw new Exception("Source Integer too big.")
+            else {
+                this._buffer.set(v._buffer.subarray(0, this.byteLength));
+            }
         }
         else throw new Exception("Can't set UInt from parameter.")
     }
