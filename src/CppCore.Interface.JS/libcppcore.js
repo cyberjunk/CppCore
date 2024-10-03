@@ -278,9 +278,9 @@ class UInt {
     mul(v) { this.constructor.mul(this, v, this); return this; }
     div(v, r) { if (!r) r = this.constructor.create(); this.constructor.divmod(this, v, this, r); return this; }
     mod(v, q) { if (!q) q = this.constructor.create(); this.constructor.divmod(this, v, q, this); return this; }
-    //mulmod(b,m) { this.constructor.mulmod(this, b, m, this); return this; }
-    //powmod(b,m) { this.constructor.powmod(this, b, m, this); return this; }
-    //gcd(v) { this.constructor.gcd(this, v, this); return this; }
+    mulmod(b,m) { this.constructor.mulmod(this, b, m, this); return this; }
+    powmod(b,m) { this.constructor.powmod(this, b, m, this); return this; }
+    gcd(v) { this.constructor.gcd(this, v, this); return this; }
 
     get byteLength() { return this._buffer.byteLength; }
     get bitLength()  { return this._buffer.bitLength; }
@@ -324,7 +324,11 @@ export class UInt128 extends UInt {
         handle.instance.exports.cppcore_uint128_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
     }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint128_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-    static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint128_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
+    static powmod(a, b, m, r) { 
+        if (a._ptr == r._ptr) a = new UInt128(a);
+        if (b._ptr == r._ptr) b = new UInt128(b);
+        handle.instance.exports.cppcore_uint128_powmod(a._ptr, b._ptr, m._ptr, r._ptr);
+    }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint128_gcd(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt256 extends UInt {
@@ -340,7 +344,11 @@ export class UInt256 extends UInt {
         handle.instance.exports.cppcore_uint256_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
     }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint256_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-    static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint256_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
+    static powmod(a, b, m, r) { 
+        if (a._ptr == r._ptr) a = new UInt256(a);
+        if (b._ptr == r._ptr) b = new UInt256(b);
+        handle.instance.exports.cppcore_uint256_powmod(a._ptr, b._ptr, m._ptr, r._ptr);
+    }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint256_gcd(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt512 extends UInt {
@@ -356,7 +364,11 @@ export class UInt512 extends UInt {
         handle.instance.exports.cppcore_uint512_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
     }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint512_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-    static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint512_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
+    static powmod(a, b, m, r) { 
+        if (a._ptr == r._ptr) a = new UInt512(a);
+        if (b._ptr == r._ptr) b = new UInt512(b);
+        handle.instance.exports.cppcore_uint512_powmod(a._ptr, b._ptr, m._ptr, r._ptr);
+    }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint512_gcd(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt1024 extends UInt {
@@ -372,7 +384,11 @@ export class UInt1024 extends UInt {
         handle.instance.exports.cppcore_uint1024_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
     }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint1024_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-    static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint1024_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
+    static powmod(a, b, m, r) { 
+        if (a._ptr == r._ptr) a = new UInt1024(a);
+        if (b._ptr == r._ptr) b = new UInt1024(b);
+        handle.instance.exports.cppcore_uint1024_powmod(a._ptr, b._ptr, m._ptr, r._ptr);
+    }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint1024_gcd(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt2048 extends UInt {
@@ -388,7 +404,11 @@ export class UInt2048 extends UInt {
         handle.instance.exports.cppcore_uint2048_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
     }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint2048_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-    static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint2048_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
+    static powmod(a, b, m, r) { 
+        if (a._ptr == r._ptr) a = new UInt2048(a);
+        if (b._ptr == r._ptr) b = new UInt2048(b);
+        handle.instance.exports.cppcore_uint2048_powmod(a._ptr, b._ptr, m._ptr, r._ptr);
+    }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint2048_gcd(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt4096 extends UInt {
@@ -404,7 +424,11 @@ export class UInt4096 extends UInt {
         handle.instance.exports.cppcore_uint4096_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
     }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint4096_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-    static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint4096_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
+    static powmod(a, b, m, r) { 
+        if (a._ptr == r._ptr) a = new UInt4096(a);
+        if (b._ptr == r._ptr) b = new UInt4096(b);
+        handle.instance.exports.cppcore_uint4096_powmod(a._ptr, b._ptr, m._ptr, r._ptr);
+    }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint4096_gcd(a._ptr, b._ptr, r._ptr); }
 }
 export class UInt8192 extends UInt {
@@ -420,7 +444,11 @@ export class UInt8192 extends UInt {
         handle.instance.exports.cppcore_uint8192_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
     }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint8192_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-    static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint8192_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
+    static powmod(a, b, m, r) {
+        if (a._ptr == r._ptr) a = new UInt8192(a);
+        if (b._ptr == r._ptr) b = new UInt8192(b);
+        handle.instance.exports.cppcore_uint8192_powmod(a._ptr, b._ptr, m._ptr, r._ptr);
+    }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint8192_gcd(a._ptr, b._ptr, r._ptr); }
 }
 

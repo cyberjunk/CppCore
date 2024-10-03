@@ -139,9 +139,9 @@
         sh.shr(8);
         console.log(sh.toString(16));*/
 
-        var d = new UInt128("0xFFFFFFFF");
-        var b = new UInt128("0x100");
-        var m = new UInt128("0x04");
+        var d = new UInt128("0x0C");
+        var b = new UInt128("0x21");
+        var m = new UInt128("0x7");
         var q = new UInt128();
         var r = new UInt128();
         //console.log(d.toString(16) + " ^ " + b.toString(16) + " % " + m.toString(16));
@@ -153,10 +153,13 @@
         console.log("d: " + d.toString(16));
         console.log("b: " + b.toString(16));
 
-        //UInt128.divmod(d, b, q, r);
-        d.mod(b);
+        d.gcd(b);
+        //UInt128.gcd(d, b, d);
+        //UInt128.powmod(d, b, m, d);
+        //d.powmod(b, m);
+        //d.mod(b);
         console.log("d: " + d.toString(16));
-        console.log("r: " + r.toString(16));
+        //console.log("r: " + r.toString(16));
 
         /*var c = new UInt128("568562345231");
         console.log(c.toString());
