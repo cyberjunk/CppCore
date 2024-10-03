@@ -294,11 +294,7 @@ export class UInt32 extends UInt {
     static add(a, b, r) { handle.instance.exports.cppcore_uint32_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint32_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint32_mul(a._ptr, b._ptr, r._ptr); }
-    static divmod(a, b, q, r) { 
-        if (a._ptr == q._ptr || a._ptr == r._ptr) a = new UInt32(a);
-        if (b._ptr == q._ptr || b._ptr == r._ptr) b = new UInt32(b);
-        handle.instance.exports.cppcore_uint32_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
-    }
+    static divmod(a, b, q, r) { handle.instance.exports.cppcore_uint32_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint32_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
     static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint32_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint32_gcd(a._ptr, b._ptr, r._ptr); }
@@ -310,11 +306,7 @@ export class UInt64 extends UInt {
     static add(a, b, r) { handle.instance.exports.cppcore_uint64_add(a._ptr, b._ptr, r._ptr); }
     static sub(a, b, r) { handle.instance.exports.cppcore_uint64_sub(a._ptr, b._ptr, r._ptr); }
     static mul(a, b, r) { handle.instance.exports.cppcore_uint64_mul(a._ptr, b._ptr, r._ptr); }
-    static divmod(a, b, q, r) { 
-        if (a._ptr == q._ptr || a._ptr == r._ptr) a = new UInt64(a);
-        if (b._ptr == q._ptr || b._ptr == r._ptr) b = new UInt64(b);
-        handle.instance.exports.cppcore_uint64_divmod(a._ptr, b._ptr, q._ptr, r._ptr);
-    }
+    static divmod(a, b, q, r) { handle.instance.exports.cppcore_uint64_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
     static mulmod(a, b, m, r) { handle.instance.exports.cppcore_uint64_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
     static powmod(a, b, m, r) { handle.instance.exports.cppcore_uint64_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
     static gcd(a, b, r) { handle.instance.exports.cppcore_uint64_gcd(a._ptr, b._ptr, r._ptr); }

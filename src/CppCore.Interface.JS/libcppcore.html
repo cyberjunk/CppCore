@@ -139,11 +139,11 @@
         sh.shr(8);
         console.log(sh.toString(16));*/
 
-        var d = new UInt32("0xFFFFFFFF");
-        var b = new UInt32("0x100");
-        var m = new UInt32("0x04");
-        var q = new UInt32();
-        var r = new UInt32();
+        var d = new UInt128("0xFFFFFFFF");
+        var b = new UInt128("0x100");
+        var m = new UInt128("0x04");
+        var q = new UInt128();
+        var r = new UInt128();
         //console.log(d.toString(16) + " ^ " + b.toString(16) + " % " + m.toString(16));
         //console.log(m.toString(16));
         //d.mul(b);
@@ -153,7 +153,7 @@
         console.log("d: " + d.toString(16));
         console.log("b: " + b.toString(16));
 
-        UInt32.divmod(d, b, q, r);
+        UInt128.divmod(d, b, q, r);
         console.log("q: " + d.toString(16));
         console.log("r: " + r.toString(16));
 
