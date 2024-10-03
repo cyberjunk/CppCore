@@ -43,7 +43,7 @@ jobs:
     # But it is disabled on Github Hyper-V runners.
     - name: Test
       if: | 
-        (matrix.os == 'macos-13' && matrix.arch != 'arm64' && matrix.arch !== 'arm)
+        (matrix.os == 'macos-13' && matrix.arch != 'arm64' && matrix.arch !== 'arm')
       env:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
       run: make test
