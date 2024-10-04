@@ -454,18 +454,41 @@ export class UInt8192 extends UInt {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-export class AES {
+class AES {
+}
+
+export class AES128 extends AES {
     constructor() {
         console.log("Constructing...");
+        super();
         this._ptr = handle.instance.exports.cppcore_aes128_init();
         console.log("Constructed at: " + this._ptr);
         registry.register(this, this._ptr);
     }
     reset(key) {
-        if (key.byteLength != 16) {
-            throw new Error('Key must be 16 bytes');
+        if (typeof key === "string") {
+            console.log("KEY FROM STRING");
+            this.reset(new CString(key));
         }
-        handle.instance.exports.cppcore_aes128_reset(this._ptr, key._ptr);
+        else if (key instanceof CString) {
+            console.log("KEY FROM CSTRING");
+            if (key.usedLength != 16)
+                throw new Error("String Key must have exactly 16 bytes for AES128");
+            handle.instance.exports.cppcore_aes128_reset(this._ptr, key._ptr);
+        }
+        else if (key instanceof Buffer) {
+            console.log("KEY FROM BUFFER");
+            if (key.byteLength != 16)
+                throw new Error("Binary Key must have exactly 16 bytes for AES128");
+            handle.instance.exports.cppcore_aes128_reset(this._ptr, key._ptr);
+        }
+        else if (key instanceof Uint8Array) {
+            console.log("KEY FROM UINT8ARRAY");
+            this.reset(new Buffer(key));
+        }
+        else {
+            throw new Error("No valid key provided for reset()");
+        }
     }
     encrypt(data_in, data_out, n) {
         handle.instance.exports.cppcore_aes128_encrypt_ecb(
@@ -476,11 +499,5 @@ export class AES {
             this._ptr, data_in._ptr, data_out._ptr, n);
     }
 }
-
-AES.Key = class Key extends Buffer {
-    constructor() {
-        super(16);
-    }
-};
 
 /////////////////////////////////////////////////////////////////////////////////////////////

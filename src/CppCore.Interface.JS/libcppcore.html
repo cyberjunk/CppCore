@@ -19,7 +19,7 @@
         UInt64,
         UInt128,
         UInt8192,
-        AES
+        AES128
       } from './libcppcore.js'
       
       function testBuffer() {
@@ -185,15 +185,28 @@
       }
 
       function testAES() {
-        var aes = new AES();
-        var key = new AES.Key();
-        key.setUint32(0, 4294967295);
+        console.log("TESTING AES");
 
-        aes.reset(key);
-        var data_in = new Buffer(16);
-        var data_out = new Buffer(16);
-        
-        data_out.setUint32(0, 0);
+        var aes = new AES128();
+        //var key = new AES.Key();
+        //key.setUint32(0, 4294967295);
+
+        //aes.reset(new Buffer(16));
+        //aes.reset("0123456789ABCDEF");
+        //aes.reset(new CString("0123456789ABCDEF"));
+        aes.reset(new Uint8Array(16));
+
+        var data_in = new Buffer(32);
+        var data_out = new Buffer(32);
+        console.log(data_in);
+
+        aes.encrypt(data_in, data_out, 2);
+        console.log(data_out);
+
+        aes.decrypt(data_out, data_in, 2);
+        console.log(data_in);
+
+        /*data_out.setUint32(0, 0);
         data_out.setUint32(4, 0);
         data_out.setUint32(8, 0);
         data_out.setUint32(12, 0);
@@ -218,13 +231,14 @@
         console.log(data_in.getUint32(0));
         aes.decrypt(data_out, data_in, 1);
         console.log("After:")
-        console.log(data_in.getUint32(0));
+        console.log(data_in.getUint32(0));*/
       }
 
       //testBuffer();
       //testCString();
       //testBaseX();
-      testUInt();
+      //testUInt();
+      testAES();
 
     </script>
   </body>
