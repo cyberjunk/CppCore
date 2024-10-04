@@ -21,4 +21,26 @@ describe('Buffer', function () {
       chai.expect(a.byteLength).to.equal(16);
     });
   });
+  describe('slice()', function () {
+    it('test1', function () {
+      const a = new Uint8Array([0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08]);
+      const b = new Buffer(a);
+      const c = b.slice(0, 8);      
+      chai.expect(indexedDB.cmp(a, c)).to.equal(0);
+      chai.expect(b.byteLength).to.equal(c.byteLength);
+      chai.expect(b.buffer).to.equal(c.buffer);
+      chai.expect(b.byteOffset).to.not.equal(c.byteOffset);
+    });
+  });
+  describe('subarray()', function () {
+    it('test1', function () {
+      const a = new Uint8Array([0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08]);
+      const b = new Buffer(a);
+      const c = b.subarray(0, 8);      
+      chai.expect(indexedDB.cmp(a, c)).to.equal(0);
+      chai.expect(b.byteLength).to.equal(c.byteLength);
+      chai.expect(b.buffer).to.equal(c.buffer);
+      chai.expect(b.byteOffset).to.equal(c.byteOffset);
+    });
+  });
 });
