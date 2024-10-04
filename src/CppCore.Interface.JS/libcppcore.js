@@ -474,11 +474,8 @@ class AES {
         }
         registry.register(this, this._ptr);
     }
-    reset(key) {
-        if (typeof key === "string") {
-            this.reset(new CString(key));
-        }
-        else if (key instanceof CString) {
+    setKey(key) {
+        if (key instanceof CString) {
             switch(this._bits) {
                 case 128:
                     if (key.usedLength != 16)
@@ -516,16 +513,45 @@ class AES {
                     break;
             }
         }
+        else if (typeof key === "string") {
+            this.setKey(new CString(key));
+        }
         else if (key instanceof Uint8Array) {
-            this.reset(new Buffer(key));
+            this.setKey(new Buffer(key));
         }
         else {
-            throw new Error("No valid key provided for reset()");
+            throw new Error("No valid key provided in setKey()");
         }
     }
 }
 
-export class AES128 extends AES {
+class AESIV extends AES {
+    constructor(bits) { 
+        super(bits);
+    }
+    setIV(iv) {
+        if (iv instanceof Uint8Array) {
+            console.log("AESIV FROM UINT8");
+            if (iv.byteLength != 16)
+                throw new Error("Binary IV must have exactly 16 bytes");
+            this._iv_enc = new Buffer(iv);
+            this._iv_dec = new Buffer(iv);
+        }
+        else if (iv instanceof CString) {
+            if (iv.usedLength != 16)
+                throw new Error("String IV must have exactly 16 bytes.");
+            this.setIV(iv._buffer.subarray(0, 16));
+        }
+        else if (typeof iv === "string") {
+            this.setIV(new CString(iv));
+        }
+        else {
+            throw new Error("No valid IV provided in setIV()");
+        }
+    }
+}
+
+export class AES128ECB extends AES {
     constructor() {
         super(128);
     }
@@ -536,6 +562,72 @@ export class AES128 extends AES {
     decrypt(data_in, data_out, n) {
         handle.instance.exports.cppcore_aes128_decrypt_ecb(
             this._ptr, data_in._ptr, data_out._ptr, n);
+    }
+}
+export class AES192ECB extends AES {
+    constructor() {
+        super(192);
+    }
+    encrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes192_encrypt_ecb(
+            this._ptr, data_in._ptr, data_out._ptr, n);
+    }
+    decrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes192_decrypt_ecb(
+            this._ptr, data_in._ptr, data_out._ptr, n);
+    }
+}
+export class AES256ECB extends AES {
+    constructor() {
+        super(256);
+    }
+    encrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes256_encrypt_ecb(
+            this._ptr, data_in._ptr, data_out._ptr, n);
+    }
+    decrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes256_decrypt_ecb(
+            this._ptr, data_in._ptr, data_out._ptr, n);
+    }
+}
+
+export class AES128CBC extends AESIV {
+    constructor() {
+        super(128);
+    }
+    encrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes128_encrypt_cbc(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
+    }
+    decrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes128_decrypt_cbc(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
+    }
+}
+export class AES192CBC extends AESIV {
+    constructor() {
+        super(192);
+    }
+    encrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes192_encrypt_cbc(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
+    }
+    decrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes192_decrypt_cbc(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
+    }
+}
+export class AES256CBC extends AESIV {
+    constructor() {
+        super(256);
+    }
+    encrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes256_encrypt_cbc(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
+    }
+    decrypt(data_in, data_out, n) {
+        handle.instance.exports.cppcore_aes256_decrypt_cbc(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
     }
 }
 
