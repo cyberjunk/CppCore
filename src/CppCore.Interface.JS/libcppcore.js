@@ -455,40 +455,79 @@ export class UInt8192 extends UInt {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 class AES {
-}
-
-export class AES128 extends AES {
-    constructor() {
-        console.log("Constructing...");
-        super();
-        this._ptr = handle.instance.exports.cppcore_aes128_init();
-        console.log("Constructed at: " + this._ptr);
+    constructor(bits) {
+        switch(bits) {
+            case 128:
+                this._bits = 128;
+                this._ptr  = handle.instance.exports.cppcore_aes128_init();
+                break;
+            case 192:
+                this._bits = 192;
+                this._ptr  = handle.instance.exports.cppcore_aes192_init();
+                break;
+            case 256:
+                this._bits = 256;
+                this._ptr  = handle.instance.exports.cppcore_aes256_init();
+                break;
+            default:
+                throw new Error("Invalid bits for AES. Must be 128, 192 or 256.");
+        }
         registry.register(this, this._ptr);
     }
     reset(key) {
         if (typeof key === "string") {
-            console.log("KEY FROM STRING");
             this.reset(new CString(key));
         }
         else if (key instanceof CString) {
-            console.log("KEY FROM CSTRING");
-            if (key.usedLength != 16)
-                throw new Error("String Key must have exactly 16 bytes for AES128");
-            handle.instance.exports.cppcore_aes128_reset(this._ptr, key._ptr);
+            switch(this._bits) {
+                case 128:
+                    if (key.usedLength != 16)
+                        throw new Error("String Key must have exactly 16 bytes for AES128");
+                    handle.instance.exports.cppcore_aes128_reset(this._ptr, key._ptr);
+                    break;
+                case 192:
+                    if (key.usedLength != 24)
+                        throw new Error("String Key must have exactly 24 bytes for AES192");
+                    handle.instance.exports.cppcore_aes192_reset(this._ptr, key._ptr);
+                    break;
+                case 256:
+                    if (key.usedLength != 32)
+                        throw new Error("String Key must have exactly 32 bytes for AES256");
+                    handle.instance.exports.cppcore_aes256_reset(this._ptr, key._ptr);
+                    break;
+            }
         }
         else if (key instanceof Buffer) {
-            console.log("KEY FROM BUFFER");
-            if (key.byteLength != 16)
-                throw new Error("Binary Key must have exactly 16 bytes for AES128");
-            handle.instance.exports.cppcore_aes128_reset(this._ptr, key._ptr);
+            switch(this._bits) {
+                case 128:
+                    if (key.byteLength != 16)
+                        throw new Error("Binary Key must have exactly 16 bytes for AES128");
+                    handle.instance.exports.cppcore_aes128_reset(this._ptr, key._ptr);
+                    break;
+                case 192:
+                    if (key.byteLength != 24)
+                        throw new Error("Binary Key must have exactly 24 bytes for AES192");
+                    handle.instance.exports.cppcore_aes192_reset(this._ptr, key._ptr);
+                    break;
+                case 256:
+                    if (key.byteLength != 32)
+                        throw new Error("Binary Key must have exactly 32 bytes for AES256");
+                    handle.instance.exports.cppcore_aes256_reset(this._ptr, key._ptr);
+                    break;
+            }
         }
         else if (key instanceof Uint8Array) {
-            console.log("KEY FROM UINT8ARRAY");
             this.reset(new Buffer(key));
         }
         else {
             throw new Error("No valid key provided for reset()");
         }
+    }
+}
+
+export class AES128 extends AES {
+    constructor() {
+        super(128);
     }
     encrypt(data_in, data_out, n) {
         handle.instance.exports.cppcore_aes128_encrypt_ecb(
