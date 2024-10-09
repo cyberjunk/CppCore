@@ -16,14 +16,12 @@ jobs:
       MODE: release
       TARGET_OS: wasi
       TARGET_ARCH: ${{ matrix.arch }}
-      TARGET_CPUREV: ${{ matrix.cpurev }}
       JOBS: 4
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13,macos-14]
+        os: [macos-13]
         arch: [wasm32]
-        cpurev: [default]
         sdk: [24]
     steps:
     
@@ -31,12 +29,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    # TEST
-    - name: TEST
-      run: echo $WASI_SDK_PATH
-      
-    # Install WASI
-    - name: Install WASI
+    # Install WASI SDK
+    - name: Install WASI SDK
       env:
         VERSIONMAJOR: ${{ matrix.sdk }}
         VERSIONMINOR: 0
@@ -56,3 +50,4 @@ jobs:
       run: |
         echo $WASI_SDK_PATH
         ls -la $WASI_SDK_PATH
+        $WASI_SDK_PATH/bin/clang --version
