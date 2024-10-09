@@ -57,3 +57,9 @@ jobs:
         echo $WASI_SDK_PATH
         ls -la $WASI_SDK_PATH
         $WASI_SDK_PATH/bin/clang --version
+
+    # TEST
+    - name: TEST
+      run: |
+        cd build/make
+        make -f CppCore.Interface.C.mk
