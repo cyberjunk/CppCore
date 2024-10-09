@@ -54,7 +54,7 @@ jobs:
         fi
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
         echo $FILENAME
-        curl --output $FILENAME.$EXT --url https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
+        curl -O $FILENAME.$EXT https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
         tar xvfz $FILENAME.$EXT
         ls -la
         echo WASI_SDK_PATH=$(pwd)/$FILENAME >> "$GITHUB_ENV"
