@@ -34,7 +34,7 @@ jobs:
      # uses: cyberjunk/gha-wasi-install@main
      # with:
      #   version: 24.0
-
+    
     # Install WASI SDK
     - name: Install WASI SDK
       shell: bash
@@ -45,9 +45,16 @@ jobs:
         ARCH: ${{ matrix.OS == 'macos-14' && 'arm64' || 'x86_64'}}
         EXT: tar.gz
       run: |
+        echo $ImageOS
+        if [ $ImageOS == macos13 ]; then \
+          echo found macos13; \
+        fi
+        if [ $ImageOS == ubuntu22 ]; then \
+          echo found ubuntu22; \
+        fi
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
         echo $FILENAME
-        curl -o $FILENAME.$EXT https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
+        curl --output $FILENAME.$EXT --url https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
         tar xvfz $FILENAME.$EXT
         ls -la
         echo WASI_SDK_PATH=$(pwd)/$FILENAME >> "$GITHUB_ENV"
