@@ -54,6 +54,7 @@ jobs:
     # TEST
     - name: TEST
       run: |
+        echo $ImageOS
         echo $WASI_SDK_PATH
         ls -la $WASI_SDK_PATH
         $WASI_SDK_PATH/bin/clang --version
