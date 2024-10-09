@@ -79,6 +79,7 @@ CppCore.Debug-clean:
 
 ##################################################################################
 
+ifneq ($(TARGET_OS),wasi)
 all: \
 	CppCore.Example.Server \
 	CppCore.Example.Client \
@@ -86,7 +87,6 @@ all: \
 	CppCore.Interface.C \
 	CppCore.Test \
 	CppCore.Debug
-
 clean: \
 	CppCore.Example.Server-clean \
 	CppCore.Example.Client-clean \
@@ -94,15 +94,26 @@ clean: \
 	CppCore.Interface.C-clean \
 	CppCore.Test-clean \
 	CppCore.Debug-clean
-
-test: \
-	CppCore.Test-run
-
 dist: \
 	CppCore.Example.Server-dist \
 	CppCore.Example.Client-dist \
 	CppCore.Example.UI-dist \
 	CppCore.Interface.C-dist
+else
+all: \
+	CppCore.Interface.C \
+	CppCore.Test \
+	CppCore.Debug
+clean: \
+	CppCore.Interface.C-clean \
+	CppCore.Test-clean \
+	CppCore.Debug-clean
+dist: \
+	CppCore.Interface.C-dist
+endif
+
+test: \
+	CppCore.Test-run
 
 ##################################################################################
 
