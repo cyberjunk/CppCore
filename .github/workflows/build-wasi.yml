@@ -29,3 +29,21 @@ jobs:
     # Checkout
     - name: Checkout
       uses: actions/checkout@v4
+      
+    # TEST
+    - name: TEST
+      run: echo $WASI_SDK_PATH
+      
+    # Install WASI
+    - name: Install WASI
+      run: |
+        wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-24/wasi-sdk-24.0-x86_64-macos.tar.gz
+        tar xvfz wasi-sdk-24.0-x86_64-macos.tar.gz
+        ls -la
+        echo WASI_SDK_PATH=$(pwd)/wasi-sdk-24.0-x86_64-macos >> "$GITHUB_ENV"
+
+    # TEST
+    - name: TEST
+      run: |
+        echo $WASI_SDK_PATH
+        ls -la $WASI_SDK_PATH
