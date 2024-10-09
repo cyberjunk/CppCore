@@ -40,7 +40,7 @@ jobs:
         VERSIONMAJOR: 24
         VERSIONMINOR: 0
         OS: macos
-        ARCH: x86_x64
+        ARCH: x86_64
         EXT: tar.gz
       run: |
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
