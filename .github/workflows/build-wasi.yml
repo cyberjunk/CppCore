@@ -41,7 +41,7 @@ jobs:
         VERSIONMINOR: 0
         OS: macos
         ARCH: x86_x64
-        FILENAME: wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS.tar.gz
+        FILENAME: wasi-sdk-${{ env.VERSIONMAJOR }}.${{ env.VERSIONMINOR }}-${{ env.ARCH }}-${{ env.OS }}
         EXT: tar.gz
       run: |
         echo $FILENAME
