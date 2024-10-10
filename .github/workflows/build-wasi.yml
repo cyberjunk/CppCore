@@ -66,11 +66,22 @@ jobs:
         tar xvfz $FILENAME.$EXT
         echo WASI_SDK_PATH=$(pwd)/$FILENAME >> "$GITHUB_ENV"
 
+    - name: Install Wasmer
+      uses: wasmerio/setup-wasmer@v3.1
+      with:
+        version: '4.4.0'
+
     # Clang Version
     - name: Clang Version
       shell: bash
       run: |
         $WASI_SDK_PATH/bin/clang --version
+
+    # Wasmer Version
+    - name: Wasmer Version
+      shell: bash
+      run: |
+        wasmer --version
 
     # Build
     - name: Build
