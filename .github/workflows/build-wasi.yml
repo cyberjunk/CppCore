@@ -85,7 +85,6 @@ jobs:
 
     # Wasmer Version
     - name: Wasmer Version
-      shell: bash
       run: |
         wasmer --version
 
