@@ -169,7 +169,7 @@ else ifeq ($(TARGET_OS),wasi)
 ifeq ($(WASMER_DIR),)
 	wasmer $(OUT)
 else
-  $(WASMER_DIR)/bin/wasmer $(OUT)
+	$(WASMER_DIR)/bin/wasmer $(OUT)
 endif
 else
 	$(OUT)
