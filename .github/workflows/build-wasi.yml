@@ -71,12 +71,19 @@ jobs:
     #  with:
     #    version: '4.2.5'
     
-    # Clang Version
+    # Install Wasmer (Windows)
     - name: Install Wasmer (Windows)
       if: ${{ matrix.os == 'windows-2019' || matrix.os == 'windows-2022' }}
       run: |
         iwr https://win.wasmer.io -useb | iex
+        echo WASMER=C:/Users/runneradmin/.wasmer/bin/wasmer >> "$GITHUB_ENV"
 
+    # Install Wasmer (Linux and macOS)
+    - name: Install Wasmer (Linux and macOS)
+      if: ${{ matrix.os != 'windows-2019' && matrix.os != 'windows-2022' }}
+      run: |
+        curl https://get.wasmer.io -sSfL | sh
+        
     # Clang Version
     - name: Clang Version
       shell: bash
@@ -85,8 +92,9 @@ jobs:
 
     # Wasmer Version
     - name: Wasmer Version
+      shell: bash
       run: |
-        wasmer --version
+        $WASMER --version
 
     # Build
     - name: Build
