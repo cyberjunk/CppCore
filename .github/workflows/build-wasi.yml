@@ -34,16 +34,11 @@ jobs:
      # uses: cyberjunk/gha-wasi-install@main
      # with:
      #   version: 24.0
-    
-    # Install WASI SDK
-    - name: Install WASI SDK
+
+    - name: Setup ENV
       shell: bash
-      env:
-        VERSIONMAJOR: ${{ matrix.sdk }}
-        VERSIONMINOR: 0
-        EXT: tar.gz
       run: |
-        echo Installing on: $ImageOS
+        echo Running on: $ImageOS
         if [ $ImageOS == macos12 ] || [ $ImageOS == macos13 ]; then \
           OS=macos; \
           ARCH=x86_64; \
@@ -60,6 +55,15 @@ jobs:
           echo UNKNOWN OPERATING SYSTEM; \
           exit 1; \
         fi
+
+    # Install WASI SDK
+    - name: Install WASI SDK
+      shell: bash
+      env:
+        VERSIONMAJOR: ${{ matrix.sdk }}
+        VERSIONMINOR: 0
+        EXT: tar.gz
+      run: |
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
         URL=https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
         curl -L -O $URL
