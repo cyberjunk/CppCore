@@ -41,16 +41,18 @@ jobs:
       env:
         VERSIONMAJOR: ${{ matrix.sdk }}
         VERSIONMINOR: 0
-        OS: macos
+        #OS: macos
         ARCH: ${{ matrix.OS == 'macos-14' && 'arm64' || 'x86_64'}}
         EXT: tar.gz
       run: |
         echo $ImageOS
         if [ $ImageOS == macos13 ]; then \
-          echo found macos13; \
-        fi
-        if [ $ImageOS == ubuntu22 ]; then \
-          echo found ubuntu22; \
+          OS=macos; \
+        elif [ $ImageOS == ubuntu22 ]; then \
+          OS=linux; \
+        else \
+          echo UNKNOWN OPERATING SYSTEM \
+          exit 1 \
         fi
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
         echo $FILENAME
