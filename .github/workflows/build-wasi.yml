@@ -99,7 +99,7 @@ jobs:
         tar xfz $FILENAME.$EXT -C ./$FILENAME
         rm -f $FILENAME.$EXT
         echo WASMER_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
-        echo PATH=$(pwd)/$FILENAME/bin;$PATH >> "$GITHUB_ENV"
+        echo PATH="$(pwd)/$FILENAME/bin;$PATH" >> "$GITHUB_ENV"
 
     # Clang Version
     - name: Clang Version
