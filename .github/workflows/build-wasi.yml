@@ -98,10 +98,7 @@ jobs:
         mkdir $FILENAME
         tar xfz $FILENAME.$EXT -C ./$FILENAME
         rm -f $FILENAME.$EXT
-        PATH="$(pwd)/$FILENAME/bin;$PATH"
-        echo $PATH
         echo WASMER_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
-        echo PATH=$PATH >> "$GITHUB_ENV"
 
     # Clang Version
     - name: Clang Version
@@ -114,14 +111,12 @@ jobs:
       shell: bash
       run: |
         echo $WASMER_DIR
-        wasmer --version
+        $WASMER_DIR/bin/wasmer --version
 
     # Build
     - name: Build
-      run: |
-        make -j${{ env.JOBS }}
+      run: make -j${{ env.JOBS }}
 
     # Test
     - name: Test
-      shell: bash
       run: make test
