@@ -55,6 +55,8 @@ jobs:
           echo UNKNOWN OPERATING SYSTEM; \
           exit 1; \
         fi
+        echo OS=$OS >> "$GITHUB_ENV"
+        echo ARCH=$ARCH >> "$GITHUB_ENV"
 
     # Install WASI SDK
     - name: Install WASI SDK
