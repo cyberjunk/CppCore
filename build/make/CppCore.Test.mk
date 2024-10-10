@@ -165,6 +165,8 @@ endif
 	$(AVDMANAGER) delete avd --name $(NAME)_AVD
 else ifeq ($(TARGET_OS),ios)
 #	TODO: Run in emulator like on Android
+else ifeq ($(TARGET_OS),wasi)
+	wasmer $(OUT)
 else
 	$(OUT)
 endif

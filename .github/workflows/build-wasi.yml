@@ -98,32 +98,9 @@ jobs:
         mkdir $FILENAME
         tar xfz $FILENAME.$EXT -C ./$FILENAME
         rm -f $FILENAME.$EXT
-        ls -la
         echo WASMER_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
+        echo PATH=$(pwd)/$FILENAME/bin;$PATH >> "$GITHUB_ENV"
 
-    # Install Wasmer (Windows)
-    #- name: Install Wasmer (Windows)
-    #  if: ${{ matrix.os == 'windows-2019' || matrix.os == 'windows-2022' }}
-    #  run: |
-    #    iwr https://win.wasmer.io -useb | iex
-    #    echo WASMER_DIR=C:/Users/runneradmin/.wasmer >> "$GITHUB_ENV"
-
-    # Install Wasmer (macOS)
-    #- name: Install Wasmer (macOS)
-    #  shell: bash
-    #  if: ${{ matrix.os == 'macos-13' || matrix.os == 'macos-14' || matrix.os == 'macos-15' }}
-    #  run: |
-    #    curl https://get.wasmer.io -sSfL | sh
-    #    echo WASMER_DIR=/Users/runner/.wasmer >> "$GITHUB_ENV"
-    
-    # Install Wasmer (Linux)
-    #- name: Install Wasmer (Linux)
-    #  shell: bash
-    #  if: ${{ matrix.os == 'ubuntu-22.04' ||  matrix.os == 'ubuntu-22.04' ||  matrix.os == 'ubuntu-24.04' }}
-    #  run: |
-    #    curl https://get.wasmer.io -sSfL | sh
-    #    echo WASMER_DIR=/home/runner/.wasmer >> "$GITHUB_ENV"
-        
     # Clang Version
     - name: Clang Version
       shell: bash
@@ -135,7 +112,7 @@ jobs:
       shell: bash
       run: |
         echo $WASMER_DIR
-        $WASMER_DIR/bin/wasmer --version
+        wasmer --version
 
     # Build
     - name: Build
@@ -143,5 +120,6 @@ jobs:
         make -j${{ env.JOBS }}
 
     # Test
-    #- name: Test
-    #  run: make test
+    - name: Test
+      shell: bash
+      run: make test
