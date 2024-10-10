@@ -44,21 +44,25 @@ jobs:
           WASI_ARCH=x86_64; \
           WASMER_OS=darwin; \
           WASMER_ARCH=amd64; \
+          WABT_OS=macos-12; \
         elif [ $ImageOS == macos14 ] || [ $ImageOS == macos15 ]; then \
           WASI_OS=macos; \
           WASI_ARCH=arm64; \
           WASMER_OS=darwin; \
           WASMER_ARCH=arm64; \
+          WABT_OS=macos-14; \
         elif [ $ImageOS == ubuntu20 ] || [ $ImageOS == ubuntu22 ] || [ $ImageOS == ubuntu24 ]; then \
           WASI_OS=linux; \
           WASI_ARCH=x86_64; \
           WASMER_OS=linux; \
           WASMER_ARCH=amd64; \
+          WABT_OS=ubuntu-20.04; \
         elif [ $ImageOS == win19 ] || [ $ImageOS == win22 ]; then \
           WASI_OS=windows; \
           WASI_ARCH=x86_64; \
           WASMER_OS=windows; \
           WASMER_ARCH=amd64; \
+          WABT_OS=windows; \
         else \
           echo UNKNOWN OPERATING SYSTEM; \
           exit 1; \
@@ -67,17 +71,19 @@ jobs:
         echo WASI_ARCH=$WASI_ARCH >> "$GITHUB_ENV"
         echo WASMER_OS=$WASMER_OS >> "$GITHUB_ENV"
         echo WASMER_ARCH=$WASMER_ARCH >> "$GITHUB_ENV"
-
+        echo WABT_OS=$WABT_OS >> "$GITHUB_ENV"
+        
     # Install WASI SDK
     - name: Install WASI SDK
       shell: bash
       env:
+        REPOSITORY: https://github.com/WebAssembly/wasi-sdk
         VERSIONMAJOR: ${{ matrix.sdk }}
         VERSIONMINOR: 0
         EXT: tar.gz
       run: |
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$WASI_ARCH-$WASI_OS
-        URL=https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
+        URL=$REPOSITORY/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
         curl -L -O $URL
         tar xfz $FILENAME.$EXT
         rm -f $FILENAME.$EXT
@@ -87,35 +93,69 @@ jobs:
     - name: Install Wasmer
       shell: bash
       env:
+        REPOSITORY: https://github.com/wasmerio/wasmer
         VERSIONMAJOR: 4
         VERSIONMINOR: 4
         VERSIONPATCH: 0
         EXT: tar.gz
       run: |
         FILENAME=wasmer-$WASMER_OS-$WASMER_ARCH
-        URL=https://github.com/wasmerio/wasmer/releases/download/v$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH/$FILENAME.$EXT
+        URL=$REPOSITORY/releases/download/v$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH/$FILENAME.$EXT
         curl -L -O $URL
         mkdir $FILENAME
         tar xfz $FILENAME.$EXT -C ./$FILENAME
         rm -f $FILENAME.$EXT
         echo WASMER_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
 
+    # Install WABT
+    - name: Install WABT
+      shell: bash
+      env:
+        REPOSITORY: https://github.com/WebAssembly/wabt
+        VERSIONMAJOR: 1
+        VERSIONMINOR: 0
+        VERSIONPATCH: 36
+        EXT: tar.gz
+      run: |
+        FILENAME=wabt-$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH-$WABT_OS
+        URL=$REPOSITORY/releases/download/$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH/$FILENAME.$EXT
+        curl -L -O $URL
+        tar xfz $FILENAME.$EXT
+        rm -f $FILENAME.$EXT
+        echo WABT_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
+
     # Clang Version
     - name: Clang Version
       shell: bash
-      run: |
-        $WASI_SDK_PATH/bin/clang --version
+      run: $WASI_SDK_PATH/bin/clang --version
 
     # Wasmer Version
     - name: Wasmer Version
       shell: bash
-      run: |
-        echo $WASMER_DIR
-        $WASMER_DIR/bin/wasmer --version
+      run: $WASMER_DIR/bin/wasmer --version
 
     # Build
     - name: Build
       run: make -j${{ env.JOBS }}
+
+    # Binary Info (CppCore.Interface.C)
+    - name: Binary Info (CppCore.Interface.C)
+      shell: bash
+      run: |
+        echo $WABT_DIR
+        $WABT_DIR/bin/wasm-objdump -x build/make/lib/wasi-wasm32/libcppcore.wasm
+
+    # Binary Info (CppCore.Test)
+    - name: Binary Info (CppCore.Test)
+      shell: bash
+      run: |
+        $WABT_DIR/bin/wasm-objdump -x build/make/lib/wasi-wasm32/CppCore.Test.wasm
+    
+    # Binary Info (CppCore.Debug)
+    - name: Binary Info (CppCore.Debug)
+      shell: bash
+      run: |
+        $WABT_DIR/bin/wasm-objdump -x build/make/lib/wasi-wasm32/CppCore.Debug.wasm
 
     # Test
     - name: Test
