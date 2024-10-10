@@ -95,7 +95,9 @@ jobs:
         FILENAME=wasmer-$WASMER_OS-$WASMER_ARCH
         URL=https://github.com/wasmerio/wasmer/releases/download/v$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH/$FILENAME.$EXT
         curl -L -O $URL
-        tar xvfz $FILENAME.$EXT
+        mkdir $FILENAME
+        tar xfz $FILENAME.$EXT -C ./$FILENAME
+        rm -f $FILENAME.$EXT
         ls -la
         echo WASMER_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
 
