@@ -143,19 +143,19 @@ jobs:
       shell: bash
       run: |
         echo $WABT_DIR
-        $WABT_DIR/bin/wasm-objdump -x build/make/lib/wasi-wasm32/libcppcore.wasm
+        $WABT_DIR/bin/wasm-objdump -x build/make/lib/wasi-$TARGET_ARCH/libcppcore.wasm
 
     # Binary Info (CppCore.Test)
     - name: Binary Info (CppCore.Test)
       shell: bash
       run: |
-        $WABT_DIR/bin/wasm-objdump -x build/make/bin/wasi-wasm32/CppCore.Test.wasm
+        $WABT_DIR/bin/wasm-objdump -x build/make/bin/wasi-$TARGET_ARCH/CppCore.Test.wasm
     
     # Binary Info (CppCore.Debug)
     - name: Binary Info (CppCore.Debug)
       shell: bash
       run: |
-        $WABT_DIR/bin/wasm-objdump -x build/make/bin/wasi-wasm32/CppCore.Debug.wasm
+        $WABT_DIR/bin/wasm-objdump -x build/make/bin/wasi-$TARGET_ARCH/CppCore.Debug.wasm
 
     # Test
     - name: Test
