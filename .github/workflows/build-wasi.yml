@@ -40,23 +40,33 @@ jobs:
       run: |
         echo Running on: $ImageOS
         if [ $ImageOS == macos12 ] || [ $ImageOS == macos13 ]; then \
-          OS=macos; \
-          ARCH=x86_64; \
+          WASI_OS=macos; \
+          WASI_ARCH=x86_64; \
+          WASMER_OS=darwin; \
+          WASMER_ARCH=amd64; \
         elif [ $ImageOS == macos14 ] || [ $ImageOS == macos15 ]; then \
-          OS=macos; \
-          ARCH=arm64; \
+          WASI_OS=macos; \
+          WASI_ARCH=arm64; \
+          WASMER_OS=darwin; \
+          WASMER_ARCH=arm64; \
         elif [ $ImageOS == ubuntu20 ] || [ $ImageOS == ubuntu22 ] || [ $ImageOS == ubuntu24 ]; then \
-          OS=linux; \
-          ARCH=x86_64; \
+          WASI_OS=linux; \
+          WASI_ARCH=x86_64; \
+          WASMER_OS=linux; \
+          WASMER_ARCH=amd64; \
         elif [ $ImageOS == win19 ] || [ $ImageOS == win22 ]; then \
-          OS=windows; \
-          ARCH=x86_64; \
+          WASI_OS=windows; \
+          WASI_ARCH=x86_64; \
+          WASMER_OS=windows; \
+          WASMER_ARCH=amd64; \
         else \
           echo UNKNOWN OPERATING SYSTEM; \
           exit 1; \
         fi
-        echo OS=$OS >> "$GITHUB_ENV"
-        echo ARCH=$ARCH >> "$GITHUB_ENV"
+        echo WASI_OS=$WASI_OS >> "$GITHUB_ENV"
+        echo WASI_ARCH=$WASI_ARCH >> "$GITHUB_ENV"
+        echo WASMER_OS=$WASMER_OS >> "$GITHUB_ENV"
+        echo WASMER_ARCH=$WASMER_ARCH >> "$GITHUB_ENV"
 
     # Install WASI SDK
     - name: Install WASI SDK
@@ -66,39 +76,49 @@ jobs:
         VERSIONMINOR: 0
         EXT: tar.gz
       run: |
-        FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
+        FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$WASI_ARCH-$WASI_OS
         URL=https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
         curl -L -O $URL
-        tar xvfz $FILENAME.$EXT
+        tar xfz $FILENAME.$EXT
         echo WASI_SDK_PATH=$(pwd)/$FILENAME >> "$GITHUB_ENV"
 
-    #- name: Install Wasmer
-    #  uses: wasmerio/setup-wasmer@v3.1
-    #  with:
-    #    version: '4.2.5'
-    
-    # Install Wasmer (Windows)
-    - name: Install Wasmer (Windows)
-      if: ${{ matrix.os == 'windows-2019' || matrix.os == 'windows-2022' }}
+    # Install Wasmer
+    - name: Install Wasmer
+      shell: bash
+      env:
+        VERSIONMAJOR: 4
+        VERSIONMINOR: 4
+        VERSIONPATCH: 0
+        EXT: tar.gz
       run: |
-        iwr https://win.wasmer.io -useb | iex
-        echo WASMER_DIR=C:/Users/runneradmin/.wasmer >> "$GITHUB_ENV"
+        FILENAME=wasmer-$WASMER_OS-$WASMER_ARCH
+        URL=https://github.com/wasmerio/wasmer/releases/download/v$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH/$FILENAME.$EXT
+        curl -L -O $URL
+        tar xfz $FILENAME.$EXT
+        echo WASMER_DIR==$(pwd)/$FILENAME >> "$GITHUB_ENV"
+
+    # Install Wasmer (Windows)
+    #- name: Install Wasmer (Windows)
+    #  if: ${{ matrix.os == 'windows-2019' || matrix.os == 'windows-2022' }}
+    #  run: |
+    #    iwr https://win.wasmer.io -useb | iex
+    #    echo WASMER_DIR=C:/Users/runneradmin/.wasmer >> "$GITHUB_ENV"
 
     # Install Wasmer (macOS)
-    - name: Install Wasmer (macOS)
-      shell: bash
-      if: ${{ matrix.os == 'macos-13' || matrix.os == 'macos-14' || matrix.os == 'macos-15' }}
-      run: |
-        curl https://get.wasmer.io -sSfL | sh
-        echo WASMER_DIR=/Users/runner/.wasmer >> "$GITHUB_ENV"
+    #- name: Install Wasmer (macOS)
+    #  shell: bash
+    #  if: ${{ matrix.os == 'macos-13' || matrix.os == 'macos-14' || matrix.os == 'macos-15' }}
+    #  run: |
+    #    curl https://get.wasmer.io -sSfL | sh
+    #    echo WASMER_DIR=/Users/runner/.wasmer >> "$GITHUB_ENV"
     
     # Install Wasmer (Linux)
-    - name: Install Wasmer (Linux)
-      shell: bash
-      if: ${{ matrix.os == 'ubuntu-22.04' ||  matrix.os == 'ubuntu-22.04' ||  matrix.os == 'ubuntu-24.04' }}
-      run: |
-        curl https://get.wasmer.io -sSfL | sh
-        echo WASMER_DIR=/home/runner/.wasmer >> "$GITHUB_ENV"
+    #- name: Install Wasmer (Linux)
+    #  shell: bash
+    #  if: ${{ matrix.os == 'ubuntu-22.04' ||  matrix.os == 'ubuntu-22.04' ||  matrix.os == 'ubuntu-24.04' }}
+    #  run: |
+    #    curl https://get.wasmer.io -sSfL | sh
+    #    echo WASMER_DIR=/home/runner/.wasmer >> "$GITHUB_ENV"
         
     # Clang Version
     - name: Clang Version
