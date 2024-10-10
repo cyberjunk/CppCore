@@ -81,11 +81,10 @@ jobs:
     # Install Wasmer (Linux and macOS)
     - name: Install Wasmer (Linux and macOS)
       shell: bash
-      #if: ${{ matrix.os != 'windows-2019' && matrix.os != 'windows-2022' }}
+      if: ${{ matrix.os != 'windows-2019' && matrix.os != 'windows-2022' }}
       run: |
         curl https://get.wasmer.io -sSfL | sh
-        echo $WASMER_DIR
-        echo WASMER_DIR=$WASMER_DIR >> "$GITHUB_ENV"
+        echo WASMER_DIR=/home/runner/.wasmer >> "$GITHUB_ENV"
         
     # Clang Version
     - name: Clang Version
