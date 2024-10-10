@@ -69,7 +69,7 @@ jobs:
     - name: Install Wasmer
       uses: wasmerio/setup-wasmer@v3.1
       with:
-        version: '4.4.0'
+        version: '4.2.5'
 
     # Clang Version
     - name: Clang Version
