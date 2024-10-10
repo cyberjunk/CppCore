@@ -51,8 +51,8 @@ jobs:
         elif [ $ImageOS == ubuntu22 ]; then \
           OS=linux; \
         else \
-          echo UNKNOWN OPERATING SYSTEM \
-          exit 1 \
+          echo UNKNOWN OPERATING SYSTEM; \
+          exit 1; \
         fi
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
         echo $FILENAME
