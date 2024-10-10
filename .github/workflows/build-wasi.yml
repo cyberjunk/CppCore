@@ -122,7 +122,7 @@ jobs:
         curl -L -O $URL
         tar xfz $FILENAME.$EXT
         rm -f $FILENAME.$EXT
-        echo WABT_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
+        echo WABT_DIR=$(pwd)/wabt-$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH >> "$GITHUB_ENV"
 
     # Clang Version
     - name: Clang Version
