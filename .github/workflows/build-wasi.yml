@@ -41,8 +41,6 @@ jobs:
       env:
         VERSIONMAJOR: ${{ matrix.sdk }}
         VERSIONMINOR: 0
-        #OS: macos
-        #ARCH: ${{ matrix.OS == 'macos-14' && 'arm64' || 'x86_64'}}
         EXT: tar.gz
       run: |
         echo Installing on: $ImageOS
@@ -64,18 +62,14 @@ jobs:
         fi
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
         URL=https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
-        echo $FILENAME
         curl -L -O $URL
-        ls -la
         tar xvfz $FILENAME.$EXT
         echo WASI_SDK_PATH=$(pwd)/$FILENAME >> "$GITHUB_ENV"
 
-    # TEST
-    - name: TEST
+    # Clang Version
+    - name: Clang Version
+      shell: bash
       run: |
-        echo $ImageOS
-        echo $WASI_SDK_PATH
-        ls -la $WASI_SDK_PATH
         $WASI_SDK_PATH/bin/clang --version
 
     # Build
