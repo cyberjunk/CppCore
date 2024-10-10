@@ -78,10 +78,18 @@ jobs:
         iwr https://win.wasmer.io -useb | iex
         echo WASMER_DIR=C:/Users/runneradmin/.wasmer >> "$GITHUB_ENV"
 
-    # Install Wasmer (Linux and macOS)
-    - name: Install Wasmer (Linux and macOS)
+    # Install Wasmer (macOS)
+    - name: Install Wasmer (macOS)
       shell: bash
-      if: ${{ matrix.os != 'windows-2019' && matrix.os != 'windows-2022' }}
+      if: ${{ matrix.os == 'macos-13' || matrix.os == 'macos-14' || matrix.os == 'macos-15' }}
+      run: |
+        curl https://get.wasmer.io -sSfL | sh
+        echo WASMER_DIR=/Users/runner/.wasmer >> "$GITHUB_ENV"
+    
+    # Install Wasmer (Linux)
+    - name: Install Wasmer (Linux)
+      shell: bash
+      if: ${{ matrix.os == 'ubuntu-22.04' ||  matrix.os == 'ubuntu-22.04' ||  matrix.os == 'ubuntu-24.04' }}
       run: |
         curl https://get.wasmer.io -sSfL | sh
         echo WASMER_DIR=/home/runner/.wasmer >> "$GITHUB_ENV"
