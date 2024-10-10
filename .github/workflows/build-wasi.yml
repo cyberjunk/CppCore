@@ -95,7 +95,7 @@ jobs:
         URL=https://github.com/wasmerio/wasmer/releases/download/v$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH/$FILENAME.$EXT
         curl -L -O $URL
         tar xfz $FILENAME.$EXT
-        echo WASMER_DIR==$(pwd)/$FILENAME >> "$GITHUB_ENV"
+        echo WASMER_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
 
     # Install Wasmer (Windows)
     #- name: Install Wasmer (Windows)
