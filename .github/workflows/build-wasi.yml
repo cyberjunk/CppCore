@@ -80,6 +80,7 @@ jobs:
         URL=https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
         curl -L -O $URL
         tar xfz $FILENAME.$EXT
+        rm -f $FILENAME.$EXT
         echo WASI_SDK_PATH=$(pwd)/$FILENAME >> "$GITHUB_ENV"
 
     # Install Wasmer
@@ -94,7 +95,7 @@ jobs:
         FILENAME=wasmer-$WASMER_OS-$WASMER_ARCH
         URL=https://github.com/wasmerio/wasmer/releases/download/v$VERSIONMAJOR.$VERSIONMINOR.$VERSIONPATCH/$FILENAME.$EXT
         curl -L -O $URL
-        tar xfz $FILENAME.$EXT
+        tar xvfz $FILENAME.$EXT
         ls -la
         echo WASMER_DIR=$(pwd)/$FILENAME >> "$GITHUB_ENV"
 
