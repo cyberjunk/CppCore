@@ -75,7 +75,7 @@ jobs:
     - name: Install Wasmer (Windows)
       if: ${{ matrix.os == 'windows-2019' || matrix.os == 'windows-2022' }}
       run: |
-        choco install wasmer
+        iwr https://win.wasmer.io -useb | iex
 
     # Clang Version
     - name: Clang Version
