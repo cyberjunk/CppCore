@@ -80,6 +80,7 @@ jobs:
 
     # Install Wasmer (Linux and macOS)
     - name: Install Wasmer (Linux and macOS)
+      shell: bash
       #if: ${{ matrix.os != 'windows-2019' && matrix.os != 'windows-2022' }}
       run: |
         curl https://get.wasmer.io -sSfL | sh
