@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2022,ubuntu-22.04,macos-13]
+        os: [windows-2019,windows-2022,ubuntu-20.04,ubuntu-22.04,ubuntu-24.04,macos-12,macos-13,macos-14,macos-15]
         arch: [wasm32]
         sdk: [24]
     steps:
@@ -42,21 +42,30 @@ jobs:
         VERSIONMAJOR: ${{ matrix.sdk }}
         VERSIONMINOR: 0
         #OS: macos
-        ARCH: ${{ matrix.OS == 'macos-14' && 'arm64' || 'x86_64'}}
+        #ARCH: ${{ matrix.OS == 'macos-14' && 'arm64' || 'x86_64'}}
         EXT: tar.gz
       run: |
-        echo $ImageOS
-        if [ $ImageOS == macos13 ]; then \
+        echo Installing on: $ImageOS
+        if [ $ImageOS == macos12 ] || [ $ImageOS == macos13 ]; then \
           OS=macos; \
-        elif [ $ImageOS == ubuntu22 ]; then \
+          ARCH=x86_64; \
+        elif [ $ImageOS == macos14 ] || [ $ImageOS == macos15 ]; then \
+          OS=macos; \
+          ARCH=arm64; \
+        elif [ $ImageOS == ubuntu20 ] || [ $ImageOS == ubuntu22 ] || [ $ImageOS == ubuntu24 ]; then \
           OS=linux; \
+          ARCH=x86_64; \
+        elif [ $ImageOS == win19 ] || [ $ImageOS == win22 ]; then \
+          OS=windows; \
+          ARCH=x86_64; \
         else \
           echo UNKNOWN OPERATING SYSTEM; \
           exit 1; \
         fi
         FILENAME=wasi-sdk-$VERSIONMAJOR.$VERSIONMINOR-$ARCH-$OS
+        URL=https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
         echo $FILENAME
-        curl -L -O https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$VERSIONMAJOR/$FILENAME.$EXT
+        curl -L -O $URL
         ls -la
         tar xvfz $FILENAME.$EXT
         echo WASI_SDK_PATH=$(pwd)/$FILENAME >> "$GITHUB_ENV"
