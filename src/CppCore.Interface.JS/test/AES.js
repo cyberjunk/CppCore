@@ -44,6 +44,11 @@ function test1(type, key, iv, data, n, len) {
     chai.expect(indexedDB.cmp(data, data_dec)).to.equal(0);
     chai.expect(indexedDB.cmp(data, data_enc)).to.not.equal(0);
     chai.expect(indexedDB.cmp(data_enc, data_dec)).to.not.equal(0);
+    aes.encrypt(data, data_enc, n ? n : len);
+    aes.decrypt(data_enc, data_dec, n ? n : len);
+    chai.expect(indexedDB.cmp(data, data_dec)).to.equal(0);
+    chai.expect(indexedDB.cmp(data, data_enc)).to.not.equal(0);
+    chai.expect(indexedDB.cmp(data_enc, data_dec)).to.not.equal(0);
 }
 
 describe('AES', function () {
