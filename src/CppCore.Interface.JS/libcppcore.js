@@ -631,4 +631,44 @@ export class AES256CBC extends AESIV {
     }
 }
 
+export class AES128CTR extends AESIV {
+    constructor() {
+        super(128);
+    }
+    encrypt(data_in, data_out, len) {
+        handle.instance.exports.cppcore_aes128_encrypt_ctr(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
+    }
+    decrypt(data_in, data_out, len) {
+        handle.instance.exports.cppcore_aes128_decrypt_ctr(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
+    }
+}
+export class AES192CTR extends AESIV {
+    constructor() {
+        super(192);
+    }
+    encrypt(data_in, data_out, len) {
+        handle.instance.exports.cppcore_aes192_encrypt_ctr(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
+    }
+    decrypt(data_in, data_out, len) {
+        handle.instance.exports.cppcore_aes192_decrypt_ctr(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
+    }
+}
+export class AES256CTR extends AESIV {
+    constructor() {
+        super(256);
+    }
+    encrypt(data_in, data_out, len) {
+        handle.instance.exports.cppcore_aes256_encrypt_ctr(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
+    }
+    decrypt(data_in, data_out, len) {
+        handle.instance.exports.cppcore_aes256_decrypt_ctr(
+            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////
