@@ -54,8 +54,8 @@ describe('AES', function () {
     it('AES256-CBC', function () { test1(AES256CBC, KEY256, IV, 1); });
   });
   describe('AES-CTR', function () {
-    it('AES128-CTR', function () { test1(AES128CBC, KEY128, IV, 16); });
-    it('AES192-CTR', function () { test1(AES192CBC, KEY192, IV, 16); });
-    it('AES256-CTR', function () { test1(AES256CBC, KEY256, IV, 16); });
+    it('AES128-CTR', function () { test1(AES128CTR, KEY128, IV, 16); });
+    it('AES192-CTR', function () { test1(AES192CTR, KEY192, IV, 16); });
+    it('AES256-CTR', function () { test1(AES256CTR, KEY256, IV, 16); });
   });
 });
