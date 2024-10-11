@@ -24,49 +24,10 @@
       } from './libcppcore.js'
       
       function testBuffer() {
-
-          /*const bb = new Uint8Array(16.9);
-          console.log(bb);
-          const bb2 = new Uint8Array(bb);
-          bb[0] = 0xFF;
-          console.log(bb2);*/
-
-          /*const b = new ArrayBuffer(16);
-          const b2 = new Uint8Array(b);
-          console.log("ORIG");
-          console.log(typeof(b2));
-          console.log(b2);
-          console.log("SLICE");
-          const bsl1 = b2.slice(0, 1);
-          console.log(typeof(bsl1));
-          bsl1[0] = 0xFF;
-          console.log(bsl1);
-          console.log(b2);*/
-          
-          /*console.log("SUBARRAY");
-          const bsl2 = b2.subarray(0, 1);
-          console.log(typeof(bsl2));
-          console.log(bsl2);*/
-
-
-          const buf = new Buffer(16);
-          buf[0] = 0xFF;
-          buf[1] = 0xFF;
-          console.log(buf);
-          console.log(buf.bitLength);
-          buf.fill(0);
-          console.log(buf);
-          
-          /*const buf2 = new Buffer(buf);
-          console.log(buf2);
-          
-          const t1 = buf.slice(0, 1);
-          console.log(typeof(t1));
-          console.log(t1);
-
-          const t2 = buf.subarray(0, 1);
-          console.log(typeof(t2));
-          console.log(t2);*/
+          const a = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08];
+          const b = new Buffer(a);
+          console.log(a);
+          console.log(b);
       }
 
       function testCString() {
@@ -245,11 +206,11 @@
         console.log(data_in.getUint32(0));*/
       }
 
-      //testBuffer();
+      testBuffer();
       //testCString();
       //testBaseX();
       //testUInt();
-      testAES();
+      //testAES();
 
     </script>
   </body>

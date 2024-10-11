@@ -8,6 +8,13 @@ describe('Buffer', function () {
       chai.expect(b.byteLength).to.equal(8);
       chai.expect(indexedDB.cmp(a, b)).to.equal(0);
     });
+    it('constructor(array)', function () {
+      const a = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08];
+      const b = new Buffer(a);
+      chai.expect(b.byteLength).to.equal(8);
+      for (var i = 0; i<8;i++)
+        chai.expect(a[i]).to.equal(b[i]);
+    });
     it('constructor(wasm_memory_buffer, number, number)', function () {
       const a = new Uint8Array([0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08]);
       const b = new Buffer(a); 

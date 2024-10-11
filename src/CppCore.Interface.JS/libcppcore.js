@@ -83,6 +83,13 @@ export class Buffer extends Uint8Array {
             //console.debug("libcppcore: Allocated Buffer at: " + hexStrFromInt(ptr));
             registry.register(this, ptr);
         }
+        else if (parm1 instanceof Array) {
+            console.debug("libcppcore: Copy Buffer from Array");
+            const ptr = alloc(parm1.length);
+            super(handle.instance.exports.memory.buffer, ptr, parm1.length);
+            this.set(parm1);
+            registry.register(this, ptr);
+        }
         else {
             throw new Error("Not supported");
         }
