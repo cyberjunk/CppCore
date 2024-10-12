@@ -37,7 +37,7 @@ const handle = await WebAssembly
     });
 
 const registry = new FinalizationRegistry((ptr) => {
-    console.log("Finalizing: " + ptr)
+    //console.log("Finalizing: " + ptr)
     handle.instance.exports.cppcore_free(ptr);
 });
 
@@ -70,7 +70,7 @@ export class Buffer extends Uint8Array {
             const ptr = alloc(parm1.byteLength);
             super(handle.instance.exports.memory.buffer, ptr, parm1.byteLength);
             this.set(parm1);
-            registry.register(this, ptr);
+            registry.register(this, ptr, this);
         }
         else if (parm1 == handle.instance.exports.memory.buffer) {
             console.debug("libcppcore: Creating view on existing Buffer");
@@ -81,18 +81,22 @@ export class Buffer extends Uint8Array {
             const ptr = alloc(parm1);
             super(handle.instance.exports.memory.buffer, ptr, parm1);
             //console.debug("libcppcore: Allocated Buffer at: " + hexStrFromInt(ptr));
-            registry.register(this, ptr);
+            registry.register(this, ptr, this);
         }
         else if (parm1 instanceof Array) {
             console.debug("libcppcore: Copy Buffer from Array");
             const ptr = alloc(parm1.length);
             super(handle.instance.exports.memory.buffer, ptr, parm1.length);
             this.set(parm1);
-            registry.register(this, ptr);
+            registry.register(this, ptr, this);
         }
         else {
             throw new Error("Not supported");
         }
+    }
+    free() {
+        registry.unregister(this);
+        handle.instance.exports.cppcore_free(this._ptr);
     }
     get bitLength() {
         return this.byteLength << 3;
