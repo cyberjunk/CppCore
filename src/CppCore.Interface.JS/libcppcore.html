@@ -94,56 +94,12 @@
       }
 
       function testUInt() {
-        
-        /*var sh = new UInt8192("0xFF");
-        UInt32.shl(sh, 8, sh);
-        console.log(sh.toString(16));
-        sh.shr(8);
-        console.log(sh.toString(16));*/
-
-        var d = new UInt128("0x0C");
-        var b = new UInt128("0x21");
-        var m = new UInt128("0x7");
-        var q = new UInt128();
-        var r = new UInt128();
-        //console.log(d.toString(16) + " ^ " + b.toString(16) + " % " + m.toString(16));
-        //console.log(m.toString(16));
-        //d.mul(b);
-        //console.log(d.toString(16));
-        //d.div(b, r);
-
-        console.log("d: " + d.toString(16));
-        console.log("b: " + b.toString(16));
-
-        d.gcd(b);
-        //UInt128.gcd(d, b, d);
-        //UInt128.powmod(d, b, m, d);
-        //d.powmod(b, m);
-        //d.mod(b);
-        console.log("d: " + d.toString(16));
-        //console.log("r: " + r.toString(16));
-
-        /*var c = new UInt128("568562345231");
-        console.log(c.toString());
-        var hex = new UInt128("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-        console.log(hex.toString(16));*/
-        
-        //var basex = new BaseX("0123456789");
-        //var basex = new Base10();
-        /*var a = basex.decode("9999", 128);
-        var b = basex.decode("1111", 128);
-        var c = new UInt128(a);
-        console.log(basex.encode(a));
-        a.add(b);
-        console.log(basex.encode(a));
-        console.log(basex.encode(c));*/
-        
-        /*var a = BASE10.decode("9999", 128);
-        var b = new UInt64(a);
-        console.log(BASE10.encode(a));
-        console.log(BASE10.encode(b));*/
-
-        //console.log(basex.encode(b.test()));
+        const arr = new Uint8Array([0xFF, 0xFF, 0xFF, 0xFF,0xFF]);
+        const a = new UInt32(arr);
+        const b = new UInt32(a);
+        //const a = new UInt32([0xFF, 0xFF, 0xFF, 0xFF]);
+        //console.log(b);
+        console.log(UInt8192.MAX);
       }
 
       function testAES() {
@@ -206,10 +162,10 @@
         console.log(data_in.getUint32(0));*/
       }
 
-      testBuffer();
+      //testBuffer();
       //testCString();
       //testBaseX();
-      //testUInt();
+      testUInt();
       //testAES();
 
     </script>
