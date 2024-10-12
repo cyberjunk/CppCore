@@ -79,18 +79,18 @@ describe('UInt', function () {
     it('mul()', function () { testOp(UInt1024, 1024, 256, 100, opMulBigInt, opMulUInt); });
   });
   describe('UInt2048', function () {
-    it('add()', function () { testOp(UInt2048, 2048, 512, 10, opAddBigInt, opAddUInt); });
-    it('sub()', function () { testOp(UInt2048, 2048, 512, 10, opSubBigInt, opSubUInt); });
-    it('mul()', function () { testOp(UInt2048, 2048, 512, 10, opMulBigInt, opMulUInt); });
+    it('add()', function () { testOp(UInt2048, 2048, 512, 100, opAddBigInt, opAddUInt); });
+    it('sub()', function () { testOp(UInt2048, 2048, 512, 100, opSubBigInt, opSubUInt); });
+    it('mul()', function () { testOp(UInt2048, 2048, 512, 100, opMulBigInt, opMulUInt); });
   });
   describe('UInt4096', function () {
-    it('add()', function () { testOp(UInt4096, 4096, 1024, 10, opAddBigInt, opAddUInt); });
-    it('sub()', function () { testOp(UInt4096, 4096, 1024, 10, opSubBigInt, opSubUInt); });
-    it('mul()', function () { testOp(UInt4096, 4096, 1024, 10, opMulBigInt, opMulUInt); });
+    it('add()', function () { testOp(UInt4096, 4096, 1024, 100, opAddBigInt, opAddUInt); });
+    it('sub()', function () { testOp(UInt4096, 4096, 1024, 100, opSubBigInt, opSubUInt); });
+    it('mul()', function () { testOp(UInt4096, 4096, 1024, 100, opMulBigInt, opMulUInt); });
   });
   describe('UInt8192', function () {
-    it('add()', function () { testOp(UInt8192, 8192, 1024, 10, opAddBigInt, opAddUInt); });
-    it('sub()', function () { testOp(UInt8192, 8192, 1024, 10, opSubBigInt, opSubUInt); });
-    it('mul()', function () { testOp(UInt8192, 8192, 1024, 10, opMulBigInt, opMulUInt); });
+    it('add()', function () { testOp(UInt8192, 8192, 1024, 100, opAddBigInt, opAddUInt); });
+    it('sub()', function () { testOp(UInt8192, 8192, 1024, 100, opSubBigInt, opSubUInt); });
+    it('mul()', function () { testOp(UInt8192, 8192, 1024, 100, opMulBigInt, opMulUInt); });
   });
 });

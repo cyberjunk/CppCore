@@ -261,11 +261,15 @@ class UInt {
         else if (typeof v === "string") {
             if (v.startsWith("0x")) {
                 // TODO: AVOID COPY
-                this.set(BASE16.decode(v.substring(2), this.bitLength));
+                const b = BASE16.decode(v.substring(2), this.bitLength);
+                this.set(b);
+                b._buffer.free();
             }
             else {
                 // TODO: AVOID COPY
-                this.set(BASE10.decode(v, this.bitLength));
+                const b = BASE10.decode(v, this.bitLength);
+                this.set(b);
+                b._buffer.free();
             }
         }
         else if (v instanceof Uint8Array) {
