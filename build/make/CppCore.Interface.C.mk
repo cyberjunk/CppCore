@@ -202,7 +202,7 @@ HEX1MB    := 0x00100000
 LINKFLAGS := $(LINKFLAGS) \
              -mexec-model=reactor \
              -Wl,-z,stack-size=$(HEX1MB) \
-             -Wl,--initial-heap=$(DEC1MB) \
+             -Wl,--initial-memory=$(DEC8MB) \
              -Wl,--max-memory=$(DEC8MB) \
              -Wl,--export,__data_end \
              -Wl,--export,__heap_base \
