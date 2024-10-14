@@ -140,6 +140,9 @@ export class CString {
     get _ptr() {
       return this._buffer._ptr;
     }
+    free() {
+      this._buffer.free();
+    }
     fromString(str) {
         const enc = encoder.encode(str);
         if (this.maxLength < enc.length)
@@ -254,6 +257,9 @@ class UInt {
         }
     }
     static create(v) { return new this(v); }
+    free() {
+      this._buffer.free();
+    }
     set(v) {
         if (v instanceof UInt) {
             this.set(v._buffer);
@@ -263,13 +269,13 @@ class UInt {
                 // TODO: AVOID COPY
                 const b = BASE16.decode(v.substring(2), this.bitLength);
                 this.set(b);
-                b._buffer.free();
+                b.free();
             }
             else {
                 // TODO: AVOID COPY
                 const b = BASE10.decode(v, this.bitLength);
                 this.set(b);
-                b._buffer.free();
+                b.free();
             }
         }
         else if (v instanceof Uint8Array) {
