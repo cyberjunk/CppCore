@@ -3740,7 +3740,7 @@ namespace CppCore
    template<typename UINT>
    INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
    {
-      assert(&a != &r);
+      assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
       CppCore::clear(r);
       constexpr auto NUMBITS = sizeof(UINT)*8U;
