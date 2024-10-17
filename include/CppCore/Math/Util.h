@@ -2656,6 +2656,7 @@ namespace CppCore
          constexpr size_t NA = sizeof(UINT1) / 8;
          constexpr size_t NB = sizeof(UINT2) / 8;
          constexpr size_t NR = sizeof(UINT3) / 8;
+         assert(NB == 1 || (((void*)&a != (void*)&r) && ((void*)&b != (void*)&r)));
          uint64_t* ap = (uint64_t*)&a;
          uint64_t* bp = (uint64_t*)&b;
          uint64_t* rp = (uint64_t*)&r;
@@ -2701,6 +2702,7 @@ namespace CppCore
          constexpr size_t NA = sizeof(UINT1) / 4;
          constexpr size_t NB = sizeof(UINT2) / 4;
          constexpr size_t NR = sizeof(UINT3) / 4;
+         assert(NB == 1 || (((void*)&a != (void*)&r) && ((void*)&b != (void*)&r)));
          uint32_t* ap = (uint32_t*)&a;
          uint32_t* bp = (uint32_t*)&b;
          uint32_t* rp = (uint32_t*)&r;
@@ -3738,7 +3740,7 @@ namespace CppCore
    template<typename UINT>
    INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
    {
-      assert(&a != &r);
+      assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
       CppCore::clear(r);
       constexpr auto NUMBITS = sizeof(UINT)*8U;
