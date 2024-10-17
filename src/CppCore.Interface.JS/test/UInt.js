@@ -23,27 +23,29 @@ function getRandomHexStr(max) {
     return str;
 }
 
-function opAddBigInt(a, b) { a += b; return a; }
-function opAddUInt  (a, b) { a.add(b); return a; }
-function opSubBigInt(a, b) { a -= b; return a; }
-function opSubUInt  (a, b) { a.sub(b); return a; }
-function opMulBigInt(a, b) { a *= b; return a; }
-function opMulUInt  (a, b) { a.mul(b); return a; }
+function opAddBigInt(t, a, b, r) { r = a + b; return r; }
+function opAddUInt  (t, a, b, r) { t.add(a,b,r); return r; }
+function opSubBigInt(t, a, b, r) { r = a - b; return r; }
+function opSubUInt  (t, a, b, r) { t.sub(a,b,r); return r; }
+function opMulBigInt(t, a, b, r) { r = a * b; return r; }
+function opMulUInt  (t, a, b, r) { t.mul(a,b,r); return r; }
 
 function testOp(type, bits, maxhexsymbols, iterations, opbig, opuint) {
     var a2 = new type();        
     var b2 = new type();
+    var r2 = new type();
     for(var n=0;n<iterations;n++) {
       var stra = getRandomHexStr(maxhexsymbols);
       var strb = getRandomHexStr(maxhexsymbols);
       var a1 = BigInt(stra);
       var b1 = BigInt(strb);
+      var r1 = BigInt(0);
       a2.set(stra);
       b2.set(strb);
-      a1 = opbig(a1, b1);
-      a1 = BigInt.asUintN(bits, a1);
-      a2 = opuint(a2, b2);
-      chai.expect(a1.toString()).to.equal(a2.toString());
+      r1 = opbig(type, a1, b1, r1);
+      r1 = BigInt.asUintN(bits, r1);
+      r2 = opuint(type, a2, b2, r2);
+      chai.expect(r1.toString()).to.equal(r2.toString());
     }
 }
 
