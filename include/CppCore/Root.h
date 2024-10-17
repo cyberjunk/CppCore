@@ -60,7 +60,7 @@
 #elif defined(__wasm32__)
 #define CPPCORE_CPU_WASM32
 #define CPPCORE_CPU_WASM32OR64
-#define CPPCORE_CPU_32BIT
+#define CPPCORE_CPU_64BIT
 #elif defined(__wasm64__)
 #define CPPCORE_CPU_WASM64
 #define CPPCORE_CPU_WASM32OR64
