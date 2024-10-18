@@ -59,6 +59,11 @@ function hexStrFromInt(v) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Memory Allocation on the WASM linear memory
+ * Note: This is not compatible with growing memory
+ * because all existing instances will point to the old memory
+ */
 export class Buffer extends Uint8Array {
     constructor(parm1, parm2, parm3) {
         console.debug("libcppcore: Constructing Buffer (" + 
@@ -66,25 +71,25 @@ export class Buffer extends Uint8Array {
             typeof(parm2) + "," + 
             typeof(parm3) + ")");
         if (parm1 instanceof Uint8Array) {
-            console.debug("libcppcore: Copy Buffer from Uint8Array");
+            //console.debug("libcppcore: Copy Buffer from Uint8Array");
             const ptr = alloc(parm1.byteLength);
             super(handle.instance.exports.memory.buffer, ptr, parm1.byteLength);
             this.set(parm1);
             registry.register(this, ptr, this);
         }
         else if (parm1 == handle.instance.exports.memory.buffer) {
-            console.debug("libcppcore: Creating view on existing Buffer");
+            //console.debug("libcppcore: Creating view on existing Buffer");
             super(handle.instance.exports.memory.buffer, parm2, parm3);
         }
         else if (!isNaN(parm1)) {
-            console.debug("libcppcore: Creating Buffer from size=" + parm1);              
+            //console.debug("libcppcore: Creating Buffer from size=" + parm1);              
             const ptr = alloc(parm1);
             super(handle.instance.exports.memory.buffer, ptr, parm1);
             //console.debug("libcppcore: Allocated Buffer at: " + hexStrFromInt(ptr));
             registry.register(this, ptr, this);
         }
         else if (parm1 instanceof Array) {
-            console.debug("libcppcore: Copy Buffer from Array");
+            //console.debug("libcppcore: Copy Buffer from Array");
             const ptr = alloc(parm1.length);
             super(handle.instance.exports.memory.buffer, ptr, parm1.length);
             this.set(parm1);
@@ -152,9 +157,7 @@ export class CString {
         this.usedLength = enc.length;
     }
     toString() {
-        const dst = new Uint8Array(this.usedLength);
-        dst.set(this._buffer.subarray(0, this.usedLength));
-        return decoder.decode(dst);
+        return decoder.decode(this._buffer.subarray(0, this.usedLength));
     }
 }
 
