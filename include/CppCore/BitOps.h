@@ -1052,6 +1052,14 @@ namespace CppCore
          CppCore::clear32 (*px32); ,
          CppCore::clear16 (*px16); ,
          CppCore::clear8  (*px8);)
+   #elif defined(CPPCORE_CPUFEAT_WASM_SIMD128)
+      constexpr v128_t ZERO128 = { 0ULL, 0ULL };
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
+         CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128); ,
+         CppCore::clear64(*px64);,
+         CppCore::clear32(*px32);,
+         CppCore::clear16(*px16);,
+         CppCore::clear8(*px8);)
    #else
       CPPCORE_CHUNK_PROCESS_X(x, true,
          CppCore::clear64(*px64); ,
