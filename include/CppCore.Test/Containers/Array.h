@@ -286,6 +286,7 @@ namespace CppCore { namespace Test { namespace Containers
          return true;
       }
 
+   #ifndef CPPCORE_NO_THREADING
       template<bool BULK>
       INLINE static bool multithreaded()
       {
@@ -343,7 +344,7 @@ namespace CppCore { namespace Test { namespace Containers
 
          return true;
       }
-
+   #endif
    };
 }}}
 
@@ -366,9 +367,10 @@ namespace CppCore { namespace Test { namespace VS { namespace Containers
       TEST_METHOD(INTEGER_BULK)   { Assert::AreEqual(true, CppCore::Test::Containers::Array::integerbulk()); }
       TEST_METHOD(ITERATOR)       { Assert::AreEqual(true, CppCore::Test::Containers::Array::iterator()); }
 
+   #ifndef CPPCORE_NO_THREADING
       TEST_METHOD(MULTITHREADED)  { Assert::AreEqual(true, CppCore::Test::Containers::Array::multithreaded<false>()); }
       TEST_METHOD(MULTITHREADED_BULK) { Assert::AreEqual(true, CppCore::Test::Containers::Array::multithreaded<true>()); }
-
+   #endif
    };
 }}}}
 #endif

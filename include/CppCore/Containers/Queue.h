@@ -490,6 +490,7 @@ namespace CppCore
          }
       };
 
+   #ifndef CPPCORE_NO_THREADING
       /// <summary>
       /// FIFO Queue for Multi Thread Access with internal Locking
       /// </summary>
@@ -580,5 +581,6 @@ namespace CppCore
             return ret;
          }
       };
+   #endif
    };
 }

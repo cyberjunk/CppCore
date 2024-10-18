@@ -264,7 +264,11 @@ namespace CppCore
       /// </summary>
       INLINE static uint32_t getCpuCoresLogical()
       {
+      #ifndef CPPCORE_NO_THREADING
          return std::thread::hardware_concurrency();
+      #else
+         return 0; // TODO
+      #endif
       }
 
       /// <summary>

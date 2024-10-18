@@ -102,10 +102,15 @@ endif
 
 ifeq ($(TARGET_OS),wasi)
 OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
-DEFINES   := $(DEFINES) -DCPPCORE_NO_SOCKET -D_WASI_EMULATED_SIGNAL
+DEFINES   := $(DEFINES) -D_WASI_EMULATED_SIGNAL
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS) -Wl,-z,stack-size=0x00100000
+DEC64MB   := 67108864
+HEX8MB    := 0x00800000
+LINKFLAGS := $(LINKFLAGS) \
+             -Wl,-z,stack-size=$(HEX8MB) \
+             -Wl,--initial-heap=$(DEC64MB) \
+             -Wl,--stack-first
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 endif

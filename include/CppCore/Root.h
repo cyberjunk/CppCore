@@ -595,11 +595,13 @@
 #include <random>
 #include <regex>
 #include <set>
+#ifndef CPPCORE_NO_THREADING
 #include <shared_mutex>
+#include <thread>
+#endif
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <thread>
 #ifndef CPPCORE_NO_INCLUDE_IO
 #include <ios>
 #include <iostream>
@@ -982,6 +984,7 @@ namespace CppCore
    using TimePointHR = ClockHR::time_point;
    using DurationHR  = ClockHR::duration;
 
+#ifndef CPPCORE_NO_THREADING
    // thread
    using ::std::thread;
 
@@ -998,6 +1001,7 @@ namespace CppCore
    using ::std::condition_variable_any;
    using ::std::condition_variable;
    using ::std::cv_status;
+#endif
 
    // atomic
    using ::std::atomic;

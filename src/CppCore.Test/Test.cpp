@@ -678,8 +678,10 @@ int main()
    TEST(CppCore::Test::Containers::Array::integerbulk,          "integerbulk:     ", std::endl);
    TEST(CppCore::Test::Containers::Array::integerresize,        "integerresize:   ", std::endl);
    TEST(CppCore::Test::Containers::Array::iterator,             "iterator:        ", std::endl);
+#ifndef CPPCORE_NO_THREADING
    TEST(CppCore::Test::Containers::Array::multithreaded<false>, "multithreaded:   ", std::endl);
    TEST(CppCore::Test::Containers::Array::multithreaded<true>,  "multithreaded_b: ", std::endl);
+#endif
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "  CppCore::Containers::Queue"    << std::endl;

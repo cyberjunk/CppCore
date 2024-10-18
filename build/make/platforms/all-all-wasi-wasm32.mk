@@ -12,8 +12,8 @@ OBJDIR     = obj/wasi-wasm32-$(MODE)
 LIBDIR     = lib/wasi-wasm32
 BINDIR     = bin/wasi-wasm32
 DISTDIR    = ../../dist/wasi
-TARGET     = wasm32-wasi-threads -pthread
-DEFINES    = 
+TARGET     = wasm32-wasi
+DEFINES    = -DCPPCORE_NO_THREADING -DCPPCORE_NO_SOCKET
 INCLUDES   = 
 CXX        = $(WASI_SDK_PATH)/bin/clang++
 CXXFLAGS   = -static -fPIC \
@@ -33,7 +33,7 @@ STRIP      = $(WASI_SDK_PATH)/bin/llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
 LINKFLAGS  = -target $(TARGET) -fPIC -fuse-ld=lld -fno-strict-aliasing
-LINKPATH   = -L$(WASI_SDK_PATH)/share/wasi-sysroot/lib/wasm32-wasi-threads
+LINKPATH   = -L$(WASI_SDK_PATH)/share/wasi-sysroot/lib/wasm32-wasi
 LINKLIBS   = 
 
 # Debug vs. Release
