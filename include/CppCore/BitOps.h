@@ -157,6 +157,53 @@
       if constexpr (forwardy) { py += 16U; }            \
       if constexpr (forwardz) { pz += 16U; }            \
    }
+#elif defined(CPPCORE_CPUFEAT_WASM_SIMD128)
+#define CPPCORE_CHUNK_LOAD128(t,p)    wasm_v128_load (p)
+#define CPPCORE_CHUNK_STORE128(t,p,v) wasm_v128_store(p, v)
+#define CPPCORE_CHUNK_STEP128_X_HALF(p128)              \
+   if constexpr (N128 != 0) {                           \
+      CPPCORE_UNROLL                                    \
+      for (size_t i = 0; i < N128; i++) {               \
+         pxe -= 16U;                                    \
+         v128_t* pxs128 = (v128_t*)pxs;                 \
+         v128_t* pxe128 = (v128_t*)pxe;                 \
+         p128;                                          \
+         pxs += 16U;                                    \
+      }                                                 \
+   }
+#define CPPCORE_CHUNK_STEP128_X(forward, p128)          \
+   CPPCORE_UNROLL                                       \
+   for (size_t i = 0; i < N128; i++) {                  \
+      if constexpr (!forward) { px -= 16U; }            \
+      v128_t* px128 = (v128_t*)px;                      \
+      p128;                                             \
+      if constexpr (forward) { px += 16U; }             \
+   }
+#define CPPCORE_CHUNK_STEP128_XY(forwardx,forwardy,p128) \
+   CPPCORE_UNROLL                                        \
+   for (size_t i = 0; i < N128; i++) {                   \
+      if constexpr (!forwardx) { px -= 16U; }            \
+      if constexpr (!forwardy) { py -= 16U; }            \
+      v128_t* px128 = (v128_t*)px;                       \
+      v128_t* py128 = (v128_t*)py;                       \
+      p128;                                              \
+      if constexpr (forwardx) { px += 16U; }             \
+      if constexpr (forwardy) { py += 16U; }             \
+   }
+#define CPPCORE_CHUNK_STEP128_XYZ(forwardx,forwardy,forwardz,p128) \
+   CPPCORE_UNROLL                                        \
+   for (size_t i = 0; i < N128; i++) {                   \
+      if constexpr (!forwardx) { px -= 16U; }            \
+      if constexpr (!forwardy) { py -= 16U; }            \
+      if constexpr (!forwardz) { pz -= 16U; }            \
+      v128_t* px128 = (v128_t*)px;                       \
+      v128_t* py128 = (v128_t*)py;                       \
+      v128_t* pz128 = (v128_t*)pz;                       \
+      p128;                                              \
+      if constexpr (forwardx) { px += 16U; }             \
+      if constexpr (forwardy) { py += 16U; }             \
+      if constexpr (forwardz) { pz += 16U; }             \
+   }
 #else
 #define CPPCORE_CHUNK_STEP128_X_HALF(p128)
 #define CPPCORE_CHUNK_STEP128_X(forward, p128)
@@ -1105,7 +1152,7 @@ namespace CppCore
          CppCore::clone32 (*px32, *py32);,
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
-   #elif defined(CPPCORE_CPUFEAT_SSE2) || defined(CPPCORE_CPUFEAT_ARM_NEON)
+   #elif defined(CPPCORE_CPUFEAT_SSE2) || defined(CPPCORE_CPUFEAT_ARM_NEON) || defined(CPPCORE_CPUFEAT_WASM_SIMD128)
       CPPCORE_CHUNK_PROCESS128_XY(x, y, true, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
