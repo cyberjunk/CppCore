@@ -17,11 +17,13 @@ DEFINES    =
 INCLUDES   = 
 CXX        = $(WASI_SDK_PATH)/bin/clang++
 CXXFLAGS   = -static -fPIC \
+             -msimd128 \
              -fno-strict-aliasing \
              -fno-exceptions \
              -target $(TARGET)
 CC         = $(WASI_SDK_PATH)/bin/clang
 CFLAGS     = -static -fPIC \
+             -msimd128 \
              -fno-strict-aliasing \
              -fno-exceptions \
              -target $(TARGET)
