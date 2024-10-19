@@ -204,7 +204,7 @@ export class BaseX {
         this._strbuf.fromString(str);
         let f = null;
         let t = null;
-        if (!bits) bits = BaseX.estimateBits(str.length, this._alphabet.usedLength);
+        if (!bits) bits = BaseX.estimateBits(this._strbuf.usedLength, this._alphabet.usedLength);
         if      (bits <= 32)   { t = UInt32;   f = handle.instance.exports.cppcore_basex_decode32; }
         else if (bits <= 64)   { t = UInt64;   f = handle.instance.exports.cppcore_basex_decode64; }
         else if (bits <= 128)  { t = UInt128;  f = handle.instance.exports.cppcore_basex_decode128; }
@@ -219,6 +219,23 @@ export class BaseX {
         const r = f(this._strbuf._ptr, uint._ptr, this._alphabet._ptr);
         if (r == 0) throw new Error('Invalid symbol or overflow');
         return uint;
+    }
+    decodeInto(str, buf) {
+        this._strbuf.fromString(str);
+        const byteLength = buf.byteLength;
+        let f = null;
+        if      (byteLength == 4)    { f = handle.instance.exports.cppcore_basex_decode32; }
+        else if (byteLength == 8)    { f = handle.instance.exports.cppcore_basex_decode64; }
+        else if (byteLength == 16)   { f = handle.instance.exports.cppcore_basex_decode128; }
+        else if (byteLength == 32)   { f = handle.instance.exports.cppcore_basex_decode256; }
+        else if (byteLength == 64)   { f = handle.instance.exports.cppcore_basex_decode512; }
+        else if (byteLength == 128)  { f = handle.instance.exports.cppcore_basex_decode1024; }
+        else if (byteLength == 256)  { f = handle.instance.exports.cppcore_basex_decode2048; }
+        else if (byteLength == 512)  { f = handle.instance.exports.cppcore_basex_decode4096; }
+        else if (byteLength == 1024) { f = handle.instance.exports.cppcore_basex_decode8192; }
+        else throw new Error('invalid bytelength');
+        const r = f(this._strbuf._ptr, buf._ptr, this._alphabet._ptr);
+        if (r == 0) throw new Error('Invalid symbol or overflow');
     }
 }
 
@@ -268,16 +285,10 @@ class UInt {
         }
         else if (typeof v === "string") {
             if (v.startsWith("0x")) {
-                // TODO: AVOID COPY
-                const b = BASE16.decode(v.substring(2), this.bitLength);
-                this.set(b);
-                b.free();
+                BASE16.decodeInto(v.substring(2), this._buffer);
             }
             else {
-                // TODO: AVOID COPY
-                const b = BASE10.decode(v, this.bitLength);
-                this.set(b);
-                b.free();
+                BASE10.decodeInto(v, this._buffer);
             }
         }
         else if (v instanceof Uint8Array) {
