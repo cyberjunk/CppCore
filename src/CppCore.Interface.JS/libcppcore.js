@@ -651,3 +651,35 @@ export class AES256CTR extends AESIV {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+
+export class SHA256 {
+  constructor() {
+    this._ptr  = handle.instance.exports.cppcore_sha256_init();
+    registry.register(this, this._ptr);
+  }
+  reset() {
+    handle.instance.exports.cppcore_sha256_reset(this._ptr);
+  }
+  step(data) {
+    handle.instance.exports.cppcore_sha256_step(this._ptr, data._ptr, data.byteLength);
+  }
+  finish(digest) {
+    handle.instance.exports.cppcore_sha256_finish(this._ptr, digest._ptr);
+  }
+}
+
+export class SHA512 {
+  constructor() {
+    this._ptr  = handle.instance.exports.cppcore_sha512_init();
+    registry.register(this, this._ptr);
+  }
+  reset() {
+    handle.instance.exports.cppcore_sha512_reset(this._ptr);
+  }
+  step(data) {
+    handle.instance.exports.cppcore_sha512_step(this._ptr, data._ptr, data.byteLength);
+  }
+  finish(digest) {
+    handle.instance.exports.cppcore_sha512_finish(this._ptr, digest._ptr);
+  }
+}
