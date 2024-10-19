@@ -149,12 +149,11 @@ export class CString {
       this._buffer.free();
     }
     fromString(str) {
-        const enc = encoder.encode(str);
-        if (this.maxLength < enc.length)
-            throw new Error('String too big');
-        this._buffer.set(enc);
-        this._buffer[enc.length] = 0x00;
-        this.usedLength = enc.length;
+        const result = encoder.encodeInto(str, this._buffer);
+        if (this.maxLength < result.written)
+            throw new Error('String too big.');
+        this._buffer[result.written] = 0x00;
+        this.usedLength = result.written;
     }
     toString() {
         return decoder.decode(this._buffer.subarray(0, this.usedLength));
