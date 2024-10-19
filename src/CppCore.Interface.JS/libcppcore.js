@@ -1,44 +1,38 @@
 
 const imports = { 
-    "wasi_snapshot_preview1": {
-      sched_yield() {
-        console.log("import: sched_yield");
-        return 0; 
-      }
+  "wasi_snapshot_preview1": {
+    sched_yield() {
+      return 0; 
     }
+  }
 }
 
 const handle = await WebAssembly
-    .instantiateStreaming(fetch('libcppcore.wasm'), imports)
-    .then(lib => {
-        console.debug("libcppcore: Library loaded")
-        console.debug("libcppcore: Exports")
-        console.debug(lib.instance.exports);
-        
-        /*console.debug("Memory Buffer Size")
-        console.debug(lib.instance.exports.memory.buffer.byteLength.toString(16));
-        console.debug(lib.instance.exports.memory.buffer.maxByteLength.toString(16));*/
-        
-        /*lib.instance.exports.memory.grow(1);
-        console.debug(lib.instance.exports.memory.buffer.byteLength.toString(16));
-        console.debug(lib.instance.exports.memory.buffer.maxByteLength.toString(16));*/
-        
-        /*var _tls_base = lib.instance.exports.__tls_base.value;
-        var _data_end = lib.instance.exports.__data_end.value;
-        var _heap_base = lib.instance.exports.__heap_base.value
-        var _stack_pointer = lib.instance.exports.__stack_pointer.value
+  .instantiateStreaming(fetch('libcppcore.wasm'), imports)
+  .then(lib => {
+    console.debug("libcppcore: Library loaded")
+    //console.debug("libcppcore: Exports")
+    //console.debug(lib.instance.exports);
+    
+    /*console.debug("Memory Buffer Size")
+    console.debug(lib.instance.exports.memory.buffer.byteLength.toString(16));
+    console.debug(lib.instance.exports.memory.buffer.maxByteLength.toString(16));*/
+    
+    /*var _tls_base = lib.instance.exports.__tls_base.value;
+    var _data_end = lib.instance.exports.__data_end.value;
+    var _heap_base = lib.instance.exports.__heap_base.value
+    var _stack_pointer = lib.instance.exports.__stack_pointer.value
 
-        console.debug("__tls_base: " + _tls_base.toString(16));
-        console.debug("__data_end: " + _data_end.toString(16));
-        console.debug("__heap_base: " + _heap_base.toString(16));
-        console.debug("__stack_pointer: " + _stack_pointer.toString(16));*/
+    console.debug("__tls_base: " + _tls_base.toString(16));
+    console.debug("__data_end: " + _data_end.toString(16));
+    console.debug("__heap_base: " + _heap_base.toString(16));
+    console.debug("__stack_pointer: " + _stack_pointer.toString(16));*/
 
-        return lib;
-    });
+    return lib;
+});
 
 const registry = new FinalizationRegistry((ptr) => {
-    //console.log("Finalizing: " + ptr)
-    handle.instance.exports.cppcore_free(ptr);
+  handle.instance.exports.cppcore_free(ptr);
 });
 
 const encoder = new TextEncoder();
@@ -47,16 +41,17 @@ const decoder = new TextDecoder();
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 function alloc(size) {
-    const ptr = handle.instance.exports.cppcore_alloc(size);     
-    if (ptr == 0)
-        throw new Error('Out of heap memory');
-    return ptr;
+  const ptr = handle.instance.exports.cppcore_alloc(size);
+  if (ptr == 0) throw new Error('libcppcore: Out of Memory');
+  return ptr;
 }
 
 function hexStrFromInt(v) {
-    return "0x" + v.toString(16).padStart(8, '0');
+  return "0x" + v.toString(16).padStart(8, '0');
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+// BUFFER
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -65,99 +60,99 @@ function hexStrFromInt(v) {
  * because all existing instances will point to the old memory
  */
 export class Buffer extends Uint8Array {
-    constructor(parm1, parm2, parm3) {
-        console.debug("libcppcore: Constructing Buffer (" + 
-            typeof(parm1) + "," + 
-            typeof(parm2) + "," + 
-            typeof(parm3) + ")");
-        if (parm1 instanceof Uint8Array) {
-            //console.debug("libcppcore: Copy Buffer from Uint8Array");
-            const ptr = alloc(parm1.byteLength);
-            super(handle.instance.exports.memory.buffer, ptr, parm1.byteLength);
-            this.set(parm1);
-            registry.register(this, ptr, this);
-        }
-        else if (parm1 == handle.instance.exports.memory.buffer) {
-            //console.debug("libcppcore: Creating view on existing Buffer");
-            super(handle.instance.exports.memory.buffer, parm2, parm3);
-        }
-        else if (!isNaN(parm1)) {
-            //console.debug("libcppcore: Creating Buffer from size=" + parm1);              
-            const ptr = alloc(parm1);
-            super(handle.instance.exports.memory.buffer, ptr, parm1);
-            //console.debug("libcppcore: Allocated Buffer at: " + hexStrFromInt(ptr));
-            registry.register(this, ptr, this);
-        }
-        else if (parm1 instanceof Array) {
-            //console.debug("libcppcore: Copy Buffer from Array");
-            const ptr = alloc(parm1.length);
-            super(handle.instance.exports.memory.buffer, ptr, parm1.length);
-            this.set(parm1);
-            registry.register(this, ptr, this);
-        }
-        else {
-            throw new Error("Not supported");
-        }
+  constructor(parm1, parm2, parm3) {
+    console.debug("libcppcore: Constructing Buffer (" + 
+      typeof(parm1) + "," + 
+      typeof(parm2) + "," + 
+      typeof(parm3) + ")");
+    if (parm1 instanceof Uint8Array) {
+      //console.debug("libcppcore: Copy Buffer from Uint8Array");
+      const ptr = alloc(parm1.byteLength);
+      super(handle.instance.exports.memory.buffer, ptr, parm1.byteLength);
+      this.set(parm1);
+      registry.register(this, ptr, this);
     }
-    free() {
-        registry.unregister(this);
-        handle.instance.exports.cppcore_free(this._ptr);
+    else if (parm1 == handle.instance.exports.memory.buffer) {
+      //console.debug("libcppcore: Creating view on existing Buffer");
+      super(handle.instance.exports.memory.buffer, parm2, parm3);
     }
-    get bitLength() {
-        return this.byteLength << 3;
+    else if (!isNaN(parm1)) {
+      //console.debug("libcppcore: Creating Buffer from size=" + parm1);
+      const ptr = alloc(parm1);
+      super(handle.instance.exports.memory.buffer, ptr, parm1);
+      registry.register(this, ptr, this);
     }
-    get _ptr() {
-        return this.byteOffset;
+    else if (parm1 instanceof Array) {
+      //console.debug("libcppcore: Copy Buffer from Array");
+      const ptr = alloc(parm1.length);
+      super(handle.instance.exports.memory.buffer, ptr, parm1.length);
+      this.set(parm1);
+      registry.register(this, ptr, this);
     }
+    else {
+      throw new Error("libcppcore: Invalid constructor arguments for Buffer");
+    }
+  }
+  free() {
+    registry.unregister(this);
+    handle.instance.exports.cppcore_free(this._ptr);
+  }
+  get bitLength() {
+    return this.byteLength << 3;
+  }
+  get _ptr() {
+    return this.byteOffset;
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+// CSTRING
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 export class CString {
-    constructor(v) {
-        console.debug("libcppcore: CString from " + v);
-        const type = typeof(v);
-        if (type === 'string') {
-            this._buffer = new Buffer(v.length+1);
-            this.fromString(v);
-        }
-        else if (type === 'undefined') {
-            this._buffer = new Buffer(16);
-            this.usedLength = 0;
-        }
-        else if (Number.isInteger(v)) {
-            this._buffer = new Buffer(v+1);
-            this.usedLength = 0;
-        }
-        else if (v instanceof CString) {
-            console.log("FROM OTHER CSTRING");
-            this._buffer = new Buffer(v._buffer);
-            this.usedLength = v.usedLength;
-        }
-        else {
-            console.log(type);
-            throw new Error('Invalid value for CString');
-        }
+  constructor(v) {
+    console.debug("libcppcore: Constructing CString (" + typeof(v) + ")");
+    const type = typeof(v);
+    if (type === 'string') {
+      this._buffer = new Buffer(v.length+1);
+      this.fromString(v);
     }
-    get maxLength() {
-      return this._buffer.byteLength - 1;
+    else if (type === 'undefined') {
+      this._buffer = new Buffer(16);
+      this.usedLength = 0;
     }
-    get _ptr() {
-      return this._buffer._ptr;
+    else if (Number.isInteger(v)) {
+      this._buffer = new Buffer(v+1);
+      this.usedLength = 0;
     }
-    free() {
-      this._buffer.free();
+    else if (v instanceof CString) {
+      this._buffer = new Buffer(v._buffer);
+      this.usedLength = v.usedLength;
     }
-    fromString(str) {
-        const result = encoder.encodeInto(str, this._buffer);
-        if (this.maxLength < result.written)
-            throw new Error('String too big.');
-        this._buffer[result.written] = 0x00;
-        this.usedLength = result.written;
+    else {
+      console.log(type);
+      throw new Error('Invalid value for CString');
     }
-    toString() {
-        return decoder.decode(this._buffer.subarray(0, this.usedLength));
-    }
+  }
+  get maxLength() {
+    return this._buffer.byteLength - 1;
+  }
+  get _ptr() {
+    return this._buffer._ptr;
+  }
+  free() {
+    this._buffer.free();
+  }
+  fromString(str) {
+    const result = encoder.encodeInto(str, this._buffer);
+    if (this.maxLength < result.written)
+        throw new Error('String too big.');
+    this._buffer[result.written] = 0x00;
+    this.usedLength = result.written;
+  }
+  toString() {
+    return decoder.decode(this._buffer.subarray(0, this.usedLength));
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
