@@ -652,6 +652,22 @@ export class AES256CTR extends AESIV {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
+export class MD5 {
+  constructor() {
+    this._ptr  = handle.instance.exports.cppcore_md5_init();
+    registry.register(this, this._ptr);
+  }
+  reset() {
+    handle.instance.exports.cppcore_md5_reset(this._ptr);
+  }
+  step(data) {
+    handle.instance.exports.cppcore_md5_step(this._ptr, data._ptr, data.byteLength);
+  }
+  finish(digest) {
+    handle.instance.exports.cppcore_md5_finish(this._ptr, digest._ptr);
+  }
+}
+
 export class SHA256 {
   constructor() {
     this._ptr  = handle.instance.exports.cppcore_sha256_init();

@@ -1,5 +1,6 @@
 import { 
-    Buffer, 
+    Buffer,
+    MD5, 
     SHA256,
     SHA512
 } from '../libcppcore.js';
@@ -37,6 +38,22 @@ describe('Hash', function () {
   describe('SHA512', function () {
     it('test', function () {
       test(SHA512, 64, "SHA-512");
+    });
+  });
+  describe('MD5', function () {
+    it('test', function () {
+      var hash = new MD5();
+      var digest = new Buffer(16);
+      var data = new Buffer([
+        49, 50, 51, 52, 53, 54
+      ]);
+      hash.reset();
+      hash.step(data);
+      hash.finish(digest);
+      const exp = new Uint8Array([
+        0xE1,0x0A,0xDC,0x39,0x49,0xBA,0x59,0xAB,
+        0xBE,0x56,0xE0,0x57,0xF2,0x0F,0x88,0x3E]);
+      chai.expect(indexedDB.cmp(digest, exp)).to.equal(0);
     });
   });
 });
