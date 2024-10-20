@@ -651,6 +651,8 @@ export class AES256CTR extends AESIV {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+// HASH
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 export class MD5 {
   constructor() {
@@ -697,5 +699,41 @@ export class SHA512 {
   }
   finish(digest) {
     handle.instance.exports.cppcore_sha512_finish(this._ptr, digest._ptr);
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// HMAC
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+export class HMACSHA256 {
+  constructor() {
+    this._ptr  = handle.instance.exports.cppcore_hmac_sha256_init();
+    registry.register(this, this._ptr);
+  }
+  reset(key) {
+    handle.instance.exports.cppcore_hmac_sha256_reset(this._ptr, key._ptr, key.byteLength);
+  }
+  step(data) {
+    handle.instance.exports.cppcore_hmac_sha256_step(this._ptr, data._ptr, data.byteLength);
+  }
+  finish(digest) {
+    handle.instance.exports.cppcore_hmac_sha256_finish(this._ptr, digest._ptr);
+  }
+}
+
+export class HMACSHA512 {
+  constructor() {
+    this._ptr  = handle.instance.exports.cppcore_hmac_sha512_init();
+    registry.register(this, this._ptr);
+  }
+  reset(key) {
+    handle.instance.exports.cppcore_hmac_sha512_reset(this._ptr, key._ptr, key.byteLength);
+  }
+  step(data) {
+    handle.instance.exports.cppcore_hmac_sha512_step(this._ptr, data._ptr, data.byteLength);
+  }
+  finish(digest) {
+    handle.instance.exports.cppcore_hmac_sha512_finish(this._ptr, digest._ptr);
   }
 }
