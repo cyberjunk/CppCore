@@ -706,6 +706,22 @@ export class SHA512 {
 // HMAC
 /////////////////////////////////////////////////////////////////////////////////////////////
 
+export class HMACMD5 {
+  constructor() {
+    this._ptr  = handle.instance.exports.cppcore_hmac_md5_init();
+    registry.register(this, this._ptr);
+  }
+  reset(key) {
+    handle.instance.exports.cppcore_hmac_md5_reset(this._ptr, key._ptr, key.byteLength);
+  }
+  step(data) {
+    handle.instance.exports.cppcore_hmac_md5_step(this._ptr, data._ptr, data.byteLength);
+  }
+  finish(digest) {
+    handle.instance.exports.cppcore_hmac_md5_finish(this._ptr, digest._ptr);
+  }
+}
+
 export class HMACSHA256 {
   constructor() {
     this._ptr  = handle.instance.exports.cppcore_hmac_sha256_init();

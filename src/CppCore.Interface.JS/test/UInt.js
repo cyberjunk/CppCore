@@ -20,7 +20,7 @@ function getRandomHexStr(max) {
     for (var i=0; i < len; i++) {
         str += symbols[getRandomInt(16)];
     }
-    if (str == "0x0") 
+    if (BigInt(str) == 0) 
       str = "0x1";
     return str;
 }

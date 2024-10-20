@@ -1,5 +1,6 @@
 import {
     Buffer,
+    HMACMD5,
     HMACSHA256,
     HMACSHA512
 } from '../libcppcore.js';
