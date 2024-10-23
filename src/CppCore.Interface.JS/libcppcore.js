@@ -3,6 +3,12 @@ const imports = {
   "wasi_snapshot_preview1": {
     sched_yield() {
       return 0; 
+    },
+    random_get(ptr, len) {
+      const mem = handle.instance.exports.memory.buffer
+      const arr = new Uint8Array(mem, ptr, len);
+      self.crypto.getRandomValues(arr);
+      return 0;
     }
   }
 }
