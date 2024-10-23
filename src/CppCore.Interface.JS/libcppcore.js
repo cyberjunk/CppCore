@@ -759,6 +759,13 @@ export class HMACSHA512 {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export class PBKDF2 {
+  static md5(password, salt, digest, iterations) {
+    handle.instance.exports.cppcore_pbkdf2_md5_create(
+      password._ptr, password.byteLength,
+      salt._ptr, salt.byteLength,
+      digest._ptr, digest.byteLength,
+      iterations);
+  }
   static sha256(password, salt, digest, iterations) {
     handle.instance.exports.cppcore_pbkdf2_sha256_create(
       password._ptr, password.byteLength,
