@@ -781,3 +781,52 @@ export class PBKDF2 {
       iterations);
   }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// DH
+/////////////////////////////////////////////////////////////////////////////////////////////
+//TODO
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// PRIMES
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+export class Prime {
+  static Result = {
+    NotPrime:    0,
+    Prime:       1,
+    LikelyPrime: 2
+  };
+  static test(p, sign, certainty) {
+    if (!(p instanceof UInt) && !(p instanceof Buffer)) {
+      throw new Error("libcppcore: Invalid type of p in Prime.test()");
+    }
+    switch(p.byteLength) {
+      case 4:   return handle.instance.exports.cppcore_prime32_test(p._ptr, sign, certainty);
+      case 8:   return handle.instance.exports.cppcore_prime64_test(p._ptr, sign, certainty);
+      case 16:  return handle.instance.exports.cppcore_prime128_test(p._ptr, sign, certainty);
+      case 32:  return handle.instance.exports.cppcore_prime256_test(p._ptr, sign, certainty);
+      case 64:  return handle.instance.exports.cppcore_prime512_test(p._ptr, sign, certainty);
+      case 128: return handle.instance.exports.cppcore_prime1024_test(p._ptr, sign, certainty);
+      case 256: return handle.instance.exports.cppcore_prime2048_test(p._ptr, sign, certainty);
+      case 512: return handle.instance.exports.cppcore_prime4096_test(p._ptr, sign, certainty);
+      default:  throw new Error("libcppcore: Invalid byteLength of p in Prime.test()");
+    }
+  }
+  static generate(p, sign, certainty) {
+    if (!(p instanceof UInt) && !(p instanceof Buffer)) {
+      throw new Error("libcppcore: Invalid type of p in Prime.generate()");
+    }
+    switch(p.byteLength) {
+      case 4:   return handle.instance.exports.cppcore_prime32_generate(p._ptr, sign, certainty);
+      case 8:   return handle.instance.exports.cppcore_prime64_generate(p._ptr, sign, certainty);
+      case 16:  return handle.instance.exports.cppcore_prime128_generate(p._ptr, sign, certainty);
+      case 32:  return handle.instance.exports.cppcore_prime256_generate(p._ptr, sign, certainty);
+      case 64:  return handle.instance.exports.cppcore_prime512_generate(p._ptr, sign, certainty);
+      case 128: return handle.instance.exports.cppcore_prime1024_generate(p._ptr, sign, certainty);
+      case 256: return handle.instance.exports.cppcore_prime2048_generate(p._ptr, sign, certainty);
+      case 512: return handle.instance.exports.cppcore_prime4096_generate(p._ptr, sign, certainty);
+      default:  throw new Error("libcppcore: Invalid byteLength of p in Prime.generate()");
+    }
+  }
+}
