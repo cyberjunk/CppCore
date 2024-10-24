@@ -13,16 +13,39 @@
         CString,
         BaseX,
         Base10,
+        BASE02,
         BASE10,
         BASE16,
         UInt32,
         UInt64,
         UInt128,
+        UInt256,
+        UInt1024,
+        UInt2048,
+        UInt4096,
         UInt8192,
         AES128ECB,
-        AES128CBC
+        AES128CBC,
+        Prime
       } from './libcppcore.js'
       
+
+      
+      function getRandomInt(max) {
+          return Math.floor(Math.random() * max);
+      }
+      function getRandomHexStr(max) {
+          const symbols = "0123456789ABCDEF";
+          const len = max;//getRandomInt(max-1) + 1;
+          var str = "0x";
+          for (var i=0; i < len; i++) {
+              str += symbols[getRandomInt(16)];
+          }
+          if (str == "0x0" || str == "0x00" || str == "0x000")
+            str = "0x1";
+          return str;
+      }
+
       function testBuffer() {
           const a = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08];
           const b = new Buffer(a);
@@ -34,18 +57,18 @@
         var s = new CString("hello");
         console.log(s);
         /*console.log(s.toString());
-        console.log(s.usedLength);
+        console.log(s.byteLength);
         console.log(s.maxLength);
         console.log(s._ptr);*/
 
 
         /*var s2 = s.slice(0, 1);
         console.log(s2);
-        console.log(s2.usedLength);*/
+        console.log(s2.byteLength);*/
 
         var s3 = new CString(s);
         //console.log(s3.toString());
-        console.log(s3.usedLength);
+        console.log(s3.byteLength);
         console.log(s3.maxLength);
 
         //var s4 = s.subarray(0, 1);
@@ -94,12 +117,44 @@
       }
 
       function testUInt() {
-        const arr = new Uint8Array([0xFF, 0xFF, 0xFF, 0xFF,0xFF]);
-        const a = new UInt32(arr);
-        const b = new UInt32(a);
-        //const a = new UInt32([0xFF, 0xFF, 0xFF, 0xFF]);
-        //console.log(b);
-        console.log(UInt8192.MAX);
+        const iter = 1000;
+        let bigs1 = [];
+        let bigs2 = [];
+        let ints1 = [];
+        let ints2 = [];
+        for (var i = 0; i < iter; i++) {
+            const rnd1 = getRandomHexStr(2048);
+            const rnd2 = getRandomHexStr(2048);
+            bigs1.push(BigInt(rnd1));
+            bigs2.push(BigInt(rnd2));
+            ints1.push(new UInt8192(rnd1));
+            ints2.push(new UInt8192(rnd2));
+        }
+        let start = null;
+        let end = null;
+        let r = BigInt(0);
+        let b1 = new UInt8192("0");
+        let b2 = new UInt8192("0");
+        let t  = new UInt8192("0");
+
+        start = Date.now();
+        for (var i = 0; i < iter; i++) {
+          r += bigs1[i] * bigs2[i];
+          r = BigInt.asUintN(8192, r);
+        }
+        end = Date.now();
+        console.log(r);
+        console.log("Duration BigInt: " + (end-start));
+
+        start = Date.now();
+        for (var i = 0; i < iter; i++) {
+          //UInt128.divmod(ints1[i], ints2[i], b1, t);
+          UInt8192.mul(ints1[i], ints2[i], b1);
+          UInt8192.add(b1, b2, b2);
+        }
+        end = Date.now();
+        console.log(b2.toString());
+        console.log("Duration UInt: " + (end-start));
       }
 
       function testAES() {
@@ -161,12 +216,34 @@
         console.log("After:")
         console.log(data_in.getUint32(0));*/
       }
+      
+      function testPrime() {
+        //await new Promise(r => setTimeout(r, 2000));
+        var t1 = Date.now();
+        var p = new UInt128();
+        Prime.generate(p, false, 0);
+        var t2 = Date.now();
+        console.log("gen took:" + (t2-t1));
+        //console.log(p.toString());
+        //console.log(p.toString(2));
 
+        var p2 = UInt128.fromString("0b11");
+        console.log(p2.toString());
+        //t1 = Date.now();
+        //var r = Prime.test("0x0B", false, 0);
+        //t2 = Date.now();
+        //console.log("test took:" + (t2-t1));
+        //console.log(r);
+      }
       //testBuffer();
-      //testCString();
+      testCString();
       //testBaseX();
-      testUInt();
+      //testUInt();
       //testAES();
+
+      //console.log("before:" + t1);
+      //testPrime();
+      //console.log("after:" + Date.now());
 
     </script>
   </body>

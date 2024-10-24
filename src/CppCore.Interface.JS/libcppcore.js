@@ -127,15 +127,15 @@ export class CString {
     }
     else if (type === 'undefined') {
       this._buffer = new Buffer(16);
-      this.usedLength = 0;
+      this.byteLength = 0;
     }
     else if (Number.isInteger(v)) {
       this._buffer = new Buffer(v+1);
-      this.usedLength = 0;
+      this.byteLength = 0;
     }
     else if (v instanceof CString) {
       this._buffer = new Buffer(v._buffer);
-      this.usedLength = v.usedLength;
+      this.byteLength = v.byteLength;
     }
     else {
       console.log(type);
@@ -156,10 +156,10 @@ export class CString {
     if (this.maxLength < result.written)
         throw new Error('String too big.');
     this._buffer[result.written] = 0x00;
-    this.usedLength = result.written;
+    this.byteLength = result.written;
   }
   toString() {
-    return decoder.decode(this._buffer.subarray(0, this.usedLength));
+    return decoder.decode(this._buffer.subarray(0, this.byteLength));
   }
 }
 
@@ -170,7 +170,7 @@ export class CString {
 export class BaseX {
     constructor(alphabet) {
         this._alphabet = new CString(alphabet);
-        this._strbuf = new CString(BaseX.estimateSymbols(8192, this._alphabet.usedLength));
+        this._strbuf = new CString(BaseX.estimateSymbols(8192, this._alphabet.byteLength));
     }
     static estimateBits(symbols, base) {
         return EXPORTS.cppcore_basex_estimate_bits(
@@ -197,19 +197,19 @@ export class BaseX {
             v._ptr,                     // inbuf ptr
             this._strbuf._ptr,          // outbuf ptr
             MAXSYMBOLS,                 // outbuf max symbols
-            this._alphabet.usedLength,  // base
+            this._alphabet.byteLength,  // base
             this._alphabet._ptr,        // alphabet ptr
             1                           // write term 0x00
         );
         if (r < 0) throw new Error('_strbuf too small');
-        this._strbuf.usedLength = (MAXSYMBOLS-r);
+        this._strbuf.byteLength = (MAXSYMBOLS-r);
         return this._strbuf.toString();
     }
     decode(str, bits) {
         this._strbuf.fromString(str);
         let f = null;
         let t = null;
-        if (!bits) bits = BaseX.estimateBits(this._strbuf.usedLength, this._alphabet.usedLength);
+        if (!bits) bits = BaseX.estimateBits(this._strbuf.byteLength, this._alphabet.byteLength);
         if      (bits <= 32)   { t = UInt32;   f = EXPORTS.cppcore_basex_decode32; }
         else if (bits <= 64)   { t = UInt64;   f = EXPORTS.cppcore_basex_decode64; }
         else if (bits <= 128)  { t = UInt128;  f = EXPORTS.cppcore_basex_decode128; }
@@ -491,40 +491,22 @@ class AES {
     registry.register(this, this._ptr);
   }
   setKey(key) {
-    if (key instanceof CString) {
-      switch(this._bits) {
-        case 128:
-          if (key.usedLength != 16)
-            throw new Error("String key must have exactly 16 bytes for AES128");
-          EXPORTS.cppcore_aes128_reset(this._ptr, key._ptr);
-          break;
-        case 192:
-          if (key.usedLength != 24)
-            throw new Error("String key must have exactly 24 bytes for AES192");
-          EXPORTS.cppcore_aes192_reset(this._ptr, key._ptr);
-          break;
-        case 256:
-          if (key.usedLength != 32)
-            throw new Error("String key must have exactly 32 bytes for AES256");
-          EXPORTS.cppcore_aes256_reset(this._ptr, key._ptr);
-          break;
-      }
-    }
-    else if (key instanceof Buffer) {
+    if (key instanceof CString ||
+        key instanceof Buffer) {
       switch(this._bits) {
         case 128:
           if (key.byteLength != 16)
-            throw new Error("Binary Key must have exactly 16 bytes for AES128");
+            throw new Error("Key must have exactly 16 bytes for AES128");
           EXPORTS.cppcore_aes128_reset(this._ptr, key._ptr);
           break;
         case 192:
           if (key.byteLength != 24)
-            throw new Error("Binary Key must have exactly 24 bytes for AES192");
+            throw new Error("Key must have exactly 24 bytes for AES192");
           EXPORTS.cppcore_aes192_reset(this._ptr, key._ptr);
           break;
         case 256:
           if (key.byteLength != 32)
-            throw new Error("Binary Key must have exactly 32 bytes for AES256");
+            throw new Error("Key must have exactly 32 bytes for AES256");
           EXPORTS.cppcore_aes256_reset(this._ptr, key._ptr);
           break;
       }
@@ -548,13 +530,13 @@ class AESIV extends AES {
   setIV(iv) {
     if (iv instanceof Uint8Array) {
       if (iv.byteLength != 16)
-          throw new Error("Binary IV must have exactly 16 bytes");
+        throw new Error("Binary IV must have exactly 16 bytes");
       this._iv_enc = new Buffer(iv);
       this._iv_dec = new Buffer(iv);
     }
     else if (iv instanceof CString) {
-      if (iv.usedLength != 16)
-          throw new Error("String IV must have exactly 16 bytes.");
+      if (iv.byteLength != 16)
+        throw new Error("String IV must have exactly 16 bytes.");
       this.setIV(iv._buffer.subarray(0, 16));
     }
     else if (typeof iv === "string") {
@@ -796,25 +778,40 @@ export class HMACSHA512 {
 
 export class PBKDF2 {
   static md5(password, salt, digest, iterations) {
-    EXPORTS.cppcore_pbkdf2_md5_create(
-      password._ptr, password.byteLength,
-      salt._ptr, salt.byteLength,
-      digest._ptr, digest.byteLength,
-      iterations);
+    if (password instanceof Buffer &&
+        salt     instanceof Buffer &&
+        digest   instanceof Buffer) {
+      EXPORTS.cppcore_pbkdf2_md5_create(
+        password._ptr, password.byteLength,
+        salt._ptr, salt.byteLength,
+        digest._ptr, digest.byteLength,
+        iterations);
+    }
+    else throw new Error("Unsupported arguments")
   }
   static sha256(password, salt, digest, iterations) {
-    EXPORTS.cppcore_pbkdf2_sha256_create(
-      password._ptr, password.byteLength,
-      salt._ptr, salt.byteLength,
-      digest._ptr, digest.byteLength,
-      iterations);
+    if (password instanceof Buffer &&
+        salt     instanceof Buffer &&
+        digest   instanceof Buffer) {
+      EXPORTS.cppcore_pbkdf2_sha256_create(
+        password._ptr, password.byteLength,
+        salt._ptr, salt.byteLength,
+        digest._ptr, digest.byteLength,
+        iterations);
+    }
+    else throw new Error("Unsupported arguments")
   }
   static sha512(password, salt, digest, iterations) {
-    EXPORTS.cppcore_pbkdf2_sha512_create(
-      password._ptr, password.byteLength,
-      salt._ptr, salt.byteLength,
-      digest._ptr, digest.byteLength,
-      iterations);
+    if (password instanceof Buffer &&
+        salt     instanceof Buffer &&
+        digest   instanceof Buffer) {
+      EXPORTS.cppcore_pbkdf2_sha512_create(
+        password._ptr, password.byteLength,
+        salt._ptr, salt.byteLength,
+        digest._ptr, digest.byteLength,
+        iterations);
+    }
+    else throw new Error("Unsupported arguments")
   }
 }
 
