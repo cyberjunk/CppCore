@@ -471,219 +471,219 @@ UInt8192.MAX = new UInt8192(); UInt8192.MAX._buffer.fill(0xFF);
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 class AES {
-    constructor(bits) {
-        switch(bits) {
-            case 128:
-                this._bits = 128;
-                this._ptr  = EXPORTS.cppcore_aes128_init();
-                break;
-            case 192:
-                this._bits = 192;
-                this._ptr  = EXPORTS.cppcore_aes192_init();
-                break;
-            case 256:
-                this._bits = 256;
-                this._ptr  = EXPORTS.cppcore_aes256_init();
-                break;
-            default:
-                throw new Error("Invalid bits for AES. Must be 128, 192 or 256.");
-        }
-        registry.register(this, this._ptr);
+  constructor(bits) {
+    switch(bits) {
+      case 128:
+        this._bits = 128;
+        this._ptr  = EXPORTS.cppcore_aes128_init();
+        break;
+      case 192:
+        this._bits = 192;
+        this._ptr  = EXPORTS.cppcore_aes192_init();
+        break;
+      case 256:
+        this._bits = 256;
+        this._ptr  = EXPORTS.cppcore_aes256_init();
+        break;
+      default:
+        throw new Error("Invalid bits for AES. Must be 128, 192 or 256.");
     }
-    setKey(key) {
-        if (key instanceof CString) {
-            switch(this._bits) {
-                case 128:
-                    if (key.usedLength != 16)
-                        throw new Error("String Key must have exactly 16 bytes for AES128");
-                    EXPORTS.cppcore_aes128_reset(this._ptr, key._ptr);
-                    break;
-                case 192:
-                    if (key.usedLength != 24)
-                        throw new Error("String Key must have exactly 24 bytes for AES192");
-                    EXPORTS.cppcore_aes192_reset(this._ptr, key._ptr);
-                    break;
-                case 256:
-                    if (key.usedLength != 32)
-                        throw new Error("String Key must have exactly 32 bytes for AES256");
-                    EXPORTS.cppcore_aes256_reset(this._ptr, key._ptr);
-                    break;
-            }
-        }
-        else if (key instanceof Buffer) {
-            switch(this._bits) {
-                case 128:
-                    if (key.byteLength != 16)
-                        throw new Error("Binary Key must have exactly 16 bytes for AES128");
-                    EXPORTS.cppcore_aes128_reset(this._ptr, key._ptr);
-                    break;
-                case 192:
-                    if (key.byteLength != 24)
-                        throw new Error("Binary Key must have exactly 24 bytes for AES192");
-                    EXPORTS.cppcore_aes192_reset(this._ptr, key._ptr);
-                    break;
-                case 256:
-                    if (key.byteLength != 32)
-                        throw new Error("Binary Key must have exactly 32 bytes for AES256");
-                    EXPORTS.cppcore_aes256_reset(this._ptr, key._ptr);
-                    break;
-            }
-        }
-        else if (typeof key === "string") {
-            this.setKey(new CString(key));
-        }
-        else if (key instanceof Uint8Array) {
-            this.setKey(new Buffer(key));
-        }
-        else {
-            throw new Error("No valid key provided in setKey()");
-        }
+    registry.register(this, this._ptr);
+  }
+  setKey(key) {
+    if (key instanceof CString) {
+      switch(this._bits) {
+        case 128:
+          if (key.usedLength != 16)
+            throw new Error("String key must have exactly 16 bytes for AES128");
+          EXPORTS.cppcore_aes128_reset(this._ptr, key._ptr);
+          break;
+        case 192:
+          if (key.usedLength != 24)
+            throw new Error("String key must have exactly 24 bytes for AES192");
+          EXPORTS.cppcore_aes192_reset(this._ptr, key._ptr);
+          break;
+        case 256:
+          if (key.usedLength != 32)
+            throw new Error("String key must have exactly 32 bytes for AES256");
+          EXPORTS.cppcore_aes256_reset(this._ptr, key._ptr);
+          break;
+      }
     }
+    else if (key instanceof Buffer) {
+      switch(this._bits) {
+        case 128:
+          if (key.byteLength != 16)
+            throw new Error("Binary Key must have exactly 16 bytes for AES128");
+          EXPORTS.cppcore_aes128_reset(this._ptr, key._ptr);
+          break;
+        case 192:
+          if (key.byteLength != 24)
+            throw new Error("Binary Key must have exactly 24 bytes for AES192");
+          EXPORTS.cppcore_aes192_reset(this._ptr, key._ptr);
+          break;
+        case 256:
+          if (key.byteLength != 32)
+            throw new Error("Binary Key must have exactly 32 bytes for AES256");
+          EXPORTS.cppcore_aes256_reset(this._ptr, key._ptr);
+          break;
+      }
+    }
+    else if (typeof key === "string") {
+      this.setKey(new CString(key));
+    }
+    else if (key instanceof Uint8Array) {
+      this.setKey(new Buffer(key));
+    }
+    else {
+      throw new Error("No valid key provided in setKey()");
+    }
+  }
 }
 
 class AESIV extends AES {
-    constructor(bits) { 
-        super(bits);
+  constructor(bits) { 
+    super(bits);
+  }
+  setIV(iv) {
+    if (iv instanceof Uint8Array) {
+      if (iv.byteLength != 16)
+          throw new Error("Binary IV must have exactly 16 bytes");
+      this._iv_enc = new Buffer(iv);
+      this._iv_dec = new Buffer(iv);
     }
-    setIV(iv) {
-        if (iv instanceof Uint8Array) {
-            if (iv.byteLength != 16)
-                throw new Error("Binary IV must have exactly 16 bytes");
-            this._iv_enc = new Buffer(iv);
-            this._iv_dec = new Buffer(iv);
-        }
-        else if (iv instanceof CString) {
-            if (iv.usedLength != 16)
-                throw new Error("String IV must have exactly 16 bytes.");
-            this.setIV(iv._buffer.subarray(0, 16));
-        }
-        else if (typeof iv === "string") {
-            this.setIV(new CString(iv));
-        }
-        else {
-            throw new Error("No valid IV provided in setIV()");
-        }
+    else if (iv instanceof CString) {
+      if (iv.usedLength != 16)
+          throw new Error("String IV must have exactly 16 bytes.");
+      this.setIV(iv._buffer.subarray(0, 16));
     }
+    else if (typeof iv === "string") {
+      this.setIV(new CString(iv));
+    }
+    else {
+      throw new Error("No valid IV provided in setIV()");
+    }
+  }
 }
 
 export class AES128ECB extends AES {
-    constructor() {
-        super(128);
-    }
-    encrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes128_encrypt_ecb(
-            this._ptr, data_in._ptr, data_out._ptr, n);
-    }
-    decrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes128_decrypt_ecb(
-            this._ptr, data_in._ptr, data_out._ptr, n);
-    }
+  constructor() {
+    super(128);
+  }
+  encrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes128_encrypt_ecb(
+      this._ptr, data_in._ptr, data_out._ptr, n);
+  }
+  decrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes128_decrypt_ecb(
+      this._ptr, data_in._ptr, data_out._ptr, n);
+  }
 }
 export class AES192ECB extends AES {
-    constructor() {
-        super(192);
-    }
-    encrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes192_encrypt_ecb(
-            this._ptr, data_in._ptr, data_out._ptr, n);
-    }
-    decrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes192_decrypt_ecb(
-            this._ptr, data_in._ptr, data_out._ptr, n);
-    }
+  constructor() {
+    super(192);
+  }
+  encrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes192_encrypt_ecb(
+      this._ptr, data_in._ptr, data_out._ptr, n);
+  }
+  decrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes192_decrypt_ecb(
+      this._ptr, data_in._ptr, data_out._ptr, n);
+  }
 }
 export class AES256ECB extends AES {
-    constructor() {
-        super(256);
-    }
-    encrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes256_encrypt_ecb(
-            this._ptr, data_in._ptr, data_out._ptr, n);
-    }
-    decrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes256_decrypt_ecb(
-            this._ptr, data_in._ptr, data_out._ptr, n);
-    }
+  constructor() {
+    super(256);
+  }
+  encrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes256_encrypt_ecb(
+      this._ptr, data_in._ptr, data_out._ptr, n);
+  }
+  decrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes256_decrypt_ecb(
+      this._ptr, data_in._ptr, data_out._ptr, n);
+  }
 }
 
 export class AES128CBC extends AESIV {
-    constructor() {
-        super(128);
-    }
-    encrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes128_encrypt_cbc(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
-    }
-    decrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes128_decrypt_cbc(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
-    }
+  constructor() {
+    super(128);
+  }
+  encrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes128_encrypt_cbc(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
+  }
+  decrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes128_decrypt_cbc(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
+  }
 }
 export class AES192CBC extends AESIV {
-    constructor() {
-        super(192);
-    }
-    encrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes192_encrypt_cbc(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
-    }
-    decrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes192_decrypt_cbc(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
-    }
+  constructor() {
+    super(192);
+  }
+  encrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes192_encrypt_cbc(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
+  }
+  decrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes192_decrypt_cbc(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
+  }
 }
 export class AES256CBC extends AESIV {
-    constructor() {
-        super(256);
-    }
-    encrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes256_encrypt_cbc(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
-    }
-    decrypt(data_in, data_out, n) {
-        EXPORTS.cppcore_aes256_decrypt_cbc(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
-    }
+  constructor() {
+    super(256);
+  }
+  encrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes256_encrypt_cbc(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, n);
+  }
+  decrypt(data_in, data_out, n) {
+    EXPORTS.cppcore_aes256_decrypt_cbc(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, n);
+  }
 }
 
 export class AES128CTR extends AESIV {
-    constructor() {
-        super(128);
-    }
-    encrypt(data_in, data_out, len) {
-        EXPORTS.cppcore_aes128_encrypt_ctr(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
-    }
-    decrypt(data_in, data_out, len) {
-        EXPORTS.cppcore_aes128_decrypt_ctr(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
-    }
+  constructor() {
+    super(128);
+  }
+  encrypt(data_in, data_out, len) {
+    EXPORTS.cppcore_aes128_encrypt_ctr(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
+  }
+  decrypt(data_in, data_out, len) {
+    EXPORTS.cppcore_aes128_decrypt_ctr(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
+  }
 }
 export class AES192CTR extends AESIV {
-    constructor() {
-        super(192);
-    }
-    encrypt(data_in, data_out, len) {
-        EXPORTS.cppcore_aes192_encrypt_ctr(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
-    }
-    decrypt(data_in, data_out, len) {
-        EXPORTS.cppcore_aes192_decrypt_ctr(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
-    }
+  constructor() {
+    super(192);
+  }
+  encrypt(data_in, data_out, len) {
+    EXPORTS.cppcore_aes192_encrypt_ctr(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
+  }
+  decrypt(data_in, data_out, len) {
+    EXPORTS.cppcore_aes192_decrypt_ctr(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
+  }
 }
 export class AES256CTR extends AESIV {
-    constructor() {
-        super(256);
-    }
-    encrypt(data_in, data_out, len) {
-        EXPORTS.cppcore_aes256_encrypt_ctr(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
-    }
-    decrypt(data_in, data_out, len) {
-        EXPORTS.cppcore_aes256_decrypt_ctr(
-            this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
-    }
+  constructor() {
+    super(256);
+  }
+  encrypt(data_in, data_out, len) {
+    EXPORTS.cppcore_aes256_encrypt_ctr(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, len);
+  }
+  decrypt(data_in, data_out, len) {
+    EXPORTS.cppcore_aes256_decrypt_ctr(
+      this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, len);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
