@@ -242,30 +242,43 @@ export class BaseX {
     }
 }
 
+export class Base02 extends BaseX {
+  constructor() {
+    super("01");
+  }
+  static estimateBits(symbols) {
+    return super.estimateBits(symbols, 2);
+  }
+  static estimateSymbols(bits) {
+    return super.estimateSymbols(bits, 2);
+  }
+}
+
 export class Base10 extends BaseX {
-    constructor() {
-        super("0123456789");
-    }
-    static estimateBits(symbols) {
-        return super.estimateBits(symbols, 10);
-    }
-    static estimateSymbols(bits) {
-        return super.estimateSymbols(bits, 10);
-    }
+  constructor() {
+    super("0123456789");
+  }
+  static estimateBits(symbols) {
+    return super.estimateBits(symbols, 10);
+  }
+  static estimateSymbols(bits) {
+    return super.estimateSymbols(bits, 10);
+  }
 }
 
 export class Base16 extends BaseX {
-    constructor() {
-        super("0123456789ABCDEF");
-    }
-    static estimateBits(symbols) {
-        return super.estimateBits(symbols, 16);
-    }
-    static estimateSymbols(bits) {
-        return super.estimateSymbols(bits, 16);
-    }
+  constructor() {
+    super("0123456789ABCDEF");
+  }
+  static estimateBits(symbols) {
+    return super.estimateBits(symbols, 16);
+  }
+  static estimateSymbols(bits) {
+    return super.estimateSymbols(bits, 16);
+  }
 }
 
+export const BASE02 = new Base02();
 export const BASE10 = new Base10();
 export const BASE16 = new Base16();
 
@@ -283,6 +296,8 @@ class UInt {
     static fromString(s) {
       if (s.startsWith("0x")) {
         return BASE16.decode(s.substring(2));
+      } else if (s.startsWith("0b")) {
+        return BASE02.decode(s.substring(2));
       } else {
         return BASE10.decode(s);
       }
@@ -297,8 +312,9 @@ class UInt {
         else if (typeof v === "string") {
             if (v.startsWith("0x")) {
                 BASE16.decodeInto(v.substring(2), this._buffer);
-            }
-            else {
+            } else if (v.startsWith("0b")) {
+                BASE02.decodeInto(v.substring(2), this._buffer);
+            } else {
                 BASE10.decodeInto(v, this._buffer);
             }
         }
@@ -320,6 +336,7 @@ class UInt {
     toString(b) {
         if   (!b || b == 10) return BASE10.encode(this);
         else if (b == 16)    return BASE16.encode(this);
+        else if (b == 2)     return BASE02.encode(this);
         else throw new Error("Unsupported base for toString() on UInt");
     }
 
