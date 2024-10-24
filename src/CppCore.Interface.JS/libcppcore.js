@@ -271,12 +271,18 @@ export const BASE16 = new Base16();
 
 class UInt {
     constructor(size, oth) {
-        this._buffer = new Buffer(size);
-        if (oth) {
-            this.set(oth);
-        }
+      this._buffer = new Buffer(size);
+      if (oth) {
+        this.set(oth);
+      }
     }
-    static create(v) { return new this(v); }
+    static fromString(s) {
+      if (s.startsWith("0x")) {
+        return BASE16.decode(s.substring(2));
+      } else {
+        return BASE10.decode(s);
+      }
+    }
     free() {
       this._buffer.free();
     }
@@ -804,17 +810,10 @@ export class Prime {
   };
   static test(p, sign, certainty) {
     if (typeof p === "string") {
-      if (p.startsWith("0x")) {
-          const n = BASE16.decode(p.substring(2));
-          const r = this.test(n, sign, certainty);
-          n.free();
-          return r;
-      } else {
-          const n = BASE10.decode(p);
-          const r = this.test(n, sign, certainty);
-          n.free();
-          return r;
-      }
+      const n = UInt.fromString(p);
+      const r = Prime.test(n, sign, certainty);
+      n.free();
+      return r;
     }
     if (!(p instanceof UInt) && !(p instanceof Buffer)) {
       throw new Error("libcppcore: Invalid type of p in Prime.test()");
