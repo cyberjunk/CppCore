@@ -516,7 +516,6 @@ class AESIV extends AES {
     }
     setIV(iv) {
         if (iv instanceof Uint8Array) {
-            console.log("AESIV FROM UINT8");
             if (iv.byteLength != 16)
                 throw new Error("Binary IV must have exactly 16 bytes");
             this._iv_enc = new Buffer(iv);
@@ -804,6 +803,19 @@ export class Prime {
     LikelyPrime: 2
   };
   static test(p, sign, certainty) {
+    if (typeof p === "string") {
+      if (p.startsWith("0x")) {
+          const n = BASE16.decode(p.substring(2));
+          const r = this.test(n, sign, certainty);
+          n.free();
+          return r;
+      } else {
+          const n = BASE10.decode(p);
+          const r = this.test(n, sign, certainty);
+          n.free();
+          return r;
+      }
+    }
     if (!(p instanceof UInt) && !(p instanceof Buffer)) {
       throw new Error("libcppcore: Invalid type of p in Prime.test()");
     }
