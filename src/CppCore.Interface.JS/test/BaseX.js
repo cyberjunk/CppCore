@@ -39,13 +39,13 @@ describe('BaseX', function () {
       const b = new BaseX("0123456789");
       const t1 = b.decode("123", 32);
       const t2 = new Uint8Array([0x7B, 0x00, 0x00, 0x00]);
-      chai.expect(indexedDB.cmp(t1._buffer,t2)).to.equal(0);
+      chai.expect(indexedDB.cmp(t1.buffer,t2)).to.equal(0);
     });
     it('decode("18446744073709551615", 64)', function () {
       const b = new BaseX("0123456789");
       const t1 = b.decode("18446744073709551615", 64);
       const t2 = new Uint8Array([0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]);
-      chai.expect(indexedDB.cmp(t1._buffer,t2)).to.equal(0);
+      chai.expect(indexedDB.cmp(t1.buffer,t2)).to.equal(0);
     });
   });
   describe('[B16] decode()', function () {
@@ -53,7 +53,7 @@ describe('BaseX', function () {
       const b = new BaseX("0123456789ABCDEF");
       const t1 = b.decode("A", 32);
       const t2 = new Uint8Array([0x0A, 0x00, 0x00, 0x00]);
-      chai.expect(indexedDB.cmp(t1._buffer,t2)).to.equal(0);
+      chai.expect(indexedDB.cmp(t1.buffer,t2)).to.equal(0);
     });
     it('decode("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 128)', function () {
       const b = new BaseX("0123456789ABCDEF");
@@ -62,7 +62,7 @@ describe('BaseX', function () {
         0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
         0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF
       ]);
-      chai.expect(indexedDB.cmp(t1._buffer,t2)).to.equal(0);
+      chai.expect(indexedDB.cmp(t1.buffer,t2)).to.equal(0);
     });
   });
   describe('[B10] encode()', function () {

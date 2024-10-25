@@ -307,8 +307,9 @@ export const BASE16 = new Base16();
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 class UInt {
+    #buffer
     constructor(size, oth) {
-      this._buffer = new Buffer(size);
+      this.#buffer = new Buffer(size);
       if (oth) {
         this.set(oth);
       }
@@ -323,46 +324,48 @@ class UInt {
       }
     }
     free() {
-      this._buffer.free();
+      this.#buffer.free();
     }
     set(v) {
-        if (v instanceof UInt) {
-            this.set(v._buffer);
+      if (v instanceof UInt) {
+        this.set(v.buffer);
+      }
+      else if (typeof v === "string") {
+        if (v.startsWith("0x")) {
+          BASE16.decodeInto(v.substring(2), this.#buffer);
+        } 
+        else if (v.startsWith("0b")) {
+          BASE02.decodeInto(v.substring(2), this.#buffer);
+        } 
+        else {
+          BASE10.decodeInto(v, this.#buffer);
         }
-        else if (typeof v === "string") {
-            if (v.startsWith("0x")) {
-                BASE16.decodeInto(v.substring(2), this._buffer);
-            } else if (v.startsWith("0b")) {
-                BASE02.decodeInto(v.substring(2), this._buffer);
-            } else {
-                BASE10.decodeInto(v, this._buffer);
-            }
+      }
+      else if (v instanceof Uint8Array) {
+        if (v.byteLength <= this.byteLength) {
+          this.#buffer.set(v);
+          this.#buffer.fill(0, v.byteLength);
         }
-        else if (v instanceof Uint8Array) {
-            if (v.byteLength <= this.byteLength) {
-                this._buffer.set(v);
-                this._buffer.fill(0, v.byteLength);
-            }
-            else {
-                this._buffer.set(v.subarray(0, this.byteLength));
-            }
+        else {
+          this.#buffer.set(v.subarray(0, this.byteLength));
         }
-        else if (v instanceof Array) {
-            this._buffer.set(v);
-            this._buffer.fill(0, v.length);
-        }
-        else throw new Error("Can't set UInt from parameter.")
+      }
+      else if (v instanceof Array) {
+        this.#buffer.set(v);
+        this.#buffer.fill(0, v.length);
+      }
+      else throw new Error("Can't set UInt from parameter.")
     }
     toString(b) {
-        if   (!b || b == 10) return BASE10.encode(this);
-        else if (b == 16)    return BASE16.encode(this);
-        else if (b == 2)     return BASE02.encode(this);
-        else throw new Error("Unsupported base for toString() on UInt");
+      if   (!b || b == 10) return BASE10.encode(this);
+      else if (b == 16)    return BASE16.encode(this);
+      else if (b == 2)     return BASE02.encode(this);
+      else throw new Error("Unsupported base for toString() on UInt");
     }
-
-    get byteLength() { return this._buffer.byteLength; }
-    get bitLength()  { return this._buffer.bitLength; }
-    get _ptr() { return this._buffer.byteOffset; }
+    get buffer() { return this.#buffer; }
+    get byteLength() { return this.#buffer.byteLength; }
+    get bitLength()  { return this.#buffer.bitLength; }
+    get _ptr() { return this.#buffer.byteOffset; }
 }
 
 export class UInt32 extends UInt {
@@ -474,15 +477,15 @@ export class UInt8192 extends UInt {
     static gcd(a, b, r) { EXPORTS.cppcore_uint8192_gcd(a._ptr, b._ptr, r._ptr); }
 }
 
-UInt32.MAX   = new UInt32();   UInt32.MAX._buffer.fill(0xFF);
-UInt64.MAX   = new UInt64();   UInt64.MAX._buffer.fill(0xFF);
-UInt128.MAX  = new UInt128();  UInt128.MAX._buffer.fill(0xFF);
-UInt256.MAX  = new UInt256();  UInt256.MAX._buffer.fill(0xFF);
-UInt512.MAX  = new UInt512();  UInt512.MAX._buffer.fill(0xFF);
-UInt1024.MAX = new UInt1024(); UInt1024.MAX._buffer.fill(0xFF);
-UInt2048.MAX = new UInt2048(); UInt2048.MAX._buffer.fill(0xFF);
-UInt4096.MAX = new UInt4096(); UInt4096.MAX._buffer.fill(0xFF);
-UInt8192.MAX = new UInt8192(); UInt8192.MAX._buffer.fill(0xFF);
+UInt32.MAX   = new UInt32();   UInt32.MAX.buffer.fill(0xFF);
+UInt64.MAX   = new UInt64();   UInt64.MAX.buffer.fill(0xFF);
+UInt128.MAX  = new UInt128();  UInt128.MAX.buffer.fill(0xFF);
+UInt256.MAX  = new UInt256();  UInt256.MAX.buffer.fill(0xFF);
+UInt512.MAX  = new UInt512();  UInt512.MAX.buffer.fill(0xFF);
+UInt1024.MAX = new UInt1024(); UInt1024.MAX.buffer.fill(0xFF);
+UInt2048.MAX = new UInt2048(); UInt2048.MAX.buffer.fill(0xFF);
+UInt4096.MAX = new UInt4096(); UInt4096.MAX.buffer.fill(0xFF);
+UInt8192.MAX = new UInt8192(); UInt8192.MAX.buffer.fill(0xFF);
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // AES
