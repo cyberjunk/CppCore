@@ -689,6 +689,11 @@ class Hash {
       this._step(d, f);
       d.free();
     }
+    else if (data instanceof Uint8Array) {
+      const d = new Buffer(data);
+      this._step(d, f);
+      d.free();
+    }
     else {
       throw new Error("Unsupported type of data in Hash.step()");
     }
@@ -741,6 +746,11 @@ class HMAC {
       this._reset(k, f);
       k.free();
     }
+    else if (key instanceof Uint8Array) {
+      const k = new Buffer(key);
+      this._reset(k, f);
+      k.free();
+    }
     else {
       throw new Error("Unsupported type of key in HMAC.reset()");
     }
@@ -751,6 +761,11 @@ class HMAC {
     }
     else if (typeof data === "string") {
       const d = new CString(data);
+      this._step(d, f);
+      d.free();
+    }
+    else if (data instanceof Uint8Array) {
+      const d = new Buffer(data);
       this._step(d, f);
       d.free();
     }
