@@ -124,7 +124,7 @@ export class CString {
     const type = typeof(v);
     if (type === 'string') {
       this.#buffer = new Buffer(v.length+1);
-      this.fromString(v);
+      this.set(v);
     }
     else if (type === 'undefined') {
       this.#buffer = new Buffer(16);
@@ -139,8 +139,7 @@ export class CString {
       this.byteLength = v.byteLength;
     }
     else {
-      console.log(type);
-      throw new Error('Invalid value for CString');
+      throw new Error('Invalid constructor parameter for CString');
     }
   }
   get buffer() {
@@ -155,12 +154,25 @@ export class CString {
   free() {
     this.#buffer.free();
   }
-  fromString(str) {
-    const result = encoder.encodeInto(str, this.#buffer);
-    if (this.maxLength < result.written)
-        throw new Error('String too big.');
-    this.#buffer[result.written] = 0x00;
-    this.byteLength = result.written;
+  set(str) {
+    if (typeof str === "string") {
+      const result = encoder.encodeInto(str, this.#buffer);
+      if (this.maxLength < result.written)
+        throw new Error('String too big');
+      this.#buffer[result.written] = 0x00;
+      this.byteLength = result.written;
+    }
+    else if (str instanceof CString) {
+      if (this.maxLength < str.byteLength) {
+        throw new Error("CString too big")
+      }
+      this.#buffer.set(str.buffer);
+      this.#buffer[str.byteLength] = 0x00;
+      this.byteLength = str.byteLength;
+    }
+    else {
+      throw new Error("Invalid parameter for CString.set()")
+    }
   }
   toString() {
     return decoder.decode(this.#buffer.subarray(0, this.byteLength));
@@ -210,7 +222,7 @@ export class BaseX {
         return this._strbuf.toString();
     }
     decode(str, bits) {
-        this._strbuf.fromString(str);
+        this._strbuf.set(str);
         let f = null;
         let t = null;
         if (!bits) bits = BaseX.estimateBits(this._strbuf.byteLength, this._alphabet.byteLength);
@@ -230,7 +242,7 @@ export class BaseX {
         return uint;
     }
     decodeInto(str, buf) {
-        this._strbuf.fromString(str);
+        this._strbuf.set(str);
         const byteLength = buf.byteLength;
         let f = null;
         if      (byteLength == 4)    { f = EXPORTS.cppcore_basex_decode32; }

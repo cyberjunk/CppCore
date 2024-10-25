@@ -28,10 +28,17 @@ describe('CString', function () {
       chai.expect(s.buffer.byteLength).to.equal(13);
     });
   });
-  describe('fromString()', function () {
-    it('fromString(string)', function () {
+  describe('set()', function () {
+    it('set(string)', function () {
       const s = new CString(31);
-      s.fromString("0123456789");
+      s.set("0123456789");
+      chai.expect(s.byteLength).to.equal(10);
+      chai.expect(s.maxLength).to.equal(31);
+      chai.expect(s.buffer.byteLength).to.equal(32);
+    });
+    it('set(cstring)', function () {
+      const s = new CString(31);
+      s.set(new CString("0123456789"));
       chai.expect(s.byteLength).to.equal(10);
       chai.expect(s.maxLength).to.equal(31);
       chai.expect(s.buffer.byteLength).to.equal(32);
