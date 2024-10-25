@@ -492,18 +492,20 @@ UInt8192.MAX = new UInt8192(); UInt8192.MAX.buffer.fill(0xFF);
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 class AES {
+  #bits
+  get bits() { return this.#bits; }
   constructor(bits) {
     switch(bits) {
       case 128:
-        this._bits = 128;
+        this.#bits = 128;
         this._ptr  = EXPORTS.cppcore_aes128_init();
         break;
       case 192:
-        this._bits = 192;
+        this.#bits = 192;
         this._ptr  = EXPORTS.cppcore_aes192_init();
         break;
       case 256:
-        this._bits = 256;
+        this.#bits = 256;
         this._ptr  = EXPORTS.cppcore_aes256_init();
         break;
       default:
@@ -515,7 +517,7 @@ class AES {
     if (key instanceof CString ||
         key instanceof Buffer ||
         key instanceof UInt) {
-      switch(this._bits) {
+      switch(this.#bits) {
         case 128:
           if (key.byteLength != 16)
             throw new Error("Key must have exactly 16 bytes for AES128");
