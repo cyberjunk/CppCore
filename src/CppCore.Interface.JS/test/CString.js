@@ -6,26 +6,26 @@ describe('CString', function () {
       const s = new CString();
       chai.expect(s.byteLength).to.equal(0);
       chai.expect(s.maxLength).to.equal(15);
-      chai.expect(s._buffer.byteLength).to.equal(16);
+      chai.expect(s.buffer.byteLength).to.equal(16);
     });
     it('constructor(number)', function () {
       const s = new CString(15);
       chai.expect(s.byteLength).to.equal(0);
       chai.expect(s.maxLength).to.equal(15);
-      chai.expect(s._buffer.byteLength).to.equal(16);
+      chai.expect(s.buffer.byteLength).to.equal(16);
     });
     it('constructor(string)', function () {
       const s = new CString("Hello World!");
       chai.expect(s.byteLength).to.equal(12);
       chai.expect(s.maxLength).to.equal(12);
-      chai.expect(s._buffer.byteLength).to.equal(13);
+      chai.expect(s.buffer.byteLength).to.equal(13);
     });
     it('constructor(cstring)', function () {
       const t = new CString("Hello World!");
       const s = new CString(t);
       chai.expect(s.byteLength).to.equal(12);
       chai.expect(s.maxLength).to.equal(12);
-      chai.expect(s._buffer.byteLength).to.equal(13);
+      chai.expect(s.buffer.byteLength).to.equal(13);
     });
   });
   describe('fromString()', function () {
@@ -34,7 +34,7 @@ describe('CString', function () {
       s.fromString("0123456789");
       chai.expect(s.byteLength).to.equal(10);
       chai.expect(s.maxLength).to.equal(31);
-      chai.expect(s._buffer.byteLength).to.equal(32);
+      chai.expect(s.buffer.byteLength).to.equal(32);
     });
   });
   describe('toString()', function () {

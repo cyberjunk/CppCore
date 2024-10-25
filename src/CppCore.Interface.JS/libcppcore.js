@@ -118,23 +118,24 @@ export class Buffer extends Uint8Array {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export class CString {
+  #buffer
   constructor(v) {
     console.debug("libcppcore: Constructing CString (" + typeof(v) + ")");
     const type = typeof(v);
     if (type === 'string') {
-      this._buffer = new Buffer(v.length+1);
+      this.#buffer = new Buffer(v.length+1);
       this.fromString(v);
     }
     else if (type === 'undefined') {
-      this._buffer = new Buffer(16);
+      this.#buffer = new Buffer(16);
       this.byteLength = 0;
     }
     else if (Number.isInteger(v)) {
-      this._buffer = new Buffer(v+1);
+      this.#buffer = new Buffer(v+1);
       this.byteLength = 0;
     }
     else if (v instanceof CString) {
-      this._buffer = new Buffer(v._buffer);
+      this.#buffer = new Buffer(v.buffer);
       this.byteLength = v.byteLength;
     }
     else {
@@ -142,24 +143,27 @@ export class CString {
       throw new Error('Invalid value for CString');
     }
   }
+  get buffer() {
+    return this.#buffer;
+  }
   get maxLength() {
-    return this._buffer.byteLength - 1;
+    return this.#buffer.byteLength - 1;
   }
   get _ptr() {
-    return this._buffer._ptr;
+    return this.#buffer._ptr;
   }
   free() {
-    this._buffer.free();
+    this.#buffer.free();
   }
   fromString(str) {
-    const result = encoder.encodeInto(str, this._buffer);
+    const result = encoder.encodeInto(str, this.#buffer);
     if (this.maxLength < result.written)
         throw new Error('String too big.');
-    this._buffer[result.written] = 0x00;
+    this.#buffer[result.written] = 0x00;
     this.byteLength = result.written;
   }
   toString() {
-    return decoder.decode(this._buffer.subarray(0, this.byteLength));
+    return decoder.decode(this.#buffer.subarray(0, this.byteLength));
   }
 }
 
@@ -573,7 +577,7 @@ class AESIV extends AES {
     else if (iv instanceof CString) {
       if (iv.byteLength != 16)
         throw new Error("String IV must have exactly 16 bytes.");
-      this.setIV(iv._buffer.subarray(0, 16));
+      this.setIV(iv.buffer.subarray(0, 16));
     }
     else if (typeof iv === "string") {
       const k = new CString(iv);

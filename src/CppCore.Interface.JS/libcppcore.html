@@ -166,7 +166,7 @@
         console.log(x & 0x0F);
         console.log(x >> 4);
 
-        var aes1 = new AES128ECB();
+        var aes1 = new AES128CBC();
         //var aes2 = new AES128CBC();
         //var key = new AES.Key();
         //key.setUint32(0, 4294967295);
@@ -176,7 +176,7 @@
         //aes.reset(new CString("0123456789ABCDEF"));
         //aes1.setKey("0123456789ABCDEF");
         aes1.setKey(new Uint8Array(16));
-        //aes1.setIV(new Buffer(16));
+        aes1.setIV("0123456789ABCDEF");
         //aes1.setIV("0123456789ABCDEF");
         //aes2.setKey(new Uint8Array(16), new Buffer(16));
 
