@@ -757,16 +757,18 @@ export class AES256CTR extends AESIV {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 class Hash {
+  #ptr
+  get _ptr() { return this.#ptr; }
   constructor(f) {
-    this._ptr = f();
-    registry.register(this, this._ptr);
+    this.#ptr = f();
+    registry.register(this, this.#ptr, this);
   }
   _reset(f) {
-    f(this._ptr);
+    f(this.#ptr);
   }
   _step(data, f) {
     if (data instanceof Buffer || data instanceof UInt || data instanceof CString) {
-      f(this._ptr, data._ptr, data.byteLength);
+      f(this.#ptr, data._ptr, data.byteLength);
     }
     else if (typeof data === "string") {
       const d = new CString(data);
@@ -787,7 +789,7 @@ class Hash {
       if (digest.byteLength != this.constructor.digestLength) {
         throw new Error("Unsupported size of digest in Hash.finish()");
       }
-      f(this._ptr, digest._ptr);
+      f(this.#ptr, digest._ptr);
     }
     else if (digest instanceof Uint8Array) {
       const d = new Buffer(digest.byteLength);
@@ -828,13 +830,15 @@ export class SHA512 extends Hash {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 class HMAC {
+  #ptr
+  get _ptr() { return this.#ptr; }
   constructor(f) {
-    this._ptr = f();
-    registry.register(this, this._ptr);
+    this.#ptr = f();
+    registry.register(this, this.#ptr, this);
   }
   _reset(key, f) {
     if (key instanceof Buffer || key instanceof UInt || key instanceof CString) {
-      f(this._ptr, key._ptr, key.byteLength);
+      f(this.#ptr, key._ptr, key.byteLength);
     }
     else if (typeof key === "string") {
       const k = new CString(key);
@@ -852,7 +856,7 @@ class HMAC {
   }
   _step(data, f) {
     if (data instanceof Buffer || data instanceof UInt || data instanceof CString) {
-      f(this._ptr, data._ptr, data.byteLength);
+      f(this.#ptr, data._ptr, data.byteLength);
     }
     else if (typeof data === "string") {
       const d = new CString(data);
@@ -873,7 +877,7 @@ class HMAC {
       if (digest.byteLength != this.constructor.digestLength) {
         throw new Error("Unsupported size of digest in HMAC.finish()");
       }
-      f(this._ptr, digest._ptr);
+      f(this.#ptr, digest._ptr);
     }
     else if (digest instanceof Uint8Array) {
       const d = new Buffer(digest.byteLength);
