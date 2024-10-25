@@ -492,7 +492,8 @@ class AES {
   }
   setKey(key) {
     if (key instanceof CString ||
-        key instanceof Buffer) {
+        key instanceof Buffer ||
+        key instanceof UInt) {
       switch(this._bits) {
         case 128:
           if (key.byteLength != 16)
@@ -512,10 +513,14 @@ class AES {
       }
     }
     else if (typeof key === "string") {
-      this.setKey(new CString(key));
+      const k = new CString(key);
+      this.setKey(k);
+      k.free();
     }
     else if (key instanceof Uint8Array) {
-      this.setKey(new Buffer(key));
+      const k = new Buffer(key);
+      this.setKey(k);
+      k.free();
     }
     else {
       throw new Error("No valid key provided in setKey()");
@@ -540,7 +545,9 @@ class AESIV extends AES {
       this.setIV(iv._buffer.subarray(0, 16));
     }
     else if (typeof iv === "string") {
-      this.setIV(new CString(iv));
+      const k = new CString(iv);
+      this.setIV(k);
+      k.free();
     }
     else {
       throw new Error("No valid IV provided in setIV()");
