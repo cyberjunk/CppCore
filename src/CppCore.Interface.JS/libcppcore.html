@@ -26,6 +26,8 @@
         UInt8192,
         AES128ECB,
         AES128CBC,
+        PBKDF2,
+        MD5, SHA256, SHA512,
         Prime
       } from './libcppcore.js'
       
@@ -235,11 +237,33 @@
         //console.log("test took:" + (t2-t1));
         //console.log(r);
       }
+      
+      function testPBKDF2() {
+          var digest = new Buffer(32);
+          PBKDF2.sha256(
+            "test1",
+            "test2",
+            digest
+          );
+          console.log(digest);
+      }
+
+      function testHash() {
+        var h = new MD5();
+        var b = new Buffer(16);
+
+        h.reset();
+        h.step("bla");
+        h.finish(b);
+        console.log(b);
+      }
       //testBuffer();
-      testCString();
+      //testCString();
       //testBaseX();
       //testUInt();
       //testAES();
+      //testPBKDF2();
+      testHash();
 
       //console.log("before:" + t1);
       //testPrime();

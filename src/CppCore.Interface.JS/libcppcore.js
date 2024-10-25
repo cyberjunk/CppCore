@@ -672,52 +672,55 @@ export class AES256CTR extends AESIV {
 // HASH
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-export class MD5 {
-  constructor() {
-    this._ptr  = EXPORTS.cppcore_md5_init();
+class Hash {
+  constructor(f) {
+    this._ptr = f();
     registry.register(this, this._ptr);
   }
-  reset() {
-    EXPORTS.cppcore_md5_reset(this._ptr);
+  _reset(f) {
+    f(this._ptr);
   }
-  step(data) {
-    EXPORTS.cppcore_md5_step(this._ptr, data._ptr, data.byteLength);
+  _step(data, f) {
+    if (data instanceof Buffer || data instanceof UInt || data instanceof CString) {
+      f(this._ptr, data._ptr, data.byteLength);
+    }
+    else if (typeof data === "string") {
+      const d = new CString(data);
+      this._step(d, f);
+      d.free();
+    }
+    else {
+      throw new Error("Unsupported type of data in Hash.step()");
+    }
   }
-  finish(digest) {
-    EXPORTS.cppcore_md5_finish(this._ptr, digest._ptr);
+  _finish(digest, f, size) {
+    if (!(digest instanceof Buffer) && !(digest instanceof UInt)) {
+      throw new Error("Unsupported type of digest in Hash.finish()");
+    }
+    if (digest.byteLength != size) {
+      throw new Error("Unsupported size of digest in Hash.finish()");
+    }
+    f(this._ptr, digest._ptr);
   }
 }
 
-export class SHA256 {
-  constructor() {
-    this._ptr  = EXPORTS.cppcore_sha256_init();
-    registry.register(this, this._ptr);
-  }
-  reset() {
-    EXPORTS.cppcore_sha256_reset(this._ptr);
-  }
-  step(data) {
-    EXPORTS.cppcore_sha256_step(this._ptr, data._ptr, data.byteLength);
-  }
-  finish(digest) {
-    EXPORTS.cppcore_sha256_finish(this._ptr, digest._ptr);
-  }
+export class MD5 extends Hash {
+  constructor() { super(EXPORTS.cppcore_md5_init); }
+  reset() { super._reset(EXPORTS.cppcore_md5_reset); }
+  step(data) { super._step(data, EXPORTS.cppcore_md5_step); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_md5_finish, 16); }
 }
-
-export class SHA512 {
-  constructor() {
-    this._ptr  = EXPORTS.cppcore_sha512_init();
-    registry.register(this, this._ptr);
-  }
-  reset() {
-    EXPORTS.cppcore_sha512_reset(this._ptr);
-  }
-  step(data) {
-    EXPORTS.cppcore_sha512_step(this._ptr, data._ptr, data.byteLength);
-  }
-  finish(digest) {
-    EXPORTS.cppcore_sha512_finish(this._ptr, digest._ptr);
-  }
+export class SHA256 extends Hash {
+  constructor() { super(EXPORTS.cppcore_sha256_init); }
+  reset() { super._reset(EXPORTS.cppcore_sha256_reset); }
+  step(data) { super._step(data, EXPORTS.cppcore_sha256_step); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_sha256_finish, 32); }
+}
+export class SHA512 extends Hash {
+  constructor() { super(EXPORTS.cppcore_sha512_init); }
+  reset() { super._reset(EXPORTS.cppcore_sha512_reset); }
+  step(data) { super._step(data, EXPORTS.cppcore_sha512_step); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_sha512_finish, 64); }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -787,7 +790,7 @@ export class PBKDF2 {
         iterations);
     }
     else if (typeof password === "string") {
-      const p = new CString(password)
+      const p = new CString(password);
       PBKDF2._run(p, salt, digest, iterations, f);
       p.free();
     }
