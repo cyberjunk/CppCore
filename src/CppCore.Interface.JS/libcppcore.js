@@ -777,41 +777,38 @@ export class HMACSHA512 {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export class PBKDF2 {
-  static md5(password, salt, digest, iterations) {
-    if (password instanceof Buffer &&
-        salt     instanceof Buffer &&
-        digest   instanceof Buffer) {
-      EXPORTS.cppcore_pbkdf2_md5_create(
-        password._ptr, password.byteLength,
-        salt._ptr, salt.byteLength,
-        digest._ptr, digest.byteLength,
+  static _run(password, salt, digest, iterations, f) {
+    if ((password instanceof Buffer || password instanceof CString) &&
+        (salt     instanceof Buffer || salt     instanceof CString) &&
+        (digest   instanceof Buffer)) {
+      f(password._ptr, password.byteLength,
+        salt._ptr,     salt.byteLength,
+        digest._ptr,   digest.byteLength,
         iterations);
     }
+    else if (typeof password === "string") {
+      const p = new CString(password)
+      PBKDF2._run(p, salt, digest, iterations, f);
+      p.free();
+    }
+    else if (typeof salt === "string") {
+      const s = new CString(salt);
+      PBKDF2._run(password, s, digest, iterations, f);
+      s.free();
+    }
     else throw new Error("Unsupported arguments")
+  }
+  static md5(password, salt, digest, iterations) {
+    PBKDF2._run(password, salt, digest, iterations, 
+      EXPORTS.cppcore_pbkdf2_md5_create);
   }
   static sha256(password, salt, digest, iterations) {
-    if (password instanceof Buffer &&
-        salt     instanceof Buffer &&
-        digest   instanceof Buffer) {
-      EXPORTS.cppcore_pbkdf2_sha256_create(
-        password._ptr, password.byteLength,
-        salt._ptr, salt.byteLength,
-        digest._ptr, digest.byteLength,
-        iterations);
-    }
-    else throw new Error("Unsupported arguments")
+    PBKDF2._run(password, salt, digest, iterations, 
+      EXPORTS.cppcore_pbkdf2_sha256_create);
   }
   static sha512(password, salt, digest, iterations) {
-    if (password instanceof Buffer &&
-        salt     instanceof Buffer &&
-        digest   instanceof Buffer) {
-      EXPORTS.cppcore_pbkdf2_sha512_create(
-        password._ptr, password.byteLength,
-        salt._ptr, salt.byteLength,
-        digest._ptr, digest.byteLength,
-        iterations);
-    }
-    else throw new Error("Unsupported arguments")
+    PBKDF2._run(password, salt, digest, iterations, 
+      EXPORTS.cppcore_pbkdf2_sha512_create);
   }
 }
 
