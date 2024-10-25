@@ -184,10 +184,14 @@ export class CString {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export class BaseX {
+  #alphabet
+  #strbuf
   constructor(alphabet) {
-    this._alphabet = new CString(alphabet);
-    this._strbuf = new CString(BaseX.estimateSymbols(8192, this._alphabet.byteLength));
+    this.#alphabet = new CString(alphabet);
+    this.#strbuf = new CString(BaseX.estimateSymbols(8192, this.#alphabet.byteLength));
   }
+  get alphabet() { return this.#alphabet; }
+  get strbuf() { return this.#strbuf; }
   static estimateBits(symbols, base) {
     return EXPORTS.cppcore_basex_estimate_bits(symbols, base);
   }
@@ -206,24 +210,24 @@ export class BaseX {
     else if (v.byteLength == 512)  { f = EXPORTS.cppcore_basex_encode4096; }
     else if (v.byteLength == 1024) { f = EXPORTS.cppcore_basex_encode8192; }
     else throw new Error('invalid byteLength');
-    const MAXSYMBOLS = this._strbuf.maxLength;
+    const MAXSYMBOLS = this.#strbuf.maxLength;
     const r = f(
       v._ptr,                     // inbuf ptr
-      this._strbuf._ptr,          // outbuf ptr
+      this.#strbuf._ptr,          // outbuf ptr
       MAXSYMBOLS,                 // outbuf max symbols
-      this._alphabet.byteLength,  // base
-      this._alphabet._ptr,        // alphabet ptr
+      this.#alphabet.byteLength,  // base
+      this.#alphabet._ptr,        // alphabet ptr
       1                           // write term 0x00
     );
-    if (r < 0) throw new Error('_strbuf too small');
-    this._strbuf.byteLength = (MAXSYMBOLS-r);
-    return this._strbuf.toString();
+    if (r < 0) throw new Error('strbuf too small');
+    this.#strbuf.byteLength = (MAXSYMBOLS-r);
+    return this.#strbuf.toString();
   }
   decode(str, bits) {
-    this._strbuf.set(str);
+    this.#strbuf.set(str);
     let f = null;
     let t = null;
-    if (!bits) bits = BaseX.estimateBits(this._strbuf.byteLength, this._alphabet.byteLength);
+    if (!bits) bits = BaseX.estimateBits(this.#strbuf.byteLength, this.#alphabet.byteLength);
     if      (bits <= 32)   { t = UInt32;   f = EXPORTS.cppcore_basex_decode32; }
     else if (bits <= 64)   { t = UInt64;   f = EXPORTS.cppcore_basex_decode64; }
     else if (bits <= 128)  { t = UInt128;  f = EXPORTS.cppcore_basex_decode128; }
@@ -235,12 +239,12 @@ export class BaseX {
     else if (bits <= 8192) { t = UInt8192; f = EXPORTS.cppcore_basex_decode8192; }
     else throw new Error('invalid bitlength');
     const uint = new t();
-    const r = f(this._strbuf._ptr, uint._ptr, this._alphabet._ptr);
+    const r = f(this.#strbuf._ptr, uint._ptr, this.#alphabet._ptr);
     if (r == 0) throw new Error('Invalid symbol or overflow');
     return uint;
   }
   decodeInto(str, buf) {
-    this._strbuf.set(str);
+    this.#strbuf.set(str);
     const byteLength = buf.byteLength;
     let f = null;
     if      (byteLength == 4)    { f = EXPORTS.cppcore_basex_decode32; }
@@ -253,7 +257,7 @@ export class BaseX {
     else if (byteLength == 512)  { f = EXPORTS.cppcore_basex_decode4096; }
     else if (byteLength == 1024) { f = EXPORTS.cppcore_basex_decode8192; }
     else throw new Error('invalid bytelength');
-    const r = f(this._strbuf._ptr, buf._ptr, this._alphabet._ptr);
+    const r = f(this.#strbuf._ptr, buf._ptr, this.#alphabet._ptr);
     if (r == 0) throw new Error('Invalid symbol or overflow');
   }
 }

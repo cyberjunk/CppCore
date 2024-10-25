@@ -7,7 +7,7 @@ describe('BaseX', function () {
   describe('constructor()', function () {
     it('constructor(string)', function () {
       const b = new BaseX("0123456789");      
-      chai.expect(b._alphabet.byteLength).to.equal(10);
+      chai.expect(b.alphabet.byteLength).to.equal(10);
     });
   });
   describe('estimateBits()', function () {
