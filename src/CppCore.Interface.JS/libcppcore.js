@@ -850,15 +850,21 @@ export class PBKDF2 {
       PBKDF2._run(password, s, digest, iterations, f);
       s.free();
     }
-    else if (password instanceof Uint8Array) {
+    else if (password instanceof Uint8Array && !(password instanceof Buffer)) {
       const p = new Buffer(password);
       PBKDF2._run(p, salt, digest, iterations, f);
       p.free();
     }
-    else if (salt instanceof Uint8Array) {
+    else if (salt instanceof Uint8Array && !(salt instanceof Buffer)) {
       const s = new Buffer(salt);
       PBKDF2._run(password, s, digest, iterations, f);
       s.free();
+    }
+    else if (digest instanceof Uint8Array && !(digest instanceof Buffer)) {
+      const d = new Buffer(digest.byteLength);
+      PBKDF2._run(password, salt, d, iterations, f);
+      digest.set(d);
+      d.free();
     }
     else throw new Error("Unsupported parameters in PBKDF2");
   }
