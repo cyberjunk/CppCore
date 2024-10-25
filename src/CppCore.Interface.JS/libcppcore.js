@@ -727,52 +727,65 @@ export class SHA512 extends Hash {
 // HMAC
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-export class HMACMD5 {
-  constructor() {
-    this._ptr  = EXPORTS.cppcore_hmac_md5_init();
+class HMAC {
+  constructor(f) {
+    this._ptr = f();
     registry.register(this, this._ptr);
   }
-  reset(key) {
-    EXPORTS.cppcore_hmac_md5_reset(this._ptr, key._ptr, key.byteLength);
+  _reset(key, f) {
+    if (key instanceof Buffer || key instanceof UInt || key instanceof CString) {
+      f(this._ptr, key._ptr, key.byteLength);
+    }
+    else if (typeof key === "string") {
+      const k = new CString(key);
+      this._reset(k, f);
+      k.free();
+    }
+    else {
+      throw new Error("Unsupported type of key in HMAC.reset()");
+    }
   }
-  step(data) {
-    EXPORTS.cppcore_hmac_md5_step(this._ptr, data._ptr, data.byteLength);
+  _step(data, f) {
+    if (data instanceof Buffer || data instanceof UInt || data instanceof CString) {
+      f(this._ptr, data._ptr, data.byteLength);
+    }
+    else if (typeof data === "string") {
+      const d = new CString(data);
+      this._step(d, f);
+      d.free();
+    }
+    else {
+      throw new Error("Unsupported type of data in HMAC.step()");
+    }
   }
-  finish(digest) {
-    EXPORTS.cppcore_hmac_md5_finish(this._ptr, digest._ptr);
+  _finish(digest, f, size) {
+    if (!(digest instanceof Buffer) && !(digest instanceof UInt)) {
+      throw new Error("Unsupported type of digest in HMAC.finish()");
+    }
+    if (digest.byteLength != size) {
+      throw new Error("Unsupported size of digest in HMAC.finish()");
+    }
+    f(this._ptr, digest._ptr);
   }
 }
 
-export class HMACSHA256 {
-  constructor() {
-    this._ptr  = EXPORTS.cppcore_hmac_sha256_init();
-    registry.register(this, this._ptr);
-  }
-  reset(key) {
-    EXPORTS.cppcore_hmac_sha256_reset(this._ptr, key._ptr, key.byteLength);
-  }
-  step(data) {
-    EXPORTS.cppcore_hmac_sha256_step(this._ptr, data._ptr, data.byteLength);
-  }
-  finish(digest) {
-    EXPORTS.cppcore_hmac_sha256_finish(this._ptr, digest._ptr);
-  }
+export class HMACMD5 extends HMAC {
+  constructor() { super(EXPORTS.cppcore_hmac_md5_init); }
+  reset(key) { super._reset(key, EXPORTS.cppcore_hmac_md5_reset); }
+  step(data) { super._step(data, EXPORTS.cppcore_hmac_md5_step); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_hmac_md5_finish, 16); }
 }
-
-export class HMACSHA512 {
-  constructor() {
-    this._ptr  = EXPORTS.cppcore_hmac_sha512_init();
-    registry.register(this, this._ptr);
-  }
-  reset(key) {
-    EXPORTS.cppcore_hmac_sha512_reset(this._ptr, key._ptr, key.byteLength);
-  }
-  step(data) {
-    EXPORTS.cppcore_hmac_sha512_step(this._ptr, data._ptr, data.byteLength);
-  }
-  finish(digest) {
-    EXPORTS.cppcore_hmac_sha512_finish(this._ptr, digest._ptr);
-  }
+export class HMACSHA256 extends HMAC {
+  constructor() { super(EXPORTS.cppcore_hmac_sha256_init); }
+  reset(key) { super._reset(key, EXPORTS.cppcore_hmac_sha256_reset); }
+  step(data) { super._step(data, EXPORTS.cppcore_hmac_sha256_step); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_hmac_sha256_finish, 32); }
+}
+export class HMACSHA512 extends HMAC {
+  constructor() { super(EXPORTS.cppcore_hmac_sha512_init); }
+  reset(key) { super._reset(key, EXPORTS.cppcore_hmac_sha512_reset); }
+  step(data) { super._step(data, EXPORTS.cppcore_hmac_sha512_step); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_hmac_sha512_finish, 64); }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
