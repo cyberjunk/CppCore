@@ -493,25 +493,27 @@ UInt8192.MAX = new UInt8192(); UInt8192.MAX.buffer.fill(0xFF);
 
 class AES {
   #bits
+  #ptr
   get bits() { return this.#bits; }
+  get _ptr() { return this.#ptr; }
   constructor(bits) {
     switch(bits) {
       case 128:
         this.#bits = 128;
-        this._ptr  = EXPORTS.cppcore_aes128_init();
+        this.#ptr  = EXPORTS.cppcore_aes128_init();
         break;
       case 192:
         this.#bits = 192;
-        this._ptr  = EXPORTS.cppcore_aes192_init();
+        this.#ptr  = EXPORTS.cppcore_aes192_init();
         break;
       case 256:
         this.#bits = 256;
-        this._ptr  = EXPORTS.cppcore_aes256_init();
+        this.#ptr  = EXPORTS.cppcore_aes256_init();
         break;
       default:
         throw new Error("Invalid bits for AES. Must be 128, 192 or 256.");
     }
-    registry.register(this, this._ptr);
+    registry.register(this, this.#ptr, this);
   }
   setKey(key) {
     if (key instanceof CString ||
