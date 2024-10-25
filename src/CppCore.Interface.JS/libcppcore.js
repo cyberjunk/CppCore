@@ -698,16 +698,16 @@ class Hash {
       throw new Error("Unsupported type of data in Hash.step()");
     }
   }
-  _finish(digest, f, size) {
+  _finish(digest, f) {
     if (digest instanceof Buffer || digest instanceof UInt) {
-      if (digest.byteLength != size) {
+      if (digest.byteLength != this.constructor.digestLength) {
         throw new Error("Unsupported size of digest in Hash.finish()");
       }
       f(this._ptr, digest._ptr);
     }
     else if (digest instanceof Uint8Array) {
       const d = new Buffer(digest.byteLength);
-      this._finish(d, f, size);
+      this._finish(d, f);
       digest.set(d);
       d.free();
     }
@@ -718,22 +718,25 @@ class Hash {
 }
 
 export class MD5 extends Hash {
+  static get digestLength() { return 16; }
   constructor() { super(EXPORTS.cppcore_md5_init); }
   reset() { super._reset(EXPORTS.cppcore_md5_reset); }
   step(data) { super._step(data, EXPORTS.cppcore_md5_step); }
-  finish(digest) { super._finish(digest, EXPORTS.cppcore_md5_finish, 16); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_md5_finish); }
 }
 export class SHA256 extends Hash {
+  static get digestLength() { return 32; }
   constructor() { super(EXPORTS.cppcore_sha256_init); }
   reset() { super._reset(EXPORTS.cppcore_sha256_reset); }
   step(data) { super._step(data, EXPORTS.cppcore_sha256_step); }
-  finish(digest) { super._finish(digest, EXPORTS.cppcore_sha256_finish, 32); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_sha256_finish); }
 }
 export class SHA512 extends Hash {
+  static get digestLength() { return 64; }
   constructor() { super(EXPORTS.cppcore_sha512_init); }
   reset() { super._reset(EXPORTS.cppcore_sha512_reset); }
   step(data) { super._step(data, EXPORTS.cppcore_sha512_step); }
-  finish(digest) { super._finish(digest, EXPORTS.cppcore_sha512_finish, 64); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_sha512_finish); }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
