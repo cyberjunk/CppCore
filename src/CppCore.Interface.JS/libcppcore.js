@@ -831,9 +831,10 @@ export class HMACSHA512 extends HMAC {
 
 export class PBKDF2 {
   static _run(password, salt, digest, iterations, f) {
-    if ((password instanceof Buffer || password instanceof CString) &&
-        (salt     instanceof Buffer || salt     instanceof CString) &&
-        (digest   instanceof Buffer)) {
+    if ((password instanceof Buffer || password instanceof UInt || password instanceof CString) &&
+        (salt     instanceof Buffer || salt     instanceof UInt || salt     instanceof CString) &&
+        (digest   instanceof Buffer || digest   instanceof UInt) &&
+        (Number.isInteger(iterations))) {
       f(password._ptr, password.byteLength,
         salt._ptr,     salt.byteLength,
         digest._ptr,   digest.byteLength,
@@ -849,7 +850,17 @@ export class PBKDF2 {
       PBKDF2._run(password, s, digest, iterations, f);
       s.free();
     }
-    else throw new Error("Unsupported arguments")
+    else if (password instanceof Uint8Array) {
+      const p = new Buffer(password);
+      PBKDF2._run(p, salt, digest, iterations, f);
+      p.free();
+    }
+    else if (salt instanceof Uint8Array) {
+      const s = new Buffer(salt);
+      PBKDF2._run(password, s, digest, iterations, f);
+      s.free();
+    }
+    else throw new Error("Unsupported parameters in PBKDF2");
   }
   static md5(password, salt, digest, iterations) {
     PBKDF2._run(password, salt, digest, iterations, 
