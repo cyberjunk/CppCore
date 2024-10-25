@@ -162,7 +162,11 @@
       function testAES() {
         console.log("TESTING AES");
 
-        var aes1 = new AES128CBC();
+        var x = 8192*64;
+        console.log(x & 0x0F);
+        console.log(x >> 4);
+
+        var aes1 = new AES128ECB();
         //var aes2 = new AES128CBC();
         //var key = new AES.Key();
         //key.setUint32(0, 4294967295);
@@ -172,7 +176,7 @@
         //aes.reset(new CString("0123456789ABCDEF"));
         //aes1.setKey("0123456789ABCDEF");
         aes1.setKey(new Uint8Array(16));
-        aes1.setIV(new Buffer(16));
+        //aes1.setIV(new Buffer(16));
         //aes1.setIV("0123456789ABCDEF");
         //aes2.setKey(new Uint8Array(16), new Buffer(16));
 
@@ -183,12 +187,12 @@
         var data_out = new Buffer(32);
         console.log(data_in);
 
-        aes1.encrypt(data_in, data_out, 2);
+        aes1.encrypt(data_in, data_out);
         //console.log(aes1._iv_enc);
         //console.log(aes1._iv_dec);
         console.log(data_out);
 
-        aes1.decrypt(data_out, data_in, 2);
+        aes1.decrypt(data_out, data_in);
         console.log(data_in);
 
         /*data_out.setUint32(0, 0);
@@ -239,31 +243,35 @@
       }
       
       function testPBKDF2() {
-          var digest = new Buffer(32);
+          //var digest = new Buffer(32);
+          //var digest = new UInt256();
+          var digest = new Uint8Array(32);
           PBKDF2.sha256(
             "test1",
-            "test2",
-            digest
+            new Uint8Array([0xFF, 0xFE]),
+            digest,
+            10000
           );
           console.log(digest);
       }
 
       function testHash() {
         var h = new MD5();
-        var b = new Buffer(16);
+        //var b = new UInt128();
+        var b = new Uint8Array(MD5.digestLength);
 
         h.reset();
-        h.step("bla");
+        h.step(new Uint8Array([0xFF, 0xFF, 0xEF]));
         h.finish(b);
-        console.log(b);
+        console.log(b.toString(16));
       }
       //testBuffer();
       //testCString();
       //testBaseX();
       //testUInt();
-      //testAES();
+      testAES();
       //testPBKDF2();
-      testHash();
+      //testHash();
 
       //console.log("before:" + t1);
       //testPrime();

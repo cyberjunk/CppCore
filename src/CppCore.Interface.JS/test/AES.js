@@ -33,19 +33,19 @@ const DATA16 = new Buffer(new Uint8Array([
     0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F
 ]));
 
-function test1(type, key, iv, data, n, len) {
-    const data_enc = new Buffer(n ? n*16 : len);
-    const data_dec = new Buffer(n ? n*16 : len);
+function test1(type, key, iv, data) {
+    const data_enc = new Buffer(data.byteLength);
+    const data_dec = new Buffer(data.byteLength);
     const aes = new type();
     aes.setKey(key);
     if (iv) aes.setIV(iv);
-    aes.encrypt(data, data_enc, n ? n : len);
-    aes.decrypt(data_enc, data_dec, n ? n : len);
+    aes.encrypt(data, data_enc);
+    aes.decrypt(data_enc, data_dec);
     chai.expect(indexedDB.cmp(data, data_dec)).to.equal(0);
     chai.expect(indexedDB.cmp(data, data_enc)).to.not.equal(0);
     chai.expect(indexedDB.cmp(data_enc, data_dec)).to.not.equal(0);
-    aes.encrypt(data, data_enc, n ? n : len);
-    aes.decrypt(data_enc, data_dec, n ? n : len);
+    aes.encrypt(data, data_enc);
+    aes.decrypt(data_enc, data_dec);
     chai.expect(indexedDB.cmp(data, data_dec)).to.equal(0);
     chai.expect(indexedDB.cmp(data, data_enc)).to.not.equal(0);
     chai.expect(indexedDB.cmp(data_enc, data_dec)).to.not.equal(0);
@@ -53,18 +53,18 @@ function test1(type, key, iv, data, n, len) {
 
 describe('AES', function () {
   describe('AES-ECB', function () {
-    it('AES128-ECB', function () { test1(AES128ECB, KEY128, null, DATA16, 1, null); });
-    it('AES192-ECB', function () { test1(AES192ECB, KEY192, null, DATA16, 1, null); });
-    it('AES256-ECB', function () { test1(AES256ECB, KEY256, null, DATA16, 1, null); });
+    it('AES128-ECB', function () { test1(AES128ECB, KEY128, null, DATA16); });
+    it('AES192-ECB', function () { test1(AES192ECB, KEY192, null, DATA16); });
+    it('AES256-ECB', function () { test1(AES256ECB, KEY256, null, DATA16); });
   });
   describe('AES-CBC', function () {
-    it('AES128-CBC', function () { test1(AES128CBC, KEY128, IV, DATA16, 1, null); });
-    it('AES192-CBC', function () { test1(AES192CBC, KEY192, IV, DATA16, 1, null); });
-    it('AES256-CBC', function () { test1(AES256CBC, KEY256, IV, DATA16, 1, null); });
+    it('AES128-CBC', function () { test1(AES128CBC, KEY128, IV, DATA16); });
+    it('AES192-CBC', function () { test1(AES192CBC, KEY192, IV, DATA16); });
+    it('AES256-CBC', function () { test1(AES256CBC, KEY256, IV, DATA16); });
   });
   describe('AES-CTR', function () {
-    it('AES128-CTR', function () { test1(AES128CTR, KEY128, IV, DATA15, null, 15); });
-    it('AES192-CTR', function () { test1(AES192CTR, KEY192, IV, DATA15, null, 15); });
-    it('AES256-CTR', function () { test1(AES256CTR, KEY256, IV, DATA15, null, 15); });
+    it('AES128-CTR', function () { test1(AES128CTR, KEY128, IV, DATA15); });
+    it('AES192-CTR', function () { test1(AES192CTR, KEY192, IV, DATA15); });
+    it('AES256-CTR', function () { test1(AES256CTR, KEY256, IV, DATA15); });
   });
 });
