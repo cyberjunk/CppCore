@@ -699,13 +699,21 @@ class Hash {
     }
   }
   _finish(digest, f, size) {
-    if (!(digest instanceof Buffer) && !(digest instanceof UInt)) {
+    if (digest instanceof Buffer || digest instanceof UInt) {
+      if (digest.byteLength != size) {
+        throw new Error("Unsupported size of digest in Hash.finish()");
+      }
+      f(this._ptr, digest._ptr);
+    }
+    else if (digest instanceof Uint8Array) {
+      const d = new Buffer(digest.byteLength);
+      this._finish(d, f, size);
+      digest.set(d);
+      d.free();
+    }
+    else {
       throw new Error("Unsupported type of digest in Hash.finish()");
     }
-    if (digest.byteLength != size) {
-      throw new Error("Unsupported size of digest in Hash.finish()");
-    }
-    f(this._ptr, digest._ptr);
   }
 }
 
@@ -774,13 +782,21 @@ class HMAC {
     }
   }
   _finish(digest, f, size) {
-    if (!(digest instanceof Buffer) && !(digest instanceof UInt)) {
+    if (digest instanceof Buffer || digest instanceof UInt) {
+      if (digest.byteLength != size) {
+        throw new Error("Unsupported size of digest in HMAC.finish()");
+      }
+      f(this._ptr, digest._ptr);
+    }
+    else if (digest instanceof Uint8Array) {
+      const d = new Buffer(digest.byteLength);
+      this._finish(d, f, size);
+      digest.set(d);
+      d.free();
+    }
+    else {
       throw new Error("Unsupported type of digest in HMAC.finish()");
     }
-    if (digest.byteLength != size) {
-      throw new Error("Unsupported size of digest in HMAC.finish()");
-    }
-    f(this._ptr, digest._ptr);
   }
 }
 
