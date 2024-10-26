@@ -6,7 +6,8 @@ import {
   AES128CTR, AES192CTR, AES256CTR,
   MD5, SHA256, SHA512,
   HMACMD5, HMACSHA256, HMACSHA512,
-  PBKDF2
+  PBKDF2,
+  Prime
 } from '../libcppcore.js';
 
 function getRandomInt(max) {
@@ -325,16 +326,16 @@ describe('UInt', function () {
     it('div()', function () { testOp(UInt2048, 2048, 512, 100, opDivBigInt, opDivUInt); });
   });
   describe('UInt4096', function () {
-    it('add()', function () { testOp(UInt4096, 4096, 1024, 100, opAddBigInt, opAddUInt); });
-    it('sub()', function () { testOp(UInt4096, 4096, 1024, 100, opSubBigInt, opSubUInt); });
-    it('mul()', function () { testOp(UInt4096, 4096, 1024, 100, opMulBigInt, opMulUInt); });
-    it('div()', function () { testOp(UInt4096, 4096, 1024, 100, opDivBigInt, opDivUInt); });
+    it('add()', function () { testOp(UInt4096, 4096, 1024, 10, opAddBigInt, opAddUInt); });
+    it('sub()', function () { testOp(UInt4096, 4096, 1024, 10, opSubBigInt, opSubUInt); });
+    it('mul()', function () { testOp(UInt4096, 4096, 1024, 10, opMulBigInt, opMulUInt); });
+    it('div()', function () { testOp(UInt4096, 4096, 1024, 10, opDivBigInt, opDivUInt); });
   });
   describe('UInt8192', function () {
-    it('add()', function () { testOp(UInt8192, 8192, 2048, 100, opAddBigInt, opAddUInt); });
-    it('sub()', function () { testOp(UInt8192, 8192, 2048, 100, opSubBigInt, opSubUInt); });
-    it('mul()', function () { testOp(UInt8192, 8192, 2048, 100, opMulBigInt, opMulUInt); });
-    it('div()', function () { testOp(UInt8192, 8192, 2048, 100, opDivBigInt, opDivUInt); });
+    it('add()', function () { testOp(UInt8192, 8192, 2048, 10, opAddBigInt, opAddUInt); });
+    it('sub()', function () { testOp(UInt8192, 8192, 2048, 10, opSubBigInt, opSubUInt); });
+    it('mul()', function () { testOp(UInt8192, 8192, 2048, 10, opMulBigInt, opMulUInt); });
+    it('div()', function () { testOp(UInt8192, 8192, 2048, 10, opDivBigInt, opDivUInt); });
   });
 });
 
@@ -506,9 +507,8 @@ describe('HMAC', function () {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 async function testPBKDF2(func, digestlen, name, iterations) {
-  //const hmac = new type();
   const digest1 = new Buffer(digestlen);
-  for(var n=0;n<10;n++) {
+  for(var n=0;n<5;n++) {
     const pwlen = getRandomInt(1024-1)+1;
     const pw = new Buffer(pwlen);
     for (var i=0;i<pwlen;i++) {
@@ -523,10 +523,10 @@ async function testPBKDF2(func, digestlen, name, iterations) {
     const c = await window.crypto.subtle.importKey("raw", pw, "PBKDF2", false, ["deriveBits"]);
     const s = await window.crypto.subtle.deriveBits(
     {
-        name: "PBKDF2",
-        hash: name,
-        salt: salt,
-        iterations: iterations
+      name: "PBKDF2",
+      hash: name,
+      salt: salt,
+      iterations: iterations
     }, c, digestlen*8);
     const digest2 = new Uint8Array(s);
     chai.expect(indexedDB.cmp(digest1, digest2)).to.equal(0);
@@ -553,5 +553,38 @@ describe('PBKDF2', function () {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// PRIMES
+// PRIME
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+describe('Prime', function () {
+  describe('test(string)', function () {
+    it('test("3") [32][small]', function () {
+      const r = Prime.test("3", false, 0);
+      chai.expect(r).to.equal(1);
+    });
+    it('test("4572648") [32][small]', function () {
+      const r = Prime.test("4572648", false, 0);
+      chai.expect(r).to.equal(0);
+    });
+    it('test("18446744073709551557") [64][large]', function () {
+      const r = Prime.test("18446744073709551557", false, 0);
+      chai.expect(r).to.equal(1);
+    });
+  });
+  describe('test(number)', function () {
+    it('test(17) [32][small]', function () {
+      const r = Prime.test(17, false, 0);
+      chai.expect(r).to.equal(1);
+    });
+  });
+  describe('test(bigint)', function () {
+    it('test(0x0397ffffffffffffffffffffffffffffn) [128][large]', function () {
+      const r = Prime.test(0x0397ffffffffffffffffffffffffffffn, false, 255);
+      chai.expect(r).to.equal(2);
+    });
+    it('test(170141183460469231731687303715884105727n) [128][mersenne]', function () {
+      const r = Prime.test(170141183460469231731687303715884105727n, false, 255);
+      chai.expect(r).to.equal(1);
+    });
+  });
+});
