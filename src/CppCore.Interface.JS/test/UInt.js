@@ -14,7 +14,7 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 function getRandomHexStr(max) {
-    const symbols = "0123456789ABCDEF";
+    const symbols = "0123456789abcdef";
     const len = getRandomInt(max-1) + 1;
     var str = "0x";
     for (var i=0; i < len; i++) {

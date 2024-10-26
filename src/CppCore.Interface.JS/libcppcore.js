@@ -260,7 +260,7 @@ export class Base10 extends BaseX {
 
 export class Base16 extends BaseX {
   constructor() {
-    super("0123456789ABCDEF");
+    super("0123456789abcdef");
   }
   static estimateBits(symbols) {
     return super.estimateBits(symbols, 16);
@@ -296,6 +296,9 @@ class UInt {
     else {
       return BASE10.decode(s);
     }
+  }
+  static fromInteger(v) {
+    return UInt.fromString("0x" + v.toString(16));
   }
   free() {
     this.#buffer.free();
@@ -964,6 +967,12 @@ export class Prime {
   static test(p, sign, certainty) {
     if (typeof p === "string") {
       const n = UInt.fromString(p);
+      const r = Prime.test(n, sign, certainty);
+      n.free();
+      return r;
+    }
+    if (typeof p === "bigint" || Number.isInteger(p)) {
+      const n = UInt.fromInteger(p);
       const r = Prime.test(n, sign, certainty);
       n.free();
       return r;
