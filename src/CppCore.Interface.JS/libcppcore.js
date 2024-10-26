@@ -558,52 +558,44 @@ class AES {
       throw new TypeError("libcppcorer: Invalid parameter in AES.setKey()");
     }
   }
-  _encrypt(data_in, data_out, iv, f, blockmode) {
-    if ((data_in  instanceof Buffer || data_in  instanceof UInt || data_in instanceof CString) && 
-        (data_out instanceof Buffer || data_out instanceof UInt)) {
-      if (data_in.byteLength != data_out.byteLength) {
+  _encrypt(input, output, iv, f, blockmode) {
+    if ((input  instanceof Buffer || input  instanceof UInt || input instanceof CString) && 
+        (output instanceof Buffer || output instanceof UInt)) {
+      if (input.byteLength != output.byteLength) {
         throw new RangeError("libcppcore: Input and Output must have same size");
       }
-      let len = data_in.byteLength;
+      let len = input.byteLength;
       if (blockmode) {
         if (len & 0x0F != 0) {
           throw new RangeError("libcppcore: Input and Output must be multiples of 16 bytes");
         }
         len = len >> 4;
       }
-      if (iv) {
-        f(this.ptr, data_in.ptr, data_out.ptr, iv.ptr, len);
-      }
-      else {
-        f(this.ptr, data_in.ptr, data_out.ptr, len);
-      }
+      if (iv) f(this.ptr, input.ptr, output.ptr, iv.ptr, len);
+      else    f(this.ptr, input.ptr, output.ptr, len);
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of data_in or data_out in AES.encrypt()");
+      throw new TypeError("libcppcore: Invalid type of input or output in AES.encrypt()");
     }
   }
-  _decrypt(data_in, data_out, iv, f, blockmode) {
-    if ((data_in  instanceof Buffer || data_in  instanceof UInt) && 
-        (data_out instanceof Buffer || data_out instanceof UInt)) {
-      if (data_in.byteLength != data_out.byteLength) {
+  _decrypt(input, output, iv, f, blockmode) {
+    if ((input  instanceof Buffer || input  instanceof UInt) && 
+        (output instanceof Buffer || output instanceof UInt)) {
+      if (input.byteLength != output.byteLength) {
         throw new RangeError("libcppcore: Input and Output must have same size");
       }
-      let len = data_in.byteLength;
+      let len = input.byteLength;
       if (blockmode) {
         if (len & 0x0F != 0) {
           throw new RangeError("libcppcore: Input and Output must be multiples of 16 bytes");
         }
         len = len >> 4;
       }
-      if (iv) {
-        f(this.ptr, data_in.ptr, data_out.ptr, iv.ptr, len);
-      }
-      else {
-        f(this.ptr, data_in.ptr, data_out.ptr, len);
-      }
+      if (iv) f(this.ptr, input.ptr, output.ptr, iv.ptr, len);
+      else    f(this.ptr, input.ptr, output.ptr, len);
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of data_in or data_out in AES.decrypt()");
+      throw new TypeError("libcppcore: Invalid type of input or output in AES.decrypt()");
     }
   }
 }
@@ -643,33 +635,33 @@ export class AES128ECB extends AES {
   constructor() {
     super(128);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, null, EXPORTS.cppcore_aes128_encrypt_ecb, true);
+  encrypt(input, output) {
+    super._encrypt(input, output, null, EXPORTS.cppcore_aes128_encrypt_ecb, true);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, null, EXPORTS.cppcore_aes128_decrypt_ecb, true);
+  decrypt(input, output) {
+    super._decrypt(input, output, null, EXPORTS.cppcore_aes128_decrypt_ecb, true);
   }
 }
 export class AES192ECB extends AES {
   constructor() {
     super(192);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, null, EXPORTS.cppcore_aes192_encrypt_ecb, true);
+  encrypt(input, output) {
+    super._encrypt(input, output, null, EXPORTS.cppcore_aes192_encrypt_ecb, true);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, null, EXPORTS.cppcore_aes192_decrypt_ecb, true);
+  decrypt(input, output) {
+    super._decrypt(input, output, null, EXPORTS.cppcore_aes192_decrypt_ecb, true);
   }
 }
 export class AES256ECB extends AES {
   constructor() {
     super(256);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, null, EXPORTS.cppcore_aes256_encrypt_ecb, true);
+  encrypt(input, output) {
+    super._encrypt(input, output, null, EXPORTS.cppcore_aes256_encrypt_ecb, true);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, null, EXPORTS.cppcore_aes256_decrypt_ecb, true);
+  decrypt(input, output) {
+    super._decrypt(input, output, null, EXPORTS.cppcore_aes256_decrypt_ecb, true);
   }
 }
 
@@ -677,33 +669,33 @@ export class AES128CBC extends AESIV {
   constructor() {
     super(128);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, this.iv_enc, EXPORTS.cppcore_aes128_encrypt_cbc, true);
+  encrypt(input, output) {
+    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes128_encrypt_cbc, true);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, this.iv_dec, EXPORTS.cppcore_aes128_decrypt_cbc, true);
+  decrypt(input, output) {
+    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes128_decrypt_cbc, true);
   }
 }
 export class AES192CBC extends AESIV {
   constructor() {
     super(192);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, this.iv_enc, EXPORTS.cppcore_aes192_encrypt_cbc, true);
+  encrypt(input, output) {
+    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes192_encrypt_cbc, true);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, this.iv_dec, EXPORTS.cppcore_aes192_decrypt_cbc, true);
+  decrypt(input, output) {
+    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes192_decrypt_cbc, true);
   }
 }
 export class AES256CBC extends AESIV {
   constructor() {
     super(256);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, this.iv_enc, EXPORTS.cppcore_aes256_encrypt_cbc, true);
+  encrypt(input, output) {
+    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes256_encrypt_cbc, true);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, this.iv_dec, EXPORTS.cppcore_aes256_decrypt_cbc, true);
+  decrypt(input, output) {
+    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes256_decrypt_cbc, true);
   }
 }
 
@@ -711,33 +703,33 @@ export class AES128CTR extends AESIV {
   constructor() {
     super(128);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, this.iv_enc, EXPORTS.cppcore_aes128_encrypt_ctr, false);
+  encrypt(input, output) {
+    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes128_encrypt_ctr, false);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, this.iv_dec, EXPORTS.cppcore_aes128_decrypt_ctr, false);
+  decrypt(input, output) {
+    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes128_decrypt_ctr, false);
   }
 }
 export class AES192CTR extends AESIV {
   constructor() {
     super(192);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, this.iv_enc, EXPORTS.cppcore_aes192_encrypt_ctr, false);
+  encrypt(input, output) {
+    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes192_encrypt_ctr, false);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, this.iv_dec, EXPORTS.cppcore_aes192_decrypt_ctr, false);
+  decrypt(input, output) {
+    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes192_decrypt_ctr, false);
   }
 }
 export class AES256CTR extends AESIV {
   constructor() {
     super(256);
   }
-  encrypt(data_in, data_out) {
-    super._encrypt(data_in, data_out, this.iv_enc, EXPORTS.cppcore_aes256_encrypt_ctr, false);
+  encrypt(input, output) {
+    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes256_encrypt_ctr, false);
   }
-  decrypt(data_in, data_out) {
-    super._decrypt(data_in, data_out, this.iv_dec, EXPORTS.cppcore_aes256_decrypt_ctr, false);
+  decrypt(input, output) {
+    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes256_decrypt_ctr, false);
   }
 }
 
