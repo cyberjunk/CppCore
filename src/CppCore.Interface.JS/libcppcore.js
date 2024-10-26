@@ -559,8 +559,8 @@ class AES {
     }
   }
   _encrypt(input, output, iv, f, blockmode) {
-    if ((input  instanceof Buffer || input  instanceof UInt || input instanceof CString) && 
-        (output instanceof Buffer || output instanceof UInt)) {
+    if ((input  instanceof Buffer || input instanceof CString) && 
+        (output instanceof Buffer)) {
       if (input.byteLength > output.byteLength) {
         throw new RangeError("libcppcore: Output too small");
       }
@@ -590,8 +590,8 @@ class AES {
     }
   }
   _decrypt(input, output, iv, f, blockmode) {
-    if ((input  instanceof Buffer || input  instanceof UInt) && 
-        (output instanceof Buffer || output instanceof UInt) || output instanceof CString) {
+    if ((input  instanceof Buffer) && 
+        (output instanceof Buffer || output instanceof CString)) {
       if (output instanceof CString) {
         if (input.byteLength > output.maxLength) {
           throw new RangeError("libcppcore: Output too small");
