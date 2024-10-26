@@ -17,23 +17,6 @@ const handle = await WebAssembly
   .instantiateStreaming(fetch('libcppcore.wasm'), imports)
   .then(lib => {
     console.debug("libcppcore: Library loaded")
-    //console.debug("libcppcore: Exports")
-    //console.debug(lib.instance.exports);
-    
-    /*console.debug("Memory Buffer Size")
-    console.debug(lib.instance.exports.memory.buffer.byteLength.toString(16));
-    console.debug(lib.instance.exports.memory.buffer.maxByteLength.toString(16));*/
-    
-    /*var _tls_base = lib.instance.exports.__tls_base.value;
-    var _data_end = lib.instance.exports.__data_end.value;
-    var _heap_base = lib.instance.exports.__heap_base.value
-    var _stack_pointer = lib.instance.exports.__stack_pointer.value
-
-    console.debug("__tls_base: " + _tls_base.toString(16));
-    console.debug("__data_end: " + _data_end.toString(16));
-    console.debug("__heap_base: " + _heap_base.toString(16));
-    console.debug("__stack_pointer: " + _stack_pointer.toString(16));*/
-
     return lib;
 });
 
@@ -43,13 +26,13 @@ const registry = new FinalizationRegistry((ptr) => {
   EXPORTS.cppcore_free(ptr);
 });
 
-const encoder = new TextEncoder();
-const decoder = new TextDecoder();
+const ENCODER = new TextEncoder();
+const DECODER = new TextDecoder();
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 function alloc(size) {
-  const ptr = handle.instance.exports.cppcore_alloc(size);
+  const ptr = EXPORTS.cppcore_alloc(size);
   if (ptr == 0) throw new Error('libcppcore: Out of Memory');
   return ptr;
 }
@@ -152,7 +135,7 @@ export class CString {
   }
   set(str) {
     if (typeof str === "string") {
-      const result = encoder.encodeInto(str, this.#buffer);
+      const result = ENCODER.encodeInto(str, this.#buffer);
       if (this.maxLength < result.written)
         throw new Error('libcppcore: String too big in CString.set()');
       this.#buffer[result.written] = 0x00;
@@ -171,7 +154,7 @@ export class CString {
     }
   }
   toString() {
-    return decoder.decode(this.#buffer.subarray(0, this.byteLength));
+    return DECODER.decode(this.#buffer.subarray(0, this.byteLength));
   }
 }
 
