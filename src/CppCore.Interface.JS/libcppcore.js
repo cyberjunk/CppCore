@@ -13,14 +13,14 @@ const imports = {
   }
 }
 
-const handle = await WebAssembly
+const HANDLE = await WebAssembly
   .instantiateStreaming(fetch('libcppcore.wasm'), imports)
   .then(lib => {
     console.debug("libcppcore: Library loaded")
     return lib;
 });
 
-const EXPORTS = handle.instance.exports;
+const EXPORTS = HANDLE.instance.exports;
 
 const registry = new FinalizationRegistry((ptr) => {
   EXPORTS.cppcore_free(ptr);
