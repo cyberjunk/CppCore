@@ -318,6 +318,9 @@ class UInt {
         BASE10.decodeInto(v, this.#buffer);
       }
     }
+    else if (typeof v === "bigint" || Number.isInteger(v)) {
+      this.set("0x" + v.toString(16));
+    }
     else if (v instanceof Uint8Array) {
       if (v.byteLength <= this.byteLength) {
         this.#buffer.set(v);
@@ -338,6 +341,9 @@ class UInt {
     else if (b == 16)    return BASE16.encode(this);
     else if (b == 2)     return BASE02.encode(this);
     else throw new Error("libcppcore: Unsupported base in UInt.toString()");
+  }
+  toBigInt() {
+    return BigInt("0x" + this.toString(16));
   }
   get buffer() { return this.#buffer; }
   get byteLength() { return this.#buffer.byteLength; }
