@@ -601,10 +601,10 @@ class AES {
 }
 
 class AESIV extends AES {
-  #iv_enc
-  #iv_dec
-  get iv_enc() { return this.#iv_enc; }
-  get iv_dec() { return this.#iv_dec; }
+  #ivEnc
+  #ivDec
+  get ivEnc() { return this.#ivEnc; }
+  get ivDec() { return this.#ivDec; }
   constructor(bits) { 
     super(bits);
   }
@@ -612,8 +612,8 @@ class AESIV extends AES {
     if (iv instanceof Uint8Array) {
       if (iv.byteLength != 16)
         throw new RangeError("libcppcore: Binary IV must have exactly 16 bytes");
-      this.#iv_enc = new Buffer(iv);
-      this.#iv_dec = new Buffer(iv);
+      this.#ivEnc = new Buffer(iv);
+      this.#ivDec = new Buffer(iv);
     }
     else if (iv instanceof CString) {
       if (iv.byteLength != 16)
@@ -670,10 +670,10 @@ export class AES128CBC extends AESIV {
     super(128);
   }
   encrypt(input, output) {
-    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes128_encrypt_cbc, true);
+    super._encrypt(input, output, this.ivEnc, EXPORTS.cppcore_aes128_encrypt_cbc, true);
   }
   decrypt(input, output) {
-    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes128_decrypt_cbc, true);
+    super._decrypt(input, output, this.ivDec, EXPORTS.cppcore_aes128_decrypt_cbc, true);
   }
 }
 export class AES192CBC extends AESIV {
@@ -681,10 +681,10 @@ export class AES192CBC extends AESIV {
     super(192);
   }
   encrypt(input, output) {
-    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes192_encrypt_cbc, true);
+    super._encrypt(input, output, this.ivEnc, EXPORTS.cppcore_aes192_encrypt_cbc, true);
   }
   decrypt(input, output) {
-    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes192_decrypt_cbc, true);
+    super._decrypt(input, output, this.ivDec, EXPORTS.cppcore_aes192_decrypt_cbc, true);
   }
 }
 export class AES256CBC extends AESIV {
@@ -692,10 +692,10 @@ export class AES256CBC extends AESIV {
     super(256);
   }
   encrypt(input, output) {
-    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes256_encrypt_cbc, true);
+    super._encrypt(input, output, this.ivEnc, EXPORTS.cppcore_aes256_encrypt_cbc, true);
   }
   decrypt(input, output) {
-    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes256_decrypt_cbc, true);
+    super._decrypt(input, output, this.ivDec, EXPORTS.cppcore_aes256_decrypt_cbc, true);
   }
 }
 
@@ -704,10 +704,10 @@ export class AES128CTR extends AESIV {
     super(128);
   }
   encrypt(input, output) {
-    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes128_encrypt_ctr, false);
+    super._encrypt(input, output, this.ivEnc, EXPORTS.cppcore_aes128_encrypt_ctr, false);
   }
   decrypt(input, output) {
-    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes128_decrypt_ctr, false);
+    super._decrypt(input, output, this.ivDec, EXPORTS.cppcore_aes128_decrypt_ctr, false);
   }
 }
 export class AES192CTR extends AESIV {
@@ -715,10 +715,10 @@ export class AES192CTR extends AESIV {
     super(192);
   }
   encrypt(input, output) {
-    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes192_encrypt_ctr, false);
+    super._encrypt(input, output, this.ivEnc, EXPORTS.cppcore_aes192_encrypt_ctr, false);
   }
   decrypt(input, output) {
-    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes192_decrypt_ctr, false);
+    super._decrypt(input, output, this.ivDec, EXPORTS.cppcore_aes192_decrypt_ctr, false);
   }
 }
 export class AES256CTR extends AESIV {
@@ -726,10 +726,10 @@ export class AES256CTR extends AESIV {
     super(256);
   }
   encrypt(input, output) {
-    super._encrypt(input, output, this.iv_enc, EXPORTS.cppcore_aes256_encrypt_ctr, false);
+    super._encrypt(input, output, this.ivEnc, EXPORTS.cppcore_aes256_encrypt_ctr, false);
   }
   decrypt(input, output) {
-    super._decrypt(input, output, this.iv_dec, EXPORTS.cppcore_aes256_decrypt_ctr, false);
+    super._decrypt(input, output, this.ivDec, EXPORTS.cppcore_aes256_decrypt_ctr, false);
   }
 }
 
