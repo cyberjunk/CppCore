@@ -147,13 +147,19 @@ export class CString {
   set(str) {
     if (typeof str === "string") {
       const result = ENCODER.encodeInto(str, this.#buffer);
-      if (this.maxLength < result.written)
+      if (this.maxLength < result.written) {
+        this.#buffer[this.maxLength] = 0x00;
+        this.byteLength = this.maxLength;
         throw new RangeError('libcppcore: String too big in CString.set()');
+      }
       this.#buffer[result.written] = 0x00;
       this.byteLength = result.written;
     }
     else if (str instanceof CString) {
       if (this.maxLength < str.byteLength) {
+        this.#buffer.set(str.buffer.subarray(0, this.maxLength));
+        this.#buffer[this.maxLength] = 0x00;
+        this.byteLength = this.maxLength;
         throw new RangeError("libcppcore: CString too big in CString.set()")
       }
       this.#buffer.set(str.buffer);
