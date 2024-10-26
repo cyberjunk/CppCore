@@ -561,13 +561,13 @@ class AES {
   _encrypt(input, output, iv, f, blockmode) {
     if ((input  instanceof Buffer || input  instanceof UInt || input instanceof CString) && 
         (output instanceof Buffer || output instanceof UInt)) {
-      if (input.byteLength != output.byteLength) {
-        throw new RangeError("libcppcore: Input and Output must have same size");
+      if (input.byteLength > output.byteLength) {
+        throw new RangeError("libcppcore: Output too small");
       }
       let len = input.byteLength;
       if (blockmode) {
         if (len & 0x0F != 0) {
-          throw new RangeError("libcppcore: Input and Output must be multiples of 16 bytes");
+          throw new RangeError("libcppcore: Input must be multiples of 16 bytes");
         }
         len = len >> 4;
       }
@@ -591,14 +591,23 @@ class AES {
   }
   _decrypt(input, output, iv, f, blockmode) {
     if ((input  instanceof Buffer || input  instanceof UInt) && 
-        (output instanceof Buffer || output instanceof UInt)) {
-      if (input.byteLength != output.byteLength) {
-        throw new RangeError("libcppcore: Input and Output must have same size");
+        (output instanceof Buffer || output instanceof UInt) || output instanceof CString) {
+      if (output instanceof CString) {
+        if (input.byteLength > output.maxLength) {
+          throw new RangeError("libcppcore: Output too small");
+        }
+        output.byteLength = input.byteLength;
+        output[output.byteLength] = 0x00;
+      }
+      else {
+        if (input.byteLength > output.byteLength) {
+          throw new RangeError("libcppcore: Output too small");
+        }
       }
       let len = input.byteLength;
       if (blockmode) {
         if (len & 0x0F != 0) {
-          throw new RangeError("libcppcore: Input and Output must be multiples of 16 bytes");
+          throw new RangeError("libcppcore: Input must be multiples of 16 bytes");
         }
         len = len >> 4;
       }
