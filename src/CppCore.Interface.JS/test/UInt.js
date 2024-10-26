@@ -77,7 +77,7 @@ describe('UInt', function () {
     it('add()', function () { testOp(UInt256, 256, 64, 100, opAddBigInt, opAddUInt); });
     it('sub()', function () { testOp(UInt256, 256, 64, 100, opSubBigInt, opSubUInt); });
     it('mul()', function () { testOp(UInt256, 256, 64, 100, opMulBigInt, opMulUInt); });
-    it('div()', function () { testOp(UInt256, 245, 64, 100, opDivBigInt, opDivUInt); });
+    it('div()', function () { testOp(UInt256, 256, 64, 100, opDivBigInt, opDivUInt); });
   });
   describe('UInt512', function () {
     it('add()', function () { testOp(UInt512, 512, 128, 100, opAddBigInt, opAddUInt); });
