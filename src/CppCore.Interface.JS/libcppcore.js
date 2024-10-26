@@ -75,12 +75,12 @@ export class Buffer extends Uint8Array {
   }
   free() {
     REGISTRY.unregister(this);
-    EXPORTS.cppcore_free(this._ptr);
+    EXPORTS.cppcore_free(this.ptr);
   }
   get bitLength() {
     return this.byteLength << 3;
   }
-  get _ptr() {
+  get ptr() {
     return this.byteOffset;
   }
 }
@@ -120,8 +120,8 @@ export class CString {
   get maxLength() {
     return this.#buffer.byteLength - 1;
   }
-  get _ptr() {
-    return this.#buffer._ptr;
+  get ptr() {
+    return this.#buffer.ptr;
   }
   free() {
     this.#buffer.free();
@@ -184,11 +184,11 @@ export class BaseX {
     else throw new Error('libcppcore: Invalid byteLength in BaseX.encode()');
     const MAXSYMBOLS = this.#strbuf.maxLength;
     const r = f(
-      v._ptr,                     // inbuf ptr
-      this.#strbuf._ptr,          // outbuf ptr
+      v.ptr,                     // inbuf ptr
+      this.#strbuf.ptr,          // outbuf ptr
       MAXSYMBOLS,                 // outbuf max symbols
       this.#alphabet.byteLength,  // base
-      this.#alphabet._ptr,        // alphabet ptr
+      this.#alphabet.ptr,        // alphabet ptr
       1                           // write term 0x00
     );
     if (r < 0) throw new Error('libcppcore: String buffer too small in BaseX.encode()');
@@ -211,7 +211,7 @@ export class BaseX {
     else if (bits <= 8192) { t = UInt8192; f = EXPORTS.cppcore_basex_decode8192; }
     else throw new Error('libcppcore: Invalid bitLength in BaseX.decode()');
     const uint = new t();
-    const r = f(this.#strbuf._ptr, uint._ptr, this.#alphabet._ptr);
+    const r = f(this.#strbuf.ptr, uint.ptr, this.#alphabet.ptr);
     if (r == 0) throw new Error('libcppcore: Invalid symbol or overflow in BaseX.decode()');
     return uint;
   }
@@ -229,7 +229,7 @@ export class BaseX {
     else if (byteLength == 512)  { f = EXPORTS.cppcore_basex_decode4096; }
     else if (byteLength == 1024) { f = EXPORTS.cppcore_basex_decode8192; }
     else throw new Error('libcppcore: Invalid byteLength in BaseX.decodeInto()');
-    const r = f(this.#strbuf._ptr, buf._ptr, this.#alphabet._ptr);
+    const r = f(this.#strbuf.ptr, buf.ptr, this.#alphabet.ptr);
     if (r == 0) throw new Error('libcppcore: Invalid symbol or overflow in BaseX.decodeInto()');
   }
 }
@@ -339,116 +339,116 @@ class UInt {
   get buffer() { return this.#buffer; }
   get byteLength() { return this.#buffer.byteLength; }
   get bitLength()  { return this.#buffer.bitLength; }
-  get _ptr() { return this.#buffer.byteOffset; }
+  get ptr() { return this.#buffer.byteOffset; }
 }
 
 export class UInt32 extends UInt {
   constructor(v) { super(4, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint32_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint32_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint32_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint32_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint32_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint32_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint32_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint32_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint32_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint32_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint32_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint32_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint32_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint32_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint32_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint32_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint32_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint32_gcd(a.ptr, b.ptr, r.ptr); }
 }
 export class UInt64 extends UInt {
   constructor(v) { super(8, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint64_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint64_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint64_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint64_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint64_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint64_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint64_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint64_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint64_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint64_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint64_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint64_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint64_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint64_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint64_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint64_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint64_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint64_gcd(a.ptr, b.ptr, r.ptr); }
 }
 export class UInt128 extends UInt {
   constructor(v) { super(16, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint128_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint128_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint128_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint128_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint128_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint128_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint128_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint128_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint128_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint128_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint128_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint128_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint128_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint128_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint128_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint128_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint128_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint128_gcd(a.ptr, b.ptr, r.ptr); }
 }
 export class UInt256 extends UInt {
   constructor(v) { super(32, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint256_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint256_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint256_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint256_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint256_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint256_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint256_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint256_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint256_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint256_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint256_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint256_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint256_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint256_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint256_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint256_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint256_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint256_gcd(a.ptr, b.ptr, r.ptr); }
 }
 export class UInt512 extends UInt {
   constructor(v) { super(64, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint512_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint512_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint512_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint512_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint512_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint512_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint512_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint512_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint512_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint512_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint512_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint512_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint512_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint512_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint512_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint512_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint512_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint512_gcd(a.ptr, b.ptr, r.ptr); }
 }
 export class UInt1024 extends UInt {
   constructor(v) { super(128, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint1024_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint1024_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint1024_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint1024_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint1024_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint1024_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint1024_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint1024_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint1024_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint1024_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint1024_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint1024_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint1024_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint1024_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint1024_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint1024_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint1024_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint1024_gcd(a.ptr, b.ptr, r.ptr); }
 }
 export class UInt2048 extends UInt {
   constructor(v) { super(256, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint2048_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint2048_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint2048_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint2048_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint2048_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint2048_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint2048_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint2048_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint2048_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint2048_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint2048_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint2048_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint2048_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint2048_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint2048_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint2048_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint2048_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint2048_gcd(a.ptr, b.ptr, r.ptr); }
 }
 export class UInt4096 extends UInt {
   constructor(v) { super(512, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint4096_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint4096_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint4096_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint4096_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint4096_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint4096_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint4096_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint4096_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint4096_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint4096_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint4096_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint4096_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint4096_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint4096_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint4096_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint4096_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint4096_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint4096_gcd(a.ptr, b.ptr, r.ptr); }
 }
 export class UInt8192 extends UInt {
   constructor(v) { super(1024, v); }
-  static shl(a, b, r) { EXPORTS.cppcore_uint8192_shl(a._ptr, b, r._ptr);}
-  static shr(a, b, r) { EXPORTS.cppcore_uint8192_shr(a._ptr, b, r._ptr);}
-  static add(a, b, r) { EXPORTS.cppcore_uint8192_add(a._ptr, b._ptr, r._ptr); }
-  static sub(a, b, r) { EXPORTS.cppcore_uint8192_sub(a._ptr, b._ptr, r._ptr); }
-  static mul(a, b, r) { EXPORTS.cppcore_uint8192_mul(a._ptr, b._ptr, r._ptr); }
-  static divmod(a, b, q, r) { EXPORTS.cppcore_uint8192_divmod(a._ptr, b._ptr, q._ptr, r._ptr); }
-  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint8192_mulmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static powmod(a, b, m, r) { EXPORTS.cppcore_uint8192_powmod(a._ptr, b._ptr, m._ptr, r._ptr); }
-  static gcd(a, b, r) { EXPORTS.cppcore_uint8192_gcd(a._ptr, b._ptr, r._ptr); }
+  static shl(a, b, r) { EXPORTS.cppcore_uint8192_shl(a.ptr, b, r.ptr);}
+  static shr(a, b, r) { EXPORTS.cppcore_uint8192_shr(a.ptr, b, r.ptr);}
+  static add(a, b, r) { EXPORTS.cppcore_uint8192_add(a.ptr, b.ptr, r.ptr); }
+  static sub(a, b, r) { EXPORTS.cppcore_uint8192_sub(a.ptr, b.ptr, r.ptr); }
+  static mul(a, b, r) { EXPORTS.cppcore_uint8192_mul(a.ptr, b.ptr, r.ptr); }
+  static divmod(a, b, q, r) { EXPORTS.cppcore_uint8192_divmod(a.ptr, b.ptr, q.ptr, r.ptr); }
+  static mulmod(a, b, m, r) { EXPORTS.cppcore_uint8192_mulmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static powmod(a, b, m, r) { EXPORTS.cppcore_uint8192_powmod(a.ptr, b.ptr, m.ptr, r.ptr); }
+  static gcd(a, b, r) { EXPORTS.cppcore_uint8192_gcd(a.ptr, b.ptr, r.ptr); }
 }
 
 UInt32.MAX   = new UInt32();   UInt32.MAX.buffer.fill(0xFF);
@@ -469,7 +469,7 @@ class AES {
   #bits
   #ptr
   get bits() { return this.#bits; }
-  get _ptr() { return this.#ptr; }
+  get ptr() { return this.#ptr; }
   constructor(bits) {
     switch(bits) {
       case 128:
@@ -497,17 +497,17 @@ class AES {
         case 128:
           if (key.byteLength != 16)
             throw new Error("libcppcore: Key must have exactly 16 bytes for AES128");
-          EXPORTS.cppcore_aes128_reset(this._ptr, key._ptr);
+          EXPORTS.cppcore_aes128_reset(this.ptr, key.ptr);
           break;
         case 192:
           if (key.byteLength != 24)
             throw new Error("libcppcore: Key must have exactly 24 bytes for AES192");
-          EXPORTS.cppcore_aes192_reset(this._ptr, key._ptr);
+          EXPORTS.cppcore_aes192_reset(this.ptr, key.ptr);
           break;
         case 256:
           if (key.byteLength != 32)
             throw new Error("libcppcore: Key must have exactly 32 bytes for AES256");
-          EXPORTS.cppcore_aes256_reset(this._ptr, key._ptr);
+          EXPORTS.cppcore_aes256_reset(this.ptr, key.ptr);
           break;
       }
     }
@@ -535,7 +535,7 @@ class AES {
       if (data_in.byteLength & 0x0F != 0) {
         throw new Error("Input and Output must be multiples of 16 bytes");
       }
-      f(this._ptr, data_in._ptr, data_out._ptr, data_in.byteLength>>4);
+      f(this.ptr, data_in.ptr, data_out.ptr, data_in.byteLength>>4);
     }
     else {
       throw new Error("Invalid type of data_in or data_out in AES.encrypt()");
@@ -550,7 +550,7 @@ class AES {
       if (data_in.byteLength & 0x0F != 0) {
         throw new Error("Input and Output must be multiples of 16 bytes");
       }
-      f(this._ptr, data_in._ptr, data_out._ptr, data_in.byteLength>>4);
+      f(this.ptr, data_in.ptr, data_out.ptr, data_in.byteLength>>4);
     }
     else {
       throw new Error("Invalid type of data_in or data_out in AES.decrypt()");
@@ -594,10 +594,10 @@ class AESIV extends AES {
         if (data_in.byteLength & 0x0F != 0) {
           throw new Error("Input and Output must be multiples of 16 bytes");
         }
-        f(this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, data_in.byteLength>>4);
+        f(this.ptr, data_in.ptr, data_out.ptr, this._iv_enc.ptr, data_in.byteLength>>4);
       }
       else {
-        f(this._ptr, data_in._ptr, data_out._ptr, this._iv_enc._ptr, data_in.byteLength);
+        f(this.ptr, data_in.ptr, data_out.ptr, this._iv_enc.ptr, data_in.byteLength);
       }
     }
     else {
@@ -614,10 +614,10 @@ class AESIV extends AES {
         if (data_in.byteLength & 0x0F != 0) {
           throw new Error("Input and Output must be multiples of 16 bytes");
         }
-        f(this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, data_in.byteLength>>4);
+        f(this.ptr, data_in.ptr, data_out.ptr, this._iv_dec.ptr, data_in.byteLength>>4);
       }
       else {
-        f(this._ptr, data_in._ptr, data_out._ptr, this._iv_dec._ptr, data_in.byteLength);
+        f(this.ptr, data_in.ptr, data_out.ptr, this._iv_dec.ptr, data_in.byteLength);
       }
     }
     else {
@@ -734,7 +734,7 @@ export class AES256CTR extends AESIV {
 
 class Hash {
   #ptr
-  get _ptr() { return this.#ptr; }
+  get ptr() { return this.#ptr; }
   constructor(f) {
     this.#ptr = f();
     REGISTRY.register(this, this.#ptr, this);
@@ -744,7 +744,7 @@ class Hash {
   }
   _step(data, f) {
     if (data instanceof Buffer || data instanceof UInt || data instanceof CString) {
-      f(this.#ptr, data._ptr, data.byteLength);
+      f(this.#ptr, data.ptr, data.byteLength);
     }
     else if (typeof data === "string") {
       const d = new CString(data);
@@ -765,7 +765,7 @@ class Hash {
       if (digest.byteLength != this.constructor.digestLength) {
         throw new Error("Unsupported size of digest in Hash.finish()");
       }
-      f(this.#ptr, digest._ptr);
+      f(this.#ptr, digest.ptr);
     }
     else if (digest instanceof Uint8Array) {
       const d = new Buffer(digest.byteLength);
@@ -807,14 +807,14 @@ export class SHA512 extends Hash {
 
 class HMAC {
   #ptr
-  get _ptr() { return this.#ptr; }
+  get ptr() { return this.#ptr; }
   constructor(f) {
     this.#ptr = f();
     REGISTRY.register(this, this.#ptr, this);
   }
   _reset(key, f) {
     if (key instanceof Buffer || key instanceof UInt || key instanceof CString) {
-      f(this.#ptr, key._ptr, key.byteLength);
+      f(this.#ptr, key.ptr, key.byteLength);
     }
     else if (typeof key === "string") {
       const k = new CString(key);
@@ -832,7 +832,7 @@ class HMAC {
   }
   _step(data, f) {
     if (data instanceof Buffer || data instanceof UInt || data instanceof CString) {
-      f(this.#ptr, data._ptr, data.byteLength);
+      f(this.#ptr, data.ptr, data.byteLength);
     }
     else if (typeof data === "string") {
       const d = new CString(data);
@@ -853,7 +853,7 @@ class HMAC {
       if (digest.byteLength != this.constructor.digestLength) {
         throw new Error("Unsupported size of digest in HMAC.finish()");
       }
-      f(this.#ptr, digest._ptr);
+      f(this.#ptr, digest.ptr);
     }
     else if (digest instanceof Uint8Array) {
       const d = new Buffer(digest.byteLength);
@@ -899,9 +899,9 @@ export class PBKDF2 {
         (salt     instanceof Buffer || salt     instanceof UInt || salt     instanceof CString) &&
         (digest   instanceof Buffer || digest   instanceof UInt) &&
         (Number.isInteger(iterations))) {
-      f(password._ptr, password.byteLength,
-        salt._ptr,     salt.byteLength,
-        digest._ptr,   digest.byteLength,
+      f(password.ptr, password.byteLength,
+        salt.ptr,     salt.byteLength,
+        digest.ptr,   digest.byteLength,
         iterations);
     }
     else if (typeof password === "string") {
@@ -972,14 +972,14 @@ export class Prime {
       throw new Error("libcppcore: Invalid type of p in Prime.test()");
     }
     switch(p.byteLength) {
-      case 4:   return EXPORTS.cppcore_prime32_test(p._ptr, sign, certainty);
-      case 8:   return EXPORTS.cppcore_prime64_test(p._ptr, sign, certainty);
-      case 16:  return EXPORTS.cppcore_prime128_test(p._ptr, sign, certainty);
-      case 32:  return EXPORTS.cppcore_prime256_test(p._ptr, sign, certainty);
-      case 64:  return EXPORTS.cppcore_prime512_test(p._ptr, sign, certainty);
-      case 128: return EXPORTS.cppcore_prime1024_test(p._ptr, sign, certainty);
-      case 256: return EXPORTS.cppcore_prime2048_test(p._ptr, sign, certainty);
-      case 512: return EXPORTS.cppcore_prime4096_test(p._ptr, sign, certainty);
+      case 4:   return EXPORTS.cppcore_prime32_test(p.ptr, sign, certainty);
+      case 8:   return EXPORTS.cppcore_prime64_test(p.ptr, sign, certainty);
+      case 16:  return EXPORTS.cppcore_prime128_test(p.ptr, sign, certainty);
+      case 32:  return EXPORTS.cppcore_prime256_test(p.ptr, sign, certainty);
+      case 64:  return EXPORTS.cppcore_prime512_test(p.ptr, sign, certainty);
+      case 128: return EXPORTS.cppcore_prime1024_test(p.ptr, sign, certainty);
+      case 256: return EXPORTS.cppcore_prime2048_test(p.ptr, sign, certainty);
+      case 512: return EXPORTS.cppcore_prime4096_test(p.ptr, sign, certainty);
       default:  throw new Error("libcppcore: Invalid byteLength of p in Prime.test()");
     }
   }
@@ -988,14 +988,14 @@ export class Prime {
       throw new Error("libcppcore: Invalid type of p in Prime.generate()");
     }
     switch(p.byteLength) {
-      case 4:   return EXPORTS.cppcore_prime32_generate(p._ptr, sign, certainty);
-      case 8:   return EXPORTS.cppcore_prime64_generate(p._ptr, sign, certainty);
-      case 16:  return EXPORTS.cppcore_prime128_generate(p._ptr, sign, certainty);
-      case 32:  return EXPORTS.cppcore_prime256_generate(p._ptr, sign, certainty);
-      case 64:  return EXPORTS.cppcore_prime512_generate(p._ptr, sign, certainty);
-      case 128: return EXPORTS.cppcore_prime1024_generate(p._ptr, sign, certainty);
-      case 256: return EXPORTS.cppcore_prime2048_generate(p._ptr, sign, certainty);
-      case 512: return EXPORTS.cppcore_prime4096_generate(p._ptr, sign, certainty);
+      case 4:   return EXPORTS.cppcore_prime32_generate(p.ptr, sign, certainty);
+      case 8:   return EXPORTS.cppcore_prime64_generate(p.ptr, sign, certainty);
+      case 16:  return EXPORTS.cppcore_prime128_generate(p.ptr, sign, certainty);
+      case 32:  return EXPORTS.cppcore_prime256_generate(p.ptr, sign, certainty);
+      case 64:  return EXPORTS.cppcore_prime512_generate(p.ptr, sign, certainty);
+      case 128: return EXPORTS.cppcore_prime1024_generate(p.ptr, sign, certainty);
+      case 256: return EXPORTS.cppcore_prime2048_generate(p.ptr, sign, certainty);
+      case 512: return EXPORTS.cppcore_prime4096_generate(p.ptr, sign, certainty);
       default:  throw new Error("libcppcore: Invalid byteLength of p in Prime.generate()");
     }
   }
