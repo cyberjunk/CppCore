@@ -574,6 +574,17 @@ class AES {
       if (iv) f(this.ptr, input.ptr, output.ptr, iv.ptr, len);
       else    f(this.ptr, input.ptr, output.ptr, len);
     }
+    else if (input instanceof Uint8Array && !(input instanceof Buffer)) {
+      const t = new Buffer(input);
+      this._encrypt(t, output, iv, f, blockmode);
+      t.free();
+    }
+    else if (output instanceof Uint8Array && !(output instanceof Buffer)) {
+      const t = new Buffer(output.byteLength);
+      this._encrypt(input, t, iv, f, blockmode);
+      output.set(t);
+      t.free();
+    }
     else {
       throw new TypeError("libcppcore: Invalid type of input or output in AES.encrypt()");
     }
@@ -593,6 +604,17 @@ class AES {
       }
       if (iv) f(this.ptr, input.ptr, output.ptr, iv.ptr, len);
       else    f(this.ptr, input.ptr, output.ptr, len);
+    }
+    else if (input instanceof Uint8Array && !(input instanceof Buffer)) {
+      const t = new Buffer(input);
+      this._decrypt(t, output, iv, f, blockmode);
+      t.free();
+    }
+    else if (output instanceof Uint8Array && !(output instanceof Buffer)) {
+      const t = new Buffer(output.byteLength);
+      this._decrypt(input, t, iv, f, blockmode);
+      output.set(t);
+      t.free();
     }
     else {
       throw new TypeError("libcppcore: Invalid type of input or output in AES.decrypt()");
