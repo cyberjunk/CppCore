@@ -28,6 +28,32 @@ describe('CString', function () {
       chai.expect(s.buffer.byteLength).to.equal(13);
     });
   });
+  describe('resize()', function () {
+    it('resize(number) [grow]', function () {
+      const s = new CString(3);
+      s.set("123");
+      s.resize(4);
+      chai.expect(s.byteLength).to.equal(3);
+      chai.expect(s.maxLength).to.equal(4);
+      chai.expect(s.buffer.byteLength).to.equal(5);
+      chai.expect(s.buffer[0]).to.equal(49);
+      chai.expect(s.buffer[1]).to.equal(50);
+      chai.expect(s.buffer[2]).to.equal(51);
+      chai.expect(s.buffer[3]).to.equal(0);     
+    });
+    it('resize(number) [shrink]', function () {
+      const s = new CString(15);
+      s.set("123");
+      s.resize(3);
+      chai.expect(s.byteLength).to.equal(3);
+      chai.expect(s.maxLength).to.equal(3);
+      chai.expect(s.buffer.byteLength).to.equal(4);
+      chai.expect(s.buffer[0]).to.equal(49);
+      chai.expect(s.buffer[1]).to.equal(50);
+      chai.expect(s.buffer[2]).to.equal(51);
+      chai.expect(s.buffer[3]).to.equal(0);     
+    });
+  });
   describe('set()', function () {
     it('set(string)', function () {
       const s = new CString(31);

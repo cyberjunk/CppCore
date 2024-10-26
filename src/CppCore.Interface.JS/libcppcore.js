@@ -126,6 +126,24 @@ export class CString {
   free() {
     this.#buffer.free();
   }
+  resize(size) {
+    if (!size) {
+      size = this.byteLength;
+    }
+    if (size == this.maxLength) {
+      return;
+    }
+    else if (size < this.byteLength) {
+      throw new RangeError("libcppcore: Can't shrink CString below current use")
+    }
+    else {
+      const buf = new Buffer(size+1);
+      buf.set(this.#buffer.subarray(0, this.byteLength));
+      buf[this.byteLength] = 0x00;
+      this.#buffer.free();
+      this.#buffer = buf;
+    }
+  }
   set(str) {
     if (typeof str === "string") {
       const result = ENCODER.encodeInto(str, this.#buffer);
