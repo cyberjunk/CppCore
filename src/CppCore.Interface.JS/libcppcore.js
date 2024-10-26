@@ -1,5 +1,4 @@
-
-const imports = { 
+const IMPORTS = { 
   "wasi_snapshot_preview1": {
     sched_yield() {
       return 0; 
@@ -14,7 +13,7 @@ const imports = {
 }
 
 const HANDLE = await WebAssembly
-  .instantiateStreaming(fetch('libcppcore.wasm'), imports)
+  .instantiateStreaming(fetch('libcppcore.wasm'), IMPORTS)
   .then(lib => {
     console.debug("libcppcore: Library loaded")
     return lib;
@@ -22,7 +21,7 @@ const HANDLE = await WebAssembly
 
 const EXPORTS = HANDLE.instance.exports;
 
-const registry = new FinalizationRegistry((ptr) => {
+const REGISTRY = new FinalizationRegistry((ptr) => {
   EXPORTS.cppcore_free(ptr);
 });
 
@@ -60,7 +59,7 @@ export class Buffer extends Uint8Array {
       const ptr = alloc(parm1.byteLength);
       super(EXPORTS.memory.buffer, ptr, parm1.byteLength);
       this.set(parm1);
-      registry.register(this, ptr, this);
+      REGISTRY.register(this, ptr, this);
     }
     else if (parm1 == EXPORTS.memory.buffer) {
       super(EXPORTS.memory.buffer, parm2, parm3);
@@ -68,20 +67,20 @@ export class Buffer extends Uint8Array {
     else if (!isNaN(parm1)) {
       const ptr = alloc(parm1);
       super(EXPORTS.memory.buffer, ptr, parm1);
-      registry.register(this, ptr, this);
+      REGISTRY.register(this, ptr, this);
     }
     else if (parm1 instanceof Array) {
       const ptr = alloc(parm1.length);
       super(EXPORTS.memory.buffer, ptr, parm1.length);
       this.set(parm1);
-      registry.register(this, ptr, this);
+      REGISTRY.register(this, ptr, this);
     }
     else {
       throw new Error("libcppcore: Invalid constructor parameters in Buffer");
     }
   }
   free() {
-    registry.unregister(this);
+    REGISTRY.unregister(this);
     EXPORTS.cppcore_free(this._ptr);
   }
   get bitLength() {
@@ -494,7 +493,7 @@ class AES {
       default:
         throw new Error("libcppcore: Invalid bits for AES. Must be 128, 192 or 256.");
     }
-    registry.register(this, this.#ptr, this);
+    REGISTRY.register(this, this.#ptr, this);
   }
   setKey(key) {
     if (key instanceof CString ||
@@ -744,7 +743,7 @@ class Hash {
   get _ptr() { return this.#ptr; }
   constructor(f) {
     this.#ptr = f();
-    registry.register(this, this.#ptr, this);
+    REGISTRY.register(this, this.#ptr, this);
   }
   _reset(f) {
     f(this.#ptr);
@@ -817,7 +816,7 @@ class HMAC {
   get _ptr() { return this.#ptr; }
   constructor(f) {
     this.#ptr = f();
-    registry.register(this, this.#ptr, this);
+    REGISTRY.register(this, this.#ptr, this);
   }
   _reset(key, f) {
     if (key instanceof Buffer || key instanceof UInt || key instanceof CString) {
