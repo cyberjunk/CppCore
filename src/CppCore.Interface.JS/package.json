@@ -1,0 +1,20 @@
+{
+  "name": "cppcore",
+  "description": "CppCore WASM Build for Javascript in Browsers",
+  "version": "0.0.0",
+  "author": "Clint Banzhaf <clint@banzhaf.pro> (https://banzhaf.pro)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyberjunk/cppcore.git"
+  },
+  "keywords": [
+    "aes", "encoding", "bigint", "hash", "sha", "md5", 
+    "hmac", "pbkdf2", "dh", "primes"
+  ],
+  "files": [
+    "libcppcore.js",
+    "libcppcore.wasm"
+  ],
+  "browser": "libcppcore.js"
+}
