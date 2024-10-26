@@ -592,6 +592,8 @@ class AES {
 }
 
 class AESIV extends AES {
+  #iv_enc
+  #iv_dec
   constructor(bits) { 
     super(bits);
   }
@@ -599,8 +601,8 @@ class AESIV extends AES {
     if (iv instanceof Uint8Array) {
       if (iv.byteLength != 16)
         throw new RangeError("libcppcore: Binary IV must have exactly 16 bytes");
-      this._iv_enc = new Buffer(iv);
-      this._iv_dec = new Buffer(iv);
+      this.#iv_enc = new Buffer(iv);
+      this.#iv_dec = new Buffer(iv);
     }
     else if (iv instanceof CString) {
       if (iv.byteLength != 16)
@@ -627,10 +629,10 @@ class AESIV extends AES {
         if (data_in.byteLength & 0x0F != 0) {
           throw new RangeError("libcppcore: Input and Output must be multiples of 16 bytes");
         }
-        f(this.ptr, data_in.ptr, data_out.ptr, this._iv_enc.ptr, data_in.byteLength>>4);
+        f(this.ptr, data_in.ptr, data_out.ptr, this.#iv_enc.ptr, data_in.byteLength>>4);
       }
       else {
-        f(this.ptr, data_in.ptr, data_out.ptr, this._iv_enc.ptr, data_in.byteLength);
+        f(this.ptr, data_in.ptr, data_out.ptr, this.#iv_enc.ptr, data_in.byteLength);
       }
     }
     else {
@@ -647,10 +649,10 @@ class AESIV extends AES {
         if (data_in.byteLength & 0x0F != 0) {
           throw new RangeError("libcppcore: Input and Output must be multiples of 16 bytes");
         }
-        f(this.ptr, data_in.ptr, data_out.ptr, this._iv_dec.ptr, data_in.byteLength>>4);
+        f(this.ptr, data_in.ptr, data_out.ptr, this.#iv_dec.ptr, data_in.byteLength>>4);
       }
       else {
-        f(this.ptr, data_in.ptr, data_out.ptr, this._iv_dec.ptr, data_in.byteLength);
+        f(this.ptr, data_in.ptr, data_out.ptr, this.#iv_dec.ptr, data_in.byteLength);
       }
     }
     else {
