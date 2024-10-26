@@ -15,7 +15,7 @@ const IMPORTS = {
 const HANDLE = await WebAssembly
   .instantiateStreaming(fetch('libcppcore.wasm'), IMPORTS)
   .then(lib => {
-    console.debug("Library loaded")
+    //console.debug("Library loaded")
     return lib;
 });
 
@@ -45,10 +45,10 @@ function alloc(size) {
  */
 export class Buffer extends Uint8Array {
   constructor(parm1, parm2, parm3) {
-    console.debug("Constructing Buffer (" + 
+    /*console.debug("Constructing Buffer (" + 
       typeof(parm1) + "," + 
       typeof(parm2) + "," + 
-      typeof(parm3) + ")");
+      typeof(parm3) + ")");*/
     if (parm1 instanceof Uint8Array) {
       const ptr = alloc(parm1.byteLength);
       super(EXPORTS.memory.buffer, ptr, parm1.byteLength);
@@ -92,7 +92,7 @@ export class Buffer extends Uint8Array {
 export class CString {
   #buffer
   constructor(v) {
-    console.debug("Constructing CString (" + typeof(v) + ")");
+    //console.debug("Constructing CString (" + typeof(v) + ")");
     const type = typeof(v);
     if (type === 'string') {
       this.#buffer = new Buffer(v.length+1);

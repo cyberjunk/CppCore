@@ -36,17 +36,7 @@
       function getRandomInt(max) {
           return Math.floor(Math.random() * max);
       }
-      function getRandomHexStr(max) {
-          const symbols = "0123456789ABCDEF";
-          const len = max;//getRandomInt(max-1) + 1;
-          var str = "0x";
-          for (var i=0; i < len; i++) {
-              str += symbols[getRandomInt(16)];
-          }
-          if (str == "0x0" || str == "0x00" || str == "0x000")
-            str = "0x1";
-          return str;
-      }
+
 
       function testBuffer() {
           const a = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08];
@@ -183,17 +173,19 @@
         //console.log(aes1._iv_enc);
         //console.log(aes1._iv_dec);
         
-        var data_in = new Buffer(32);
-        var data_out = new Buffer(32);
-        console.log(data_in);
+        //var data_in = new Buffer(32);
+        var data_in = new CString("0123456789abcdef");
+        var data_out = new Buffer(64);
+        var data_str = new CString(32);
+        console.log(data_in.toString());
 
         aes1.encrypt(data_in, data_out);
         //console.log(aes1._iv_enc);
         //console.log(aes1._iv_dec);
-        console.log(data_out);
+        console.log(data_out.toString());
 
-        aes1.decrypt(data_out, data_in);
-        console.log(data_in);
+        aes1.decrypt(data_out.subarray(0, 16), data_str);
+        console.log(data_str.toString());
 
         /*data_out.setUint32(0, 0);
         data_out.setUint32(4, 0);
@@ -224,21 +216,18 @@
       }
       
       function testPrime() {
-        //await new Promise(r => setTimeout(r, 2000));
-        var t1 = Date.now();
+        /*var t1 = Date.now();
         var p = new UInt128();
         Prime.generate(p, false, 0);
         var t2 = Date.now();
         console.log("gen took:" + (t2-t1));
-        //console.log(p.toString());
-        //console.log(p.toString(2));
-
         var p2 = UInt128.fromString("0b11");
-        console.log(p2.toString());
-        //t1 = Date.now();
-        //var r = Prime.test("0x0B", false, 0);
-        //t2 = Date.now();
-        //console.log("test took:" + (t2-t1));
+        console.log(p2.toString());*/
+
+        var r = Prime.test(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn, false, 0);
+        console.log(r);
+
+        //r = Prime.test(33333333333333333333, false, 0);
         //console.log(r);
       }
       
@@ -265,6 +254,7 @@
         h.finish(b);
         console.log(b.toString(16));
       }
+      
       //testBuffer();
       //testCString();
       //testBaseX();
@@ -272,10 +262,7 @@
       testAES();
       //testPBKDF2();
       //testHash();
-
-      //console.log("before:" + t1);
       //testPrime();
-      //console.log("after:" + Date.now());
 
     </script>
   </body>
