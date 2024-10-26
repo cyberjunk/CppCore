@@ -555,7 +555,7 @@ class AES {
       k.free();
     }
     else {
-      throw new TypeError("libcppcorer: Invalid parameter in AES.setKey()");
+      throw new TypeError("Invalid parameter in AES.setKey()");
     }
   }
   _encrypt(input, output, iv, f, blockmode) {
