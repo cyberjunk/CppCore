@@ -15,7 +15,7 @@ const IMPORTS = {
 const HANDLE = await WebAssembly
   .instantiateStreaming(fetch('libcppcore.wasm'), IMPORTS)
   .then(lib => {
-    console.debug("libcppcore: Library loaded")
+    console.debug("Library loaded")
     return lib;
 });
 
@@ -30,7 +30,7 @@ const DECODER = new TextDecoder();
 
 function alloc(size) {
   const ptr = EXPORTS.cppcore_alloc(size);
-  if (ptr == 0) throw new Error('libcppcore: Out of Memory');
+  if (ptr == 0) throw new Error('Out of Memory');
   return ptr;
 }
 
@@ -45,7 +45,7 @@ function alloc(size) {
  */
 export class Buffer extends Uint8Array {
   constructor(parm1, parm2, parm3) {
-    console.debug("libcppcore: Constructing Buffer (" + 
+    console.debug("Constructing Buffer (" + 
       typeof(parm1) + "," + 
       typeof(parm2) + "," + 
       typeof(parm3) + ")");
@@ -70,7 +70,7 @@ export class Buffer extends Uint8Array {
       REGISTRY.register(this, ptr, this);
     }
     else {
-      throw new TypeError("libcppcore: Invalid constructor parameters in Buffer");
+      throw new TypeError("Invalid constructor parameters in Buffer");
     }
   }
   free() {
@@ -92,7 +92,7 @@ export class Buffer extends Uint8Array {
 export class CString {
   #buffer
   constructor(v) {
-    console.debug("libcppcore: Constructing CString (" + typeof(v) + ")");
+    console.debug("Constructing CString (" + typeof(v) + ")");
     const type = typeof(v);
     if (type === 'string') {
       this.#buffer = new Buffer(v.length+1);
@@ -111,7 +111,7 @@ export class CString {
       this.byteLength = v.byteLength;
     }
     else {
-      throw new TypeError('libcppcore: Invalid constructor parameter in CString');
+      throw new TypeError('Invalid constructor parameter in CString');
     }
   }
   get buffer() {
@@ -134,7 +134,7 @@ export class CString {
       return;
     }
     else if (size < this.byteLength) {
-      throw new RangeError("libcppcore: Can't shrink CString below current use")
+      throw new RangeError("Can't shrink CString below current use")
     }
     else {
       const buf = new Buffer(size+1);
@@ -150,7 +150,7 @@ export class CString {
       if (this.maxLength < result.written) {
         this.#buffer[this.maxLength] = 0x00;
         this.byteLength = this.maxLength;
-        throw new RangeError('libcppcore: String too big in CString.set()');
+        throw new RangeError('String too big in CString.set()');
       }
       this.#buffer[result.written] = 0x00;
       this.byteLength = result.written;
@@ -160,14 +160,14 @@ export class CString {
         this.#buffer.set(str.buffer.subarray(0, this.maxLength));
         this.#buffer[this.maxLength] = 0x00;
         this.byteLength = this.maxLength;
-        throw new RangeError("libcppcore: CString too big in CString.set()")
+        throw new RangeError("CString too big in CString.set()")
       }
       this.#buffer.set(str.buffer);
       this.#buffer[str.byteLength] = 0x00;
       this.byteLength = str.byteLength;
     }
     else {
-      throw new TypeError("libcppcore: Invalid parameter in CString.set()")
+      throw new TypeError("Invalid parameter in CString.set()")
     }
   }
   toString() {
@@ -205,7 +205,7 @@ export class BaseX {
     else if (v.byteLength == 256)  { f = EXPORTS.cppcore_basex_encode2048; }
     else if (v.byteLength == 512)  { f = EXPORTS.cppcore_basex_encode4096; }
     else if (v.byteLength == 1024) { f = EXPORTS.cppcore_basex_encode8192; }
-    else throw new RangeError('libcppcore: Invalid byteLength in BaseX.encode()');
+    else throw new RangeError('Invalid byteLength in BaseX.encode()');
     const MAXSYMBOLS = this.#strbuf.maxLength;
     const r = f(
       v.ptr,                     // inbuf ptr
@@ -215,7 +215,7 @@ export class BaseX {
       this.#alphabet.ptr,        // alphabet ptr
       1                           // write term 0x00
     );
-    if (r < 0) throw new RangeError('libcppcore: String buffer too small in BaseX.encode()');
+    if (r < 0) throw new RangeError('String buffer too small in BaseX.encode()');
     this.#strbuf.byteLength = (MAXSYMBOLS-r);
     return this.#strbuf.toString();
   }
@@ -233,10 +233,10 @@ export class BaseX {
     else if (bits <= 2048) { t = UInt2048; f = EXPORTS.cppcore_basex_decode2048; }
     else if (bits <= 4096) { t = UInt4096; f = EXPORTS.cppcore_basex_decode4096; }
     else if (bits <= 8192) { t = UInt8192; f = EXPORTS.cppcore_basex_decode8192; }
-    else throw new RangeError('libcppcore: Invalid bitLength in BaseX.decode()');
+    else throw new RangeError('Invalid bitLength in BaseX.decode()');
     const uint = new t();
     const r = f(this.#strbuf.ptr, uint.ptr, this.#alphabet.ptr);
-    if (r == 0) throw new Error('libcppcore: Invalid symbol or overflow in BaseX.decode()');
+    if (r == 0) throw new Error('Invalid symbol or overflow in BaseX.decode()');
     return uint;
   }
   decodeInto(str, buf) {
@@ -252,9 +252,9 @@ export class BaseX {
     else if (byteLength == 256)  { f = EXPORTS.cppcore_basex_decode2048; }
     else if (byteLength == 512)  { f = EXPORTS.cppcore_basex_decode4096; }
     else if (byteLength == 1024) { f = EXPORTS.cppcore_basex_decode8192; }
-    else throw new RangeError('libcppcore: Invalid byteLength in BaseX.decodeInto()');
+    else throw new RangeError('Invalid byteLength in BaseX.decodeInto()');
     const r = f(this.#strbuf.ptr, buf.ptr, this.#alphabet.ptr);
-    if (r == 0) throw new Error('libcppcore: Invalid symbol or overflow in BaseX.decodeInto()');
+    if (r == 0) throw new Error('Invalid symbol or overflow in BaseX.decodeInto()');
   }
 }
 
@@ -358,13 +358,13 @@ class UInt {
       this.#buffer.set(v);
       this.#buffer.fill(0, v.length);
     }
-    else throw new TypeError("libcppcore: Invalid parameter in UInt.set()")
+    else throw new TypeError("Invalid parameter in UInt.set()")
   }
   toString(b) {
     if   (!b || b == 10) return BASE10.encode(this);
     else if (b == 16)    return BASE16.encode(this);
     else if (b == 2)     return BASE02.encode(this);
-    else throw new Error("libcppcore: Invalid base in UInt.toString()");
+    else throw new Error("Invalid base in UInt.toString()");
   }
   toBigInt() {
     return BigInt("0x" + this.toString(16));
@@ -518,7 +518,7 @@ class AES {
         this.#ptr  = EXPORTS.cppcore_aes256_init();
         break;
       default:
-        throw new RangeError("libcppcore: Invalid bits for AES. Must be 128, 192 or 256.");
+        throw new RangeError("Invalid bits for AES. Must be 128, 192 or 256.");
     }
     REGISTRY.register(this, this.#ptr, this);
   }
@@ -529,17 +529,17 @@ class AES {
       switch(this.#bits) {
         case 128:
           if (key.byteLength != 16)
-            throw new RangeError("libcppcore: Key must have exactly 16 bytes for AES128");
+            throw new RangeError("Key must have exactly 16 bytes for AES128");
           EXPORTS.cppcore_aes128_reset(this.ptr, key.ptr);
           break;
         case 192:
           if (key.byteLength != 24)
-            throw new RangeError("libcppcore: Key must have exactly 24 bytes for AES192");
+            throw new RangeError("Key must have exactly 24 bytes for AES192");
           EXPORTS.cppcore_aes192_reset(this.ptr, key.ptr);
           break;
         case 256:
           if (key.byteLength != 32)
-            throw new RangeError("libcppcore: Key must have exactly 32 bytes for AES256");
+            throw new RangeError("Key must have exactly 32 bytes for AES256");
           EXPORTS.cppcore_aes256_reset(this.ptr, key.ptr);
           break;
       }
@@ -562,12 +562,12 @@ class AES {
     if ((input  instanceof Buffer || input instanceof CString) && 
         (output instanceof Buffer)) {
       if (input.byteLength > output.byteLength) {
-        throw new RangeError("libcppcore: Output too small");
+        throw new RangeError("Output too small");
       }
       let len = input.byteLength;
       if (blockmode) {
         if (len & 0x0F != 0) {
-          throw new RangeError("libcppcore: Input must be multiples of 16 bytes");
+          throw new RangeError("Input must be a multiple of 16 bytes");
         }
         len = len >> 4;
       }
@@ -586,7 +586,7 @@ class AES {
       t.free();
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of input or output in AES.encrypt()");
+      throw new TypeError("Invalid type of input or output in AES.encrypt()");
     }
   }
   _decrypt(input, output, iv, f, blockmode) {
@@ -594,20 +594,20 @@ class AES {
         (output instanceof Buffer || output instanceof CString)) {
       if (output instanceof CString) {
         if (input.byteLength > output.maxLength) {
-          throw new RangeError("libcppcore: Output too small");
+          throw new RangeError("Output too small");
         }
         output.byteLength = input.byteLength;
         output[output.byteLength] = 0x00;
       }
       else {
         if (input.byteLength > output.byteLength) {
-          throw new RangeError("libcppcore: Output too small");
+          throw new RangeError("Output too small");
         }
       }
       let len = input.byteLength;
       if (blockmode) {
         if (len & 0x0F != 0) {
-          throw new RangeError("libcppcore: Input must be multiples of 16 bytes");
+          throw new RangeError("Input must be a multiple of 16 bytes");
         }
         len = len >> 4;
       }
@@ -626,7 +626,7 @@ class AES {
       t.free();
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of input or output in AES.decrypt()");
+      throw new TypeError("Invalid type of input or output in AES.decrypt()");
     }
   }
 }
@@ -642,13 +642,13 @@ class AESIV extends AES {
   setIV(iv) {
     if (iv instanceof Uint8Array) {
       if (iv.byteLength != 16)
-        throw new RangeError("libcppcore: Binary IV must have exactly 16 bytes");
+        throw new RangeError("Binary IV must have exactly 16 bytes");
       this.#ivEnc = new Buffer(iv);
       this.#ivDec = new Buffer(iv);
     }
     else if (iv instanceof CString) {
       if (iv.byteLength != 16)
-        throw new RangeError("libcppcore: String IV must have exactly 16 bytes");
+        throw new RangeError("String IV must have exactly 16 bytes");
       this.setIV(iv.buffer.subarray(0, 16));
     }
     else if (typeof iv === "string") {
@@ -657,7 +657,7 @@ class AESIV extends AES {
       k.free();
     }
     else {
-      throw new TypeError("libcppcore: No valid type of iv in AES.setIV()");
+      throw new TypeError("No valid type of iv in AES.setIV()");
     }
   }
 }
@@ -793,13 +793,13 @@ class Hash {
       d.free();
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of data in Hash.step()");
+      throw new TypeError("Invalid type of data in Hash.step()");
     }
   }
   _finish(digest, f) {
     if (digest instanceof Buffer || digest instanceof UInt) {
       if (digest.byteLength != this.constructor.digestLength) {
-        throw new RangeError("libcppcore: Invalid size of digest in Hash.finish()");
+        throw new RangeError("Invalid size of digest in Hash.finish()");
       }
       f(this.#ptr, digest.ptr);
     }
@@ -810,7 +810,7 @@ class Hash {
       d.free();
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of digest in Hash.finish()");
+      throw new TypeError("Invalid type of digest in Hash.finish()");
     }
   }
 }
@@ -863,7 +863,7 @@ class HMAC {
       k.free();
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of key in HMAC.reset()");
+      throw new TypeError("Invalid type of key in HMAC.reset()");
     }
   }
   _step(data, f) {
@@ -881,13 +881,13 @@ class HMAC {
       d.free();
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of data in HMAC.step()");
+      throw new TypeError("Invalid type of data in HMAC.step()");
     }
   }
   _finish(digest, f) {
     if (digest instanceof Buffer || digest instanceof UInt) {
       if (digest.byteLength != this.constructor.digestLength) {
-        throw new RangeError("libcppcore: Invalid size of digest in HMAC.finish()");
+        throw new RangeError("Invalid size of digest in HMAC.finish()");
       }
       f(this.#ptr, digest.ptr);
     }
@@ -898,7 +898,7 @@ class HMAC {
       d.free();
     }
     else {
-      throw new TypeError("libcppcore: Invalid type of digest in HMAC.finish()");
+      throw new TypeError("Invalid type of digest in HMAC.finish()");
     }
   }
 }
@@ -966,7 +966,7 @@ export class PBKDF2 {
       digest.set(d);
       d.free();
     }
-    else throw new TypeError("libcppcore: Invalid parameters in PBKDF2");
+    else throw new TypeError("Invalid parameters in PBKDF2");
   }
   static md5(password, salt, digest, iterations) {
     PBKDF2.#run(password, salt, digest, iterations, 
@@ -1011,7 +1011,7 @@ export class Prime {
       return r;
     }
     if (!(p instanceof UInt) && !(p instanceof Buffer)) {
-      throw new TypeError("libcppcore: Invalid type of p in Prime.test()");
+      throw new TypeError("Invalid type of p in Prime.test()");
     }
     switch(p.byteLength) {
       case 4:   return EXPORTS.cppcore_prime32_test(p.ptr, sign, certainty);
@@ -1022,12 +1022,12 @@ export class Prime {
       case 128: return EXPORTS.cppcore_prime1024_test(p.ptr, sign, certainty);
       case 256: return EXPORTS.cppcore_prime2048_test(p.ptr, sign, certainty);
       case 512: return EXPORTS.cppcore_prime4096_test(p.ptr, sign, certainty);
-      default:  throw new RangeError("libcppcore: Invalid byteLength of p in Prime.test()");
+      default:  throw new RangeError("Invalid byteLength of p in Prime.test()");
     }
   }
   static generate(p, sign, certainty) {
     if (!(p instanceof UInt) && !(p instanceof Buffer)) {
-      throw new TypeError("libcppcore: Invalid type of p in Prime.generate()");
+      throw new TypeError("Invalid type of p in Prime.generate()");
     }
     switch(p.byteLength) {
       case 4:   return EXPORTS.cppcore_prime32_generate(p.ptr, sign, certainty);
@@ -1038,7 +1038,7 @@ export class Prime {
       case 128: return EXPORTS.cppcore_prime1024_generate(p.ptr, sign, certainty);
       case 256: return EXPORTS.cppcore_prime2048_generate(p.ptr, sign, certainty);
       case 512: return EXPORTS.cppcore_prime4096_generate(p.ptr, sign, certainty);
-      default:  throw new RangeError("libcppcore: Invalid byteLength of p in Prime.generate()");
+      default:  throw new RangeError("Invalid byteLength of p in Prime.generate()");
     }
   }
 }
