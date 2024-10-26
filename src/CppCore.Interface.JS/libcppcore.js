@@ -28,16 +28,10 @@ const REGISTRY = new FinalizationRegistry((ptr) => {
 const ENCODER = new TextEncoder();
 const DECODER = new TextDecoder();
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-
 function alloc(size) {
   const ptr = EXPORTS.cppcore_alloc(size);
   if (ptr == 0) throw new Error('libcppcore: Out of Memory');
   return ptr;
-}
-
-function hexStrFromInt(v) {
-  return "0x" + v.toString(16).padStart(8, '0');
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
