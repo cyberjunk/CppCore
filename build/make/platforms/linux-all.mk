@@ -12,7 +12,7 @@ endef
 
 # Create Folder
 define mkdir
-	mkdir $(1)
+	mkdir -p $(1)
 endef
 
 # Copy Files between Folders by Pattern
