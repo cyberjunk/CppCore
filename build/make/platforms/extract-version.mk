@@ -1,17 +1,18 @@
 
 ifeq ($(TARGET_OS),win)
+SCRIPTSDIR=../../dist/win-10
 SCRIPTSFILE=Scripts.ps1
 VERSIONMAJOR = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
+  . $(SCRIPTSDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMAJOR)'; }")
 VERSIONMINOR = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
+  . $(SCRIPTSDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMINOR)'; }")
 VERSIONPATCH = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
+  . $(SCRIPTSDIR)/$(SCRIPTSFILE);\
   Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROPATCH)'; }")
 VERSION2 = $(VERSIONMAJOR).$(VERSIONMINOR)
 VERSION3 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)

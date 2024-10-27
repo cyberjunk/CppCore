@@ -69,6 +69,10 @@ CppCore.Interface.Python:
 	@echo [BLD] CppCore.Interface.Python
 	+@make -s -C ./build/make/ -f CppCore.Interface.Python.mk
 
+CppCore.Interface.JS:
+	@echo [BLD] CppCore.Interface.JS
+	+@make -s -C ./build/make/ -f CppCore.Interface.JS.mk
+
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk
