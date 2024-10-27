@@ -180,14 +180,14 @@ jobs:
       with:
         name: Libraries (wasi-${{ matrix.arch }})
         path: ./build/make/lib/wasi-${{ matrix.arch }}/*.wasm
+    
+    # Install uglify-js
+    - name: Install uglify-js
+      run: npm install uglify-js -g
 
     # JS
     - name: JS
       run: make CppCore.Interface.JS
-
-    # Install uglify-js
-    #- name: Install uglify-js
-    #  run: npm install uglify-js -g
 
     # Minify
     #- name: Minify
