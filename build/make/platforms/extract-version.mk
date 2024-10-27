@@ -1,5 +1,5 @@
 
-ifeq ($(TARGET_OS),win)
+ifeq ($(DETECTED_OS),win)
 SCRIPTSDIR=../../dist/win-10
 SCRIPTSFILE=Scripts.ps1
 VERSIONMAJOR = $(shell powershell -command "& {\
@@ -21,7 +21,7 @@ endif
 
 ################################################################################################
 
-ifeq ($(TARGET_OS),osx)
+ifeq ($(DETECTED_OS),osx)
 VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
 VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
 VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
@@ -32,7 +32,7 @@ endif
 
 ################################################################################################
 
-ifeq ($(TARGET_OS),linux)
+ifeq ($(DETECTED_OS),linux)
 VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
 VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
 VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
