@@ -160,3 +160,15 @@ jobs:
     # Test
     - name: Test
       run: make test
+
+    # Dist
+    - name: Dist
+      run: make dist
+
+    # Install uglify-js
+    - name: Install uglify-js
+      run: npm install uglify-js -g
+
+    # Minify
+    - name: Minify
+      run: uglifyjs --compress --mangle --module --output libcppcore.min.js -- libcppcore.js

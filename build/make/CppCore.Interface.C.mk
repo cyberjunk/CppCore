@@ -204,10 +204,6 @@ LINKFLAGS := $(LINKFLAGS) \
              -Wl,-z,stack-size=$(HEX1MB) \
              -Wl,--initial-memory=$(DEC8MB) \
              -Wl,--max-memory=$(DEC8MB) \
-             -Wl,--export,__data_end \
-             -Wl,--export,__heap_base \
-             -Wl,--export,__tls_base \
-             -Wl,--export,__stack_pointer \
              -Wl,--export-dynamic \
              -Wl,--no-entry
 LINKLIBS  := $(LINKLIBS)
@@ -221,8 +217,10 @@ endif
 #-Wl,--initial-memory=1179648 \
 #-Wl,--initial-heap=1048576 \
 #-Wl,--export-all \
-#-Wl,--export,__tls_base \
-#-Wl,--export,__stack_pointer \
+#-Wl,--export,__data_end
+#-Wl,--export,__heap_base
+#-Wl,--export,__tls_base
+#-Wl,--export,__stack_pointer
 
 ################################################################################################
 

@@ -412,3 +412,20 @@ dist-%:
 	echo [DST] $(NAME)-$*
 dist: dist-x64 dist-x86 dist-arm64 dist-arm
 endif
+
+##############################################################################################################
+# WASI
+##############################################################################################################
+
+ifeq ($(TARGET_OS),wasi)
+dist-%:
+	echo [DST] $(NAME)-$*
+dist: dist-wasm32
+lib-dist-%:
+	echo [DST] $(NAME)-$*
+	-$(call rmdir,$(DISTDIR)/$(NAME)/$*)
+	$(call mkdir,$(DISTDIR)/$(NAME)/$*)
+	$(call copyfiles,$(LIBDIR)/$(LIBNAME)$(EXTDLL),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL))
+	$(STRIP) $(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL)
+lib-dist: lib-dist-wasm32
+endif
