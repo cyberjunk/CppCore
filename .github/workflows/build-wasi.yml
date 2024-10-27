@@ -185,12 +185,14 @@ jobs:
     - name: Install uglify-js
       run: npm install uglify-js -g
 
-    # JS
-    - name: JS
+    # Build JS
+    - name: Build JS
       run: make CppCore.Interface.JS
 
-    # Minify
-    #- name: Minify
-    #  run: |
-    #    cd src/CppCore.Interface.JS
-    #    uglifyjs --compress --mangle --module --output libcppcore.min.js -- libcppcore.js
+    # Upload JS
+    - name: Upload JS
+      uses: actions/upload-artifact@v4
+      if: ${{ matrix.os == 'ubuntu-24.04' }}
+      with:
+        name: Browser (wasi-${{ matrix.arch }})
+        path: ./dist/browser/CppCore.Interface.JS/*
