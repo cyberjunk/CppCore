@@ -13,7 +13,9 @@ LIBDIR     = lib/wasi-wasm32
 BINDIR     = bin/wasi-wasm32
 DISTDIR    = ../../dist/wasi
 TARGET     = wasm32-wasi
-DEFINES    = -DCPPCORE_NO_THREADING -DCPPCORE_NO_SOCKET
+DEFINES    = -DCPPCORE_NO_THREADING \
+             -DCPPCORE_NO_SOCKET \
+             -DCPPCORE_NO_SIGNAL
 INCLUDES   = 
 CXX        = $(WASI_SDK_PATH)/bin/clang++
 CXXFLAGS   = -static -fPIC \

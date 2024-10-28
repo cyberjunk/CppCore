@@ -28,13 +28,8 @@ jobs:
     # Checkout
     - name: Checkout
       uses: actions/checkout@v4
-    
-    # Install WASI SDK
-    #-# name: Install WASI SDK
-     # uses: cyberjunk/gha-wasi-install@main
-     # with:
-     #   version: 24.0
-
+   
+    # Setup ENV
     - name: Setup ENV
       shell: bash
       run: |

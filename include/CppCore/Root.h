@@ -613,7 +613,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Standard C Includes
+#ifndef CPPCORE_NO_SIGNAL
 #include <signal.h>
+#endif
 #include <errno.h>
 #include <sys/types.h>
 #include <limits.h>

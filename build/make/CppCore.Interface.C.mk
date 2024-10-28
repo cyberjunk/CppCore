@@ -193,7 +193,7 @@ endif
 
 ifeq ($(TARGET_OS),wasi)
 OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
-DEFINES   := $(DEFINES) -D_WASI_EMULATED_SIGNAL
+DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
 DEC1MB    := 1048576
@@ -208,8 +208,6 @@ LINKFLAGS := $(LINKFLAGS) \
              -Wl,--no-entry
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
-endif
-
 #-Wl,--import-memory \
 #-Wl,--global-base=2048 \
 #-Wl,-z,stack-size=0x00100000 \
@@ -221,6 +219,7 @@ endif
 #-Wl,--export,__heap_base
 #-Wl,--export,__tls_base
 #-Wl,--export,__stack_pointer
+endif
 
 ################################################################################################
 
