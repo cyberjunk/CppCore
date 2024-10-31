@@ -559,31 +559,31 @@ describe('PBKDF2', function () {
 describe('Prime', function () {
   describe('test(string)', function () {
     it('test("3") [32][small]', function () {
-      const r = Prime.test("3", false, 0);
+      const r = Prime.test("3");
       chai.expect(r).to.equal(1);
     });
     it('test("4572648") [32][small]', function () {
-      const r = Prime.test("4572648", false, 0);
+      const r = Prime.test("4572648", Prime.Certainty.Default);
       chai.expect(r).to.equal(0);
     });
     it('test("18446744073709551557") [64][large]', function () {
-      const r = Prime.test("18446744073709551557", false, 0);
+      const r = Prime.test("18446744073709551557", Prime.Certainty.Weak);
       chai.expect(r).to.equal(1);
     });
   });
   describe('test(number)', function () {
     it('test(17) [32][small]', function () {
-      const r = Prime.test(17, false, 0);
+      const r = Prime.test(17, Prime.Certainty.Weak);
       chai.expect(r).to.equal(1);
     });
   });
   describe('test(bigint)', function () {
     it('test(0x0397ffffffffffffffffffffffffffffn) [128][large]', function () {
-      const r = Prime.test(0x0397ffffffffffffffffffffffffffffn, false, 255);
+      const r = Prime.test(0x0397ffffffffffffffffffffffffffffn, Prime.Certainty.Max);
       chai.expect(r).to.equal(2);
     });
     it('test(170141183460469231731687303715884105727n) [128][mersenne]', function () {
-      const r = Prime.test(170141183460469231731687303715884105727n, false, 255);
+      const r = Prime.test(170141183460469231731687303715884105727n, Prime.Certainty.Max);
       chai.expect(r).to.equal(1);
     });
   });

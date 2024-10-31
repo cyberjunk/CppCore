@@ -997,16 +997,27 @@ export class Prime {
     Prime:       1,
     LikelyPrime: 2
   };
-  static test(p, sign, certainty) {
+  static Certainty = {
+    Weak:      0,
+    Default:  64,
+    Max:     512
+  }
+  static test(p, certainty) {
+    if (!certainty) {
+      certainty = Prime.Certainty.Default;
+    }
     if (typeof p === "string") {
       const n = UInt.fromString(p);
-      const r = Prime.test(n, sign, certainty);
+      const r = Prime.test(n, certainty);
       n.free();
       return r;
     }
     if (typeof p === "bigint" || Number.isInteger(p)) {
+      if (p <= 1) {
+        return Prime.Result.NotPrime;
+      }
       const n = UInt.fromInteger(p);
-      const r = Prime.test(n, sign, certainty);
+      const r = Prime.test(n, certainty);
       n.free();
       return r;
     }
@@ -1014,30 +1025,33 @@ export class Prime {
       throw new TypeError("Invalid type of p in Prime.test()");
     }
     switch(p.byteLength) {
-      case 4:   return EXPORTS.cppcore_prime32_test(p.ptr, sign, certainty);
-      case 8:   return EXPORTS.cppcore_prime64_test(p.ptr, sign, certainty);
-      case 16:  return EXPORTS.cppcore_prime128_test(p.ptr, sign, certainty);
-      case 32:  return EXPORTS.cppcore_prime256_test(p.ptr, sign, certainty);
-      case 64:  return EXPORTS.cppcore_prime512_test(p.ptr, sign, certainty);
-      case 128: return EXPORTS.cppcore_prime1024_test(p.ptr, sign, certainty);
-      case 256: return EXPORTS.cppcore_prime2048_test(p.ptr, sign, certainty);
-      case 512: return EXPORTS.cppcore_prime4096_test(p.ptr, sign, certainty);
+      case 4:   return EXPORTS.cppcore_prime32_test(p.ptr, false, certainty);
+      case 8:   return EXPORTS.cppcore_prime64_test(p.ptr, false, certainty);
+      case 16:  return EXPORTS.cppcore_prime128_test(p.ptr, false, certainty);
+      case 32:  return EXPORTS.cppcore_prime256_test(p.ptr, false, certainty);
+      case 64:  return EXPORTS.cppcore_prime512_test(p.ptr, false, certainty);
+      case 128: return EXPORTS.cppcore_prime1024_test(p.ptr, false, certainty);
+      case 256: return EXPORTS.cppcore_prime2048_test(p.ptr, false, certainty);
+      case 512: return EXPORTS.cppcore_prime4096_test(p.ptr, false, certainty);
       default:  throw new RangeError("Invalid byteLength of p in Prime.test()");
     }
   }
-  static generate(p, sign, certainty) {
+  static generate(p, certainty) {
+    if (!certainty) {
+      certainty = Prime.Certainty.Default;
+    }
     if (!(p instanceof UInt) && !(p instanceof Buffer)) {
       throw new TypeError("Invalid type of p in Prime.generate()");
     }
     switch(p.byteLength) {
-      case 4:   return EXPORTS.cppcore_prime32_generate(p.ptr, sign, certainty);
-      case 8:   return EXPORTS.cppcore_prime64_generate(p.ptr, sign, certainty);
-      case 16:  return EXPORTS.cppcore_prime128_generate(p.ptr, sign, certainty);
-      case 32:  return EXPORTS.cppcore_prime256_generate(p.ptr, sign, certainty);
-      case 64:  return EXPORTS.cppcore_prime512_generate(p.ptr, sign, certainty);
-      case 128: return EXPORTS.cppcore_prime1024_generate(p.ptr, sign, certainty);
-      case 256: return EXPORTS.cppcore_prime2048_generate(p.ptr, sign, certainty);
-      case 512: return EXPORTS.cppcore_prime4096_generate(p.ptr, sign, certainty);
+      case 4:   return EXPORTS.cppcore_prime32_generate(p.ptr, false, certainty);
+      case 8:   return EXPORTS.cppcore_prime64_generate(p.ptr, false, certainty);
+      case 16:  return EXPORTS.cppcore_prime128_generate(p.ptr, false, certainty);
+      case 32:  return EXPORTS.cppcore_prime256_generate(p.ptr, false, certainty);
+      case 64:  return EXPORTS.cppcore_prime512_generate(p.ptr, false, certainty);
+      case 128: return EXPORTS.cppcore_prime1024_generate(p.ptr, false, certainty);
+      case 256: return EXPORTS.cppcore_prime2048_generate(p.ptr, false, certainty);
+      case 512: return EXPORTS.cppcore_prime4096_generate(p.ptr, false, certainty);
       default:  throw new RangeError("Invalid byteLength of p in Prime.generate()");
     }
   }
