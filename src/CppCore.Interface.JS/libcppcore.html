@@ -5,7 +5,58 @@
     <title>Hello World - AssemblyScript</title>
     <!--<script type="module" src="test2.mjs"></script>-->
   </head>
+  <style>
+    h1 {
+      text-align: center;
+      margin: auto;
+      width: 512px;
+    }
+
+    textarea {
+      width: 512px;
+      height: 128px;
+      resize: vertical;
+      box-sizing: border-box
+    }
+    button {
+
+      height: 32px;
+    }
+
+    #menu {
+      margin: auto;
+      width: 512px;
+    }
+    .menu_entry {
+      margin: auto;
+      width: 128px;
+    }
+    #content {
+      margin: auto;
+      width: 512px;
+    }
+ 
+    .container {
+      width: 100%; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+    }
+    .containerItem {
+      float: left; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+    }
+  </style>
   <body>
+    <h1>libcppcore</h1>
+    <div id="menu">
+      <a class=menu_entry" id="menu_basex">BaseX</a>
+      <a class=menu_entry" id="menu_primes">Primes</a>
+    </div>
+
+    <div id="content" />
 
     <script type="module">
       import { 
@@ -16,6 +67,7 @@
         BASE02,
         BASE10,
         BASE16,
+        UInt,
         UInt32,
         UInt64,
         UInt128,
@@ -27,12 +79,11 @@
         AES128ECB,
         AES128CBC,
         PBKDF2,
-        MD5, SHA256, SHA512,
+        MD5, SHA256, SHA512, CRC32, CRC32C,
         Prime
       } from './libcppcore.js'
       
 
-      
       function getRandomInt(max) {
           return Math.floor(Math.random() * max);
       }
@@ -224,7 +275,8 @@
         var p2 = UInt128.fromString("0b11");
         console.log(p2.toString());*/
 
-        var r = Prime.test(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn, false, 0);
+        var p = new UInt4096("0x0397ffffffffffffffffffffffffffff");
+        var r = Prime.test(p, Prime.Certainty.Max);
         console.log(r);
 
         //r = Prime.test(33333333333333333333, false, 0);
@@ -245,9 +297,9 @@
       }
 
       function testHash() {
-        var h = new MD5();
+        var h = new CRC32C();
         //var b = new UInt128();
-        var b = new Uint8Array(MD5.digestLength);
+        var b = new Uint8Array(CRC32C.digestLength);
 
         h.reset();
         h.step(new Uint8Array([0xFF, 0xFF, 0xEF]));
@@ -259,11 +311,92 @@
       //testCString();
       //testBaseX();
       //testUInt();
-      testAES();
+      //testAES();
       //testPBKDF2();
-      //testHash();
+      testHash();
       //testPrime();
 
+
+
+
+
+
+
+
+      document.getElementById("menu_basex").onclick = function () { 
+        //testPrime(); 
+      };
+      
+      document.getElementById("menu_primes").onclick = function () {
+        const headertest = document.createElement("h2");
+        headertest.innerText = "Test";
+        const containertest = document.createElement("div");
+        containertest.className = "container";
+        const containertestleft = document.createElement("div");
+        containertestleft.className = "containerItem"
+        containertestleft.style = "width: 50%";
+        const containertestright = document.createElement("div");
+        containertestright.className = "containerItem"
+        containertestright.style = "width: 50%";
+        const labelcertainty = document.createElement("label");
+        labelcertainty.innerText = "Certainty: ";
+        labelcertainty.style = "padding-right: 8px"
+        const certainty = document.createElement("input");
+        certainty.type = "number";
+        certainty.value = Prime.Certainty.Default;
+        certainty.style = "width: 100%"
+        const labelresult = document.createElement("label");
+        labelresult.innerText = "[RESULT]";
+        containertestleft.append(labelcertainty, certainty);
+        containertestright.append(labelresult);
+        containertest.append(containertestleft, containertestright);
+        const textareatest = document.createElement("textarea");
+        textareatest.placeholder = "Enter decimal number or hex prefixed with 0x";
+        const buttontest = document.createElement("button");
+        buttontest.innerText = "Test";
+        buttontest.style = "width: 100%"
+        buttontest.onclick = function () { 
+          const v = textareatest.value;
+          try {
+            const r = Prime.test(UInt.fromString(v), certainty.value);
+            if (r == Prime.Result.NotPrime) {
+              labelresult.innerText = "NOT PRIME";
+            }
+            else if (r == Prime.Result.Prime) {
+              labelresult.innerText = "PRIME";
+            }
+            else if (r == Prime.Result.LikelyPrime) {
+              labelresult.innerText = "LIKELY PRIME";
+            }
+          }
+          catch (e) {
+            labelresult.innerText = e.message;
+          }
+        }
+
+        const headergenerate = document.createElement("h2");
+        headergenerate.innerText = "Generate";
+    
+        const bits = document.createElement("select");
+        const option = document.createElement ("option");
+        option.value = 1024;
+        option.text = "1024";
+        bits.append(option);
+
+        //const buttonGenerate = document.createElement("button")
+        //buttonGenerate.innerText = "Generate";
+        //buttonGenerate.style = "width: 50%"
+
+        //buttons.append(buttonTest);
+
+        document.getElementById("content").replaceChildren(
+          headertest, containertest, textareatest, buttontest,
+          headergenerate);
+      };
+
+      document.getElementById("menu_primes").click();
+      
     </script>
+
   </body>
 </html>

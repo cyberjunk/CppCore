@@ -236,7 +236,7 @@ export class BaseX {
     else throw new RangeError('Invalid bitLength in BaseX.decode()');
     const uint = new t();
     const r = f(this.#strbuf.ptr, uint.ptr, this.#alphabet.ptr);
-    if (r == 0) throw new Error('Invalid symbol or overflow in BaseX.decode()');
+    if (r == 0) throw new Error('Invalid symbol or overflow');
     return uint;
   }
   decodeInto(str, buf) {
@@ -254,7 +254,7 @@ export class BaseX {
     else if (byteLength == 1024) { f = EXPORTS.cppcore_basex_decode8192; }
     else throw new RangeError('Invalid byteLength in BaseX.decodeInto()');
     const r = f(this.#strbuf.ptr, buf.ptr, this.#alphabet.ptr);
-    if (r == 0) throw new Error('Invalid symbol or overflow in BaseX.decodeInto()');
+    if (r == 0) throw new Error('Invalid symbol or overflow');
   }
 }
 
