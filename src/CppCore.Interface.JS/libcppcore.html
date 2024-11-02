@@ -6,23 +6,14 @@
     <!--<script type="module" src="test2.mjs"></script>-->
   </head>
   <style>
+    body {
+      font-size: 18px
+    }
     h1 {
       text-align: center;
       margin: auto;
       width: 512px;
     }
-
-    textarea {
-      width: 512px;
-      height: 128px;
-      resize: vertical;
-      box-sizing: border-box
-    }
-    button {
-
-      height: 32px;
-    }
-
     #menu {
       margin: auto;
       width: 512px;
@@ -36,6 +27,16 @@
       width: 512px;
     }
  
+    textarea {
+      width: 512px;
+      height: 128px;
+      resize: vertical;
+      box-sizing: border-box
+    }
+    button {
+      height: 32px;
+    }
+
     .container {
       width: 100%; 
       display: flex; 
@@ -72,6 +73,7 @@
         UInt64,
         UInt128,
         UInt256,
+        UInt512,
         UInt1024,
         UInt2048,
         UInt4096,
@@ -324,7 +326,7 @@
 
 
       document.getElementById("menu_basex").onclick = function () { 
-        //testPrime(); 
+        
       };
       
       document.getElementById("menu_primes").onclick = function () {
@@ -333,21 +335,21 @@
         const containertest = document.createElement("div");
         containertest.className = "container";
         const containertestleft = document.createElement("div");
-        containertestleft.className = "containerItem"
+        containertestleft.className = "containerItem";
         containertestleft.style = "width: 50%";
         const containertestright = document.createElement("div");
-        containertestright.className = "containerItem"
+        containertestright.className = "containerItem";
         containertestright.style = "width: 50%";
-        const labelcertainty = document.createElement("label");
-        labelcertainty.innerText = "Certainty: ";
-        labelcertainty.style = "padding-right: 8px"
-        const certainty = document.createElement("input");
-        certainty.type = "number";
-        certainty.value = Prime.Certainty.Default;
-        certainty.style = "width: 100%"
+        const labelcertaintytest = document.createElement("label");
+        labelcertaintytest.innerText = "Certainty: ";
+        labelcertaintytest.style = "padding-right: 8px";
+        const certaintytest = document.createElement("input");
+        certaintytest.type = "number";
+        certaintytest.value = Prime.Certainty.Weak;
+        certaintytest.style = "width: 100%";
         const labelresult = document.createElement("label");
         labelresult.innerText = "[RESULT]";
-        containertestleft.append(labelcertainty, certainty);
+        containertestleft.append(labelcertaintytest, certaintytest);
         containertestright.append(labelresult);
         containertest.append(containertestleft, containertestright);
         const textareatest = document.createElement("textarea");
@@ -358,7 +360,7 @@
         buttontest.onclick = function () { 
           const v = textareatest.value;
           try {
-            const r = Prime.test(UInt.fromString(v), certainty.value);
+            const r = Prime.test(UInt.fromString(v), parseInt(certaintytest.value));
             if (r == Prime.Result.NotPrime) {
               labelresult.innerText = "NOT PRIME";
             }
@@ -376,22 +378,85 @@
 
         const headergenerate = document.createElement("h2");
         headergenerate.innerText = "Generate";
-    
-        const bits = document.createElement("select");
-        const option = document.createElement ("option");
-        option.value = 1024;
-        option.text = "1024";
-        bits.append(option);
-
-        //const buttonGenerate = document.createElement("button")
-        //buttonGenerate.innerText = "Generate";
-        //buttonGenerate.style = "width: 50%"
-
-        //buttons.append(buttonTest);
+        const containergenerate = document.createElement("div");
+        containergenerate.className = "container";
+        const containergenerateleft = document.createElement("div");
+        containergenerateleft.className = "containerItem";
+        containergenerateleft.style = "width: 33%";
+        const containergeneratemiddle = document.createElement("div");
+        containergeneratemiddle.className = "containerItem";
+        containergeneratemiddle.style = "width: 33%";
+        const containergenerateright = document.createElement("div");
+        containergenerateright.className = "containerItem";
+        containergenerateright.style = "width: 33%";
+        const labelcertaintygenerate = document.createElement("label");
+        labelcertaintygenerate.innerText = "Certainty: ";
+        labelcertaintygenerate.style = "padding-right: 8px"
+        const certaintygenerate = document.createElement("input");
+        certaintygenerate.type = "number";
+        certaintygenerate.value = Prime.Certainty.Weak;
+        certaintygenerate.style = "width: 100%";
+        const labelbitsgenerate = document.createElement("label");
+        labelbitsgenerate.innerText = "Bits: ";
+        labelbitsgenerate.style = "padding-left: 8px; padding-right: 8px;"
+        const bitsgenerate = document.createElement("select");
+        bitsgenerate.style = "width:100%";
+        const option32 = document.createElement("option");
+        const option64 = document.createElement("option");
+        const option128 = document.createElement("option");
+        const option256 = document.createElement("option");
+        const option512 = document.createElement("option");
+        const option1024 = document.createElement("option");
+        const option2048 = document.createElement("option");
+        const option4096 = document.createElement("option");
+        option32.value   =   32; option32.text   = "32";   bitsgenerate.append(option32);
+        option64.value   =   64; option64.text   = "64";   bitsgenerate.append(option64);
+        option128.value  =  128; option128.text  = "128";  bitsgenerate.append(option128);
+        option256.value  =  256; option256.text  = "256";  bitsgenerate.append(option256);
+        option512.value  =  512; option512.text  = "512";  bitsgenerate.append(option512);
+        option1024.value = 1024; option1024.text = "1024"; bitsgenerate.append(option1024);
+        option2048.value = 2048; option2048.text = "2048"; bitsgenerate.append(option2048);
+        option4096.value = 4096; option4096.text = "4096"; bitsgenerate.append(option4096);
+        const labeloutputtype = document.createElement("label");
+        labeloutputtype.innerText = "Output: ";
+        labeloutputtype.style = "padding-left: 8px; padding-right: 8px;"
+        const outputtype = document.createElement("select");
+        outputtype.style = "width:100%";
+        const option10 = document.createElement("option");
+        const option16 = document.createElement("option");
+        option10.value = 10; option10.text = "DECIMAL"; outputtype.append(option10);
+        option16.value = 16; option16.text = "HEX"; outputtype.append(option16);
+        containergenerateleft.append(labelcertaintygenerate, certaintygenerate);
+        containergeneratemiddle.append(labelbitsgenerate, bitsgenerate);
+        containergenerateright.append(labeloutputtype, outputtype);
+        containergenerate.append(containergenerateleft, containergeneratemiddle, containergenerateright);
+        const textareagenerate = document.createElement("textarea");
+        textareagenerate.readOnly = true;
+        const buttongenerate = document.createElement("button");
+        buttongenerate.innerText = "Generate";
+        buttongenerate.style = "width: 100%"
+        buttongenerate.onclick = function () { 
+          var v = null;
+          var bits = parseInt(bitsgenerate.value);
+          var base = parseInt(outputtype.value)
+          switch(bits) {
+            case  32:  v = new UInt32();   break;
+            case  64:  v = new UInt64();   break;
+            case 128:  v = new UInt128();  break;
+            case 256:  v = new UInt256();  break;
+            case 512:  v = new UInt512();  break;
+            case 1024: v = new UInt1024(); break;
+            case 2048: v = new UInt2048(); break;
+            case 4096: v = new UInt4096(); break;
+          }
+          Prime.generate(v, parseInt(certaintygenerate.value));
+          if      (base == 10) { textareagenerate.value = v.toString(base); }
+          else if (base == 16) { textareagenerate.value = "0x" + v.toString(base); }
+        }
 
         document.getElementById("content").replaceChildren(
           headertest, containertest, textareatest, buttontest,
-          headergenerate);
+          headergenerate, containergenerate, textareagenerate, buttongenerate);
       };
 
       document.getElementById("menu_primes").click();
