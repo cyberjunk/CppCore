@@ -2,8 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World - AssemblyScript</title>
-    <!--<script type="module" src="test2.mjs"></script>-->
+    <title>libcppcore</title>
   </head>
   <style>
     body {
@@ -17,16 +16,20 @@
     #menu {
       margin: auto;
       width: 512px;
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      background-color: blue;
     }
     .menu_entry {
-      margin: auto;
-      width: 128px;
+      cursor: pointer;
+      font-size: 24px;
+      background-color: red;
     }
     #content {
       margin: auto;
       width: 512px;
     }
- 
     textarea {
       width: 512px;
       height: 128px;
@@ -36,7 +39,6 @@
     button {
       height: 32px;
     }
-
     .container {
       width: 100%; 
       display: flex; 
@@ -53,8 +55,10 @@
   <body>
     <h1>libcppcore</h1>
     <div id="menu">
-      <a class=menu_entry" id="menu_basex">BaseX</a>
-      <a class=menu_entry" id="menu_primes">Primes</a>
+      <a class="menu_entry" id="menu_aes">AES</a>
+      <a class="menu_entry" id="menu_hash">Hash</a>
+      <a class="menu_entry" id="menu_basex">BaseX</a>
+      <a class="menu_entry" id="menu_primes">Primes</a>
     </div>
 
     <div id="content" />
@@ -326,7 +330,7 @@
 
 
       document.getElementById("menu_basex").onclick = function () { 
-        
+        document.getElementById("content").replaceChildren();
       };
       
       document.getElementById("menu_primes").onclick = function () {
@@ -459,8 +463,13 @@
           headergenerate, containergenerate, textareagenerate, buttongenerate);
       };
 
-      document.getElementById("menu_primes").click();
-      
+
+      var hash = window.location.hash;
+      switch(hash) {
+        case "#primes": document.getElementById("menu_primes").click(); break;
+        default: document.getElementById("menu_primes").click(); break;
+      }
+
     </script>
 
   </body>
