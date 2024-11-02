@@ -302,7 +302,7 @@ export const BASE16 = new Base16();
 // UINT
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-class UInt {
+export class UInt {
   #buffer
   constructor(size, oth) {
     this.#buffer = new Buffer(size);
@@ -835,6 +835,20 @@ export class SHA512 extends Hash {
   reset() { super._reset(EXPORTS.cppcore_sha512_reset); }
   step(data) { super._step(data, EXPORTS.cppcore_sha512_step); }
   finish(digest) { super._finish(digest, EXPORTS.cppcore_sha512_finish); }
+}
+export class CRC32 extends Hash {
+  static get digestLength() { return 4; }
+  constructor() { super(EXPORTS.cppcore_crc32_init); }
+  reset() { super._reset(EXPORTS.cppcore_crc32_reset); }
+  step(data) { super._step(data, EXPORTS.cppcore_crc32_step); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_crc32_finish); }
+}
+export class CRC32C extends Hash {
+  static get digestLength() { return 4; }
+  constructor() { super(EXPORTS.cppcore_crc32c_init); }
+  reset() { super._reset(EXPORTS.cppcore_crc32c_reset); }
+  step(data) { super._step(data, EXPORTS.cppcore_crc32c_step); }
+  finish(digest) { super._finish(digest, EXPORTS.cppcore_crc32c_finish); }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
