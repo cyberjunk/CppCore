@@ -11,28 +11,30 @@
     h1 {
       text-align: center;
       margin: auto;
-      width: 512px;
+      padding: 8px;
     }
     #menu {
       margin: auto;
-      width: 512px;
       display: flex; 
       justify-content: center; 
       align-items: center;
-      background-color: blue;
     }
     .menu_entry {
       cursor: pointer;
       font-size: 24px;
-      background-color: red;
+      padding: 8px;
+    }
+    .menu_entry:hover {
+      text-decoration: underline;
     }
     #content {
       margin: auto;
       width: 512px;
     }
     textarea {
+      font-size: 18px;
       width: 512px;
-      height: 128px;
+      height: 256px;
       resize: vertical;
       box-sizing: border-box
     }
@@ -55,45 +57,31 @@
   <body>
     <h1>libcppcore</h1>
     <div id="menu">
+      <a class="menu_entry" id="menu_basex">BASEX</a>
+      <a class="menu_entry" id="menu_primes">PRIMES</a>
+      <a class="menu_entry" id="menu_hash">HASH</a>
+      <a class="menu_entry" id="menu_hmac">HMAC</a>
+      <a class="menu_entry" id="menu_pbkdf2">PBKDF2</a>
       <a class="menu_entry" id="menu_aes">AES</a>
-      <a class="menu_entry" id="menu_hash">Hash</a>
-      <a class="menu_entry" id="menu_basex">BaseX</a>
-      <a class="menu_entry" id="menu_primes">Primes</a>
+      <a class="menu_entry" id="menu_dh">DH</a>
     </div>
-
     <div id="content" />
-
     <script type="module">
       import { 
-        Buffer,
-        CString,
-        BaseX,
-        Base10,
-        BASE02,
-        BASE10,
-        BASE16,
-        UInt,
-        UInt32,
-        UInt64,
-        UInt128,
-        UInt256,
-        UInt512,
-        UInt1024,
-        UInt2048,
+        Buffer, CString,
+        BaseX, BASE02, BASE10, BASE16,
+        UInt, UInt32, UInt64, UInt128,
+        UInt256, UInt512, UInt1024, UInt2048,
         UInt4096,
-        UInt8192,
-        AES128ECB,
-        AES128CBC,
+        AES128ECB, AES128CBC,
         PBKDF2,
         MD5, SHA256, SHA512, CRC32, CRC32C,
         Prime
       } from './libcppcore.js'
       
-
       function getRandomInt(max) {
           return Math.floor(Math.random() * max);
       }
-
 
       function testBuffer() {
           const a = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08];
@@ -319,21 +307,18 @@
       //testUInt();
       //testAES();
       //testPBKDF2();
-      testHash();
+      //testHash();
       //testPrime();
 
-
-
-
-
-
-
-
-      document.getElementById("menu_basex").onclick = function () { 
-        document.getElementById("content").replaceChildren();
-      };
+      ///////////////////////////////////////////////////////////////////////
       
-      document.getElementById("menu_primes").onclick = function () {
+      function renderBaseX() {
+        window.location.href = "#basex"
+        document.getElementById("content").replaceChildren();
+      }
+
+      function renderPrimes() {
+        window.location.href = "#primes";
         const headertest = document.createElement("h2");
         headertest.innerText = "Test";
         const containertest = document.createElement("div");
@@ -461,16 +446,55 @@
         document.getElementById("content").replaceChildren(
           headertest, containertest, textareatest, buttontest,
           headergenerate, containergenerate, textareagenerate, buttongenerate);
-      };
-
-
-      var hash = window.location.hash;
-      switch(hash) {
-        case "#primes": document.getElementById("menu_primes").click(); break;
-        default: document.getElementById("menu_primes").click(); break;
       }
 
-    </script>
+      function renderHash() {
+        window.location.href = "#hash"
+        document.getElementById("content").replaceChildren();
+      }
 
+      function renderHMAC() {
+        window.location.href = "#hmac"
+        document.getElementById("content").replaceChildren();
+      }
+
+      function renderPBKDF2() {
+        window.location.href = "#pbkdf2"
+        document.getElementById("content").replaceChildren();
+      }
+
+      function renderAES() {
+        window.location.href = "#aes"
+        document.getElementById("content").replaceChildren();
+      }
+
+      function renderDH() {
+        window.location.href = "#dh"
+        document.getElementById("content").replaceChildren();
+      }
+
+      ///////////////////////////////////////////////////////////////////////
+      
+      document.getElementById("menu_basex").onclick = renderBaseX;
+      document.getElementById("menu_primes").onclick = renderPrimes;
+      document.getElementById("menu_hash").onclick = renderHash;
+      document.getElementById("menu_hmac").onclick = renderHMAC;
+      document.getElementById("menu_pbkdf2").onclick = renderPBKDF2;
+      document.getElementById("menu_aes").onclick = renderAES;
+      document.getElementById("menu_dh").onclick = renderDH;
+
+      ///////////////////////////////////////////////////////////////////////
+
+      switch(window.location.hash) {
+        case "#basex":  renderBaseX();  break;
+        case "#primes": renderPrimes(); break;
+        case "#hash":   renderHash();   break;
+        case "#hmac":   renderHMAC();   break;
+        case "#pbkdf2": renderPBKDF2(); break;
+        case "#aes":    renderAES();    break;
+        case "#dh":     renderDH();     break;
+        default:        renderBaseX();  break;
+      }
+    </script>
   </body>
 </html>
