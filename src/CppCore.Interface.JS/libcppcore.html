@@ -314,7 +314,98 @@
       
       function renderBaseX() {
         window.location.href = "#basex"
-        document.getElementById("content").replaceChildren();
+        const headerinput = document.createElement("h2");
+        headerinput.innerText = "Input";
+        const containerinput = document.createElement("div");
+        containerinput.className = "container";
+        const containerinputleft = document.createElement("div");
+        containerinputleft.className = "containerItem";
+        containerinputleft.style = "width: 15%";
+        const containerinputright = document.createElement("div");
+        containerinputright.className = "containerItem";
+        containerinputright.style = "width: 85%";
+        const labelalphabetinput = document.createElement("label");
+        labelalphabetinput.innerText = "Alphabet: ";
+        labelalphabetinput.style = "padding-right: 8px";
+        const alphabetinput = document.createElement("input");
+        alphabetinput.placeholder = "Enter at least two symbols";
+        alphabetinput.style = "width: 100%";
+        containerinputleft.append(labelalphabetinput);
+        containerinputright.append(alphabetinput);
+        containerinput.append(containerinputleft, containerinputright);
+        const textareainput = document.createElement("textarea");
+        textareainput.placeholder = "Enter value with symbols from alphabet";
+
+        const headeroutput = document.createElement("h2");
+        headeroutput.innerText = "Output";
+        const containeroutput = document.createElement("div");
+        containeroutput.className = "container";
+        const containeroutputleft = document.createElement("div");
+        containeroutputleft.className = "containerItem";
+        containeroutputleft.style = "width: 15%";
+        const containeroutputright = document.createElement("div");
+        containeroutputright.className = "containerItem";
+        containeroutputright.style = "width: 85%";
+        const labelalphabetoutput = document.createElement("label");
+        labelalphabetoutput.innerText = "Alphabet: ";
+        labelalphabetoutput.style = "padding-right: 8px";
+        const alphabetoutput = document.createElement("input");
+        alphabetoutput.placeholder = "Enter at least two symbols";
+        alphabetoutput.style = "width: 100%";
+        containeroutputleft.append(labelalphabetoutput);
+        containeroutputright.append(alphabetoutput);
+        containeroutput.append(containeroutputleft, containeroutputright);
+        const textareaoutput = document.createElement("textarea");
+        textareaoutput.readOnly = true;
+        textareaoutput.placeholder = "";
+
+        const button = document.createElement("button");
+        button.innerText = "Decode + Encode";
+        button.style = "width: 100%"
+
+        const labelerror = document.createElement("label");
+        labelerror.style = "width: 100%; display: flex; justify-content: center; align-items: center;";
+
+        alphabetinput.addEventListener("keypress", (event) => {
+          if (alphabetinput.value.indexOf(event.key) != -1) {
+            event.preventDefault();
+          }
+        });
+        alphabetoutput.addEventListener("keypress", (event) => {
+          if (alphabetoutput.value.indexOf(event.key) != -1) {
+            event.preventDefault();
+          }
+        });
+
+        button.onclick = function () {
+          if (alphabetinput.value.length < 2) {
+            labelerror.innerText = "Input alphabet too short!"
+            return;
+          }
+          if (alphabetoutput.value.length < 2) {
+            labelerror.innerText = "Output alphabet too short!"
+            return;
+          }
+          if (textareainput.value.length == 0) {
+            labelerror.innerText = "Input must not be empty!"
+            return;
+          }
+          try {
+            const basexin = new BaseX(alphabetinput.value);
+            const basexout = new BaseX(alphabetoutput.value);
+            const vin = basexin.decode(textareainput.value);
+            const vout = basexout.encode(vin);
+            textareaoutput.value = vout;
+            labelerror.innerText = "";
+          } catch(e) {
+            labelerror.innerText = e.message;
+          }
+        };
+
+        document.getElementById("content").replaceChildren(
+          headerinput, containerinput, textareainput,
+          headeroutput, containeroutput, textareaoutput,
+          button, labelerror);
       }
 
       function renderPrimes() {
