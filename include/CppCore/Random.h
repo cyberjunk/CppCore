@@ -58,6 +58,10 @@ namespace CppCore
          uint64_t t;
          __asm volatile ("MRS %0, CNTVCT_EL0;" : "=r"(t) :: "memory");
          v ^= seedmix32((uint32_t)t);
+      #elif defined(CPPCORE_OS_WASI)
+         uint32_t t;
+         auto r = __wasi_random_get((uint8_t*)&t, 4);
+         v ^= seedmix32(t);
       #endif
          return v;
       }
@@ -86,6 +90,10 @@ namespace CppCore
       #elif defined(CPPCORE_CPU_ARM64) && defined(CPPCORE_COMPILER_CLANG)
          uint64_t t;
          __asm volatile ("MRS %0, CNTVCT_EL0;" : "=r"(t) :: "memory");
+         v ^= seedmix64(t);
+      #elif defined(CPPCORE_OS_WASI)
+         uint64_t t;
+         auto r = __wasi_random_get((uint8_t*)&t, 8);
          v ^= seedmix64(t);
       #endif
          return v;

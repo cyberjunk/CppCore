@@ -129,6 +129,7 @@ namespace CppCore
                ////////////////////////////////////////////////////////////////////////////////////
             };
 
+         #ifndef CPPCORE_NO_THREADING
             /// <summary>
             /// Dynamic Sized Model Pointer Array for Multi Threaded Access
             /// </summary>
@@ -138,6 +139,7 @@ namespace CppCore
             public:
                INLINE MT(const size_t size = 0) : ::CppCore::Array::Dyn::MT<T, CONSTRUCT>(size) { }
             };
+         #endif
          };
          class Fix
          {
@@ -219,6 +221,7 @@ namespace CppCore
                ////////////////////////////////////////////////////////////////////////////////////
             };
 
+         #ifndef CPPCORE_NO_THREADING
             /// <summary>
             /// Fixed Sized Model Array for Multi Threaded Access
             /// </summary>
@@ -228,6 +231,7 @@ namespace CppCore
             public:
                INLINE MT() : ::CppCore::Array::Fix::MT<T, SIZE>() { }
             };
+         #endif
          };
       };
 

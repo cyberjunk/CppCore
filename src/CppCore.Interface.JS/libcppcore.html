@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>libcppcore</title>
+  </head>
+  <style>
+    body {
+      font-size: 18px
+    }
+    h1 {
+      text-align: center;
+      margin: auto;
+      padding: 8px;
+    }
+    #menu {
+      margin: auto;
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+    }
+    .menu_entry {
+      cursor: pointer;
+      font-size: 24px;
+      padding: 8px;
+    }
+    .menu_entry:hover {
+      text-decoration: underline;
+    }
+    #content {
+      margin: auto;
+      width: 512px;
+    }
+    textarea {
+      font-size: 18px;
+      width: 512px;
+      height: 256px;
+      resize: vertical;
+      box-sizing: border-box
+    }
+    button {
+      height: 32px;
+    }
+    .container {
+      width: 100%; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+    }
+    .containerItem {
+      float: left; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+    }
+  </style>
+  <body>
+    <h1>libcppcore</h1>
+    <div id="menu">
+      <a class="menu_entry" id="menu_basex">BASEX</a>
+      <a class="menu_entry" id="menu_primes">PRIMES</a>
+      <a class="menu_entry" id="menu_hash">HASH</a>
+      <a class="menu_entry" id="menu_hmac">HMAC</a>
+      <a class="menu_entry" id="menu_pbkdf2">PBKDF2</a>
+      <a class="menu_entry" id="menu_aes">AES</a>
+      <a class="menu_entry" id="menu_dh">DH</a>
+    </div>
+    <div id="content" />
+    <script type="module">
+      import { 
+        Buffer, CString,
+        BaseX, BASE02, BASE10, BASE16,
+        UInt, UInt32, UInt64, UInt128,
+        UInt256, UInt512, UInt1024, UInt2048,
+        UInt4096,
+        AES128ECB, AES128CBC,
+        PBKDF2,
+        MD5, SHA256, SHA512, CRC32, CRC32C,
+        Prime
+      } from './libcppcore.js'
+      
+      function getRandomInt(max) {
+          return Math.floor(Math.random() * max);
+      }
+
+      function testBuffer() {
+          const a = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08];
+          const b = new Buffer(a);
+          console.log(a);
+          console.log(b);
+      }
+
+      function testCString() {
+        var s = new CString("hello");
+        console.log(s);
+        /*console.log(s.toString());
+        console.log(s.byteLength);
+        console.log(s.maxLength);
+        console.log(s._ptr);*/
+
+
+        /*var s2 = s.slice(0, 1);
+        console.log(s2);
+        console.log(s2.byteLength);*/
+
+        var s3 = new CString(s);
+        //console.log(s3.toString());
+        console.log(s3.byteLength);
+        console.log(s3.maxLength);
+
+        //var s4 = s.subarray(0, 1);
+        //console.log(s4);
+      }
+
+      function testBaseX() {
+        
+        /*var s = new CString(31);
+        console.log("LEN: " + s.byteLength);
+        console.log("decoding...");
+        var str1 = new CString("hello world");
+        console.log(str1.toString());
+        console.log("----------");
+        str1.fromString("blabla");
+        console.log(str1.toString());*/
+             
+        /*console.log("32B,B10:" + BaseX.estimateSymbols(32, 10));
+        console.log("32B,B02:" + BaseX.estimateSymbols(32,  2));
+        console.log("32B,B16:" + BaseX.estimateSymbols(32, 16));
+
+        console.log("32B,B10:" + BaseX.estimateBits(11, 10));
+        console.log("32B,B02:" + BaseX.estimateBits(32,  2));
+        console.log("32B,B16:" + BaseX.estimateBits(8, 16));*/
+
+        //
+
+        /*var basex = new BaseX("0123456789");
+        var dec = basex.decode("1024");
+        console.log(dec);
+        var enc = basex.encode(dec);
+        console.log(enc);*/
+
+        var basex = new BaseX("0123456789ABCDEF");
+        var dec = basex.decode("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+        console.log(dec);
+        var enc = basex.encode(dec);
+        console.log(enc);
+
+
+        //console.log(dec._ptr);
+
+        //var v = basex.decode128("9999999999999999999999999999999999999999999999999");
+        //console.log(v);
+
+      }
+
+      function testUInt() {
+        const iter = 1000;
+        let bigs1 = [];
+        let bigs2 = [];
+        let ints1 = [];
+        let ints2 = [];
+        for (var i = 0; i < iter; i++) {
+            const rnd1 = getRandomHexStr(2048);
+            const rnd2 = getRandomHexStr(2048);
+            bigs1.push(BigInt(rnd1));
+            bigs2.push(BigInt(rnd2));
+            ints1.push(new UInt8192(rnd1));
+            ints2.push(new UInt8192(rnd2));
+        }
+        let start = null;
+        let end = null;
+        let r = BigInt(0);
+        let b1 = new UInt8192("0");
+        let b2 = new UInt8192("0");
+        let t  = new UInt8192("0");
+
+        start = Date.now();
+        for (var i = 0; i < iter; i++) {
+          r += bigs1[i] * bigs2[i];
+          r = BigInt.asUintN(8192, r);
+        }
+        end = Date.now();
+        console.log(r);
+        console.log("Duration BigInt: " + (end-start));
+
+        start = Date.now();
+        for (var i = 0; i < iter; i++) {
+          //UInt128.divmod(ints1[i], ints2[i], b1, t);
+          UInt8192.mul(ints1[i], ints2[i], b1);
+          UInt8192.add(b1, b2, b2);
+        }
+        end = Date.now();
+        console.log(b2.toString());
+        console.log("Duration UInt: " + (end-start));
+      }
+
+      function testAES() {
+        console.log("TESTING AES");
+
+        var x = 8192*64;
+        console.log(x & 0x0F);
+        console.log(x >> 4);
+
+        var aes1 = new AES128CBC();
+        //var aes2 = new AES128CBC();
+        //var key = new AES.Key();
+        //key.setUint32(0, 4294967295);
+
+        //aes.reset(new Buffer(16));
+        //aes.reset("0123456789ABCDEF");
+        //aes.reset(new CString("0123456789ABCDEF"));
+        //aes1.setKey("0123456789ABCDEF");
+        aes1.setKey(new Uint8Array(16));
+        aes1.setIV("0123456789ABCDEF");
+        //aes1.setIV("0123456789ABCDEF");
+        //aes2.setKey(new Uint8Array(16), new Buffer(16));
+
+        //console.log(aes1._iv_enc);
+        //console.log(aes1._iv_dec);
+        
+        //var data_in = new Buffer(32);
+        var data_in = new CString("0123456789abcdef");
+        var data_out = new Buffer(64);
+        var data_str = new CString(32);
+        console.log(data_in.toString());
+
+        aes1.encrypt(data_in, data_out);
+        //console.log(aes1._iv_enc);
+        //console.log(aes1._iv_dec);
+        console.log(data_out.toString());
+
+        aes1.decrypt(data_out.subarray(0, 16), data_str);
+        console.log(data_str.toString());
+
+        /*data_out.setUint32(0, 0);
+        data_out.setUint32(4, 0);
+        data_out.setUint32(8, 0);
+        data_out.setUint32(12, 0);
+        
+        data_in.setUint32(0, 4294967295);
+        data_in.setUint32(4, 4294967295);
+        data_in.setUint32(8, 4294967295);
+        data_in.setUint32(12, 4294967295);
+
+        console.log("Before:")
+        console.log(data_out.getUint32(0));
+        aes.encrypt(data_in, data_out, 1);
+        console.log("After:")
+        console.log(data_out.getUint32(0));
+
+        data_in.setUint32(0, 0);
+        data_in.setUint32(4, 0);
+        data_in.setUint32(8, 0);
+        data_in.setUint32(12, 0);
+
+        console.log("Before:")
+        console.log(data_in.getUint32(0));
+        aes.decrypt(data_out, data_in, 1);
+        console.log("After:")
+        console.log(data_in.getUint32(0));*/
+      }
+      
+      function testPrime() {
+        /*var t1 = Date.now();
+        var p = new UInt128();
+        Prime.generate(p, false, 0);
+        var t2 = Date.now();
+        console.log("gen took:" + (t2-t1));
+        var p2 = UInt128.fromString("0b11");
+        console.log(p2.toString());*/
+
+        var p = new UInt4096("0x0397ffffffffffffffffffffffffffff");
+        var r = Prime.test(p, Prime.Certainty.Max);
+        console.log(r);
+
+        //r = Prime.test(33333333333333333333, false, 0);
+        //console.log(r);
+      }
+      
+      function testPBKDF2() {
+          //var digest = new Buffer(32);
+          //var digest = new UInt256();
+          var digest = new Uint8Array(32);
+          PBKDF2.sha256(
+            "test1",
+            new Uint8Array([0xFF, 0xFE]),
+            digest,
+            10000
+          );
+          console.log(digest);
+      }
+
+      function testHash() {
+        var h = new CRC32C();
+        //var b = new UInt128();
+        var b = new Uint8Array(CRC32C.digestLength);
+
+        h.reset();
+        h.step(new Uint8Array([0xFF, 0xFF, 0xEF]));
+        h.finish(b);
+        console.log(b.toString(16));
+      }
+      
+      //testBuffer();
+      //testCString();
+      //testBaseX();
+      //testUInt();
+      //testAES();
+      //testPBKDF2();
+      //testHash();
+      //testPrime();
+
+      ///////////////////////////////////////////////////////////////////////
+      
+      function renderBaseX() {
+        window.location.href = "#basex"
+        const headerinput = document.createElement("h2");
+        headerinput.innerText = "Input";
+        const containerinput = document.createElement("div");
+        containerinput.className = "container";
+        const containerinputleft = document.createElement("div");
+        containerinputleft.className = "containerItem";
+        containerinputleft.style = "width: 15%";
+        const containerinputright = document.createElement("div");
+        containerinputright.className = "containerItem";
+        containerinputright.style = "width: 85%";
+        const labelalphabetinput = document.createElement("label");
+        labelalphabetinput.innerText = "Alphabet: ";
+        labelalphabetinput.style = "padding-right: 8px";
+        const alphabetinput = document.createElement("input");
+        alphabetinput.placeholder = "Enter at least two symbols";
+        alphabetinput.style = "width: 100%";
+        containerinputleft.append(labelalphabetinput);
+        containerinputright.append(alphabetinput);
+        containerinput.append(containerinputleft, containerinputright);
+        const textareainput = document.createElement("textarea");
+        textareainput.placeholder = "Enter value with symbols from alphabet";
+
+        const headeroutput = document.createElement("h2");
+        headeroutput.innerText = "Output";
+        const containeroutput = document.createElement("div");
+        containeroutput.className = "container";
+        const containeroutputleft = document.createElement("div");
+        containeroutputleft.className = "containerItem";
+        containeroutputleft.style = "width: 15%";
+        const containeroutputright = document.createElement("div");
+        containeroutputright.className = "containerItem";
+        containeroutputright.style = "width: 85%";
+        const labelalphabetoutput = document.createElement("label");
+        labelalphabetoutput.innerText = "Alphabet: ";
+        labelalphabetoutput.style = "padding-right: 8px";
+        const alphabetoutput = document.createElement("input");
+        alphabetoutput.placeholder = "Enter at least two symbols";
+        alphabetoutput.style = "width: 100%";
+        containeroutputleft.append(labelalphabetoutput);
+        containeroutputright.append(alphabetoutput);
+        containeroutput.append(containeroutputleft, containeroutputright);
+        const textareaoutput = document.createElement("textarea");
+        textareaoutput.readOnly = true;
+        textareaoutput.placeholder = "";
+
+        const button = document.createElement("button");
+        button.innerText = "Decode + Encode";
+        button.style = "width: 100%"
+
+        const labelerror = document.createElement("label");
+        labelerror.style = "width: 100%; display: flex; justify-content: center; align-items: center;";
+
+        alphabetinput.addEventListener("keypress", (event) => {
+          if (alphabetinput.value.indexOf(event.key) != -1) {
+            event.preventDefault();
+          }
+        });
+        alphabetoutput.addEventListener("keypress", (event) => {
+          if (alphabetoutput.value.indexOf(event.key) != -1) {
+            event.preventDefault();
+          }
+        });
+
+        button.onclick = function () {
+          if (alphabetinput.value.length < 2) {
+            labelerror.innerText = "Input alphabet too short!"
+            return;
+          }
+          if (alphabetoutput.value.length < 2) {
+            labelerror.innerText = "Output alphabet too short!"
+            return;
+          }
+          if (textareainput.value.length == 0) {
+            labelerror.innerText = "Input must not be empty!"
+            return;
+          }
+          try {
+            const basexin = new BaseX(alphabetinput.value);
+            const basexout = new BaseX(alphabetoutput.value);
+            const vin = basexin.decode(textareainput.value);
+            const vout = basexout.encode(vin);
+            textareaoutput.value = vout;
+            labelerror.innerText = "";
+          } catch(e) {
+            labelerror.innerText = e.message;
+          }
+        };
+
+        document.getElementById("content").replaceChildren(
+          headerinput, containerinput, textareainput,
+          headeroutput, containeroutput, textareaoutput,
+          button, labelerror);
+      }
+
+      function renderPrimes() {
+        window.location.href = "#primes";
+        const headertest = document.createElement("h2");
+        headertest.innerText = "Test";
+        const containertest = document.createElement("div");
+        containertest.className = "container";
+        const containertestleft = document.createElement("div");
+        containertestleft.className = "containerItem";
+        containertestleft.style = "width: 50%";
+        const containertestright = document.createElement("div");
+        containertestright.className = "containerItem";
+        containertestright.style = "width: 50%";
+        const labelcertaintytest = document.createElement("label");
+        labelcertaintytest.innerText = "Certainty: ";
+        labelcertaintytest.style = "padding-right: 8px";
+        const certaintytest = document.createElement("input");
+        certaintytest.type = "number";
+        certaintytest.value = Prime.Certainty.Weak;
+        certaintytest.style = "width: 100%";
+        const labelresult = document.createElement("label");
+        labelresult.innerText = "[RESULT]";
+        containertestleft.append(labelcertaintytest, certaintytest);
+        containertestright.append(labelresult);
+        containertest.append(containertestleft, containertestright);
+        const textareatest = document.createElement("textarea");
+        textareatest.placeholder = "Enter decimal number or hex prefixed with 0x";
+        const buttontest = document.createElement("button");
+        buttontest.innerText = "Test";
+        buttontest.style = "width: 100%"
+        buttontest.onclick = function () { 
+          const v = textareatest.value;
+          try {
+            const r = Prime.test(UInt.fromString(v), parseInt(certaintytest.value));
+            if (r == Prime.Result.NotPrime) {
+              labelresult.innerText = "NOT PRIME";
+            }
+            else if (r == Prime.Result.Prime) {
+              labelresult.innerText = "PRIME";
+            }
+            else if (r == Prime.Result.LikelyPrime) {
+              labelresult.innerText = "LIKELY PRIME";
+            }
+          }
+          catch (e) {
+            labelresult.innerText = e.message;
+          }
+        }
+
+        const headergenerate = document.createElement("h2");
+        headergenerate.innerText = "Generate";
+        const containergenerate = document.createElement("div");
+        containergenerate.className = "container";
+        const containergenerateleft = document.createElement("div");
+        containergenerateleft.className = "containerItem";
+        containergenerateleft.style = "width: 33%";
+        const containergeneratemiddle = document.createElement("div");
+        containergeneratemiddle.className = "containerItem";
+        containergeneratemiddle.style = "width: 33%";
+        const containergenerateright = document.createElement("div");
+        containergenerateright.className = "containerItem";
+        containergenerateright.style = "width: 33%";
+        const labelcertaintygenerate = document.createElement("label");
+        labelcertaintygenerate.innerText = "Certainty: ";
+        labelcertaintygenerate.style = "padding-right: 8px"
+        const certaintygenerate = document.createElement("input");
+        certaintygenerate.type = "number";
+        certaintygenerate.value = Prime.Certainty.Weak;
+        certaintygenerate.style = "width: 100%";
+        const labelbitsgenerate = document.createElement("label");
+        labelbitsgenerate.innerText = "Bits: ";
+        labelbitsgenerate.style = "padding-left: 8px; padding-right: 8px;"
+        const bitsgenerate = document.createElement("select");
+        bitsgenerate.style = "width:100%";
+        const option32 = document.createElement("option");
+        const option64 = document.createElement("option");
+        const option128 = document.createElement("option");
+        const option256 = document.createElement("option");
+        const option512 = document.createElement("option");
+        const option1024 = document.createElement("option");
+        const option2048 = document.createElement("option");
+        const option4096 = document.createElement("option");
+        option32.value   =   32; option32.text   = "32";   bitsgenerate.append(option32);
+        option64.value   =   64; option64.text   = "64";   bitsgenerate.append(option64);
+        option128.value  =  128; option128.text  = "128";  bitsgenerate.append(option128);
+        option256.value  =  256; option256.text  = "256";  bitsgenerate.append(option256);
+        option512.value  =  512; option512.text  = "512";  bitsgenerate.append(option512);
+        option1024.value = 1024; option1024.text = "1024"; bitsgenerate.append(option1024);
+        option2048.value = 2048; option2048.text = "2048"; bitsgenerate.append(option2048);
+        option4096.value = 4096; option4096.text = "4096"; bitsgenerate.append(option4096);
+        const labeloutputtype = document.createElement("label");
+        labeloutputtype.innerText = "Output: ";
+        labeloutputtype.style = "padding-left: 8px; padding-right: 8px;"
+        const outputtype = document.createElement("select");
+        outputtype.style = "width:100%";
+        const option10 = document.createElement("option");
+        const option16 = document.createElement("option");
+        option10.value = 10; option10.text = "DECIMAL"; outputtype.append(option10);
+        option16.value = 16; option16.text = "HEX"; outputtype.append(option16);
+        containergenerateleft.append(labelcertaintygenerate, certaintygenerate);
+        containergeneratemiddle.append(labelbitsgenerate, bitsgenerate);
+        containergenerateright.append(labeloutputtype, outputtype);
+        containergenerate.append(containergenerateleft, containergeneratemiddle, containergenerateright);
+        const textareagenerate = document.createElement("textarea");
+        textareagenerate.readOnly = true;
+        const buttongenerate = document.createElement("button");
+        buttongenerate.innerText = "Generate";
+        buttongenerate.style = "width: 100%"
+        buttongenerate.onclick = function () { 
+          var v = null;
+          var bits = parseInt(bitsgenerate.value);
+          var base = parseInt(outputtype.value)
+          switch(bits) {
+            case  32:  v = new UInt32();   break;
+            case  64:  v = new UInt64();   break;
+            case 128:  v = new UInt128();  break;
+            case 256:  v = new UInt256();  break;
+            case 512:  v = new UInt512();  break;
+            case 1024: v = new UInt1024(); break;
+            case 2048: v = new UInt2048(); break;
+            case 4096: v = new UInt4096(); break;
+          }
+          Prime.generate(v, parseInt(certaintygenerate.value));
+          if      (base == 10) { textareagenerate.value = v.toString(base); }
+          else if (base == 16) { textareagenerate.value = "0x" + v.toString(base); }
+        }
+
+        document.getElementById("content").replaceChildren(
+          headertest, containertest, textareatest, buttontest,
+          headergenerate, containergenerate, textareagenerate, buttongenerate);
+      }
+
+      function renderHash() {
+        window.location.href = "#hash"
+        document.getElementById("content").replaceChildren();
+      }
+
+      function renderHMAC() {
+        window.location.href = "#hmac"
+        document.getElementById("content").replaceChildren();
+      }
+
+      function renderPBKDF2() {
+        window.location.href = "#pbkdf2"
+        document.getElementById("content").replaceChildren();
+      }
+
+      function renderAES() {
+        window.location.href = "#aes"
+        document.getElementById("content").replaceChildren();
+      }
+
+      function renderDH() {
+        window.location.href = "#dh"
+        document.getElementById("content").replaceChildren();
+      }
+
+      ///////////////////////////////////////////////////////////////////////
+      
+      document.getElementById("menu_basex").onclick = renderBaseX;
+      document.getElementById("menu_primes").onclick = renderPrimes;
+      document.getElementById("menu_hash").onclick = renderHash;
+      document.getElementById("menu_hmac").onclick = renderHMAC;
+      document.getElementById("menu_pbkdf2").onclick = renderPBKDF2;
+      document.getElementById("menu_aes").onclick = renderAES;
+      document.getElementById("menu_dh").onclick = renderDH;
+
+      ///////////////////////////////////////////////////////////////////////
+
+      switch(window.location.hash) {
+        case "#basex":  renderBaseX();  break;
+        case "#primes": renderPrimes(); break;
+        case "#hash":   renderHash();   break;
+        case "#hmac":   renderHMAC();   break;
+        case "#pbkdf2": renderPBKDF2(); break;
+        case "#aes":    renderAES();    break;
+        case "#dh":     renderDH();     break;
+        default:        renderBaseX();  break;
+      }
+    </script>
+  </body>
+</html>

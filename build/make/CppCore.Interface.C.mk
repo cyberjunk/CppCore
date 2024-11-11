@@ -20,7 +20,7 @@ CXXFLAGS  := $(CXXFLAGS) \
              -mno-stack-arg-probe \
              -fno-stack-protector \
              -fno-stack-check
-LINKFLAGS := $(LINKFLAGS) -shared -fno-builtin
+LINKFLAGS := $(LINKFLAGS) -fno-builtin
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = cppcore.o
@@ -62,6 +62,7 @@ DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
+             -shared \
              -nostdlib \
              -Xlinker /SAFESEH:NO \
              -Xlinker /ENTRY:DllMain \
@@ -89,6 +90,7 @@ DEFINES     := $(DEFINES)
 INCLUDES    := $(INCLUDES)
 CXXFLAGS    := $(CXXFLAGS)
 LINKFLAGS   := $(LINKFLAGS) \
+               -shared \
                -dynamiclib \
                -nostdlib \
                -current_version $(VERSION3) \
@@ -121,6 +123,7 @@ DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
+             -shared \
              -nostdlib \
              -Wl,--no-eh-frame-hdr
 LINKLIBS  := $(LINKLIBS) -lc
@@ -142,7 +145,7 @@ endif
 ifeq ($(TARGET_OS),android)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -shared
 LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 ifeq ($(TARGET_ARCH),x86)
@@ -163,6 +166,7 @@ ifeq ($(TARGET_OS),ios)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 LINKFLAGS := $(LINKFLAGS) \
+             -shared \
              -dynamiclib \
              -nostdlib \
              -install_name @rpath/$(LIBNAME)$(EXTDLL) \
@@ -185,6 +189,36 @@ endif
 ifeq ($(TARGET_ARCH),arm64)
 DEFINES   := $(DEFINES)
 endif
+endif
+
+ifeq ($(TARGET_OS),wasi)
+OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
+DEFINES   := $(DEFINES)
+CXXFLAGS  := $(CXXFLAGS)
+CFLAGS    := $(CFLAGS)
+DEC1MB    := 1048576
+DEC8MB    := 8388608
+HEX1MB    := 0x00100000
+LINKFLAGS := $(LINKFLAGS) \
+             -mexec-model=reactor \
+             -Wl,-z,stack-size=$(HEX1MB) \
+             -Wl,--initial-memory=$(DEC8MB) \
+             -Wl,--max-memory=$(DEC8MB) \
+             -Wl,--export-dynamic \
+             -Wl,--no-entry
+LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO)
+#-Wl,--import-memory \
+#-Wl,--global-base=2048 \
+#-Wl,-z,stack-size=0x00100000 \
+#-Wl,--max-memory=8388608 \
+#-Wl,--initial-memory=1179648 \
+#-Wl,--initial-heap=1048576 \
+#-Wl,--export-all \
+#-Wl,--export,__data_end
+#-Wl,--export,__heap_base
+#-Wl,--export,__tls_base
+#-Wl,--export,__stack_pointer
 endif
 
 ################################################################################################

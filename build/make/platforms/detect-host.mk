@@ -102,6 +102,9 @@ PLATDIR = $(dir $(lastword $(MAKEFILE_LIST)))
 # Include shared file for all host and target arch
 -include $(PLATDIR)/$(DETECTED_OS)-all.mk
 
+# Include shared file for all target arch
+-include $(PLATDIR)/all-all-$(TARGET_OS)-$(TARGET_ARCH).mk
+
 # Include shared file for all host arch
 -include $(PLATDIR)/$(DETECTED_OS)-all-$(TARGET_OS)-$(TARGET_ARCH).mk
 

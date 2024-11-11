@@ -61,6 +61,7 @@ namespace CppCore
             INLINE T* getPoolPtr() { return &this->mPool[0]; }
          };
 
+      #ifndef CPPCORE_NO_THREADING
          /// <summary>
          /// Pool for Multi Thread Access with internal Locking
          /// </summary>
@@ -83,6 +84,7 @@ namespace CppCore
                return Array::Fix::MT<T*, SIZE>::popBack(item);
             }
          };
+      #endif
       };
 
       ///////////////////////////////////////////////////////////////////////
@@ -150,6 +152,7 @@ namespace CppCore
             }
          };
 
+      #ifndef CPPCORE_NO_THREADING
          /// <summary>
          /// Pool for Multi Thread Access with internal Locking
          /// </summary>
@@ -203,6 +206,7 @@ namespace CppCore
                return mInstances.length() * sizeof(T);
             }
          };
+      #endif
       };
    };
 }

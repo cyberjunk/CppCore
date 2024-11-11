@@ -100,6 +100,21 @@ LINKLIBS  := $(LINKLIBS) -framework Foundation
 RESO      := $(RESO)
 endif
 
+ifeq ($(TARGET_OS),wasi)
+OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
+DEFINES   := $(DEFINES)
+CXXFLAGS  := $(CXXFLAGS)
+CFLAGS    := $(CFLAGS)
+DEC64MB   := 67108864
+HEX8MB    := 0x00800000
+LINKFLAGS := $(LINKFLAGS) \
+             -Wl,-z,stack-size=$(HEX8MB) \
+             -Wl,--initial-heap=$(DEC64MB) \
+             -Wl,--stack-first
+LINKLIBS  := $(LINKLIBS)
+RESO      := $(RESO)
+endif
+
 ################################################################################################
 
 OBJS := $(patsubst %,$(OBJDIR)/%,$(OBJS))
@@ -155,6 +170,12 @@ endif
 	$(AVDMANAGER) delete avd --name $(NAME)_AVD
 else ifeq ($(TARGET_OS),ios)
 #	TODO: Run in emulator like on Android
+else ifeq ($(TARGET_OS),wasi)
+ifeq ($(WASMER_DIR),)
+	wasmer $(OUT)
+else
+	$(WASMER_DIR)/bin/wasmer $(OUT)
+endif
 else
 	$(OUT)
 endif

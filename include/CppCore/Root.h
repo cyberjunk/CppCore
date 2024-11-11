@@ -17,8 +17,10 @@
 #elif TARGET_OS_IPHONE
 #define CPPCORE_OS_IPHONE
 #else
-#error UNKNOWN OPERATING SYSTEM
+#error UNKNOWN APPLE OPERATING SYSTEM
 #endif
+#elif defined(__wasi__)
+#define CPPCORE_OS_WASI
 #else
 #error UNKNOWN OPERATING SYSTEM
 #endif
@@ -55,6 +57,14 @@
 #define CPPCORE_CPU_ARM
 #define CPPCORE_CPU_ARMORARM64
 #define CPPCORE_CPU_32BIT
+#elif defined(__wasm32__)
+#define CPPCORE_CPU_WASM32
+#define CPPCORE_CPU_WASM32OR64
+#define CPPCORE_CPU_64BIT
+#elif defined(__wasm64__)
+#define CPPCORE_CPU_WASM64
+#define CPPCORE_CPU_WASM32OR64
+#define CPPCORE_CPU_64BIT
 #else
 #error UNKNOWN CPU
 #endif
@@ -545,6 +555,14 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+// WASM CPU
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if defined(__wasm_simd128__)
+#define CPPCORE_CPUFEAT_WASM_SIMD128
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Enable/Disable use of optimized classes
@@ -577,11 +595,13 @@
 #include <random>
 #include <regex>
 #include <set>
+#ifndef CPPCORE_NO_THREADING
 #include <shared_mutex>
+#include <thread>
+#endif
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <thread>
 #ifndef CPPCORE_NO_INCLUDE_IO
 #include <ios>
 #include <iostream>
@@ -593,7 +613,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Standard C Includes
+#ifndef CPPCORE_NO_SIGNAL
 #include <signal.h>
+#endif
 #include <errno.h>
 #include <sys/types.h>
 #include <limits.h>
@@ -626,10 +648,15 @@
  #endif
 #endif
 
+#if defined(CPPCORE_CPU_WASM32OR64) && defined(CPPCORE_CPUFEAT_WASM_SIMD128)
+#include <wasm_simd128.h>
+#endif
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Platform POSIX Socket
+#ifndef CPPCORE_NO_SOCKET
 #if defined(CPPCORE_OS_WINDOWS)
 #define NOMINMAX
 #include <WinSock2.h>
@@ -647,10 +674,13 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <poll.h>
+#ifndef CPPCORE_OS_WASI
 #include <netdb.h>
+#endif
 #define SOCKET int
 #define INVALID_SOCKET  (SOCKET)(~0)
 #define SOCKET_ERROR    -1
+#endif
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -681,6 +711,8 @@
 #if defined(__OBJC__)
 #include <Foundation/Foundation.h>
 #endif
+#elif defined(CPPCORE_OS_WASI)
+#include <wasi/api.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -956,6 +988,7 @@ namespace CppCore
    using TimePointHR = ClockHR::time_point;
    using DurationHR  = ClockHR::duration;
 
+#ifndef CPPCORE_NO_THREADING
    // thread
    using ::std::thread;
 
@@ -972,6 +1005,7 @@ namespace CppCore
    using ::std::condition_variable_any;
    using ::std::condition_variable;
    using ::std::cv_status;
+#endif
 
    // atomic
    using ::std::atomic;

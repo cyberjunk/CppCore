@@ -2,6 +2,8 @@
 
 #include <CppCore.Test/Root.h>
 
+#ifndef CPPCORE_NO_SOCKET
+
 #define CPPCORE_TEST_NETWORK_PORT 9999
 
 namespace CppCore { namespace Test { namespace Network
@@ -181,4 +183,6 @@ namespace CppCore { namespace Test { namespace VS { namespace Network {
       TEST_METHOD(BINDIPV6DSTCP) { Assert::AreEqual(true, CppCore::Test::Network::Socket::bindlistenipv6dstcp()); }
    };
 }}}}
+#endif
+
 #endif
