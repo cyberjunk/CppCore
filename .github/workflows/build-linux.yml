@@ -58,7 +58,7 @@ jobs:
     # QEMU Version (ARM64/ARMHF)
     - name: QEMU Version (ARM64/ARMHF)
       if: matrix.arch == 'arm64' || matrix.arch == 'armhf' || matrix.arch == 'armel' 
-      run: /usr/bin/qemu-system-x86_64 --version
+      run: /usr/bin/qemu-amd64-static --version
 
     # Set Environment Vars
     - name: Set Environment Vars
