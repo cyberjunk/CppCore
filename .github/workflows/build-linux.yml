@@ -55,6 +55,11 @@ jobs:
       if: matrix.arch == 'arm64' || matrix.arch == 'armhf' || matrix.arch == 'armel' 
       run: sudo apt-get install qemu-user qemu-user-static
 
+    # QEMU Version (ARM64/ARMHF)
+    - name: QEMU Version (ARM64/ARMHF)
+      if: matrix.arch == 'arm64' || matrix.arch == 'armhf' || matrix.arch == 'armel' 
+      run: kvm -version
+
     # Set Environment Vars
     - name: Set Environment Vars
       run: |
