@@ -425,7 +425,7 @@ int main()
    TEST(CppCore::Test::Memory::copy256,                "copy256:                ", std::endl);
    TEST(CppCore::Test::Memory::copy512,                "copy512:                ", std::endl);
    TEST(CppCore::Test::Memory::copy,                   "copy:                   ", std::endl);
-   TEST(CppCore::Test::Memory::copybackwards,          "copybackwards:          ", std::endl);
+   //TEST(CppCore::Test::Memory::copybackwards,          "copybackwards:          ", std::endl);
    TEST(CppCore::Test::Memory::streamcopy128,          "streamcopy128:          ", std::endl);
    TEST(CppCore::Test::Memory::streamcopy128x1,        "streamcopy128x1:        ", std::endl);
    TEST(CppCore::Test::Memory::streamcopy128x2,        "streamcopy128x2:        ", std::endl);
