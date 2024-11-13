@@ -52,6 +52,18 @@
 #define CPPCORE_MEMORY_PROCESS_64X8( len,                                                                             op64, op32, op16, op8) \
         CPPCORE_MEMORY_PROCESS_512(  len, op64;op64;op64;op64;op64;op64;op64;op64;, op64;op64;op64;op64;, op64;op64;, op64, op32, op16, op8)
 
+// decreases len in 64 byte steps executing sixteen op32 each time
+// then handles the 0-63 remaining bytes using op32 to op8
+#define CPPCORE_MEMORY_PROCESS_32X16( len, op32, op16, op8) \
+        CPPCORE_MEMORY_PROCESS_512(   len, \
+        op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;, \
+        op32;op32;op32;op32;op32;op32;op32;op32;, \
+        op32;op32;op32;op32;, \
+        op32;op32, \
+        op32, \
+        op16, \
+        op8)
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace CppCore
@@ -1972,9 +1984,14 @@ namespace CppCore
             *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
             *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
-      #else
+      #elif defined(CPPCORE_CPU_64BIT)
          CPPCORE_MEMORY_PROCESS_64X8(len, 
             *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;, 
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
+            *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
+            *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
+      #else
+         CPPCORE_MEMORY_PROCESS_32X16(len, 
             *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
             *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
@@ -2012,9 +2029,14 @@ namespace CppCore
             memd -=  4U; mems -=  4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
             memd -=  2U; mems -=  2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
             memd -=  1U; mems -=  1U; *((uint8_t*) memd) = *((uint8_t*) mems);)
-      #else
+      #elif defined(CPPCORE_CPU_64BIT)
          CPPCORE_MEMORY_PROCESS_64X8(len, 
             memd -= 8U; mems -= 8U; *((uint64_t*)memd) = *((uint64_t*)mems);,
+            memd -= 4U; mems -= 4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
+            memd -= 2U; mems -= 2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
+            memd -= 1U; mems -= 1U; *((uint8_t*) memd) = *((uint8_t*) mems);)
+      #else
+         CPPCORE_MEMORY_PROCESS_32X16(len, 
             memd -= 4U; mems -= 4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
             memd -= 2U; mems -= 2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
             memd -= 1U; mems -= 1U; *((uint8_t*) memd) = *((uint8_t*) mems);)

@@ -35,10 +35,21 @@ namespace CppCore
          uint8_t* cenc = (uint8_t*)enc;
          if (cin + 8U <= cend)
          {
+         #if defined(CPPCORE_CPU_64BIT)
             *(uint64_t*)cout = *(uint64_t*)cenc ^ *(uint64_t*)cin;
             cin  += 8U;
             cout += 8U;
             cenc += 8U;
+         #else
+            *(uint32_t*)cout = *(uint32_t*)cenc ^ *(uint32_t*)cin;
+            cin  += 4U;
+            cout += 4U;
+            cenc += 4U;
+            *(uint32_t*)cout = *(uint32_t*)cenc ^ *(uint32_t*)cin;
+            cin  += 4U;
+            cout += 4U;
+            cenc += 4U;
+         #endif
          }
          if (cin + 4U <= cend)
          {
@@ -319,7 +330,7 @@ namespace CppCore
          Block t;
 
          // initial round key addition on input
-         out = in ^ this->ekb[0];
+         CppCore::xor_(in, this->ekb[0], out);
 
          // n rounds
          CPPCORE_UNROLL
@@ -347,7 +358,7 @@ namespace CppCore
             t.u32[3] ^= CppCore::rotl32(te[CppCore::getbits32(out.u32[2], 24, 8)], 24);
 
             // round key addition
-            out = t ^ this->ekb[i];
+            CppCore::xor_(t,this->ekb[i],out);
          }
 
          // last round
@@ -372,7 +383,7 @@ namespace CppCore
          t.u32[3] |= sbox[CppCore::getbits32(out.u32[2], 24, 8)] << 24;
 
          // last round key addition
-         out = t ^ this->ekb[N];
+         CppCore::xor_(t, this->ekb[N], out);
       }
 
       /// <summary>
@@ -383,7 +394,7 @@ namespace CppCore
          Block t;
 
          // initial round key addition on input
-         out = in ^ this->dkb[N];
+         CppCore::xor_(in, this->dkb[N], out);
 
          // n rounds
          CPPCORE_UNROLL
@@ -411,7 +422,7 @@ namespace CppCore
             t.u32[3] ^= CppCore::rotl32(td[CppCore::getbits32(out.u32[0], 24, 8)], 24);
 
             // round key addition
-            out = t ^ this->dkb[i];
+            CppCore::xor_(t, this->dkb[i], out);
          }
 
          // last round
@@ -436,7 +447,7 @@ namespace CppCore
          t.u32[3] |= isbox[CppCore::getbits32(out.u32[0], 24, 8)] << 24;
 
          // last round key addition
-         out = t ^ this->dkb[0];
+         CppCore::xor_(t, this->dkb[0], out);
       }
 
       /// <summary>
@@ -444,9 +455,9 @@ namespace CppCore
       /// </summary>
       INLINE void encrypt(const Block& in, Block& out, Block& iv)
       {
-         out = in ^ iv;
+         CppCore::xor_(in, iv, out);
          encrypt(out, out);
-         iv = out;
+         CppCore::clone(iv, out);
       }
 
       /// <summary>
@@ -455,8 +466,8 @@ namespace CppCore
       INLINE void decrypt(const Block& in, Block& out, Block& iv)
       {
          decrypt(in, out);
-         out = out ^ iv;
-         iv = in;
+         CppCore::xor_(out, iv, out);
+         CppCore::clone(iv, in);
       }
 
       ///////////////////////////////////////////////////////////////
@@ -549,7 +560,9 @@ namespace CppCore
             if (len >= 16U)
             {
                // xor encrypted iv with input
-               *bout++ = enc ^ *bin++;
+               CppCore::xor_(enc, *bin, *bout);
+               bin++;
+               bout++;
                len -= 16U;
             }
             else
