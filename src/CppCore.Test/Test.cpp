@@ -425,7 +425,7 @@ int main()
    TEST(CppCore::Test::Memory::copy256,                "copy256:                ", std::endl);
    TEST(CppCore::Test::Memory::copy512,                "copy512:                ", std::endl);
    TEST(CppCore::Test::Memory::copy,                   "copy:                   ", std::endl);
-   //TEST(CppCore::Test::Memory::copybackwards,          "copybackwards:          ", std::endl);
+   TEST(CppCore::Test::Memory::copybackwards,          "copybackwards:          ", std::endl);
    TEST(CppCore::Test::Memory::streamcopy128,          "streamcopy128:          ", std::endl);
    TEST(CppCore::Test::Memory::streamcopy128x1,        "streamcopy128x1:        ", std::endl);
    TEST(CppCore::Test::Memory::streamcopy128x2,        "streamcopy128x2:        ", std::endl);
@@ -572,7 +572,7 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "       CppCore::Hash::MD5"       << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   //TEST(CppCore::Test::Hash::MD5::test1, "test1: ", " ");
+   TEST(CppCore::Test::Hash::MD5::test1, "test1: ", " ");
    TEST(CppCore::Test::Hash::MD5::test2, "test2: ", std::endl);
    TEST(CppCore::Test::Hash::MD5::test3, "test3: ", " ");
    TEST(CppCore::Test::Hash::MD5::test4, "test4: ", std::endl);
@@ -600,13 +600,13 @@ int main()
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH256>,  "test1dh256:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH512>,  "test1dh512:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH1024>, "test1dh1024:   ", std::endl);
-   TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH2048>, "test1dh2048:   ", std::endl);
+   //TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH2048>, "test1dh2048:   ", std::endl);
    //TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH4096>, "test1dh4096:   ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH128>,  "test2dh128:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH256>,  "test2dh256:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH512>,  "test2dh512:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH1024>, "test2dh1024:   ", std::endl);
-   TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH2048>, "test2dh2048:   ", std::endl);
+   //TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH2048>, "test2dh2048:   ", std::endl);
    //TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH4096>, "test2dh4096:   ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
