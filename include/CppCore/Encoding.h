@@ -324,7 +324,7 @@ namespace CppCore
          /// </summary>
          INLINE static uint8_t valueofhexchar(const uint8_t c)
          {
-            static const uint8_t table[] =
+            CPPCORE_ALIGN64 static constexpr uint8_t table[] =
             {
               0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
               0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
@@ -412,7 +412,7 @@ namespace CppCore
          /// </summary>
          INLINE static uint16_t bytetohexint16(const uint8_t byte)
          {
-            static const uint16_t table[] = 
+            CPPCORE_ALIGN64 static constexpr uint16_t table[] = 
             {
                0x3030, 0x3130, 0x3230, 0x3330, 0x3430, 0x3530, 0x3630, 0x3730,
                0x3830, 0x3930, 0x4130, 0x4230, 0x4330, 0x4430, 0x4530, 0x4630,
@@ -724,85 +724,29 @@ namespace CppCore
       /// Creates hex string for memory of certain length.
       /// Requires len*2 (or len*2+1 if writeterm=true) free bytes in parameter s.
       /// </summary>
-      INLINE static void tostring(const void* m, const size_t len, char* s, const bool bigendian = true, const bool writeterm = true)
+      INLINE static void tostring(const void* m, size_t len, char* s, const bool bigendian = true, const bool writeterm = true)
       {
-         const char* mem = (const char*)m;
-         uint32_t* p = (uint32_t*)s;
+         const uint8_t* mem = (const uint8_t*)m;
+         uint16_t* p16 = (uint16_t*)s;
          if (bigendian)
          {
-            const char* end = mem + len;
-         #if defined(CPPCORE_CPU_64BIT)
-            while (mem + 8U <= end)
+            while(len)
             {
-               const uint64_t t = *((uint64_t*)mem);
-               *p++ = Util::valuetohexint32(t,  0ULL,  8ULL);
-               *p++ = Util::valuetohexint32(t, 16ULL, 24ULL);
-               *p++ = Util::valuetohexint32(t, 32ULL, 40ULL);
-               *p++ = Util::valuetohexint32(t, 48ULL, 56ULL);
-               mem += 8U;
-            }
-            if (mem + 4U <= end)
-         #else
-            while (mem + 4U <= end)
-         #endif
-            {
-               const uint32_t t = *((uint32_t*)mem);
-               *p++ = Util::valuetohexint32(t,  0U,  8U);
-               *p++ = Util::valuetohexint32(t, 16U, 24U);
-               mem += 4U;
-            }
-            if (mem + 2U <= end)
-            {
-               const uint16_t t = *((uint16_t*)mem);
-               *p++ = Util::valuetohexint32((uint32_t)t, 0U, 8U);
-               mem += 2U;
-            }
-            if (mem + 1U <= end)
-            {
-               uint16_t* pt = (uint16_t*)p;
-               *pt++ = Util::bytetohexint16(*mem);
-               p = (uint32_t*)pt;
+               *p16++ = Util::bytetohexint16(*mem++);
+               len--;
             }
          }
          else
          {
-            const char* end = mem;
             mem += len;
-         #if defined(CPPCORE_CPU_64BIT)
-            while (mem - 8U >= end)
+            while(len)
             {
-               mem -= 8U;
-               const uint64_t t = *((uint64_t*)mem);
-               *p++ = Util::valuetohexint32(t, 56ULL, 48ULL);
-               *p++ = Util::valuetohexint32(t, 40ULL, 32ULL);
-               *p++ = Util::valuetohexint32(t, 24ULL, 16ULL);
-               *p++ = Util::valuetohexint32(t,  8ULL,  0ULL);
-            }
-            if (mem - 4U >= end)
-         #else
-            while (mem - 4U >= end)
-         #endif
-            {
-               mem -= 4U;
-               const uint32_t t = *((uint32_t*)mem);
-               *p++ = Util::valuetohexint32(t, 24U, 16U);
-               *p++ = Util::valuetohexint32(t,  8U,  0U);
-            }
-            if (mem - 2U >= end)
-            {
-               mem -= 2U;
-               const uint16_t t = *((uint16_t*)mem);
-               *p++ = Util::valuetohexint32((uint32_t)t, 8U, 0U);
-            }
-            if (mem - 1U >= end)
-            {
-               uint16_t* pt = (uint16_t*)p;
-               *pt++ = Util::bytetohexint16(*(mem-1U));
-               p = (uint32_t*)pt;
+               *p16++ = Util::bytetohexint16(*--mem);
+               len--;
             }
          }
          if (writeterm)
-            *((char*)p) = (char)0x00;
+            *((uint8_t*)p16) = (uint8_t)0x00;
       }
 
       /// <summary>
