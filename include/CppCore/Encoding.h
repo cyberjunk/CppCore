@@ -582,8 +582,6 @@ namespace CppCore
             return table[byte];
          }
 
-
-
          /// <summary>
          /// Returns 4 characters encoded in uint32_t with the string representation of parts from v selected by il and ih.
          /// For instance, returns 0x46464646 ("FFFF") for v=0x00FF00FF and il=0 (select first byte) and ih=24 (select third byte).
@@ -636,7 +634,6 @@ namespace CppCore
                      {
                         if (!bigendian)
                            CppCore::byteswap(r);
-//                        r = bigendian ? r : CppCore::byteswap(r);
                         return true;
                      }
                      else // invalid symbol
@@ -646,7 +643,6 @@ namespace CppCore
                   {
                      if (!bigendian)
                         CppCore::byteswap(r);
-//                     r = bigendian ? r : CppCore::byteswap(r);
                      return true;
                   }
                   else CPPCORE_UNLIKELY // too many symbols for T
