@@ -1,0 +1,15 @@
+Package: CppCore.Example.UI
+Version: {VERSION}-1
+Section: base
+Priority: optional
+Architecture: {ARCH}
+Depends: libc6:{ARCH} (>= 2.39),
+ libbsd0:{ARCH} (>= 0.12.1),
+ libxau6:{ARCH} (>= 1.0.9),
+ libxcb1:{ARCH} (>= 1.15),
+ libxdmcp6:{ARCH} (>= 1.1.3),
+ libx11-6:{ARCH} (>= 1.8.7)
+Maintainer: Clint Banzhaf <clint@banzhaf.pro>
+Description: CppCore Example UI
+  Just an example to demonstrate UI code of CppCore.
+

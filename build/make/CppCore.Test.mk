@@ -26,6 +26,10 @@ VERSIONMACROMAJOR = CPPCORE_VERSION_MAJOR
 VERSIONMACROMINOR = CPPCORE_VERSION_MINOR
 VERSIONMACROPATCH = CPPCORE_VERSION_PATCH
 
+DEC64MB := 67108864
+HEX8MB  := 0x00800000
+DEC8MB  := 8388608
+
 ################################################################################################
 # CPU Specific
 
@@ -65,7 +69,9 @@ OUTDIST   := $(DISTDIR)/$(NAME).app/Contents/MacOS/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS) -fdeclspec -ObjC++
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
+LINKFLAGS := $(LINKFLAGS) \
+             -Wl,-object_path_lto,$(OBJDIR)/lto.o \
+             -Wl,-stack_size -Wl,$(HEX8MB)
 LINKLIBS  := $(LINKLIBS) -framework AppKit
 RESO      := $(RESO)
 endif
@@ -75,7 +81,7 @@ OUTDIST   := $(DISTDIR)/$(NAME)-$(TARGET_ARCH)/usr/bin/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Wl,-z,stack-size=$(DEC8MB)
 LINKLIBS  := $(LINKLIBS) -lpthread
 RESO      := $(RESO)
 endif
@@ -105,8 +111,6 @@ OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
-DEC64MB   := 67108864
-HEX8MB    := 0x00800000
 LINKFLAGS := $(LINKFLAGS) \
              -Wl,-z,stack-size=$(HEX8MB) \
              -Wl,--initial-heap=$(DEC64MB) \

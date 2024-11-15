@@ -1,0 +1,9 @@
+Package: CppCore.Example.Client.Resources
+Version: {VERSION}-1
+Section: base
+Priority: optional
+Architecture: all
+Maintainer: Clint Banzhaf <clint@banzhaf.pro>
+Description: CppCore.Example.Client Resources
+  Resources of CppCore.Example.Client.
+
