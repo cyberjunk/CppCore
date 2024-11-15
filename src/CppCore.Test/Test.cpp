@@ -761,7 +761,7 @@ int main()
    TEST(CppCore::Test::Encoding::Hex::parse16,            "parse16:    ", std::endl);
    TEST(CppCore::Test::Encoding::Hex::parse32,            "parse32:    ", std::endl);
    TEST(CppCore::Test::Encoding::Hex::parse64,            "parse64:    ", std::endl);
-   
+
 #ifndef CPPCORE_NO_SOCKET
    std::cout << "-------------------------------" << std::endl;
    std::cout << "        CppCore::Socket"         << std::endl;
