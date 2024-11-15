@@ -157,6 +157,53 @@
       if constexpr (forwardy) { py += 16U; }            \
       if constexpr (forwardz) { pz += 16U; }            \
    }
+#elif defined(CPPCORE_CPUFEAT_WASM_SIMD128)
+#define CPPCORE_CHUNK_LOAD128(t,p)    wasm_v128_load (p)
+#define CPPCORE_CHUNK_STORE128(t,p,v) wasm_v128_store(p, v)
+#define CPPCORE_CHUNK_STEP128_X_HALF(p128)              \
+   if constexpr (N128 != 0) {                           \
+      CPPCORE_UNROLL                                    \
+      for (size_t i = 0; i < N128; i++) {               \
+         pxe -= 16U;                                    \
+         v128_t* pxs128 = (v128_t*)pxs;                 \
+         v128_t* pxe128 = (v128_t*)pxe;                 \
+         p128;                                          \
+         pxs += 16U;                                    \
+      }                                                 \
+   }
+#define CPPCORE_CHUNK_STEP128_X(forward, p128)          \
+   CPPCORE_UNROLL                                       \
+   for (size_t i = 0; i < N128; i++) {                  \
+      if constexpr (!forward) { px -= 16U; }            \
+      v128_t* px128 = (v128_t*)px;                      \
+      p128;                                             \
+      if constexpr (forward) { px += 16U; }             \
+   }
+#define CPPCORE_CHUNK_STEP128_XY(forwardx,forwardy,p128) \
+   CPPCORE_UNROLL                                        \
+   for (size_t i = 0; i < N128; i++) {                   \
+      if constexpr (!forwardx) { px -= 16U; }            \
+      if constexpr (!forwardy) { py -= 16U; }            \
+      v128_t* px128 = (v128_t*)px;                       \
+      v128_t* py128 = (v128_t*)py;                       \
+      p128;                                              \
+      if constexpr (forwardx) { px += 16U; }             \
+      if constexpr (forwardy) { py += 16U; }             \
+   }
+#define CPPCORE_CHUNK_STEP128_XYZ(forwardx,forwardy,forwardz,p128) \
+   CPPCORE_UNROLL                                        \
+   for (size_t i = 0; i < N128; i++) {                   \
+      if constexpr (!forwardx) { px -= 16U; }            \
+      if constexpr (!forwardy) { py -= 16U; }            \
+      if constexpr (!forwardz) { pz -= 16U; }            \
+      v128_t* px128 = (v128_t*)px;                       \
+      v128_t* py128 = (v128_t*)py;                       \
+      v128_t* pz128 = (v128_t*)pz;                       \
+      p128;                                              \
+      if constexpr (forwardx) { px += 16U; }             \
+      if constexpr (forwardy) { py += 16U; }             \
+      if constexpr (forwardz) { pz += 16U; }             \
+   }
 #else
 #define CPPCORE_CHUNK_STEP128_X_HALF(p128)
 #define CPPCORE_CHUNK_STEP128_X(forward, p128)
@@ -838,7 +885,7 @@ namespace CppCore
          if (!CppCore::testzero32 (*px32 )) return false;,
          if (!CppCore::testzero16 (*px16 )) return false;,
          if (!CppCore::testzero8  (*px8  )) return false;)
-   #elif defined(CPPCORE_CPUFEAT_AVX2)
+   #elif defined(CPPCORE_CPUFEAT_AVX)
       CPPCORE_CHUNK_PROCESS256_X(x, true,
          if (!CppCore::testzero256(CPPCORE_CHUNK_LOAD256(UINT, px256))) return false;,
          if (!CppCore::testzero128(CPPCORE_CHUNK_LOAD128(UINT, px128))) return false;,
@@ -1005,6 +1052,14 @@ namespace CppCore
          CppCore::clear32 (*px32); ,
          CppCore::clear16 (*px16); ,
          CppCore::clear8  (*px8);)
+   #elif defined(CPPCORE_CPUFEAT_WASM_SIMD128)
+      constexpr v128_t ZERO128 = { 0ULL, 0ULL };
+      CPPCORE_CHUNK_PROCESS128_X(x, true,
+         CPPCORE_CHUNK_STORE128(UINT, px128, ZERO128); ,
+         CppCore::clear64(*px64);,
+         CppCore::clear32(*px32);,
+         CppCore::clear16(*px16);,
+         CppCore::clear8(*px8);)
    #else
       CPPCORE_CHUNK_PROCESS_X(x, true,
          CppCore::clear64(*px64); ,
@@ -1019,7 +1074,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void clear<uint8_t>(uint8_t& x)
    {
-      return CppCore::clear8(x);
+      CppCore::clear8(x);
    }
 
    /// <summary>
@@ -1027,7 +1082,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void clear<uint16_t>(uint16_t& x)
    {
-      return CppCore::clear16(x);
+      CppCore::clear16(x);
    }
 
    /// <summary>
@@ -1035,7 +1090,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void clear<uint32_t>(uint32_t& x)
    {
-      return CppCore::clear32(x);
+      CppCore::clear32(x);
    }
 
    /// <summary>
@@ -1043,7 +1098,7 @@ namespace CppCore
    /// </summary>
    template<> INLINE void clear<uint64_t>(uint64_t& x)
    {
-      return CppCore::clear64(x);
+      CppCore::clear64(x);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1105,7 +1160,7 @@ namespace CppCore
          CppCore::clone32 (*px32, *py32);,
          CppCore::clone16 (*px16, *py16);,
          CppCore::clone8  (*px8,  *py8);)
-   #elif defined(CPPCORE_CPUFEAT_SSE2) || defined(CPPCORE_CPUFEAT_ARM_NEON)
+   #elif defined(CPPCORE_CPUFEAT_SSE2) || defined(CPPCORE_CPUFEAT_ARM_NEON) || defined(CPPCORE_CPUFEAT_WASM_SIMD128)
       CPPCORE_CHUNK_PROCESS128_XY(x, y, true, true,
          CPPCORE_CHUNK_STORE128(UINT, px128, CPPCORE_CHUNK_LOAD128(UINT, py128));,
          CppCore::clone64 (*px64, *py64);,
@@ -1803,8 +1858,9 @@ namespace CppCore
    static INLINE uint32_t shld32(uint32_t a, const uint32_t b, const uint8_t n)
    {
    #if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("SHLDL %[n], %[b], %[a]" : "=Rm"(a) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
-      return a;
+      uint32_t r;
+      __asm("SHLDL %[n], %[b], %[a]" : "=Rm"(r) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
+      return r;
    #else
       return (a << n) | (b >> (uint8_t)(32U-n));
    #endif
@@ -1817,8 +1873,9 @@ namespace CppCore
    static INLINE uint64_t shld64(uint64_t a, const uint64_t b, const uint8_t n)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("SHLDQ %[n], %[b], %[a]" : "=Rm"(a) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
-      return a;
+      uint64_t r;
+      __asm("SHLDQ %[n], %[b], %[a]" : "=Rm"(r) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
+      return r;
    #elif defined(CPPCORE_CPU_64BIT) && defined(CPPCORE_COMPILER_MSVC)
       return __shiftleft128(b, a, n);
    #else
@@ -1867,8 +1924,9 @@ namespace CppCore
    static INLINE uint32_t shrd32(uint32_t a, const uint32_t b, const uint8_t n)
    {
    #if defined(CPPCORE_CPU_X86ORX64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("SHRDL %[n], %[b], %[a]" : "=Rm"(a) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
-      return a;
+      uint32_t r;
+      __asm("SHRDL %[n], %[b], %[a]" : "=Rm"(r) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
+      return r;
    #else
       return (a >> n) | (b << (uint8_t)(32U-n));
    #endif
@@ -1881,8 +1939,9 @@ namespace CppCore
    static INLINE uint64_t shrd64(uint64_t a, const uint64_t b, const uint8_t n)
    {
    #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("SHRDQ %[n], %[b], %[a]" : "=Rm"(a) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
-      return a;
+      uint64_t r;
+      __asm("SHRDQ %[n], %[b], %[a]" : "=Rm"(r) : [n]"Ic"(n), [b]"r"(b), [a]"0"(a));
+      return r;
    #elif defined(CPPCORE_CPU_64BIT) && defined(CPPCORE_COMPILER_MSVC)
       return __shiftright128(a, b, n);
    #else
@@ -1960,24 +2019,32 @@ namespace CppCore
    /// Left shifts a into r (both n32 * 32 bit chunks) by s bits.
    /// Uses shld32 and s must be larger 0 and less than 32.
    /// </summary>
-   static INLINE void shl32x(const uint32_t* a, uint32_t* r, const uint32_t n32, const uint8_t s)
+   static INLINE void shl32x(const uint32_t* a, uint32_t* r, const uint32_t n32, const size_t s)
    {
       assert(a && r && n32 && s > 0 && s < 32);
-      for (uint32_t i = n32-1U; i != 0U; i--)
-         r[i] = CppCore::shld32(a[i], a[i-1], s);
-      r[0] = a[0] << s;
+      uint32_t t1 = a[n32-1];
+      for (uint32_t i = n32-1U; i != 0U; i--) {
+         uint32_t t2 = a[i-1];
+         r[i] = CppCore::shld32(t1, t2, s);
+         t1 = t2;
+      }
+      r[0] = t1 << s;
    }
 
    /// <summary>
    /// Left shifts a into r (both n64 * 64 bit chunks) by s bits.
    /// Uses shld64 and s must be larger 0 and less than 64.
    /// </summary>
-   static INLINE void shl64x(const uint64_t* a, uint64_t* r, const uint32_t n64, const uint8_t s)
+   static INLINE void shl64x(const uint64_t* a, uint64_t* r, const uint32_t n64, const size_t s)
    {
       assert(a && r && n64 && s > 0 && s < 64);
-      for (uint32_t i = n64-1U; i != 0U; i--)
-         r[i] = CppCore::shld64(a[i], a[i-1], s);
-      r[0] = a[0] << s;
+      uint64_t t1 = a[n64-1];
+      for (uint32_t i = n64-1U; i != 0U; i--){
+         uint64_t t2 = a[i-1];
+         r[i] = CppCore::shld64(t1, t2, s);
+         t1 = t2;
+      }
+      r[0] = t1 << s;
    }
 
 #if defined(CPPCORE_CPUFEAT_SSE2)
@@ -2069,9 +2136,13 @@ namespace CppCore
    static INLINE void shr32x(const uint32_t* a, uint32_t* r, const uint32_t n32, const uint8_t s)
    {
       assert(a && r && n32 && s > 0 && s < 32);
-      for (uint32_t i = 0; i < n32-1U; i++)
-         r[i] = CppCore::shrd32(a[i], a[i+1], s);
-      r[n32-1] = a[n32-1] >> s;
+      uint32_t t1 = a[0];
+      for (uint32_t i = 0; i < n32-1U; i++) {
+         uint32_t t2 = a[i+1];
+         r[i] = CppCore::shrd32(t1, t2, s);
+         t1 = t2;
+      }
+      r[n32-1] = t1 >> s;
    }
 
    /// <summary>
@@ -2081,9 +2152,13 @@ namespace CppCore
    static INLINE void shr64x(const uint64_t* a, uint64_t* r, const uint32_t n64, const uint8_t s)
    {
       assert(a && r && n64 && s > 0 && s < 64);
-      for (uint32_t i = 0; i < n64-1U; i++)
-         r[i] = CppCore::shrd64(a[i], a[i+1], s);
-      r[n64-1] = a[n64-1] >> s;
+      uint64_t t1 = a[0];
+      for (uint32_t i = 0; i < n64-1U; i++) {
+         uint64_t t2 = a[i+1];
+         r[i] = CppCore::shrd64(t1, t2, s);
+         t1 = t2;
+      }
+      r[n64-1] = t1 >> s;
    }
 
 #if defined(CPPCORE_CPUFEAT_SSE2)
@@ -2143,8 +2218,20 @@ namespace CppCore
    static INLINE void shl(UINT& r, const UINT& a,const size_t b)
    {
       static_assert(sizeof(UINT) % 4 == 0);
-      if (b >= (sizeof(UINT) << 3)) {
+      if (b >= (sizeof(UINT) << 3)) CPPCORE_UNLIKELY {
          CppCore::clear(r);
+         return;
+      }
+      if (b == 0U) CPPCORE_UNLIKELY {
+         CppCore::clone(r, a);
+         return;
+      }
+      if constexpr (sizeof(UINT) == 8) {
+         *(uint64_t*)&r = *(uint64_t*)&a << b;
+         return;
+      }
+      if constexpr (sizeof(UINT) == 4) {
+         *(uint32_t*)&r = *(uint32_t*)&a << b;
          return;
       }
    #if defined(CPPCORE_CPU_64BIT)
@@ -2192,8 +2279,20 @@ namespace CppCore
    static INLINE void shr(UINT& r, const UINT& a,const size_t b)
    {
       static_assert(sizeof(UINT) % 4 == 0);
-      if (b >= (sizeof(UINT) << 3)) {
+      if (b >= (sizeof(UINT) << 3)) CPPCORE_UNLIKELY {
          CppCore::clear(r);
+         return;
+      }
+      if (b == 0U) CPPCORE_UNLIKELY {
+         CppCore::clone(r, a);
+         return;
+      }
+      if constexpr (sizeof(UINT) == 8) {
+         *(uint64_t*)&r = *(uint64_t*)&a >> b;
+         return;
+      }
+      if constexpr (sizeof(UINT) == 4) {
+         *(uint32_t*)&r = *(uint32_t*)&a >> b;
          return;
       }
    #if defined(CPPCORE_CPU_64BIT)
@@ -2536,23 +2635,10 @@ namespace CppCore
    {
       uint32_t r = 0U;
       CPPCORE_CHUNK_PROCESS_X(x, false,
-         // 64-Bit
-         const auto c = CppCore::lzcnt64(*px64);
-         r += c;
-         if (c != 64U)
-            return r;,
-         // 32-Bit
-         const auto c = CppCore::lzcnt32(*px32);
-         r += c;
-         if (c != 32U)
-            return r;,
-         // 16-Bit
-         const auto c = CppCore::lzcnt16(*px16);
-         r += c;
-         if (c != 16U)
-            return r;,
-         // 8-Bit
-         r += CppCore::lzcnt8(*px8);
+         if (*px64) { r += CppCore::lzcnt64(*px64); return r;} else r += 64;,
+         if (*px32) { r += CppCore::lzcnt32(*px32); return r;} else r += 32;,
+         if (*px16) { r += CppCore::lzcnt16(*px16); return r;} else r += 16;,
+         if (*px8)  { r += CppCore::lzcnt8 (*px8);  return r;} else r +=  8;
       )
       return r;
    }
@@ -2660,23 +2746,10 @@ namespace CppCore
    {
       uint32_t r = 0U;
       CPPCORE_CHUNK_PROCESS_X(x, true,
-         // 64-Bit
-         const auto c = CppCore::tzcnt64(*px64);
-         r += c;
-         if (c != 64U)
-            return r;,
-         // 32-Bit
-         const auto c = CppCore::tzcnt32(*px32);
-         r += c;
-         if (c != 32U)
-            return r;,
-         // 16-Bit
-         const auto c = CppCore::tzcnt16(*px16);
-         r += c;
-         if (c != 16U)
-            return r;,
-         // 8-Bit
-         r += CppCore::tzcnt8(*px8);
+         if (*px64) { r += CppCore::tzcnt64(*px64); return r;} else r += 64;,
+         if (*px32) { r += CppCore::tzcnt32(*px32); return r;} else r += 32;,
+         if (*px16) { r += CppCore::tzcnt16(*px16); return r;} else r += 16;,
+         if (*px8)  { r += CppCore::tzcnt8 (*px8);  return r;} else r +=  8;
       )
       return r;
    }

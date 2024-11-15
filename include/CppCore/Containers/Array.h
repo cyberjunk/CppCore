@@ -559,7 +559,7 @@ namespace CppCore
       };
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+   #ifndef CPPCORE_NO_THREADING
       /// <summary>
       /// Base class for multithreaded variants
       /// </summary>
@@ -671,7 +671,7 @@ namespace CppCore
          }
          // TODO: Several more missing here
       };
-
+   #endif
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
@@ -778,6 +778,7 @@ namespace CppCore
             }
          };
 
+      #ifndef CPPCORE_NO_THREADING
          /// <summary>
          /// Fixed Size Array for Multi Thread Access
          /// </summary>
@@ -790,6 +791,7 @@ namespace CppCore
          public:
             INLINE MT(const size_t size = 0) : Base(size) { }
          };
+      #endif
       };
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -819,6 +821,7 @@ namespace CppCore
             INLINE size_t size() const { return SIZE; }
          };
 
+      #ifndef CPPCORE_NO_THREADING
          /// <summary>
          /// Fixed Size Array for Multi Thread Access
          /// </summary>
@@ -832,6 +835,7 @@ namespace CppCore
             INLINE MT() : Base() { }
             INLINE size_t size() const { return SIZE; }
          };
+      #endif
       };
    };
 }

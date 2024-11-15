@@ -71,12 +71,6 @@ namespace CppCore
       }
 
    public:
-      INLINE T operator ^ (const T& v) const
-      {
-         T r;
-         CppCore::xor_(v, *(T*)this, r);
-         return r;
-      }
       INLINE void operator ^= (const T& v)
       {
          CppCore::xor_(v, *(T*)this, *(T*)this);

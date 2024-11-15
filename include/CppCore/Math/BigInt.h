@@ -4,7 +4,6 @@
 #include <CppCore/Root.h>
 #include <CppCore/Memory.h>
 #include <CppCore/Math/Util.h>
-#include <CppCore/Math/Primes.h>
 #include <CppCore/Encoding.h>
 #include <CppCore/Random.h>
 
@@ -20,6 +19,7 @@ namespace CppCore
    class uint512_tg;
    class uint1024_tg;
    class uint2048_tg;
+   class uint4096_tg;
 
    // SIMD/OPTIMIZED
    class uint128_ts;
@@ -27,6 +27,7 @@ namespace CppCore
    class uint512_ts;
    class uint1024_ts;
    class uint2048_ts;
+   class uint4096_ts;
 
    // SET DEFAULT BASED ON CONFIGURATION
 #if defined(CPPCORE_OPTIMIZED_BIGINT)
@@ -35,12 +36,14 @@ namespace CppCore
    typedef uint512_ts  uint512_t;
    typedef uint1024_ts uint1024_t;
    typedef uint2048_ts uint2048_t;
+   typedef uint4096_ts uint4096_t;
 #else
    typedef uint128_tg  uint128_t;
    typedef uint256_tg  uint256_t;
    typedef uint512_tg  uint512_t;
    typedef uint1024_tg uint1024_t;
    typedef uint2048_tg uint2048_t;
+   typedef uint4096_tg uint4096_t;
 #endif
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -634,6 +637,325 @@ namespace CppCore
    #endif
    };
 
+   /// <summary>
+   /// Default Data for uint4096_t
+   /// </summary>
+   template<typename T128 = uint128_t, typename T256 = uint256_t, typename T512 = uint512_t, typename T1024 = uint1024_t, typename T2048 = uint2048_t>
+   union uint4096_d
+   {
+   public:
+      static constexpr size_t N2048 = 2;
+      static constexpr size_t N1024 = 4;
+      static constexpr size_t N512  = 8;
+      static constexpr size_t N256  = 16;
+      static constexpr size_t N128  = 32;
+      static constexpr size_t N64   = 64;
+      static constexpr size_t N32   = 128;
+      static constexpr size_t N16   = 256;
+      static constexpr size_t N8    = 512;
+      struct { T2048 l;  T2048 h; };
+      struct { T1024 ll; T1024 lh; T1024 hl; T1024 hh; };
+      struct { 
+         uint64_t v0;  uint64_t v1;  uint64_t v2;  uint64_t v3;
+         uint64_t v4;  uint64_t v5;  uint64_t v6;  uint64_t v7;
+         uint64_t v8;  uint64_t v9;  uint64_t v10; uint64_t v11;
+         uint64_t v12; uint64_t v13; uint64_t v14; uint64_t v15;
+         uint64_t v16; uint64_t v17; uint64_t v18; uint64_t v19;
+         uint64_t v20; uint64_t v21; uint64_t v22; uint64_t v23;
+         uint64_t v24; uint64_t v25; uint64_t v26; uint64_t v27;
+         uint64_t v28; uint64_t v29; uint64_t v30; uint64_t v31;
+         uint64_t v32; uint64_t v33; uint64_t v34; uint64_t v35;
+         uint64_t v36; uint64_t v37; uint64_t v38; uint64_t v39;
+         uint64_t v40; uint64_t v41; uint64_t v42; uint64_t v43;
+         uint64_t v44; uint64_t v45; uint64_t v46; uint64_t v47;
+         uint64_t v48; uint64_t v49; uint64_t v50; uint64_t v51;
+         uint64_t v52; uint64_t v53; uint64_t v54; uint64_t v55;
+         uint64_t v56; uint64_t v57; uint64_t v58; uint64_t v59;
+         uint64_t v60; uint64_t v61; uint64_t v62; uint64_t v63;
+      };
+      T2048    i2048 [N2048];
+      T1024    i1024 [N1024];
+      T512     i512  [N512];
+      T256     i256  [N256];
+      T128     i128  [N128];
+      uint64_t i64   [N64];
+      uint32_t i32   [N32];
+      uint16_t i16   [N16];
+      uint8_t  i8    [N8];
+   #if defined(CPPCORE_CPUFEAT_SSE2)
+      __m128i  sse   [N128];
+      struct { 
+         __m128i sse0;  __m128i sse1;  __m128i sse2;  __m128i sse3;
+         __m128i sse4;  __m128i sse5;  __m128i sse6;  __m128i sse7;
+         __m128i sse8;  __m128i sse9;  __m128i sse10; __m128i sse11;
+         __m128i sse12; __m128i sse13; __m128i sse14; __m128i sse15;
+         __m128i sse16; __m128i sse17; __m128i sse18; __m128i sse19;
+         __m128i sse20; __m128i sse21; __m128i sse22; __m128i sse23;
+         __m128i sse24; __m128i sse25; __m128i sse26; __m128i sse27;
+         __m128i sse28; __m128i sse29; __m128i sse30; __m128i sse31;
+      };
+      INLINE uint4096_d(
+         const __m128i& sse0,  const __m128i& sse1, 
+         const __m128i& sse2,  const __m128i& sse3, 
+         const __m128i& sse4,  const __m128i& sse5,
+         const __m128i& sse6,  const __m128i& sse7,
+         const __m128i& sse8,  const __m128i& sse9, 
+         const __m128i& sse10, const __m128i& sse11, 
+         const __m128i& sse12, const __m128i& sse13,
+         const __m128i& sse14, const __m128i& sse15,
+         const __m128i& sse16, const __m128i& sse17,
+         const __m128i& sse18, const __m128i& sse19,
+         const __m128i& sse20, const __m128i& sse21,
+         const __m128i& sse22, const __m128i& sse23,
+         const __m128i& sse24, const __m128i& sse25,
+         const __m128i& sse26, const __m128i& sse27,
+         const __m128i& sse28, const __m128i& sse29,
+         const __m128i& sse30, const __m128i& sse31
+         ) :
+         sse0(sse0),   sse1(sse1),   sse2(sse2),   sse3(sse3),
+         sse4(sse4),   sse5(sse5),   sse6(sse6),   sse7(sse7),
+         sse8(sse8),   sse9(sse9),   sse10(sse10), sse11(sse11),
+         sse12(sse12), sse13(sse13), sse14(sse14), sse15(sse15),
+         sse16(sse16), sse17(sse17), sse18(sse18), sse19(sse19),
+         sse20(sse20), sse21(sse21), sse22(sse22), sse23(sse23),
+         sse24(sse24), sse25(sse25), sse26(sse26), sse27(sse27),
+         sse28(sse28), sse29(sse29), sse30(sse30), sse31(sse31) { }
+   #endif
+   #if defined(CPPCORE_CPUFEAT_AVX)
+      __m256i avx[N256];
+      struct { 
+         __m256i avx0;  __m256i avx1;  __m256i avx2;  __m256i avx3;
+         __m256i avx4;  __m256i avx5;  __m256i avx6;  __m256i avx7;
+         __m256i avx8;  __m256i avx9;  __m256i avx10; __m256i avx11;
+         __m256i avx12; __m256i avx13; __m256i avx14; __m256i avx15;
+      };
+      INLINE uint4096_d(
+         const __m256i& avx0,  const __m256i& avx1, 
+         const __m256i& avx2,  const __m256i& avx3,
+         const __m256i& avx4,  const __m256i& avx5,
+         const __m256i& avx6,  const __m256i& avx7,
+         const __m256i& avx8,  const __m256i& avx9,
+         const __m256i& avx10, const __m256i& avx11,
+         const __m256i& avx12, const __m256i& avx13,
+         const __m256i& avx14, const __m256i& avx15) :
+         avx0(avx0),   avx1(avx1),   avx2(avx2),   avx3(avx3),
+         avx4(avx4),   avx5(avx5),   avx6(avx6),   avx7(avx7),
+         avx8(avx8),   avx9(avx9),   avx10(avx10), avx11(avx11),
+         avx12(avx12), avx13(avx13), avx14(avx14), avx15(avx15) { }
+   #endif
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
+      __m512i  avx512[N512];
+      struct { 
+         __m512i avx5120; __m512i avx5121; __m512i avx5122; __m512i avx5123;
+         __m512i avx5124; __m512i avx5125; __m512i avx5126; __m512i avx5127;
+      };
+      INLINE uint4096_d(
+         const __m512i& avx5120, const __m512i& avx5121,
+         const __m512i& avx5122, const __m512i& avx5123,
+         const __m512i& avx5124, const __m512i& avx5125,
+         const __m512i& avx5126, const __m512i& avx5127) :
+         avx5120(avx5120), avx5121(avx5121),
+         avx5122(avx5122), avx5123(avx5123),
+         avx5124(avx5124), avx5125(avx5125),
+         avx5126(avx5126), avx5127(avx5127) { }
+   #endif
+      INLINE uint4096_d() { }
+      INLINE uint4096_d(const T2048& l, const T2048& h = 0ULL) : l(l), h(h) { }
+      INLINE uint4096_d(
+         const T1024& ll,
+         const T1024& lh = 0ULL,
+         const T1024& hl = 0ULL,
+         const T1024& hh = 0ULL) :
+         ll(ll), lh(lh), hl(hl), hh(hh) { }
+   #if defined(CPPCORE_CPUFEAT_AVX512F)
+      INLINE uint4096_d(const uint4096_d& oth) :
+         avx5120(oth.avx5120), avx5121(oth.avx5121),
+         avx5122(oth.avx5122), avx5123(oth.avx5123),
+         avx5124(oth.avx5124), avx5125(oth.avx5125),
+         avx5126(oth.avx5126), avx5127(oth.avx5127) { }
+      INLINE uint4096_d(
+         const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
+         const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
+         const uint64_t& v8  = 0ULL, const uint64_t& v9  = 0ULL, const uint64_t& v10 = 0ULL, const uint64_t& v11 = 0ULL,
+         const uint64_t& v12 = 0ULL, const uint64_t& v13 = 0ULL, const uint64_t& v14 = 0ULL, const uint64_t& v15 = 0ULL,
+         const uint64_t& v16 = 0ULL, const uint64_t& v17 = 0ULL, const uint64_t& v18 = 0ULL, const uint64_t& v19 = 0ULL,
+         const uint64_t& v20 = 0ULL, const uint64_t& v21 = 0ULL, const uint64_t& v22 = 0ULL, const uint64_t& v23 = 0ULL,
+         const uint64_t& v24 = 0ULL, const uint64_t& v25 = 0ULL, const uint64_t& v26 = 0ULL, const uint64_t& v27 = 0ULL,
+         const uint64_t& v28 = 0ULL, const uint64_t& v29 = 0ULL, const uint64_t& v30 = 0ULL, const uint64_t& v31 = 0ULL,
+         const uint64_t& v32 = 0ULL, const uint64_t& v33 = 0ULL, const uint64_t& v34 = 0ULL, const uint64_t& v35 = 0ULL,
+         const uint64_t& v36 = 0ULL, const uint64_t& v37 = 0ULL, const uint64_t& v38 = 0ULL, const uint64_t& v39 = 0ULL,
+         const uint64_t& v40 = 0ULL, const uint64_t& v41 = 0ULL, const uint64_t& v42 = 0ULL, const uint64_t& v43 = 0ULL,
+         const uint64_t& v44 = 0ULL, const uint64_t& v45 = 0ULL, const uint64_t& v46 = 0ULL, const uint64_t& v47 = 0ULL,
+         const uint64_t& v48 = 0ULL, const uint64_t& v49 = 0ULL, const uint64_t& v50 = 0ULL, const uint64_t& v51 = 0ULL,
+         const uint64_t& v52 = 0ULL, const uint64_t& v53 = 0ULL, const uint64_t& v54 = 0ULL, const uint64_t& v55 = 0ULL,
+         const uint64_t& v56 = 0ULL, const uint64_t& v57 = 0ULL, const uint64_t& v58 = 0ULL, const uint64_t& v59 = 0ULL,
+         const uint64_t& v60 = 0ULL, const uint64_t& v61 = 0ULL, const uint64_t& v62 = 0ULL, const uint64_t& v63 = 0ULL) :
+         avx5120(_mm512_set_epi64(v7,v6,v5,v4,v3,v2,v1,v0)),
+         avx5121(_mm512_set_epi64(v15,v14,v13,v12,v11,v10,v9,v8)),
+         avx5122(_mm512_set_epi64(v23,v22,v21,v20,v19,v18,v17,v16)),
+         avx5123(_mm512_set_epi64(v31,v30,v29,v28,v27,v26,v25,v24)),
+         avx5124(_mm512_set_epi64(v39,v38,v37,v36,v35,v34,v33,v32)),
+         avx5125(_mm512_set_epi64(v47,v46,v45,v44,v43,v42,v41,v40)),
+         avx5126(_mm512_set_epi64(v55,v54,v53,v52,v51,v50,v49,v48)),
+         avx5127(_mm512_set_epi64(v63,v62,v61,v60,v59,v58,v57,v56)) { }
+   #elif defined(CPPCORE_CPUFEAT_AVX)
+      INLINE uint4096_d(const uint4096_d& oth) :
+         avx0 (oth.avx0),  avx1 (oth.avx1),  avx2 (oth.avx2),  avx3 (oth.avx3),
+         avx4 (oth.avx4),  avx5 (oth.avx5),  avx6 (oth.avx6),  avx7 (oth.avx7),
+         avx8 (oth.avx8),  avx9 (oth.avx9),  avx10(oth.avx10), avx11(oth.avx11),
+         avx12(oth.avx12), avx13(oth.avx13), avx14(oth.avx14), avx15(oth.avx15) { }
+      INLINE uint4096_d(
+         const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
+         const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
+         const uint64_t& v8  = 0ULL, const uint64_t& v9  = 0ULL, const uint64_t& v10 = 0ULL, const uint64_t& v11 = 0ULL,
+         const uint64_t& v12 = 0ULL, const uint64_t& v13 = 0ULL, const uint64_t& v14 = 0ULL, const uint64_t& v15 = 0ULL,
+         const uint64_t& v16 = 0ULL, const uint64_t& v17 = 0ULL, const uint64_t& v18 = 0ULL, const uint64_t& v19 = 0ULL,
+         const uint64_t& v20 = 0ULL, const uint64_t& v21 = 0ULL, const uint64_t& v22 = 0ULL, const uint64_t& v23 = 0ULL,
+         const uint64_t& v24 = 0ULL, const uint64_t& v25 = 0ULL, const uint64_t& v26 = 0ULL, const uint64_t& v27 = 0ULL,
+         const uint64_t& v28 = 0ULL, const uint64_t& v29 = 0ULL, const uint64_t& v30 = 0ULL, const uint64_t& v31 = 0ULL,
+         const uint64_t& v32 = 0ULL, const uint64_t& v33 = 0ULL, const uint64_t& v34 = 0ULL, const uint64_t& v35 = 0ULL,
+         const uint64_t& v36 = 0ULL, const uint64_t& v37 = 0ULL, const uint64_t& v38 = 0ULL, const uint64_t& v39 = 0ULL,
+         const uint64_t& v40 = 0ULL, const uint64_t& v41 = 0ULL, const uint64_t& v42 = 0ULL, const uint64_t& v43 = 0ULL,
+         const uint64_t& v44 = 0ULL, const uint64_t& v45 = 0ULL, const uint64_t& v46 = 0ULL, const uint64_t& v47 = 0ULL,
+         const uint64_t& v48 = 0ULL, const uint64_t& v49 = 0ULL, const uint64_t& v50 = 0ULL, const uint64_t& v51 = 0ULL,
+         const uint64_t& v52 = 0ULL, const uint64_t& v53 = 0ULL, const uint64_t& v54 = 0ULL, const uint64_t& v55 = 0ULL,
+         const uint64_t& v56 = 0ULL, const uint64_t& v57 = 0ULL, const uint64_t& v58 = 0ULL, const uint64_t& v59 = 0ULL,
+         const uint64_t& v60 = 0ULL, const uint64_t& v61 = 0ULL, const uint64_t& v62 = 0ULL, const uint64_t& v63 = 0ULL) :
+         avx0 (_mm256_set_epi64x(v3, v2, v1, v0)),  avx1 (_mm256_set_epi64x(v7, v6, v5, v4)),
+         avx2 (_mm256_set_epi64x(v11,v10,v9, v8)),  avx3 (_mm256_set_epi64x(v15,v14,v13,v12)),
+         avx4 (_mm256_set_epi64x(v19,v18,v17,v16)), avx5 (_mm256_set_epi64x(v23,v22,v21,v20)),
+         avx6 (_mm256_set_epi64x(v27,v26,v25,v24)), avx7 (_mm256_set_epi64x(v31,v30,v29,v28)),
+         avx8 (_mm256_set_epi64x(v35,v34,v33,v32)), avx9 (_mm256_set_epi64x(v39,v38,v37,v36)),
+         avx10(_mm256_set_epi64x(v43,v42,v41,v40)), avx11(_mm256_set_epi64x(v47,v46,v45,v44)),
+         avx12(_mm256_set_epi64x(v51,v50,v49,v48)), avx13(_mm256_set_epi64x(v55,v54,v53,v52)),
+         avx14(_mm256_set_epi64x(v59,v58,v57,v56)), avx15(_mm256_set_epi64x(v63,v62,v61,v60)) { }
+   #elif defined(CPPCORE_CPUFEAT_SSE2)
+      INLINE uint4096_d(const uint4096_d& oth) :
+         sse0 (oth.sse0),  sse1 (oth.sse1),  sse2 (oth.sse2),  sse3 (oth.sse3),
+         sse4 (oth.sse4),  sse5 (oth.sse5),  sse6 (oth.sse6),  sse7 (oth.sse7),
+         sse8 (oth.sse8),  sse9 (oth.sse9),  sse10(oth.sse10), sse11(oth.sse11),
+         sse12(oth.sse12), sse13(oth.sse13), sse14(oth.sse14), sse15(oth.sse15),
+         sse16(oth.sse16), sse17(oth.sse17), sse18(oth.sse18), sse19(oth.sse19),
+         sse20(oth.sse20), sse21(oth.sse21), sse22(oth.sse22), sse23(oth.sse23),
+         sse24(oth.sse24), sse25(oth.sse25), sse26(oth.sse26), sse27(oth.sse27),
+         sse28(oth.sse28), sse29(oth.sse29), sse30(oth.sse30), sse31(oth.sse31) { }
+      #if defined(CPPCORE_CPU_X86) && defined(CPPCORE_COMPILER_MSVC)
+      // _mm_set_epi64x is broken in MSVC X86 with optimizations
+      INLINE uint4096_d(
+         const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
+         const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
+         const uint64_t& v8  = 0ULL, const uint64_t& v9  = 0ULL, const uint64_t& v10 = 0ULL, const uint64_t& v11 = 0ULL,
+         const uint64_t& v12 = 0ULL, const uint64_t& v13 = 0ULL, const uint64_t& v14 = 0ULL, const uint64_t& v15 = 0ULL,
+         const uint64_t& v16 = 0ULL, const uint64_t& v17 = 0ULL, const uint64_t& v18 = 0ULL, const uint64_t& v19 = 0ULL,
+         const uint64_t& v20 = 0ULL, const uint64_t& v21 = 0ULL, const uint64_t& v22 = 0ULL, const uint64_t& v23 = 0ULL,
+         const uint64_t& v24 = 0ULL, const uint64_t& v25 = 0ULL, const uint64_t& v26 = 0ULL, const uint64_t& v27 = 0ULL,
+         const uint64_t& v28 = 0ULL, const uint64_t& v29 = 0ULL, const uint64_t& v30 = 0ULL, const uint64_t& v31 = 0ULL,
+         const uint64_t& v32 = 0ULL, const uint64_t& v33 = 0ULL, const uint64_t& v34 = 0ULL, const uint64_t& v35 = 0ULL,
+         const uint64_t& v36 = 0ULL, const uint64_t& v37 = 0ULL, const uint64_t& v38 = 0ULL, const uint64_t& v39 = 0ULL,
+         const uint64_t& v40 = 0ULL, const uint64_t& v41 = 0ULL, const uint64_t& v42 = 0ULL, const uint64_t& v43 = 0ULL,
+         const uint64_t& v44 = 0ULL, const uint64_t& v45 = 0ULL, const uint64_t& v46 = 0ULL, const uint64_t& v47 = 0ULL,
+         const uint64_t& v48 = 0ULL, const uint64_t& v49 = 0ULL, const uint64_t& v50 = 0ULL, const uint64_t& v51 = 0ULL,
+         const uint64_t& v52 = 0ULL, const uint64_t& v53 = 0ULL, const uint64_t& v54 = 0ULL, const uint64_t& v55 = 0ULL,
+         const uint64_t& v56 = 0ULL, const uint64_t& v57 = 0ULL, const uint64_t& v58 = 0ULL, const uint64_t& v59 = 0ULL,
+         const uint64_t& v60 = 0ULL, const uint64_t& v61 = 0ULL, const uint64_t& v62 = 0ULL, const uint64_t& v63 = 0ULL) :
+         sse0 (_mm_castpd_si128(_mm_set_pd(*(double*)&v1,  *(double*)&v0))),
+         sse1 (_mm_castpd_si128(_mm_set_pd(*(double*)&v3,  *(double*)&v2))),
+         sse2 (_mm_castpd_si128(_mm_set_pd(*(double*)&v5,  *(double*)&v4))),
+         sse3 (_mm_castpd_si128(_mm_set_pd(*(double*)&v7,  *(double*)&v6))),
+         sse4 (_mm_castpd_si128(_mm_set_pd(*(double*)&v9,  *(double*)&v8))),
+         sse5 (_mm_castpd_si128(_mm_set_pd(*(double*)&v11, *(double*)&v10))),
+         sse6 (_mm_castpd_si128(_mm_set_pd(*(double*)&v13, *(double*)&v12))),
+         sse7 (_mm_castpd_si128(_mm_set_pd(*(double*)&v15, *(double*)&v14))),
+         sse8 (_mm_castpd_si128(_mm_set_pd(*(double*)&v17, *(double*)&v16))),
+         sse9 (_mm_castpd_si128(_mm_set_pd(*(double*)&v19, *(double*)&v18))),
+         sse10(_mm_castpd_si128(_mm_set_pd(*(double*)&v21, *(double*)&v20))),
+         sse11(_mm_castpd_si128(_mm_set_pd(*(double*)&v23, *(double*)&v22))),
+         sse12(_mm_castpd_si128(_mm_set_pd(*(double*)&v25, *(double*)&v24))),
+         sse13(_mm_castpd_si128(_mm_set_pd(*(double*)&v27, *(double*)&v26))),
+         sse14(_mm_castpd_si128(_mm_set_pd(*(double*)&v29, *(double*)&v28))),
+         sse15(_mm_castpd_si128(_mm_set_pd(*(double*)&v31, *(double*)&v30))),
+         sse16(_mm_castpd_si128(_mm_set_pd(*(double*)&v33, *(double*)&v32))),
+         sse17(_mm_castpd_si128(_mm_set_pd(*(double*)&v35, *(double*)&v34))),
+         sse18(_mm_castpd_si128(_mm_set_pd(*(double*)&v37, *(double*)&v36))),
+         sse19(_mm_castpd_si128(_mm_set_pd(*(double*)&v39, *(double*)&v38))),
+         sse20(_mm_castpd_si128(_mm_set_pd(*(double*)&v41, *(double*)&v40))),
+         sse21(_mm_castpd_si128(_mm_set_pd(*(double*)&v43, *(double*)&v42))),
+         sse22(_mm_castpd_si128(_mm_set_pd(*(double*)&v45, *(double*)&v44))),
+         sse23(_mm_castpd_si128(_mm_set_pd(*(double*)&v47, *(double*)&v46))),
+         sse24(_mm_castpd_si128(_mm_set_pd(*(double*)&v49, *(double*)&v48))),
+         sse25(_mm_castpd_si128(_mm_set_pd(*(double*)&v51, *(double*)&v50))),
+         sse26(_mm_castpd_si128(_mm_set_pd(*(double*)&v53, *(double*)&v52))),
+         sse27(_mm_castpd_si128(_mm_set_pd(*(double*)&v55, *(double*)&v54))),
+         sse28(_mm_castpd_si128(_mm_set_pd(*(double*)&v57, *(double*)&v56))),
+         sse29(_mm_castpd_si128(_mm_set_pd(*(double*)&v59, *(double*)&v58))),
+         sse30(_mm_castpd_si128(_mm_set_pd(*(double*)&v61, *(double*)&v60))),
+         sse31(_mm_castpd_si128(_mm_set_pd(*(double*)&v63, *(double*)&v62))) { }
+      #else
+      INLINE uint4096_d(
+         const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
+         const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
+         const uint64_t& v8  = 0ULL, const uint64_t& v9  = 0ULL, const uint64_t& v10 = 0ULL, const uint64_t& v11 = 0ULL,
+         const uint64_t& v12 = 0ULL, const uint64_t& v13 = 0ULL, const uint64_t& v14 = 0ULL, const uint64_t& v15 = 0ULL,
+         const uint64_t& v16 = 0ULL, const uint64_t& v17 = 0ULL, const uint64_t& v18 = 0ULL, const uint64_t& v19 = 0ULL,
+         const uint64_t& v20 = 0ULL, const uint64_t& v21 = 0ULL, const uint64_t& v22 = 0ULL, const uint64_t& v23 = 0ULL,
+         const uint64_t& v24 = 0ULL, const uint64_t& v25 = 0ULL, const uint64_t& v26 = 0ULL, const uint64_t& v27 = 0ULL,
+         const uint64_t& v28 = 0ULL, const uint64_t& v29 = 0ULL, const uint64_t& v30 = 0ULL, const uint64_t& v31 = 0ULL,
+         const uint64_t& v32 = 0ULL, const uint64_t& v33 = 0ULL, const uint64_t& v34 = 0ULL, const uint64_t& v35 = 0ULL,
+         const uint64_t& v36 = 0ULL, const uint64_t& v37 = 0ULL, const uint64_t& v38 = 0ULL, const uint64_t& v39 = 0ULL,
+         const uint64_t& v40 = 0ULL, const uint64_t& v41 = 0ULL, const uint64_t& v42 = 0ULL, const uint64_t& v43 = 0ULL,
+         const uint64_t& v44 = 0ULL, const uint64_t& v45 = 0ULL, const uint64_t& v46 = 0ULL, const uint64_t& v47 = 0ULL,
+         const uint64_t& v48 = 0ULL, const uint64_t& v49 = 0ULL, const uint64_t& v50 = 0ULL, const uint64_t& v51 = 0ULL,
+         const uint64_t& v52 = 0ULL, const uint64_t& v53 = 0ULL, const uint64_t& v54 = 0ULL, const uint64_t& v55 = 0ULL,
+         const uint64_t& v56 = 0ULL, const uint64_t& v57 = 0ULL, const uint64_t& v58 = 0ULL, const uint64_t& v59 = 0ULL,
+         const uint64_t& v60 = 0ULL, const uint64_t& v61 = 0ULL, const uint64_t& v62 = 0ULL, const uint64_t& v63 = 0ULL) :
+         sse0 (_mm_set_epi64x(v1, v0)),  sse1 (_mm_set_epi64x(v3, v2)),  sse2 (_mm_set_epi64x(v5, v4)),  sse3 (_mm_set_epi64x(v7, v6)),
+         sse4 (_mm_set_epi64x(v9, v8)),  sse5 (_mm_set_epi64x(v11,v10)), sse6 (_mm_set_epi64x(v13,v12)), sse7 (_mm_set_epi64x(v15,v14)),
+         sse8 (_mm_set_epi64x(v17,v16)), sse9 (_mm_set_epi64x(v19,v18)), sse10(_mm_set_epi64x(v21,v20)), sse11(_mm_set_epi64x(v23,v22)),
+         sse12(_mm_set_epi64x(v25,v24)), sse13(_mm_set_epi64x(v27,v26)), sse14(_mm_set_epi64x(v29,v28)), sse15(_mm_set_epi64x(v31,v30)),
+         sse16(_mm_set_epi64x(v33,v32)), sse17(_mm_set_epi64x(v35,v34)), sse18(_mm_set_epi64x(v37,v36)), sse19(_mm_set_epi64x(v39,v38)),
+         sse20(_mm_set_epi64x(v41,v40)), sse21(_mm_set_epi64x(v43,v42)), sse22(_mm_set_epi64x(v45,v44)), sse23(_mm_set_epi64x(v47,v46)),
+         sse24(_mm_set_epi64x(v49,v48)), sse25(_mm_set_epi64x(v51,v50)), sse26(_mm_set_epi64x(v53,v52)), sse27(_mm_set_epi64x(v55,v54)),
+         sse28(_mm_set_epi64x(v57,v56)), sse29(_mm_set_epi64x(v59,v58)), sse30(_mm_set_epi64x(v61,v60)), sse31(_mm_set_epi64x(v63,v62)) { }
+      #endif
+   #else
+      INLINE uint4096_d(const uint4096_d& oth) :
+         l(oth.l), h(oth.h) { }
+      INLINE uint4096_d(
+         const uint64_t& v0,         const uint64_t& v1  = 0ULL, const uint64_t& v2  = 0ULL, const uint64_t& v3  = 0ULL,
+         const uint64_t& v4  = 0ULL, const uint64_t& v5  = 0ULL, const uint64_t& v6  = 0ULL, const uint64_t& v7  = 0ULL,
+         const uint64_t& v8  = 0ULL, const uint64_t& v9  = 0ULL, const uint64_t& v10 = 0ULL, const uint64_t& v11 = 0ULL,
+         const uint64_t& v12 = 0ULL, const uint64_t& v13 = 0ULL, const uint64_t& v14 = 0ULL, const uint64_t& v15 = 0ULL,
+         const uint64_t& v16 = 0ULL, const uint64_t& v17 = 0ULL, const uint64_t& v18 = 0ULL, const uint64_t& v19 = 0ULL,
+         const uint64_t& v20 = 0ULL, const uint64_t& v21 = 0ULL, const uint64_t& v22 = 0ULL, const uint64_t& v23 = 0ULL,
+         const uint64_t& v24 = 0ULL, const uint64_t& v25 = 0ULL, const uint64_t& v26 = 0ULL, const uint64_t& v27 = 0ULL,
+         const uint64_t& v28 = 0ULL, const uint64_t& v29 = 0ULL, const uint64_t& v30 = 0ULL, const uint64_t& v31 = 0ULL,
+         const uint64_t& v32 = 0ULL, const uint64_t& v33 = 0ULL, const uint64_t& v34 = 0ULL, const uint64_t& v35 = 0ULL,
+         const uint64_t& v36 = 0ULL, const uint64_t& v37 = 0ULL, const uint64_t& v38 = 0ULL, const uint64_t& v39 = 0ULL,
+         const uint64_t& v40 = 0ULL, const uint64_t& v41 = 0ULL, const uint64_t& v42 = 0ULL, const uint64_t& v43 = 0ULL,
+         const uint64_t& v44 = 0ULL, const uint64_t& v45 = 0ULL, const uint64_t& v46 = 0ULL, const uint64_t& v47 = 0ULL,
+         const uint64_t& v48 = 0ULL, const uint64_t& v49 = 0ULL, const uint64_t& v50 = 0ULL, const uint64_t& v51 = 0ULL,
+         const uint64_t& v52 = 0ULL, const uint64_t& v53 = 0ULL, const uint64_t& v54 = 0ULL, const uint64_t& v55 = 0ULL,
+         const uint64_t& v56 = 0ULL, const uint64_t& v57 = 0ULL, const uint64_t& v58 = 0ULL, const uint64_t& v59 = 0ULL,
+         const uint64_t& v60 = 0ULL, const uint64_t& v61 = 0ULL, const uint64_t& v62 = 0ULL, const uint64_t& v63 = 0ULL) :
+         v0(v0),   v1(v1),   v2(v2),   v3(v3),
+         v4(v4),   v5(v5),   v6(v6),   v7(v7),
+         v8(v8),   v9(v9),   v10(v10), v11(v11),
+         v12(v12), v13(v13), v14(v14), v15(v15),
+         v16(v16), v17(v17), v18(v18), v19(v19),
+         v20(v20), v21(v21), v22(v22), v23(v23),
+         v24(v24), v25(v25), v26(v26), v27(v27),
+         v28(v28), v29(v29), v30(v30), v31(v31),
+         v32(v32), v33(v33), v34(v34), v35(v35),
+         v36(v36), v37(v37), v38(v38), v39(v39),
+         v40(v40), v41(v41), v42(v42), v43(v43),
+         v44(v44), v45(v45), v46(v46), v47(v47),
+         v48(v48), v49(v49), v50(v50), v51(v51),
+         v52(v52), v53(v53), v54(v54), v55(v55),
+         v56(v56), v57(v57), v58(v58), v59(v59),
+         v60(v60), v61(v61), v62(v62), v63(v63) { }
+   #endif
+   };
+
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -643,12 +965,14 @@ namespace CppCore
    using uint512_tgd  = uint512_d <uint128_tg, uint256_tg>;
    using uint1024_tgd = uint1024_d<uint128_tg, uint256_tg, uint512_tg>;
    using uint2048_tgd = uint2048_d<uint128_tg, uint256_tg, uint512_tg, uint1024_tg>;
+   using uint4096_tgd = uint4096_d<uint128_tg, uint256_tg, uint512_tg, uint1024_tg, uint2048_tg>;
 
    using uint128_tsd  = uint128_d;
    using uint256_tsd  = uint256_d <uint128_ts>;
    using uint512_tsd  = uint512_d <uint128_ts, uint256_ts>;
    using uint1024_tsd = uint1024_d<uint128_ts, uint256_ts, uint512_ts>;
    using uint2048_tsd = uint2048_d<uint128_ts, uint256_ts, uint512_ts, uint1024_ts>;
+   using uint4096_tsd = uint4096_d<uint128_ts, uint256_ts, uint512_ts, uint1024_ts, uint2048_ts>;
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Base uintx_t Implementation
@@ -907,15 +1231,23 @@ namespace CppCore
          INLINE static bool lt(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return true;  // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return false; // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return true;  // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return false; // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return false;                                      // equal
+            return false; // equal
          }
 
          /// <summary>
@@ -952,15 +1284,23 @@ namespace CppCore
          INLINE static bool lte(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return true;  // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return false; // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return true;  // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return false; // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return true;  // smaller
+               else if (x > y) return false; // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return true;                                       // equal
+            return true; // equal
          }
 
          /// <summary>
@@ -997,15 +1337,23 @@ namespace CppCore
          INLINE static bool gt(const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return false; // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return true;  // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return false; // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return true;  // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return false;                                      // equal
+            return false; // equal
          }
 
          /// <summary>
@@ -1042,15 +1390,23 @@ namespace CppCore
          INLINE static bool gte (const TC& a, const TC& b)
          {
          #if defined(CPPCORE_CPU_64BIT)
-            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i64[i] < b.d.i64[i]) return false; // smaller
-               else if (a.d.i64[i] > b.d.i64[i]) return true;  // larger
+            for (size_t i = N64 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i64[i];
+               const auto y = b.d.i64[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #else
-            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--)
-               if      (a.d.i32[i] < b.d.i32[i]) return false; // smaller
-               else if (a.d.i32[i] > b.d.i32[i]) return true;  // larger
+            for (size_t i = N32 - 1; i != std::numeric_limits<size_t>::max(); i--) {
+               const auto x = a.d.i32[i];
+               const auto y = b.d.i32[i];
+               if      (x < y) return false; // smaller
+               else if (x > y) return true;  // larger
+               else CPPCORE_UNLIKELY continue;
+            }
          #endif
-            return true;                                       // equal
+            return true; // equal
          }
 
          /// <summary>
@@ -1641,7 +1997,7 @@ namespace CppCore
          /// </summary>
          INLINE static void sqrt(const TC& a, TC& r)
          {
-            r = CppCore::isqrt(a);
+            CppCore::isqrt(a, r);
          }
 
          /// <summary>
@@ -2357,7 +2713,7 @@ namespace CppCore
       /// Sets all bits to random ones using 
       /// provided pseudo random number generator.
       /// </summary>
-      template<typename PRNG = Random::Default64>
+      template<typename PRNG = Random::Default>
       INLINE void randomize(PRNG& prng)
       {
          static_assert(PRNG::GENSIZE == 8U || PRNG::GENSIZE == 4U);
@@ -2375,53 +2731,8 @@ namespace CppCore
       /// </summary>
       INLINE void randomize()
       {
-      #if defined(CPPCORE_CPU_64BIT)
-         Random::Default64 prng;
+         Random::Default prng;
          thiss()->randomize(prng);
-      #else
-         Random::Default32 prng;
-         thiss()->randomize(prng);
-      #endif
-      }
-
-      /////////////////////////////////////////////////////////////////////////////////////////////
-      // PRIMES
-      /////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Like other variant, but with temporary work memory.
-      /// </summary>
-      INLINE Primes::Result isprime(uint32_t maxidx = 64) const
-      {
-         Primes::Memory<TC> mem;
-         return Primes::isprime(*thiss(), mem, maxidx);
-      }
-
-      /// <summary>
-      /// Turn into a strong probable prime
-      /// </summary>
-      template<typename PRNG>
-      INLINE void genprime(PRNG& prng, Primes::Memory<TC>& mem, uint32_t maxidx = 64)
-      {
-         do {
-            thiss()->randomize(prng);
-            d.i32[0]     |= 0x00000001U;
-            d.i32[N32-1] |= 0x80000000U;
-         } while (Primes::isprime(*thiss(), mem, maxidx) == Primes::Composite);
-      }
-
-      /// <summary>
-      /// Turn into a strong probable prime
-      /// </summary>
-      INLINE void genprime(uint32_t maxidx = 64)
-      {
-         Primes::Memory<TC> mem;
-      #if defined(CPPCORE_CPU_64BIT)
-         Random::Default64 prng;
-      #else
-         Random::Default32 prng;
-      #endif
-         thiss()->genprime(prng, mem, maxidx);
       }
    };
 
@@ -2858,6 +3169,7 @@ namespace CppCore
    using uint512_bg  = uintx_t<uint512_tg,  uint512_tgd>;
    using uint1024_bg = uintx_t<uint1024_tg, uint1024_tgd>;
    using uint2048_bg = uintx_t<uint2048_tg, uint2048_tgd>;
+   using uint4096_bg = uintx_t<uint4096_tg, uint4096_tgd>;
 
    // OPTIMIZED
 #if defined(CPPCORE_CPUFEAT_AVX512F) && defined(CPPCORE_CPUFEAT_AVX) && defined(CPPCORE_CPUFEAT_SSE2)
@@ -2866,24 +3178,28 @@ namespace CppCore
    using uint512_bs  = uintx_t_avx512<uint512_ts,  uint512_tsd>;
    using uint1024_bs = uintx_t_avx512<uint1024_ts, uint1024_tsd>;
    using uint2048_bs = uintx_t_avx512<uint2048_ts, uint2048_tsd>;
+   using uint4096_bs = uintx_t_avx512<uint4096_ts, uint4096_tsd>;
 #elif defined(CPPCORE_CPUFEAT_AVX) && defined(CPPCORE_CPUFEAT_SSE2)
    using uint128_bs  = uintx_t_sse2<uint128_ts,  uint128_tsd>;
    using uint256_bs  = uintx_t_avx <uint256_ts,  uint256_tsd>;
    using uint512_bs  = uintx_t_avx <uint512_ts,  uint512_tsd>;
    using uint1024_bs = uintx_t_avx <uint1024_ts, uint1024_tsd>;
    using uint2048_bs = uintx_t_avx <uint2048_ts, uint2048_tsd>;
+   using uint4096_bs = uintx_t_avx <uint4096_ts, uint4096_tsd>;
 #elif defined(CPPCORE_CPUFEAT_SSE2)
    using uint128_bs  = uintx_t_sse2<uint128_ts,  uint128_tsd>;
    using uint256_bs  = uintx_t_sse2<uint256_ts,  uint256_tsd>;
    using uint512_bs  = uintx_t_sse2<uint512_ts,  uint512_tsd>;
    using uint1024_bs = uintx_t_sse2<uint1024_ts, uint1024_tsd>;
    using uint2048_bs = uintx_t_sse2<uint2048_ts, uint2048_tsd>;
+   using uint4096_bs = uintx_t_sse2<uint4096_ts, uint4096_tsd>;
 #else
    using uint128_bs  = uintx_t<uint128_ts,  uint128_tsd>;
    using uint256_bs  = uintx_t<uint256_ts,  uint256_tsd>;
    using uint512_bs  = uintx_t<uint512_ts,  uint512_tsd>;
    using uint1024_bs = uintx_t<uint1024_ts, uint1024_tsd>;
    using uint2048_bs = uintx_t<uint2048_ts, uint2048_tsd>;
+   using uint4096_bs = uintx_t<uint4096_ts, uint4096_tsd>;
 #endif
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2897,6 +3213,7 @@ namespace CppCore
    {
    public:
       using uint128_bg::uint128_bg;
+      INLINE uint128_tg() { }
       INLINE uint128_tg(const uint64_t l, const uint64_t h = 0ULL) : uint128_bg(uint128_tgd(l, h)) { }
    };
 
@@ -2949,6 +3266,7 @@ namespace CppCore
    {
    public:
       using uint128_bs::uint128_bs;
+      INLINE uint128_ts() { }
       INLINE uint128_ts(const uint64_t l, const uint64_t h = 0ULL) : uint128_bs(uint128_tsd(l, h)) { }
    #if defined(CPPCORE_CPUFEAT_SSE2)
       INLINE uint128_ts(const __m128i& other) : uint128_bs(uint128_tsd(other)) { }
@@ -3009,6 +3327,7 @@ namespace CppCore
    {
    public:
       using uint256_bg::uint256_bg;
+      INLINE uint256_tg() { }
       INLINE uint256_tg(const uint128_tg& l, const uint128_tg& h = 0ULL) : uint256_bg(uint256_tgd(l, h)) { }
       INLINE uint256_tg(const uint64_t v1, const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0) : uint256_bg(uint256_tgd(v1, v2, v3, v4)) { }
       INLINE explicit operator const uint128_tg& () const { return d.i128[0]; }
@@ -3038,6 +3357,7 @@ namespace CppCore
    {
    public:
       using uint256_bs::uint256_bs;
+      INLINE uint256_ts() { }
       INLINE uint256_ts(const uint128_ts& l, const uint128_ts& h = 0ULL) : uint256_bs(uint256_tsd(l, h)) { }
       INLINE uint256_ts(const uint64_t v1, const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0) :
          uint256_bs(uint256_tsd(v1, v2, v3, v4)) { }
@@ -3076,6 +3396,7 @@ namespace CppCore
    {
    public:
       using uint512_bg::uint512_bg;
+      INLINE uint512_tg() { }
       INLINE uint512_tg(const uint256_tg& l, const uint256_tg& h = 0ULL) : uint512_bg(uint512_tgd(l, h)) { }
       INLINE uint512_tg(
          const uint64_t v1,     const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0, 
@@ -3109,6 +3430,7 @@ namespace CppCore
    {
    public:
       using uint512_bs::uint512_bs;
+      INLINE uint512_ts() { }
       INLINE uint512_ts(const uint256_ts& l, const uint256_ts& h = 0ULL) : uint512_bs(uint512_tsd(l, h)) { }
       INLINE uint512_ts(
          const uint64_t v1,     const uint64_t v2 = 0, const uint64_t v3 = 0, const uint64_t v4 = 0, 
@@ -3150,6 +3472,7 @@ namespace CppCore
    {
    public:
       using uint1024_bg::uint1024_bg;
+      INLINE uint1024_tg() { }
       INLINE uint1024_tg(const uint512_tg& l, const uint512_tg& h = 0ULL) : uint1024_bg(uint1024_tgd(l, h)) { }
       INLINE uint1024_tg(
          const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0, 
@@ -3186,6 +3509,7 @@ namespace CppCore
    {
    public:
       using uint1024_bs::uint1024_bs;
+      INLINE uint1024_ts() { }
       INLINE uint1024_ts(const uint512_ts& l, const uint512_ts& h = 0ULL) : uint1024_bs(uint1024_tsd(l, h)) { }
       INLINE uint1024_ts(
          const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0, 
@@ -3226,6 +3550,7 @@ namespace CppCore
    {
    public:
       using uint2048_bg::uint2048_bg;
+      INLINE uint2048_tg() { }
       INLINE uint2048_tg(const uint1024_tg& l, const uint1024_tg& h = 0ULL) : uint2048_bg(uint2048_tgd(l, h)) { }
       INLINE uint2048_tg(
          const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0, 
@@ -3269,6 +3594,7 @@ namespace CppCore
    {
    public:
       using uint2048_bs::uint2048_bs;
+      INLINE uint2048_ts() { }
       INLINE uint2048_ts(const uint1024_ts& l, const uint1024_ts& h = 0ULL) : uint2048_bs(uint2048_tsd(l, h)) { }
       INLINE uint2048_ts(
          const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0, 
@@ -3304,6 +3630,120 @@ namespace CppCore
    INLINE uint2048_ts    operator /  (const uint64_t a, const uint2048_ts& b) { return uint2048_ts(a) / b; }
    INLINE uint2048_ts    operator %  (const uint64_t a, const uint2048_ts& b) { return uint2048_ts(a) % b; }
    INLINE std::ostream& operator << (std::ostream& os, const uint2048_ts& v) { return v.appendToStream(os); }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // UINT4096
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Unsigned 4096-Bit Integer (Generic)
+   /// </summary>
+   class CPPCORE_ALIGN64 uint4096_tg : public uint4096_bg
+   {
+   public:
+      using uint4096_bg::uint4096_bg;
+      INLINE uint4096_tg() { }
+      INLINE uint4096_tg(const uint2048_tg& l, const uint2048_tg& h = 0ULL) : uint4096_bg(uint4096_tgd(l, h)) { }
+      INLINE uint4096_tg(
+         const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0,
+         const uint64_t v5  = 0, const uint64_t v6  = 0, const uint64_t v7  = 0, const uint64_t v8  = 0,
+         const uint64_t v9  = 0, const uint64_t v10 = 0, const uint64_t v11 = 0, const uint64_t v12 = 0,
+         const uint64_t v13 = 0, const uint64_t v14 = 0, const uint64_t v15 = 0, const uint64_t v16 = 0,
+         const uint64_t v17 = 0, const uint64_t v18 = 0, const uint64_t v19 = 0, const uint64_t v20 = 0,
+         const uint64_t v21 = 0, const uint64_t v22 = 0, const uint64_t v23 = 0, const uint64_t v24 = 0,
+         const uint64_t v25 = 0, const uint64_t v26 = 0, const uint64_t v27 = 0, const uint64_t v28 = 0,
+         const uint64_t v29 = 0, const uint64_t v30 = 0, const uint64_t v31 = 0, const uint64_t v32 = 0,
+         const uint64_t v33 = 0, const uint64_t v34 = 0, const uint64_t v35 = 0, const uint64_t v36 = 0,
+         const uint64_t v37 = 0, const uint64_t v38 = 0, const uint64_t v39 = 0, const uint64_t v40 = 0,
+         const uint64_t v41 = 0, const uint64_t v42 = 0, const uint64_t v43 = 0, const uint64_t v44 = 0,
+         const uint64_t v45 = 0, const uint64_t v46 = 0, const uint64_t v47 = 0, const uint64_t v48 = 0,
+         const uint64_t v49 = 0, const uint64_t v50 = 0, const uint64_t v51 = 0, const uint64_t v52 = 0,
+         const uint64_t v53 = 0, const uint64_t v54 = 0, const uint64_t v55 = 0, const uint64_t v56 = 0,
+         const uint64_t v57 = 0, const uint64_t v58 = 0, const uint64_t v59 = 0, const uint64_t v60 = 0,
+         const uint64_t v61 = 0, const uint64_t v62 = 0, const uint64_t v63 = 0, const uint64_t v64 = 0) :
+         uint4096_bg(uint4096_tgd(
+            v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,v11,v12,v13,v14,v15,v16,
+            v17,v18,v19,v20,v21,v22,v23,v24,v25,v26,v27,v28,v29,v30,v31,v32,
+            v33,v34,v35,v36,v37,v38,v39,v40,v41,v42,v43,v44,v45,v46,v47,v48,
+            v49,v50,v51,v52,v53,v54,v55,v56,v57,v58,v59,v60,v61,v62,v63,v64)) { }
+      INLINE explicit operator const uint128_tg& () const { return d.i128[0]; }
+      INLINE explicit operator const uint256_tg& () const { return d.i256[0]; }
+      INLINE explicit operator const uint512_tg& () const { return d.i512[0]; }
+      INLINE explicit operator const uint1024_tg& () const { return d.i1024[0]; }
+      INLINE explicit operator const uint2048_tg& () const { return d.i2048[0]; }
+   };
+
+   INLINE bool operator == (const uint64_t a, const uint4096_tg& b) { return b == a; }
+   INLINE bool operator != (const uint64_t a, const uint4096_tg& b) { return b != a; }
+   INLINE bool operator <  (const uint64_t a, const uint4096_tg& b) { return uint4096_tg(a).operator< (b); }
+   INLINE bool operator <= (const uint64_t a, const uint4096_tg& b) { return uint4096_tg(a).operator<=(b); }
+   INLINE bool operator >  (const uint64_t a, const uint4096_tg& b) { return uint4096_tg(a).operator> (b); }
+   INLINE bool operator >= (const uint64_t a, const uint4096_tg& b) { return uint4096_tg(a).operator>=(b); }
+
+   INLINE uint4096_tg    operator |  (const uint64_t a, const uint4096_tg& b) { return b | a; }
+   INLINE uint4096_tg    operator &  (const uint64_t a, const uint4096_tg& b) { return b & a; }
+   INLINE uint4096_tg    operator ^  (const uint64_t a, const uint4096_tg& b) { return b ^ a; }
+   INLINE uint4096_tg    operator +  (const uint64_t a, const uint4096_tg& b) { return b + a; }
+   INLINE uint4096_tg    operator -  (const uint64_t a, const uint4096_tg& b) { return uint4096_tg(a) - b; }
+   INLINE uint4096_tg    operator *  (const uint64_t a, const uint4096_tg& b) { return b * a; }
+   INLINE uint4096_tg    operator /  (const uint64_t a, const uint4096_tg& b) { return uint4096_tg(a) / b; }
+   INLINE uint4096_tg    operator %  (const uint64_t a, const uint4096_tg& b) { return uint4096_tg(a) % b; }
+   INLINE std::ostream& operator << (std::ostream& os, const uint4096_tg& v) { return v.appendToStream(os); }
+
+   /// <summary>
+   /// Unsigned 4096-Bit Integer (SIMD/Optimized)
+   /// </summary>
+   class CPPCORE_ALIGN64 uint4096_ts : public uint4096_bs
+   {
+   public:
+      using uint4096_bs::uint4096_bs;
+      INLINE uint4096_ts() { }
+      INLINE uint4096_ts(const uint2048_ts& l, const uint2048_ts& h = 0ULL) : uint4096_bs(uint4096_tsd(l, h)) { }
+      INLINE uint4096_ts(
+         const uint64_t v1,      const uint64_t v2  = 0, const uint64_t v3  = 0, const uint64_t v4  = 0,
+         const uint64_t v5  = 0, const uint64_t v6  = 0, const uint64_t v7  = 0, const uint64_t v8  = 0,
+         const uint64_t v9  = 0, const uint64_t v10 = 0, const uint64_t v11 = 0, const uint64_t v12 = 0,
+         const uint64_t v13 = 0, const uint64_t v14 = 0, const uint64_t v15 = 0, const uint64_t v16 = 0,
+         const uint64_t v17 = 0, const uint64_t v18 = 0, const uint64_t v19 = 0, const uint64_t v20 = 0,
+         const uint64_t v21 = 0, const uint64_t v22 = 0, const uint64_t v23 = 0, const uint64_t v24 = 0,
+         const uint64_t v25 = 0, const uint64_t v26 = 0, const uint64_t v27 = 0, const uint64_t v28 = 0,
+         const uint64_t v29 = 0, const uint64_t v30 = 0, const uint64_t v31 = 0, const uint64_t v32 = 0,
+         const uint64_t v33 = 0, const uint64_t v34 = 0, const uint64_t v35 = 0, const uint64_t v36 = 0,
+         const uint64_t v37 = 0, const uint64_t v38 = 0, const uint64_t v39 = 0, const uint64_t v40 = 0,
+         const uint64_t v41 = 0, const uint64_t v42 = 0, const uint64_t v43 = 0, const uint64_t v44 = 0,
+         const uint64_t v45 = 0, const uint64_t v46 = 0, const uint64_t v47 = 0, const uint64_t v48 = 0,
+         const uint64_t v49 = 0, const uint64_t v50 = 0, const uint64_t v51 = 0, const uint64_t v52 = 0,
+         const uint64_t v53 = 0, const uint64_t v54 = 0, const uint64_t v55 = 0, const uint64_t v56 = 0,
+         const uint64_t v57 = 0, const uint64_t v58 = 0, const uint64_t v59 = 0, const uint64_t v60 = 0,
+         const uint64_t v61 = 0, const uint64_t v62 = 0, const uint64_t v63 = 0, const uint64_t v64 = 0) :
+         uint4096_bs(uint4096_tsd(
+            v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,v11,v12,v13,v14,v15,v16,
+            v17,v18,v19,v20,v21,v22,v23,v24,v25,v26,v27,v28,v29,v30,v31,v32,
+            v33,v34,v35,v36,v37,v38,v39,v40,v41,v42,v43,v44,v45,v46,v47,v48,
+            v49,v50,v51,v52,v53,v54,v55,v56,v57,v58,v59,v60,v61,v62,v63,v64)) { }
+      INLINE explicit operator const uint128_ts& () const { return d.i128[0]; }
+      INLINE explicit operator const uint256_ts& () const { return d.i256[0]; }
+      INLINE explicit operator const uint512_ts& () const { return d.i512[0]; }
+      INLINE explicit operator const uint1024_ts& () const { return d.i1024[0]; }
+      INLINE explicit operator const uint2048_ts& () const { return d.i2048[0]; }
+   };
+
+   INLINE bool operator == (const uint64_t a, const uint4096_ts& b) { return b == a; }
+   INLINE bool operator != (const uint64_t a, const uint4096_ts& b) { return b != a; }
+   INLINE bool operator <  (const uint64_t a, const uint4096_ts& b) { return uint4096_ts(a).operator< (b); }
+   INLINE bool operator <= (const uint64_t a, const uint4096_ts& b) { return uint4096_ts(a).operator<=(b); }
+   INLINE bool operator >  (const uint64_t a, const uint4096_ts& b) { return uint4096_ts(a).operator> (b); }
+   INLINE bool operator >= (const uint64_t a, const uint4096_ts& b) { return uint4096_ts(a).operator>=(b); }
+
+   INLINE uint4096_ts    operator |  (const uint64_t a, const uint4096_ts& b) { return b | a; }
+   INLINE uint4096_ts    operator &  (const uint64_t a, const uint4096_ts& b) { return b & a; }
+   INLINE uint4096_ts    operator ^  (const uint64_t a, const uint4096_ts& b) { return b ^ a; }
+   INLINE uint4096_ts    operator +  (const uint64_t a, const uint4096_ts& b) { return b + a; }
+   INLINE uint4096_ts    operator -  (const uint64_t a, const uint4096_ts& b) { return uint4096_ts(a) - b; }
+   INLINE uint4096_ts    operator *  (const uint64_t a, const uint4096_ts& b) { return b * a; }
+   INLINE uint4096_ts    operator /  (const uint64_t a, const uint4096_ts& b) { return uint4096_ts(a) / b; }
+   INLINE uint4096_ts    operator %  (const uint64_t a, const uint4096_ts& b) { return uint4096_ts(a) % b; }
+   INLINE std::ostream& operator << (std::ostream& os, const uint4096_ts& v) { return v.appendToStream(os); }
 };
 #pragma warning(default:26495)
 
@@ -3318,12 +3758,14 @@ INLINE CppCore::uint256_tg  sqrt(const CppCore::uint256_tg&  a) { CppCore::uint2
 INLINE CppCore::uint512_tg  sqrt(const CppCore::uint512_tg&  a) { CppCore::uint512_tg  r; CppCore::uint512_tg::Op::sqrt (a, r); return r; }
 INLINE CppCore::uint1024_tg sqrt(const CppCore::uint1024_tg& a) { CppCore::uint1024_tg r; CppCore::uint1024_tg::Op::sqrt(a, r); return r; }
 INLINE CppCore::uint2048_tg sqrt(const CppCore::uint2048_tg& a) { CppCore::uint2048_tg r; CppCore::uint2048_tg::Op::sqrt(a, r); return r; }
+INLINE CppCore::uint4096_tg sqrt(const CppCore::uint4096_tg& a) { CppCore::uint4096_tg r; CppCore::uint4096_tg::Op::sqrt(a, r); return r; }
 
 INLINE CppCore::uint128_ts  sqrt(const CppCore::uint128_ts&  a) { CppCore::uint128_ts  r; CppCore::uint128_ts::Op::sqrt (a, r); return r; }
 INLINE CppCore::uint256_ts  sqrt(const CppCore::uint256_ts&  a) { CppCore::uint256_ts  r; CppCore::uint256_ts::Op::sqrt (a, r); return r; }
 INLINE CppCore::uint512_ts  sqrt(const CppCore::uint512_ts&  a) { CppCore::uint512_ts  r; CppCore::uint512_ts::Op::sqrt (a, r); return r; }
 INLINE CppCore::uint1024_ts sqrt(const CppCore::uint1024_ts& a) { CppCore::uint1024_ts r; CppCore::uint1024_ts::Op::sqrt(a, r); return r; }
 INLINE CppCore::uint2048_ts sqrt(const CppCore::uint2048_ts& a) { CppCore::uint2048_ts r; CppCore::uint2048_ts::Op::sqrt(a, r); return r; }
+INLINE CppCore::uint4096_ts sqrt(const CppCore::uint4096_ts& a) { CppCore::uint4096_ts r; CppCore::uint4096_ts::Op::sqrt(a, r); return r; }
 
 // ::std::numeric_limits
 
@@ -3334,10 +3776,12 @@ namespace std
    template<> class numeric_limits<CppCore::uint512_tg>  : public CppCore::uint512_tg::numeric_limits { };
    template<> class numeric_limits<CppCore::uint1024_tg> : public CppCore::uint1024_tg::numeric_limits { };
    template<> class numeric_limits<CppCore::uint2048_tg> : public CppCore::uint2048_tg::numeric_limits { };
+   template<> class numeric_limits<CppCore::uint4096_tg> : public CppCore::uint4096_tg::numeric_limits { };
 
    template<> class numeric_limits<CppCore::uint128_ts>  : public CppCore::uint128_ts::numeric_limits { };
    template<> class numeric_limits<CppCore::uint256_ts>  : public CppCore::uint256_ts::numeric_limits { };
    template<> class numeric_limits<CppCore::uint512_ts>  : public CppCore::uint512_ts::numeric_limits { };
    template<> class numeric_limits<CppCore::uint1024_ts> : public CppCore::uint1024_ts::numeric_limits { };
    template<> class numeric_limits<CppCore::uint2048_ts> : public CppCore::uint2048_ts::numeric_limits { };
+   template<> class numeric_limits<CppCore::uint4096_ts> : public CppCore::uint4096_ts::numeric_limits { };
 }

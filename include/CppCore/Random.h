@@ -54,8 +54,14 @@ namespace CppCore
          v ^= seedmix32((uint32_t)(size_t)&v);
       #if defined(CPPCORE_CPU_X86ORX64)
          v ^= seedmix32((uint32_t)__rdtsc());
-      #else
-         v ^= seedmix32((uint32_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count());
+      #elif defined(CPPCORE_CPU_ARM64) && defined(CPPCORE_COMPILER_CLANG)
+         uint64_t t;
+         __asm volatile ("MRS %0, CNTVCT_EL0;" : "=r"(t) :: "memory");
+         v ^= seedmix32((uint32_t)t);
+      #elif defined(CPPCORE_OS_WASI)
+         uint32_t t;
+         auto r = __wasi_random_get((uint8_t*)&t, 4);
+         v ^= seedmix32(t);
       #endif
          return v;
       }
@@ -81,8 +87,14 @@ namespace CppCore
          v ^= seedmix64((uint64_t)&v);
       #if defined(CPPCORE_CPU_X86ORX64)
          v ^= seedmix64((uint64_t)__rdtsc());
-      #else
-         v ^= seedmix64((uint64_t)::std::chrono::high_resolution_clock::now().time_since_epoch().count());
+      #elif defined(CPPCORE_CPU_ARM64) && defined(CPPCORE_COMPILER_CLANG)
+         uint64_t t;
+         __asm volatile ("MRS %0, CNTVCT_EL0;" : "=r"(t) :: "memory");
+         v ^= seedmix64(t);
+      #elif defined(CPPCORE_OS_WASI)
+         uint64_t t;
+         auto r = __wasi_random_get((uint8_t*)&t, 8);
+         v ^= seedmix64(t);
       #endif
          return v;
       }
@@ -194,6 +206,39 @@ namespace CppCore
          ///////////////////////////////////////////////////////////////////////////////////////////////////
          // ARRAY FILLING
          ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+         /// <summary>
+         /// Fills memory m with len random bytes
+         /// </summary>
+         INLINE void fill(void* m, size_t len)
+         {
+            INT* pm = (INT*)m;
+            while (len >= sizeof(INT))
+            {
+               *pm++ = thiss()->next();
+               len -= sizeof(INT);
+            }
+            if (len)
+            {
+               INT t = thiss()->next();
+               uint8_t* p8 = (uint8_t*)pm;
+               while (len)
+               {
+                  *p8++ = (uint8_t)t;
+                  t >>= 8;
+                  len--;
+               }
+            }
+         }
+
+         /// <summary>
+         /// Fills memory m with random bytes
+         /// </summary>
+         template<typename TSTRUCT>
+         INLINE void fill(TSTRUCT& m)
+         {
+            thiss()->fill((void*)&m, sizeof(TSTRUCT));
+         }
 
          /// <summary>
          /// Fills memory m with n unsigned and unbound random integer values.
@@ -598,6 +643,12 @@ namespace CppCore
 
       using Default32 = CPPCORE_PRNG_DEFAULT32;
       using Default64 = CPPCORE_PRNG_DEFAULT64;
+
+      #if defined(CPPCORE_CPU_64BIT)
+      using Default = Default64;
+      #else
+      using Default = Default32;
+      #endif
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
       // CUSTOM PACKED PSEUDO RANDOM NUMBER GENERATORS

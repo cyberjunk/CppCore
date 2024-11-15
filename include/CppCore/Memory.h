@@ -52,6 +52,18 @@
 #define CPPCORE_MEMORY_PROCESS_64X8( len,                                                                             op64, op32, op16, op8) \
         CPPCORE_MEMORY_PROCESS_512(  len, op64;op64;op64;op64;op64;op64;op64;op64;, op64;op64;op64;op64;, op64;op64;, op64, op32, op16, op8)
 
+// decreases len in 64 byte steps executing sixteen op32 each time
+// then handles the 0-63 remaining bytes using op32 to op8
+#define CPPCORE_MEMORY_PROCESS_32X16( len, op32, op16, op8) \
+        CPPCORE_MEMORY_PROCESS_512(   len, \
+        op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;op32;, \
+        op32;op32;op32;op32;op32;op32;op32;op32;, \
+        op32;op32;op32;op32;, \
+        op32;op32, \
+        op32, \
+        op16, \
+        op8)
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace CppCore
@@ -1595,32 +1607,266 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Automatically picks singlecopy() variant based on sizeof(T).
-      /// Only supports power-of-two sizes from 16 to 256 Bytes.
+      /// Copies exactly 4096 bit using eight 512 bit op, sixteen 256 bit op, 
+      /// thirtytwo 128 bit ops or sixtyfour 64 bit ops.
       /// </summary>
-      template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
+      template<size_t DSTALIGN=1, size_t SRCALIGN=1>
+      INLINE static void singlecopy4096(void* dst, const void* src)
+      {
+      #if defined(CPPCORE_CPUFEAT_AVX512F)
+         constexpr bool DSTALIGN64 = DSTALIGN % 64 == 0;
+         constexpr bool SRCALIGN64 = SRCALIGN % 64 == 0;
+         __m512i* pdst = (__m512i*)dst;
+         __m512i* psrc = (__m512i*)src;
+         if constexpr (DSTALIGN64 && SRCALIGN64) {
+            _mm512_store_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_store_si512(pdst,   _mm512_load_si512(psrc));
+         }
+         else if constexpr (DSTALIGN64) {
+            _mm512_store_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_store_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_store_si512(pdst,   _mm512_loadu_si512(psrc));
+         }
+         else if constexpr (SRCALIGN64) {
+            _mm512_storeu_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_load_si512(psrc++));
+            _mm512_storeu_si512(pdst,   _mm512_load_si512(psrc));
+         }
+         else {
+            _mm512_storeu_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_storeu_si512(pdst++, _mm512_loadu_si512(psrc++));
+            _mm512_storeu_si512(pdst,   _mm512_loadu_si512(psrc));
+         }
+      #elif defined(CPPCORE_CPUFEAT_AVX)
+         constexpr bool DSTALIGN32 = DSTALIGN % 32 == 0;
+         constexpr bool SRCALIGN32 = SRCALIGN % 32 == 0;
+         __m256i* pdst = (__m256i*)dst;
+         __m256i* psrc = (__m256i*)src;
+         if constexpr (DSTALIGN32 && SRCALIGN32) {
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_store_si256 (pdst,   _mm256_load_si256 (psrc));
+         }
+         else if constexpr (DSTALIGN32) {
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_store_si256 (pdst,   _mm256_loadu_si256 (psrc));
+         }
+         else if constexpr (SRCALIGN32) {
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_load_si256 (psrc++));
+            _mm256_storeu_si256 (pdst,   _mm256_load_si256 (psrc));
+         }
+         else {
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst++, _mm256_loadu_si256 (psrc++));
+            _mm256_storeu_si256 (pdst,   _mm256_loadu_si256 (psrc));
+         }
+      #elif defined(CPPCORE_CPUFEAT_SSE2)
+         constexpr bool DSTALIGN16 = DSTALIGN % 16 == 0;
+         constexpr bool SRCALIGN16 = SRCALIGN % 16 == 0;
+         __m128i* pdst = (__m128i*)dst;
+         __m128i* psrc = (__m128i*)src;
+         if constexpr (DSTALIGN16 && SRCALIGN16) {
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_store_si128 (pdst,   _mm_load_si128 (psrc));
+         }
+         else if constexpr (DSTALIGN16) {
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_store_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_store_si128 (pdst,   _mm_loadu_si128 (psrc));
+         }
+         else if constexpr (SRCALIGN16) {
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_load_si128 (psrc++)); _mm_storeu_si128 (pdst,   _mm_load_si128 (psrc));
+         }
+         else {
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++));
+            _mm_storeu_si128 (pdst++, _mm_loadu_si128 (psrc++)); _mm_storeu_si128 (pdst,   _mm_loadu_si128 (psrc));
+         }
+      #else
+         uint64_t* pdst = (uint64_t*)dst;
+         uint64_t* psrc = (uint64_t*)src;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++;
+         *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst++ = *psrc++; *pdst   = *psrc;
+      #endif
+      }
+
+      /// <summary>
+      /// Automatically picks singlecopy() variant based on sizeof(T).
+      /// Only supports power-of-two sizes from 4 to 512 Bytes.
+      /// </summary>
+      template<typename T, size_t DSTALIGN=alignof(T), size_t SRCALIGN=1>
       INLINE static void singlecopy(T* dst, const void* src)
       {
-         if      constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
+         if      constexpr (sizeof(T) == 512) Memory::singlecopy4096<DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 128) Memory::singlecopy1024<DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 64)  Memory::singlecopy512 <DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 32)  Memory::singlecopy256 <DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 16)  Memory::singlecopy128 <DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 8)   *(uint64_t*)dst = *(uint64_t*)src;
+         else if constexpr (sizeof(T) == 4)   *(uint32_t*)dst = *(uint32_t*)src;
          else static_assert(sizeof(T) == 0);
       }
 
       /// <summary>
       /// Automatically picks singlecopy() variant based on sizeof(T).
-      /// Only supports power-of-two sizes from 16 to 256 Bytes.
+      /// Only supports power-of-two sizes from 4 to 512 Bytes.
       /// </summary>
-      template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=1>
+      template<typename T, size_t DSTALIGN=1, size_t SRCALIGN=alignof(T)>
       INLINE static void singlecopy(void* dst, const T* src)
       {
-         if      constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
+         if      constexpr (sizeof(T) == 512) Memory::singlecopy4096<DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 256) Memory::singlecopy2048<DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 128) Memory::singlecopy1024<DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 64)  Memory::singlecopy512 <DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 32)  Memory::singlecopy256 <DSTALIGN, SRCALIGN>(dst, src);
          else if constexpr (sizeof(T) == 16)  Memory::singlecopy128 <DSTALIGN, SRCALIGN>(dst, src);
+         else if constexpr (sizeof(T) == 8)   *(uint64_t*)dst = *(uint64_t*)src;
+         else if constexpr (sizeof(T) == 4)   *(uint32_t*)dst = *(uint32_t*)src;
          else static_assert(sizeof(T) == 0);
       }
 
@@ -1738,9 +1984,14 @@ namespace CppCore
             *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
             *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
-      #else
+      #elif defined(CPPCORE_CPU_64BIT)
          CPPCORE_MEMORY_PROCESS_64X8(len, 
             *((uint64_t*)memd) = *((uint64_t*)mems); memd += 8U; mems += 8U;, 
+            *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
+            *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
+            *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
+      #else
+         CPPCORE_MEMORY_PROCESS_32X16(len, 
             *((uint32_t*)memd) = *((uint32_t*)mems); memd += 4U; mems += 4U;, 
             *((uint16_t*)memd) = *((uint16_t*)mems); memd += 2U; mems += 2U;, 
             *((uint8_t*) memd) = *((uint8_t*) mems); memd += 1U; mems += 1U;);
@@ -1778,9 +2029,14 @@ namespace CppCore
             memd -=  4U; mems -=  4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
             memd -=  2U; mems -=  2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
             memd -=  1U; mems -=  1U; *((uint8_t*) memd) = *((uint8_t*) mems);)
-      #else
+      #elif defined(CPPCORE_CPU_64BIT)
          CPPCORE_MEMORY_PROCESS_64X8(len, 
             memd -= 8U; mems -= 8U; *((uint64_t*)memd) = *((uint64_t*)mems);,
+            memd -= 4U; mems -= 4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
+            memd -= 2U; mems -= 2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
+            memd -= 1U; mems -= 1U; *((uint8_t*) memd) = *((uint8_t*) mems);)
+      #else
+         CPPCORE_MEMORY_PROCESS_32X16(len, 
             memd -= 4U; mems -= 4U; *((uint32_t*)memd) = *((uint32_t*)mems);,
             memd -= 2U; mems -= 2U; *((uint16_t*)memd) = *((uint16_t*)mems);,
             memd -= 1U; mems -= 1U; *((uint8_t*) memd) = *((uint8_t*) mems);)

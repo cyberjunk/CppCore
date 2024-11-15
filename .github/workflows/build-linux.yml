@@ -21,32 +21,34 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
         arch: [amd64, i386, arm64, armhf]
         cpurev: [legacy, default, modern]
     steps:
 
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Purge PPA
-    - name: Purge PPA
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ppa-purge aptitude
-        sudo ppa-purge -y ppa:ubuntu-toolchain-r/test
+    #- name: Purge PPA
+    #  run: |
+    #    sudo apt-get update
+    #    sudo apt-get install -y ppa-purge aptitude
+    #    sudo ppa-purge -y ppa:ubuntu-toolchain-r/test
 
     # Cross-Compile Support
     - name: Cross-Compile Support
-      uses: cyberjunk/gha-ubuntu-cross@v4
+      uses: cyberjunk/gha-ubuntu-cross@v5
       if: matrix.arch != 'amd64'
       with:
         arch: ${{ matrix.arch }}
 
     # Ubuntu Packages
     - name: Ubuntu Packages
-      run: sudo apt-get install clang llvm libx11-dev:$ARCH
+      run: |
+        sudo apt-get update
+        sudo apt-get install clang llvm libx11-dev:$ARCH
     
     # QEMU (ARM64/ARMHF)
     - name: QEMU (ARM64/ARMHF)
@@ -103,21 +105,46 @@ jobs:
         ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Test
         echo CppCore.Debug
         ldd ./build/make/bin/linux-${{ env.TARGET_ARCH }}/CppCore.Debug
+        echo CppCore.Interface.C
+        ldd ./build/make/lib/linux-${{ env.TARGET_ARCH }}/libcppcore.so
 
-    # Test
-    - name: Test
+    # Test Native
+    - name: Test Native
       run: make test
 
     # Make (dist)
     - name: Make (dist)
       run: make dist -j${{ env.JOBS }}
 
-    # Upload   
-    - name: Upload
-      uses: actions/upload-artifact@v3
+    # Install Python
+    - name: Install Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' 
+
+    # Make (dist-python)
+    - name: Make (dist-python)
+      run: |
+        python --version
+        python -m pip install build
+        make CppCore.Interface.Python
+    
+    # Test Python
+    - name: Test Python
+      if: matrix.arch == 'amd64'
+      run: |
+        cd src/CppCore.Interface.Python
+        python -m pip install pytest crc32c pbkdf2-reboot
+        pytest
+    
+    # Upload Packages
+    - name: Upload Packages
+      uses: actions/upload-artifact@v4
       with:
         name: Packages (${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.cpurev }})
-        path: ./dist/${{ matrix.os }}/*.deb
+        path: |
+          ./dist/${{ matrix.os }}/*.deb
+          ./dist/${{ matrix.os }}/*.whl
 
     # Upload to Github Release
     - name: Upload to Github Release

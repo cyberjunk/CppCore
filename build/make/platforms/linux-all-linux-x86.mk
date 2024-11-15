@@ -10,15 +10,15 @@ TARGET     = i686-linux-gnu
 DEFINES    = 
 INCLUDES   = -I/usr/$(TARGET)/include
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -fPIC -static
+CXXFLAGS   = -target $(TARGET) -fPIC -static -fno-strict-aliasing
 CC         = clang
-CFLAGS     = -target $(TARGET) -fPIC -static
+CFLAGS     = -target $(TARGET) -fPIC -static -fno-strict-aliasing
 AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
-LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -static-libstdc++ -static-libgcc
+LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -fno-strict-aliasing
 LINKPATH   =
 LINKLIBS   = 
 DEBARCH    = i386
@@ -39,9 +39,9 @@ endif
 # Debug vs. Release
 ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
-CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections
-CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections
-LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -Wl,--gc-sections
+CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer
+CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer
+LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -Wl,--gc-sections -Wl,--as-needed -fomit-frame-pointer
 else
 DEFINES   := $(DEFINES) -D_DEBUG
 CXXFLAGS  := $(CXXFLAGS) -Og -g3

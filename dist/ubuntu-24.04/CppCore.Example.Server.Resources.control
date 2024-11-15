@@ -1,0 +1,9 @@
+Package: CppCore.Example.Server.Resources
+Version: {VERSION}-1
+Section: base
+Priority: optional
+Architecture: all
+Maintainer: Clint Banzhaf <clint@banzhaf.pro>
+Description: CppCore.Example.Server Resources
+  Resources of CppCore.Example.Server.
+

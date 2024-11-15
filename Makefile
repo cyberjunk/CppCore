@@ -53,6 +53,26 @@ CppCore.Test-run:
 	@echo [RUN] CppCore.Test
 	+@make -s -C ./build/make/ -f CppCore.Test.mk run
 
+CppCore.Interface.C:
+	@echo [BLD] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk
+
+CppCore.Interface.C-clean:
+	@echo [CLN] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk clean
+
+CppCore.Interface.C-dist:
+	@echo [DST] CppCore.Interface.C
+	+@make -s -C ./build/make/ -f CppCore.Interface.C.mk lib-dist
+
+CppCore.Interface.Python:
+	@echo [BLD] CppCore.Interface.Python
+	+@make -s -C ./build/make/ -f CppCore.Interface.Python.mk
+
+CppCore.Interface.JS:
+	@echo [BLD] CppCore.Interface.JS
+	+@make -s -C ./build/make/ -f CppCore.Interface.JS.mk
+
 CppCore.Debug:
 	@echo [BLD] CppCore.Debug
 	+@make -s -C ./build/make/ -f CppCore.Debug.mk
@@ -63,27 +83,41 @@ CppCore.Debug-clean:
 
 ##################################################################################
 
+ifneq ($(TARGET_OS),wasi)
 all: \
 	CppCore.Example.Server \
 	CppCore.Example.Client \
 	CppCore.Example.UI \
+	CppCore.Interface.C \
 	CppCore.Test \
 	CppCore.Debug
-
 clean: \
 	CppCore.Example.Server-clean \
 	CppCore.Example.Client-clean \
 	CppCore.Example.UI-clean \
+	CppCore.Interface.C-clean \
 	CppCore.Test-clean \
 	CppCore.Debug-clean
-
-test: \
-	CppCore.Test-run
-
 dist: \
 	CppCore.Example.Server-dist \
 	CppCore.Example.Client-dist \
-	CppCore.Example.UI-dist
+	CppCore.Example.UI-dist \
+	CppCore.Interface.C-dist
+else
+all: \
+	CppCore.Interface.C \
+	CppCore.Test \
+	CppCore.Debug
+clean: \
+	CppCore.Interface.C-clean \
+	CppCore.Test-clean \
+	CppCore.Debug-clean
+dist: \
+	CppCore.Interface.C-dist
+endif
+
+test: \
+	CppCore.Test-run
 
 ##################################################################################
 

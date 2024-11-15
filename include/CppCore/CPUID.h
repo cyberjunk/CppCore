@@ -478,7 +478,7 @@ namespace CppCore
 //    INLINE bool UNUSED()          const { return CppCore::bittest(mFX1S0.ecx, 2); }
 //    INLINE bool UNUSED()          const { return CppCore::bittest(mFX1S0.ecx, 3); }
 //    INLINE bool UNUSED()          const { return CppCore::bittest(mFX1S0.ecx, 4); }
-      INLINE bool LZCNT()           const { return CppCore::bittest(mFX1S0.ecx, 5)  && isIntel(); }
+      INLINE bool LZCNT()           const { return CppCore::bittest(mFX1S0.ecx, 5); }
       INLINE bool ABM()             const { return CppCore::bittest(mFX1S0.ecx, 5)  && isAMD();   }
       INLINE bool SSE4a()           const { return CppCore::bittest(mFX1S0.ecx, 6)  && isAMD();   }
 //    INLINE bool UNUSED()          const { return CppCore::bittest(mFX1S0.ecx, 7); }
@@ -576,6 +576,13 @@ namespace CppCore
 #elif defined(CPPCORE_CPU_ARMORARM64)
    /// <summary>
    /// TODO: FOR ARM/ARM64
+   /// </summary>
+   class CPUID
+   {
+   };
+#else
+   /// <summary>
+   /// Empty Stub
    /// </summary>
    class CPUID
    {

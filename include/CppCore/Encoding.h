@@ -145,6 +145,30 @@ namespace CppCore
       INLINE BaseX() { }
    public:
       /// <summary>
+      /// Returns an upper bound of decoded bits required for encoded symbols.
+      /// </summary>
+      INLINE static uint32_t estimateBits(uint32_t symbols, uint32_t base)
+      {
+         assert(base >= 2);
+         uint32_t pow2b = CppCore::ngptwo32(base);
+         uint32_t nbits = CppCore::tzcnt32(pow2b);
+         return symbols * nbits;
+      }
+
+      /// <summary>
+      /// Returns an upper bound of encoded symbols required for decoded bits.
+      /// </summary>
+      INLINE static uint32_t estimateSymbols(uint32_t bits, uint32_t base)
+      {
+         assert(base >= 2);
+         uint32_t q, r;
+         uint32_t pow2b = CppCore::nlptwo32(base);
+         uint32_t nbits = CppCore::tzcnt32(pow2b);
+         CppCore::udivmod32(bits, nbits, q, r);
+         return r ? q + 1 : q;
+      }
+
+      /// <summary>
       /// Encodes unsigned integer v into string s using alphabet.
       /// </summary>
       template<typename UINT>
@@ -152,7 +176,7 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         CPPCORE_ALIGN64 UINT v;
+         CPPCORE_ALIGN_OPTIM(UINT) v;
          uint32_t r;
          uint32_t n = 0U;
          bool     z;
@@ -179,7 +203,7 @@ namespace CppCore
       {
          assert(base >= 2U);
          assert(::strlen(alphabet) == base);
-         CPPCORE_ALIGN64 UINT v;
+         CPPCORE_ALIGN_OPTIM(UINT) v;
          uint32_t r;
          uint32_t n = 0U;
          bool     z;
@@ -212,10 +236,10 @@ namespace CppCore
       INLINE static void parse(const char* input, UINT& r, const char* alphabet)
       {
          assert(::strlen(alphabet) >= 2);
-         uint8_t tbl[256];
          uint8_t n = 0;
-         CppCore::clear(r);
+         CPPCORE_ALIGN64 uint8_t tbl[256];
          CppCore::clear(tbl);
+         CppCore::clear(r);
          while (const char c = *alphabet++)
             tbl[c] = n++;
          if (const char c = *input++)
@@ -238,8 +262,8 @@ namespace CppCore
       {
          if (!input || !alphabet)
             return false; // null pointer
-         uint8_t tbl[256];
          uint8_t n = 0;
+         CPPCORE_ALIGN64 uint8_t tbl[256];
          CppCore::bytedup(0xFF, tbl);
          while (const char c = *alphabet++)
             tbl[c] = n++;
@@ -544,7 +568,7 @@ namespace CppCore
          /// </summary>
          INLINE static uint16_t bytetohexint16(const uint8_t byte)
          {
-            CPPCORE_ALIGN64 static const uint16_t table[] =
+            CPPCORE_ALIGN64 static constexpr uint16_t table[] = 
             {
                0x3030, 0x3130, 0x3230, 0x3330, 0x3430, 0x3530, 0x3630, 0x3730,
                0x3830, 0x3930, 0x4130, 0x4230, 0x4330, 0x4430, 0x4530, 0x4630,
@@ -896,14 +920,14 @@ namespace CppCore
             {
                uint32_t r;
                uint32_t n;
-               CppCore::udivmod(v, 10U, v, r);
+               CppCore::udivmod(v, r, v, 10U);
                *s++ = CPPCORE_ALPHABET_B10[r];
                CPPCORE_UNROLL
                for (n = 1U; n != N; n++)
                {
                   if (!CppCore::testzero(v))
                   {
-                     CppCore::udivmod(v, 10U, v, r);
+                     CppCore::udivmod(v, r, v, 10U);
                      *s++ = CPPCORE_ALPHABET_B10[r];
                   }
                   else
@@ -945,7 +969,7 @@ namespace CppCore
             if (v > 0)
             {
                u = (UINT)v;
-               CppCore::udivmod(u, 10U, u, r);
+               CppCore::udivmod(u, r, u, 10U);
                *s++ = CPPCORE_ALPHABET_B10[r];
             }
             else if (v < 0)
@@ -969,7 +993,7 @@ namespace CppCore
             {
                if (!CppCore::testzero(u))
                {
-                  CppCore::udivmod(u, 10U, u, r);
+                  CppCore::udivmod(u, r, u, 10U);
                   *s++ = CPPCORE_ALPHABET_B10[r];
                }
                else

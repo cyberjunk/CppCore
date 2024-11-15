@@ -711,7 +711,6 @@ namespace CppCore
       }
       else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::addcarry<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
       else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::addcarry<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
-      else throw;
    }
 
    /// <summary>
@@ -1084,7 +1083,6 @@ namespace CppCore
       }
       else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::subborrow<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
       else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::subborrow<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
-      else throw;
    }
 
    /// <summary>
@@ -1374,24 +1372,23 @@ namespace CppCore
    /// that support shift, or, sub and comparison ops.
    /// </summary>
    template<typename T, size_t NBITS = sizeof(T) * 8U>
-   INLINE static T isqrt(const T& a)
+   INLINE static void isqrt(const T& a, T& r)
    {
       // From Hacker's Delight
-      T m, x, y, b;
-      x = a;
+      T m, x, b;
+      CppCore::clone(x, a);
+      CppCore::clear(r);
       m = 1;
       m <<= (NBITS - 2U);
-      y = 0;
       while (m != 0) {
-         b = y | m;
-         y >>= 1;
+         CppCore::or_(r, m, b);
+         r >>= 1;
          if (x >= b) {
             x -= b;
-            y |= m;
+            r |= m;
          }
          m >>= 2;
       }
-      return y;
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1529,14 +1526,20 @@ namespace CppCore
       // apply rounding based on selected mode
       switch (rounding)
       {
+   #if defined(FE_DOWNWARD)
       case FE_DOWNWARD:
+         break; // nothing to do
+   #endif
+   #if defined(FE_TOWARDZERO)
       case FE_TOWARDZERO:
-         // nothing to do, also both identical in our case
-         break;
+         break; // nothing to do
+   #endif
+   #if defined(FE_UPWARD)
       case FE_UPWARD:
          // round up if we lost anything
          if (lost) man++;
          break;
+   #endif
       case FE_TONEAREST:
          // round up for upper range (break tie by only rounding odd up)
          man += ((lost > 2048U) | ((lost == 2048U) & man & 1U));
@@ -2269,7 +2272,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 8/8=8,8
    /// </summary>
-   INLINE static void udivmod(uint8_t a, uint8_t b, uint8_t& q, uint8_t& r)
+   INLINE static void udivmod(uint8_t& q, uint8_t& r, uint8_t a, uint8_t b)
    {
       CppCore::udivmod8(a, b, q, r);
    }
@@ -2277,7 +2280,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 8/16=8,16
    /// </summary>
-   INLINE static void udivmod(uint8_t a, uint16_t b, uint8_t& q, uint16_t& r)
+   INLINE static void udivmod(uint8_t& q, uint16_t& r, uint8_t a, uint16_t b)
    {
       uint16_t t;
       CppCore::udivmod16(a, b, t, r);
@@ -2287,7 +2290,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 8/32=8,32
    /// </summary>
-   INLINE static void udivmod(uint8_t a, uint32_t b, uint8_t& q, uint32_t& r)
+   INLINE static void udivmod(uint8_t& q, uint32_t& r, uint8_t a, uint32_t b)
    {
       uint32_t t;
       CppCore::udivmod32(a, b, t, r);
@@ -2297,7 +2300,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 8/64=8,64
    /// </summary>
-   INLINE static void udivmod(uint8_t a, uint64_t b, uint8_t& q, uint64_t& r)
+   INLINE static void udivmod(uint8_t& q, uint64_t& r, uint8_t a, uint64_t b)
    {
       uint64_t t;
       CppCore::udivmod64(a, b, t, r);
@@ -2307,7 +2310,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 16/16=16,16
    /// </summary>
-   INLINE static void udivmod(uint16_t a, uint16_t b, uint16_t& q, uint16_t& r)
+   INLINE static void udivmod(uint16_t& q, uint16_t& r, uint16_t a, uint16_t b)
    {
       CppCore::udivmod16(a, b, q, r);
    }
@@ -2315,7 +2318,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 16/32=16,32
    /// </summary>
-   INLINE static void udivmod(uint16_t a, uint32_t b, uint16_t& q, uint32_t& r)
+   INLINE static void udivmod(uint16_t& q, uint32_t& r, uint16_t a, uint32_t b)
    {
       uint32_t t;
       CppCore::udivmod32(a, b, t, r);
@@ -2325,7 +2328,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 16/64=16,64
    /// </summary>
-   INLINE static void udivmod(uint16_t a, uint64_t b, uint16_t& q, uint64_t& r)
+   INLINE static void udivmod(uint16_t& q, uint64_t& r, uint16_t a, uint64_t b)
    {
       uint64_t t;
       CppCore::udivmod64(a, b, t, r);
@@ -2335,7 +2338,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 32/32=32,32
    /// </summary>
-   INLINE static void udivmod(uint32_t a, uint32_t b, uint32_t& q, uint32_t& r)
+   INLINE static void udivmod(uint32_t& q, uint32_t& r, uint32_t a, uint32_t b)
    {
       CppCore::udivmod32(a, b, q, r);
    }
@@ -2343,7 +2346,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 32/64=32,64
    /// </summary>
-   INLINE static void udivmod(uint32_t a, uint64_t b, uint32_t& q, uint64_t& r)
+   INLINE static void udivmod(uint32_t& q, uint64_t& r, uint32_t a, uint64_t b)
    {
       uint64_t t;
       CppCore::udivmod64(a, b, t, r);
@@ -2353,7 +2356,7 @@ namespace CppCore
    /// <summary>
    /// a/b=q,r with 64/64=64,64
    /// </summary>
-   INLINE static void udivmod(uint64_t a, uint64_t b, uint64_t& q, uint64_t& r)
+   INLINE static void udivmod(uint64_t& q, uint64_t& r, uint64_t a, uint64_t b)
    {
       CppCore::udivmod64(a, b, q, r);
    }
@@ -2362,7 +2365,7 @@ namespace CppCore
    /// a/b=q,r with N32/32=N32,32
    /// </summary>
    template<typename UINT>
-   INLINE static void udivmod(const UINT& a, uint32_t b, UINT& q, uint32_t& r)
+   INLINE static void udivmod(UINT& q, uint32_t& r, const UINT& a, uint32_t b)
    {
       static_assert(sizeof(UINT) % 4 == 0);
    #if defined(CPPCORE_CPU_X64)
@@ -2384,7 +2387,7 @@ namespace CppCore
    /// a/b=q,r with N64/64=N64,64
    /// </summary>
    template<typename UINT>
-   INLINE static void udivmod(const UINT& a, uint64_t b, UINT& q, uint64_t& r)
+   INLINE static void udivmod(UINT& q, uint64_t& r, const UINT& a, uint64_t b)
    {
       static_assert(sizeof(UINT) % 8 == 0);
       CppCore::udivmod128_64x((const uint64_t*)&a, b, (uint64_t*)&q, r, sizeof(UINT)/8);
@@ -2659,6 +2662,7 @@ namespace CppCore
          constexpr size_t NA = sizeof(UINT1) / 8;
          constexpr size_t NB = sizeof(UINT2) / 8;
          constexpr size_t NR = sizeof(UINT3) / 8;
+         assert(NB == 1 || (((void*)&a != (void*)&r) && ((void*)&b != (void*)&r)));
          uint64_t* ap = (uint64_t*)&a;
          uint64_t* bp = (uint64_t*)&b;
          uint64_t* rp = (uint64_t*)&r;
@@ -2668,7 +2672,6 @@ namespace CppCore
             rp[i] = 0ULL;
          bj = *bp++;
          CppCore::umul128(*ap++, bj, *rp++, k);  // mulx
-         CPPCORE_UNROLL
          for (size_t i = 1; i < MIN(NA,NR); i++, ap++, rp++)
          {
             CppCore::umul128(*ap, bj, tl, th);   // mulx
@@ -2705,6 +2708,7 @@ namespace CppCore
          constexpr size_t NA = sizeof(UINT1) / 4;
          constexpr size_t NB = sizeof(UINT2) / 4;
          constexpr size_t NR = sizeof(UINT3) / 4;
+         assert(NB == 1 || (((void*)&a != (void*)&r) && ((void*)&b != (void*)&r)));
          uint32_t* ap = (uint32_t*)&a;
          uint32_t* bp = (uint32_t*)&b;
          uint32_t* rp = (uint32_t*)&r;
@@ -2714,7 +2718,6 @@ namespace CppCore
             rp[i] = 0U;
          bj = *bp++;
          CppCore::umul64(*ap++, bj, *rp++, k);
-         CPPCORE_UNROLL
          for (size_t i = 1; i < MIN(NA,NR); i++, ap++, rp++)
          {
             CppCore::umul64(*ap, bj, tl, th);
@@ -2745,7 +2748,6 @@ namespace CppCore
                *rp = k;
          }
       }
-      else throw;
    }
 
    /// <summary>
@@ -2876,7 +2878,7 @@ namespace CppCore
    template<typename UINT, typename UINT2>
    INLINE static UINT upow(UINT a, UINT2 b)
    {
-      UINT r(1U);
+      CPPCORE_ALIGN_OPTIM(UINT) r(1U);
       while (b != 0U)
       {
          if (((uint32_t)b & 1U) != 0U)
@@ -3102,7 +3104,7 @@ namespace CppCore
             }
          }
          if (S) { CppCore::shr64x(unp, rp, n, S); }
-         else   { r = *(UINT2*)&mem[0]; }
+         else   { CppCore::clone(r, *(UINT2*)&mem[0]); }
       }
       else
    #endif
@@ -3192,7 +3194,7 @@ namespace CppCore
             }
          }
          if (S) { CppCore::shr32x(unp, rp, n, S); }
-         else   { r = *(UINT2*)&mem[0]; }
+         else   { CppCore::clone(r, *(UINT2*)&mem[0]); }
       }
       return true;
    }
@@ -3203,7 +3205,7 @@ namespace CppCore
    template<typename UINT1, typename UINT2>
    INLINE static bool udivmod(UINT1& q, UINT2& r, const UINT1& u, const UINT2& v)
    {
-      UINT1 mem[2];
+      CPPCORE_ALIGN_OPTIM(UINT1) mem[2];
       return CppCore::udivmod(q, r, u, v, mem);
    }
 
@@ -3344,7 +3346,7 @@ namespace CppCore
                *unpj = kl;
          }
          if (S) { CppCore::shr64x(unp, rp, n, S); }
-         else   { r = *(UINT2*)mem; }
+         else   { CppCore::clone(r, *(UINT2*)mem); }
       }
       else
    #endif
@@ -3439,7 +3441,7 @@ namespace CppCore
                *unpj = kl;
          }
          if (S) { CppCore::shr32x(unp, rp, n, S); }
-         else   { r = *(UINT2*)mem; }
+         else   { CppCore::clone(r, *(UINT2*)mem); }
       }
    }
 
@@ -3449,7 +3451,7 @@ namespace CppCore
    template<typename UINT1, typename UINT2>
    INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v)
    {
-      UINT1 mem[2];
+      CPPCORE_ALIGN_OPTIM(UINT1) mem[2];
       CppCore::umod(r, u, v, mem);
    }
 
@@ -3529,7 +3531,7 @@ namespace CppCore
             else
                unpj[N] = kl;
          }
-         r = *(UINT2*)mem;
+         CppCore::clone(r, *(UINT2*)mem);
       }
       else
    #endif
@@ -3598,7 +3600,7 @@ namespace CppCore
             else
                unpj[N] = kl;
          }
-         r = *(UINT2*)mem;
+         CppCore::clone(r, *(UINT2*)mem);
       }
    }
 
@@ -3647,7 +3649,7 @@ namespace CppCore
    template<typename UINT>
    INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
-      UINT p[3]; 
+      CPPCORE_ALIGN_OPTIM(UINT) p[3];
       CppCore::umulmod(a, b, m, r, p);
    }
 
@@ -3744,7 +3746,7 @@ namespace CppCore
    template<typename UINT>
    INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
    {
-      assert(&a != &r);
+      assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
       CppCore::clear(r);
       constexpr auto NUMBITS = sizeof(UINT)*8U;
@@ -3770,7 +3772,7 @@ namespace CppCore
    template<typename UINT>
    INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
-      UINT t[3];
+      CPPCORE_ALIGN_OPTIM(UINT) t[3];
       CppCore::upowmod(a, b, m, r, t);
    }
 
@@ -3886,20 +3888,39 @@ namespace CppCore
    /// GCD for any size
    /// </summary>
    template<typename UINT>
-   INLINE static UINT gcd(const UINT& x, const UINT& y)
+   INLINE static void gcd(const UINT& x, const UINT& y, UINT& r)
    {
-      UINT a, b, r;
-      UINT un[2];
+      CPPCORE_ALIGN_OPTIM(UINT) b, t;
+      CPPCORE_ALIGN_OPTIM(UINT) un[2];
+
       if (CppCore::testzero(x))
-         return y;
-      CppCore::clone<UINT>(a, x);
-      CppCore::clone<UINT>(b, y);
-      while (!CppCore::testzero(b))
+         CppCore::clone(r, y);
+
+      else
       {
-         CppCore::umod<UINT, UINT>(r, a, b, un);
-         CppCore::clone<UINT>(a, b);
-         CppCore::clone<UINT>(b, r);
+         CppCore::clone(r, x);
+         CppCore::clone(b, y);
+         while (!CppCore::testzero(b))
+         {
+            CppCore::umod<UINT, UINT>(t, r, b, un);
+            CppCore::clone(r, b);
+            CppCore::clone(b, t);
+         }
       }
-      return a;
+   }
+
+   /// <summary>
+   /// Specialization for uint32_t
+   /// </summary>
+   template<> INLINE void gcd(const uint32_t& x, const uint32_t& y, uint32_t& r)
+   {
+      r = CppCore::gcd32(x, y);
+   }
+   /// <summary>
+   /// Specialization for uint64_t
+   /// </summary>
+   template<> INLINE void gcd(const uint64_t& x, const uint64_t& y, uint64_t& r)
+   {
+      r = CppCore::gcd64(x, y);
    }
 }

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name={DISPLAYNAME}
+Comment=Example Client of CppCore
+Exec=/usr/bin/CppCore.Example.Client
+Icon=/usr/share/pixmaps/CppCore.Example.Client.png
+Terminal=true
+Type=Application
+Categories=Development;
+StartupNotify=true
+NoDisplay=false

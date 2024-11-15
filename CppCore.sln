@@ -17,6 +17,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCore.Debug", "build\vs\C
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCore.Example.UI", "build\vs\CppCore.Example.UI.vcxproj", "{EA38B305-1A3B-488B-B1D0-26443C40A45C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interfaces", "Interfaces", "{452D2839-952A-4CDC-B2CA-492A4EDC9E9E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCore.Interface.C", "build\vs\CppCore.Interface.C.vcxproj", "{7C1A57CB-AE78-4C01-BD43-442314F5638B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -73,6 +77,14 @@ Global
 		{EA38B305-1A3B-488B-B1D0-26443C40A45C}.Release|x64.Build.0 = Release|x64
 		{EA38B305-1A3B-488B-B1D0-26443C40A45C}.Release|x86.ActiveCfg = Release|Win32
 		{EA38B305-1A3B-488B-B1D0-26443C40A45C}.Release|x86.Build.0 = Release|Win32
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B}.Debug|x64.ActiveCfg = Debug|x64
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B}.Debug|x64.Build.0 = Debug|x64
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B}.Debug|x86.ActiveCfg = Debug|Win32
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B}.Debug|x86.Build.0 = Debug|Win32
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B}.Release|x64.ActiveCfg = Release|x64
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B}.Release|x64.Build.0 = Release|x64
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B}.Release|x86.ActiveCfg = Release|Win32
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +93,7 @@ Global
 		{86A774BC-CA54-4993-A985-09FECEABDF25} = {7B41A015-A91C-428D-95E7-4A250F995F01}
 		{DF58B305-1A3B-488B-B1D0-26443C40A45C} = {7B41A015-A91C-428D-95E7-4A250F995F01}
 		{EA38B305-1A3B-488B-B1D0-26443C40A45C} = {7B41A015-A91C-428D-95E7-4A250F995F01}
+		{7C1A57CB-AE78-4C01-BD43-442314F5638B} = {452D2839-952A-4CDC-B2CA-492A4EDC9E9E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5B5ED7C-1690-4E33-9B13-D413A7529B02}

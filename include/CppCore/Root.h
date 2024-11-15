@@ -17,8 +17,10 @@
 #elif TARGET_OS_IPHONE
 #define CPPCORE_OS_IPHONE
 #else
-#error UNKNOWN OPERATING SYSTEM
+#error UNKNOWN APPLE OPERATING SYSTEM
 #endif
+#elif defined(__wasi__)
+#define CPPCORE_OS_WASI
 #else
 #error UNKNOWN OPERATING SYSTEM
 #endif
@@ -55,6 +57,14 @@
 #define CPPCORE_CPU_ARM
 #define CPPCORE_CPU_ARMORARM64
 #define CPPCORE_CPU_32BIT
+#elif defined(__wasm32__)
+#define CPPCORE_CPU_WASM32
+#define CPPCORE_CPU_WASM32OR64
+#define CPPCORE_CPU_64BIT
+#elif defined(__wasm64__)
+#define CPPCORE_CPU_WASM64
+#define CPPCORE_CPU_WASM32OR64
+#define CPPCORE_CPU_64BIT
 #else
 #error UNKNOWN CPU
 #endif
@@ -545,6 +555,14 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+// WASM CPU
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if defined(__wasm_simd128__)
+#define CPPCORE_CPUFEAT_WASM_SIMD128
+#endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Enable/Disable use of optimized classes
@@ -555,6 +573,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef __cplusplus
 // Standard C++ Includes
 #define _USE_MATH_DEFINES
 #include <algorithm>
@@ -570,26 +589,33 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
-#include <ios>
-#include <iostream>
-#include <iomanip>
 #include <memory>
 #include <mutex>
 #include <queue>
 #include <random>
 #include <regex>
 #include <set>
+#ifndef CPPCORE_NO_THREADING
 #include <shared_mutex>
+#include <thread>
+#endif
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <thread>
+#ifndef CPPCORE_NO_INCLUDE_IO
+#include <ios>
+#include <iostream>
+#include <iomanip>
+#endif
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Standard C Includes
+#ifndef CPPCORE_NO_SIGNAL
 #include <signal.h>
+#endif
 #include <errno.h>
 #include <sys/types.h>
 #include <limits.h>
@@ -622,10 +648,15 @@
  #endif
 #endif
 
+#if defined(CPPCORE_CPU_WASM32OR64) && defined(CPPCORE_CPUFEAT_WASM_SIMD128)
+#include <wasm_simd128.h>
+#endif
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Platform POSIX Socket
+#ifndef CPPCORE_NO_SOCKET
 #if defined(CPPCORE_OS_WINDOWS)
 #define NOMINMAX
 #include <WinSock2.h>
@@ -643,10 +674,13 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <poll.h>
+#ifndef CPPCORE_OS_WASI
 #include <netdb.h>
+#endif
 #define SOCKET int
 #define INVALID_SOCKET  (SOCKET)(~0)
 #define SOCKET_ERROR    -1
+#endif
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -677,6 +711,8 @@
 #if defined(__OBJC__)
 #include <Foundation/Foundation.h>
 #endif
+#elif defined(CPPCORE_OS_WASI)
+#include <wasi/api.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -708,6 +744,22 @@
 #define CPPCORE_ALIGN64_INTRIN CPPCORE_ALIGN64
 #endif
 
+// Optimal Alignment for enabled Instructions
+#if defined(CPPCORE_CPUFEAT_AVX512F)
+#define CPPCORE_ALIGN_OPTIM_SIZE 64
+#elif defined(CPPCORE_CPUFEAT_AVX)
+#define CPPCORE_ALIGN_OPTIM_SIZE 32
+#elif defined(CPPCORE_CPUFEAT_SSE) || defined(CPPCORE_CPUFEAT_ARM_NEON)
+#define CPPCORE_ALIGN_OPTIM_SIZE 16
+#elif defined(CPPCORE_CPU_64BIT)
+#define CPPCORE_ALIGN_OPTIM_SIZE 8
+#else
+#define CPPCORE_ALIGN_OPTIM_SIZE 4
+#endif
+
+// Optimal Alignment for type
+#define CPPCORE_ALIGN_OPTIM(type) alignas(MAX(alignof(type), CPPCORE_ALIGN_OPTIM_SIZE)) type
+
 // Aligned Memory Allocation
 #if defined(CPPCORE_OS_WINDOWS)
 #define CPPCORE_ALIGNED_ALLOC(S, A) ::_aligned_malloc(S, A)
@@ -723,22 +775,40 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// signed/unsigned integer types for C
+#ifndef __cplusplus
+typedef unsigned char      uint8_t;
+typedef unsigned short     uint16_t;
+typedef unsigned int       uint32_t;
+typedef unsigned long long uint64_t;
+
+typedef char               int8_t;
+typedef short              int16_t;
+typedef int                int32_t;
+typedef long long          int64_t;
+#else
 // make sure c++ 2017 features are enabled
 /*#if !defined(_HAS_CXX17) || _HAS_CXX17 == 0
 #error C++ 2017 Support Required
 #endif*/
+#endif
 
 // validate integer sizes
-static_assert(sizeof(uint8_t)  == 1U);
-static_assert(sizeof(uint16_t) == 2U);
-static_assert(sizeof(uint32_t) == 4U);
-static_assert(sizeof(uint64_t) == 8U);
+static_assert(sizeof(uint8_t)  == 1U, "uint8_t not 1 byte");
+static_assert(sizeof(uint16_t) == 2U, "uint16_t not 2 bytes");
+static_assert(sizeof(uint32_t) == 4U, "uint32_t not 4 bytes");
+static_assert(sizeof(uint64_t) == 8U, "uint64_t not 8 bytes");
+
+static_assert(sizeof(int8_t)  == 1U, "int8_t not 1 byte");
+static_assert(sizeof(int16_t) == 2U, "int16_t not 2 bytes");
+static_assert(sizeof(int32_t) == 4U, "int32_t not 4 bytes");
+static_assert(sizeof(int64_t) == 8U, "int64_t not 8 bytes");
 
 // validate floating point sizes
-static_assert(sizeof(float)  == 4U);
-static_assert(sizeof(double) == 8U);
+static_assert(sizeof(float)  == 4U, "float not 4 bytes");
+static_assert(sizeof(double) == 8U, "double not 8 bytes");
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Inline Macro
@@ -759,12 +829,29 @@ static_assert(sizeof(double) == 8U);
 #endif
 #endif
 
+// No Inline Macro
+#ifndef NOINLINE
+#if defined(CPPCORE_COMPILER_MSVC)
+#define NOINLINE  __declspec(noinline)
+#else
+#define NOINLINE  __attribute__((noinline))
+#endif
+#endif
+
 // Macro for constexpr when CLANG supports it but MSVC does not
 #if defined(CPPCORE_COMPILER_CLANG)
 #define CONSTEXPR constexpr
 #else
 #define CONSTEXPR 
 #endif
+
+// Export macro
+#if defined(CPPCORE_OS_WINDOWS)
+#define CPPCORE_EXPORT __declspec(dllexport)
+#else
+#define CPPCORE_EXPORT __attribute__((visibility("default")))
+#endif
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -795,6 +882,13 @@ static_assert(sizeof(double) == 8U);
 #define CPPCORE_UNROLL   _Pragma("unroll")
 #else
 #define CPPCORE_UNROLL
+#endif
+
+// No Loop Unrolling (#pragma nounroll)
+#if defined(CPPCORE_COMPILER_CLANG)
+#define CPPCORE_NO_UNROLL _Pragma("nounroll")
+#else
+#define CPPCORE_NO_UNROLL
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -868,6 +962,8 @@ static_assert(sizeof(double) == 8U);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef __cplusplus
+
 namespace CppCore
 {
    // from std::chrono
@@ -892,6 +988,7 @@ namespace CppCore
    using TimePointHR = ClockHR::time_point;
    using DurationHR  = ClockHR::duration;
 
+#ifndef CPPCORE_NO_THREADING
    // thread
    using ::std::thread;
 
@@ -908,6 +1005,7 @@ namespace CppCore
    using ::std::condition_variable_any;
    using ::std::condition_variable;
    using ::std::cv_status;
+#endif
 
    // atomic
    using ::std::atomic;
@@ -942,3 +1040,4 @@ namespace CppCore
    // deprecated: to be removed
    typedef ::std::string StdString;
 }
+#endif

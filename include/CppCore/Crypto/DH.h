@@ -2,6 +2,8 @@
 
 #include <CppCore/Root.h>
 #include <CppCore/Math/BigInt.h>
+#include <CppCore/Math/Primes.h>
+#include <CppCore/Random.h>
 
 namespace CppCore
 {
@@ -32,15 +34,23 @@ namespace CppCore
       using TYPE = UINT;
 
    protected:
-      INLINE void genrnd(UINT& x)
+      template<typename PRNG>
+      INLINE void genrnd(UINT& x, PRNG& prng)
       {
-         x.randomize();
+         x.randomize(prng);
          x.d.i32[UINT::N32-1] &= 0x7FFFFFFFU; // make smaller than p
          x.d.i32[UINT::N32-1] |= 0x40000000U; // make large and not zero
       }
-      INLINE void genprime(uint32_t certainty)
+      INLINE void genrnd(UINT& x)
       {
-         p.genprime(certainty);
+         Random::Default prng;
+         this->genrnd(x, prng);
+      }
+      template<typename PRNG>
+      INLINE void genprime(uint32_t certainty, PRNG& prng)
+      {
+         CppCore::Primes::Memory<UINT> mem;
+         CppCore::Primes::genprime(p, prng, mem, false, certainty);
       }
       INLINE void genpubkey()
       {
@@ -49,14 +59,20 @@ namespace CppCore
       }
    public:
       /// <summary>
+      /// Constructor
+      /// </summary>
+      INLINE DH() { }
+
+      /// <summary>
       /// Automatically generate prime, constant and private key.
       /// You must share prime (p), constant (g) and public key (V).
       /// </summary>
       INLINE void reset(uint32_t certainty = 0)
       {
-         this->genprime(certainty);
-         this->genrnd(g);
-         this->genrnd(v);
+         Random::Default prng;
+         this->genprime(certainty, prng);
+         this->genrnd(g, prng);
+         this->genrnd(v, prng);
          this->genpubkey();
       }
 
@@ -67,7 +83,7 @@ namespace CppCore
       INLINE void reset(const UINT& p, const UINT& g)
       {
          assert(CppCore::lzcnt(p) == 0);
-         assert(p.isprime(1));
+         assert(CppCore::Primes::isprime(p, false, 1));
          assert(g < p);
          CppCore::clone(this->p, p);
          CppCore::clone(this->g, g);
@@ -83,7 +99,7 @@ namespace CppCore
          Memory::singlecopy(&this->p, p);
          Memory::singlecopy(&this->g, g);
          assert(CppCore::lzcnt(this->p) == 0);
-         assert(this->p.isprime(1));
+         assert(CppCore::Primes::isprime(this->p, false, 1));
          assert(this->g < this->p);
          this->genrnd(v);
          this->genpubkey();
@@ -95,7 +111,7 @@ namespace CppCore
       /// </summary>
       INLINE void reset(const UINT& p, const UINT& g, const UINT& v)
       {
-         assert(p.isprime(1));
+         assert(CppCore::Primes::isprime(p, false, 1));
          assert(g < p);
          assert(v < p);
          CppCore::clone(this->p, p);
@@ -112,7 +128,7 @@ namespace CppCore
          Memory::singlecopy(&this->p, p);
          Memory::singlecopy(&this->g, g);
          Memory::singlecopy(&this->v, v);
-         assert(this->p.isprime(1));
+         assert(CppCore::Primes::isprime(this->p, false, 1));
          assert(this->g < this->p);
          assert(this->v < this->p);
          this->genpubkey();
@@ -142,4 +158,5 @@ namespace CppCore
    using DH512  = DH<uint512_t>;  // Diffi-Hellman 512 Bit Key Exchange
    using DH1024 = DH<uint1024_t>; // Diffi-Hellman 1024 Bit Key Exchange
    using DH2048 = DH<uint2048_t>; // Diffi-Hellman 2048 Bit Key Exchange
+   using DH4096 = DH<uint4096_t>; // Diffi-Hellman 4096 Bit Key Exchange
 }

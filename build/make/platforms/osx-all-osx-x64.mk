@@ -30,15 +30,15 @@ MINVER     = -mmacosx-version-min=$(OSXMINVERSION)
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
-CXXFLAGS   = $(MINVER) -target $(TARGET) -static
+CXXFLAGS   = $(MINVER) -target $(TARGET) -static -fno-strict-aliasing
 CC         = clang
-CFLAGS     = $(MINVER) -target $(TARGET) -static
+CFLAGS     = $(MINVER) -target $(TARGET) -static -fno-strict-aliasing
 AR         = ar
 ARFLAGS    = rcs
 STRIP      = strip
 STRIPFLAGS = -S
 LINK       = $(CXX)
-LINKFLAGS  = $(MINVER) -target $(TARGET)
+LINKFLAGS  = $(MINVER) -target $(TARGET) -fno-strict-aliasing
 LINKPATH   =
 LINKLIBS   = 
 
@@ -59,9 +59,9 @@ endif
 # Debug vs. Release
 ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
-CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections
-CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections
-LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -dead_strip
+CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer -fno-plt
+CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer -fno-plt
+LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -dead_strip -dead_strip_dylibs -fomit-frame-pointer
 else
 DEFINES   := $(DEFINES) -D_DEBUG
 CXXFLAGS  := $(CXXFLAGS) -Og -g3

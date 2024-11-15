@@ -1,0 +1,10 @@
+Package: CppCore.Example.Server
+Version: {VERSION}-1
+Section: base
+Priority: optional
+Architecture: {ARCH}
+Depends: libc6:{ARCH} (>= 2.39)
+Maintainer: Clint Banzhaf <clint@banzhaf.pro>
+Description: CppCore Example Server
+  Just an example to demonstrate server code of CppCore.
+

@@ -61,6 +61,43 @@ namespace CppCore { namespace Test
       class BaseX
       {
       public:
+         INLINE static bool estimatebits()
+         {
+            return
+               CppCore::BaseX::estimateBits( 0,  2) ==  0 &&
+               CppCore::BaseX::estimateBits( 1,  2) ==  1 &&
+               CppCore::BaseX::estimateBits( 2,  2) ==  2 &&
+               CppCore::BaseX::estimateBits( 1,  3) ==  2 &&
+               CppCore::BaseX::estimateBits( 1, 12) ==  4 &&
+               CppCore::BaseX::estimateBits( 1, 16) ==  4 &&
+               CppCore::BaseX::estimateBits( 8, 16) == 32 &&
+               CppCore::BaseX::estimateBits(16, 16) == 64 &&
+               CppCore::BaseX::estimateBits( 6, 62) == 36 &&
+               CppCore::BaseX::estimateBits( 6, 64) == 36;
+         }
+         INLINE static bool estimatesymbols()
+         {
+            bool ok =
+               CppCore::BaseX::estimateSymbols( 0,  2) ==  0 &&
+               CppCore::BaseX::estimateSymbols( 1,  2) ==  1 &&
+               CppCore::BaseX::estimateSymbols(32, 16) ==  8 &&
+               CppCore::BaseX::estimateSymbols(64, 16) == 16 &&
+               CppCore::BaseX::estimateSymbols(64, 32) == 13 &&
+               CppCore::BaseX::estimateSymbols(64, 62) == 13 &&
+               CppCore::BaseX::estimateSymbols(32, 64) ==  6;
+            if (!ok) 
+               return false;
+            std::string alphabet;
+            for (uint32_t b = 2; b < 256; b++)
+            {
+               alphabet.resize(b, '0');
+               uint32_t e = CppCore::BaseX::estimateSymbols(64, b);
+               std::string s = CppCore::BaseX::tostring(UINT64_MAX, alphabet.c_str());
+               if (s.length() > e)
+                  return false;
+            }
+            return true;
+         }
          INLINE static bool tostring8()
          {
             std::string ss;
@@ -1126,6 +1163,8 @@ namespace CppCore { namespace Test { namespace VS
    public:
       TEST_METHOD(ISDIGIT)          { Assert::AreEqual(true, CppCore::Test::Encoding::isdigit()); }
       TEST_METHOD(ISXDIGIT)         { Assert::AreEqual(true, CppCore::Test::Encoding::isxdigit()); }
+      TEST_METHOD(BASEX_ESTIMATEBITS)    { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::estimatebits()); }
+      TEST_METHOD(BASEX_ESTIMATESYMBOLS) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::estimatesymbols()); }
       TEST_METHOD(BASEX_TOSTRING8)  { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring8()); }
       TEST_METHOD(BASEX_TOSTRING16) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring16()); }
       TEST_METHOD(BASEX_TOSTRING32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tostring32()); }

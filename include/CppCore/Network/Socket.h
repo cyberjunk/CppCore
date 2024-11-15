@@ -2,6 +2,8 @@
 
 #include <CppCore/Root.h>
 
+#ifndef CPPCORE_NO_SOCKET
+
 namespace CppCore
 {
    /// <summary>
@@ -552,3 +554,5 @@ namespace CppCore
       }
    };
 }
+
+#endif

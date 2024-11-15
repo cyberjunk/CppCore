@@ -11,15 +11,15 @@ TARGET     = i686-pc-windows-msvc
 DEFINES    = -DWIN32 -D_MT
 INCLUDES   = 
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -static
+CXXFLAGS   = -target $(TARGET) -fno-strict-aliasing
 CC         = clang
-CFLAGS     = -target $(TARGET) -static
+CFLAGS     = -target $(TARGET) -fno-strict-aliasing
 AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
 STRIPFLAGS = --strip-all
 LINK       = $(CXX)
-LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -Xlinker /MACHINE:X86
+LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -Xlinker /MACHINE:X86 -fno-strict-aliasing
 LINKPATH   =
 LINKLIBS   = 
 
@@ -41,14 +41,14 @@ endif
 # Debug vs. Release
 ifeq ($(MODE),release)
 DEFINES   := $(DEFINES) -DNDEBUG
-CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -Xclang -MT
-CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -Xclang -MT
-LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -o optimized.bc -RELEASE \
-             -Xlinker /OPT:ref \
-             -Xlinker /OPT:icf \
+CXXFLAGS  := $(CXXFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer -fno-plt
+CFLAGS    := $(CFLAGS) -flto=thin -O3 -g -ffunction-sections -fdata-sections -fomit-frame-pointer -fno-plt
+LINKFLAGS := $(LINKFLAGS) -flto=thin -O3 -g -o optimized.bc -fomit-frame-pointer -RELEASE \
+             -Xlinker /OPT:REF \
+             -Xlinker /OPT:ICF=3 \
              -Xlinker /DEBUG:FULL \
              -Xlinker /MANIFEST:EMBED
-LINKLIBS  := $(LINKLIBS) -llibcmt.lib
+LINKLIBS  := $(LINKLIBS)
 else
 DEFINES   := $(DEFINES) -D_DEBUG
 CXXFLAGS  := $(CXXFLAGS) -Og -g3 -Xclang -MTd

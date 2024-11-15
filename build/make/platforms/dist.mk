@@ -27,6 +27,9 @@ SIGN_PFX_PASS = CppCore
 endif
 endif
 
+# extract version
+include platforms/extract-version.mk
+
 ##############################################################################################################
 # WINDOWS
 ##############################################################################################################
@@ -37,20 +40,6 @@ PUBLISHERID = $(shell powershell -command "& {\
   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
   . $(DISTDIR)/$(SCRIPTSFILE);\
   Get-PublisherHash '$(PUBLISHER)'; }")
-VERSIONMAJOR = $(shell powershell -command "& {\
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
-  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMAJOR)'; }")
-VERSIONMINOR = $(shell powershell -command "& {\
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
-  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROMINOR)'; }")
-VERSIONPATCH = $(shell powershell -command "& {\
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass;\
-  . $(DISTDIR)/$(SCRIPTSFILE);\
-  Extract-Macro '$(VERSIONFILE)' '$(VERSIONMACROPATCH)'; }")
-VERSION3 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
-VERSION4 = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 ZIPPER   = $(DISTDIR)/7za.exe a -y -aoa -mx6 -bd -bb0
 dist-prep:
 	echo [VER] $(VERSION4)
@@ -121,6 +110,35 @@ endif
 	$(ZIPPER) $(DISTDIR)/$(NAME).appxupload.zip $(DISTDIR)/$(NAME)/upload/*
 	$(call move,$(DISTDIR)/$(NAME).appxupload.zip,$(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxupload)	
 	$(call move,$(DISTDIR)/$(NAME).appxbundle,$(DISTDIR)/$(NAME)-$(VERSION3)-win-10.appxbundle)
+lib-dist-prep:
+	echo [VER] $(VERSION4)
+	echo [CPG] CodePage 1252
+	chcp 1252
+	echo [PUB] $(PUBLISHER)
+	echo [PFX] $(SIGN_PFX_FILE)
+	echo [RMD] $(DISTDIR)/$(NAME)
+	-$(call rmdir,$(DISTDIR)/$(NAME))
+	-$(call deletefiles,$(DISTDIR),$(NAME)*.zip)
+	echo [MKD] $(DISTDIR)/$(NAME)
+	$(call mkdir,$(DISTDIR)/$(NAME))
+	$(call copyfiles,$(INCDIR)/$(NAME)/*.h,$(DISTDIR)/$(NAME)/)
+lib-dist-%: lib-dist-prep
+	echo [MKD] $(DISTDIR)/$(NAME)/$*
+	$(call mkdir,$(DISTDIR)/$(NAME)/$*)
+	$(call copyfiles,./lib/win-$*/$(LIBNAME)$(EXTDLL),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL))
+	$(call copyfiles,./lib/win-$*/$(LIBNAME)$(EXTLIB),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTLIB))
+	$(call copyfiles,./lib/win-$*/$(LIBNAME)$(EXTPDB),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTPDB))
+	echo [STR] $(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL)
+	$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL)
+	echo [SIG] $(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL)
+ifeq ($(SIGN_PFX_PASS),)
+	$(call sign,$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL),$(SIGN_PFX_FILE))
+else
+	$(call signp,$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL),$(SIGN_PFX_FILE),$(SIGN_PFX_PASS))
+endif
+lib-dist: lib-dist-prep lib-dist-x64 lib-dist-x86 lib-dist-arm64
+	echo [ZIP] $(DISTDIR)/$(NAME)-$(VERSION3)-win-10.zip
+	$(ZIPPER) $(DISTDIR)/$(NAME)-$(VERSION3)-win-10.zip $(DISTDIR)/$(NAME)/*
 endif
 
 ##############################################################################################################
@@ -129,11 +147,6 @@ endif
 
 ifeq ($(TARGET_OS),osx)
 KEYCHAIN     = sign-$(NAME).keychain-db
-VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
-VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
-VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
-VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
-VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 DISTDIRAPP   = "$(DISTDIR)/$(NAME)/$(APPNAME).app"
 OSXVER       = $(shell sw_vers -productVersion)
 OSXBUILDV    = $(shell sw_vers -buildVersion)
@@ -143,6 +156,7 @@ XCODEVER     = $(shell xcodebuild -version | grep -E -m1 'Xcode' | sed 's/Xcode 
 XCODEBUILDV  = $(shell xcodebuild -version | grep -E -m1 'Build version' | sed 's/Build version //g')
 PKGSIGNED    = $(NAME)-$(VERSION3)-macOS-10.15-universal.pkg
 PKGUNSIGNED  = $(NAME)-$(VERSION3)-macOS-10.15-universal-unsigned.pkg
+TARNAME      = $(NAME)-$(VERSION3)-macOS-10.15-universal.tar.gz
 dist-prep:
 	@echo [VER] $(VERSION3)
 	@echo [OSX] $(OSXVER) - ${OSXBUILDV}
@@ -292,6 +306,35 @@ else
 endif
 endif
 endif
+lib-dist-%: dist-prep
+	@echo [DST] $(NAME)-$*
+lib-dist: dist-prep lib-dist-x64 lib-dist-arm64
+	@echo [MKD] $(LIBNAME)
+	@mkdir -p $(DISTDIR)/$(NAME)/
+	@echo [LIP] $(LIBNAME)$(EXTDLL)
+	@lipo -create -output $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL) \
+	  ./lib/osx-x64/$(LIBNAME)$(EXTDLL) \
+	  ./lib/osx-arm64/$(LIBNAME)$(EXTDLL)
+	@echo [SYM] $(LIBNAME).dSYM
+	@dsymutil \
+	  -out $(DISTDIR)/$(NAME)/$(LIBNAME).dSYM \
+	  $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
+	@echo [INF] $(LIBNAME).dSYM
+	@dwarfdump --uuid $(DISTDIR)/$(NAME)/$(LIBNAME).dSYM
+	@echo [STR] $(LIBNAME)$(EXTDLL)
+	@$(STRIP) $(STRIPFLAGS) $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
+	@echo [SIG] $(LIBNAME)$(EXTDLL)
+	@codesign --verbose \
+	  --sign "$(PUBLISHERCN)" \
+	  --keychain $(KEYCHAIN) \
+	  --timestamp \
+	  --options runtime \
+	  $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
+	@echo [VFY] $(LIBNAME)$(EXTDLL)
+	@codesign --verify -vvvd $(DISTDIR)/$(NAME)/$(LIBNAME)$(EXTDLL)
+	@cp $(INCDIR)/$(NAME)/*.h $(DISTDIR)/$(NAME)/
+	@echo [TAR] $(TARNAME) 
+	@tar -f $(DISTDIR)/$(TARNAME) -C $(DISTDIR)/$(NAME) -c .
 endif
 
 ##############################################################################################################
@@ -299,11 +342,6 @@ endif
 ##############################################################################################################
 
 ifeq ($(TARGET_OS),linux)
-VERSIONMAJOR = $(shell sed -n 's/^\#define $(VERSIONMACROMAJOR) //p' $(VERSIONFILE))
-VERSIONMINOR = $(shell sed -n 's/^\#define $(VERSIONMACROMINOR) //p' $(VERSIONFILE))
-VERSIONPATCH = $(shell sed -n 's/^\#define $(VERSIONMACROPATCH) //p' $(VERSIONFILE))
-VERSION3     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH)
-VERSION4     = $(VERSIONMAJOR).$(VERSIONMINOR).$(VERSIONPATCH).0
 dist-prep:
 	echo [VER] $(VERSION3)
 	echo [DEB] $(NAME).Resources-$(VERSION3)-ubuntu-$(LSBREL)-all.deb
@@ -339,9 +377,30 @@ dist-%: dist-prep
 	cp ./bin/linux-$*/$(NAME)$(EXTBIN) $(DISTDIR)/$(NAME)-$*/usr/bin/$(NAME)$(EXTBIN)
 	chmod +x $(DISTDIR)/$(NAME)-$*/usr/bin/$(NAME)$(EXTBIN)
 	dpkg-deb --build $(DISTDIR)/$(NAME)-$* $(DISTDIR)/$(DEBFILE) > /dev/null 2>&1
-		
-#dist: dist-prep dist-x64 dist-x86 dist-arm64 dist-arm
 dist: dist-prep dist-$(TARGET_ARCH)
+lib-dist-prep:
+	echo [VER] $(VERSION3)
+lib-dist-%: lib-dist-prep
+	echo [DST] $(NAME)-$*
+	$(eval DISTDEBARCH:=$(shell \
+	  case $* in \
+	    (x64)   echo amd64;; \
+		(x86)   echo i386;; \
+		(arm64) echo arm64;; \
+		(arm)   echo armhf;; \
+	  esac))
+	$(eval DEBFILE=$(NAME)-$(VERSION3)-ubuntu-$(LSBREL)-$(DISTDEBARCH).deb)
+	echo [DEB] $(DEBFILE)
+	mkdir -p $(DISTDIR)/$(NAME)-$*/DEBIAN
+	mkdir -p $(DISTDIR)/$(NAME)-$*/usr/include
+	mkdir -p $(DISTDIR)/$(NAME)-$*/usr/lib
+	cp $(DISTDIR)/$(NAME).control $(DISTDIR)/$(NAME)-$*/DEBIAN/control
+	sed -i 's/{VERSION}/${VERSION3}/g' $(DISTDIR)/$(NAME)-$*/DEBIAN/control
+	sed -i 's/{ARCH}/${DEBARCH}/g' $(DISTDIR)/$(NAME)-$*/DEBIAN/control
+	cp $(INCDIR)/$(NAME)/*.h $(DISTDIR)/$(NAME)-$*/usr/include
+	cp ./lib/linux-$*/$(LIBNAME)$(EXTDLL) $(DISTDIR)/$(NAME)-$*/usr/lib/$(LIBNAME)$(EXTDLL)
+	dpkg-deb --build $(DISTDIR)/$(NAME)-$* $(DISTDIR)/$(DEBFILE) > /dev/null 2>&1
+lib-dist: lib-dist-prep lib-dist-$(TARGET_ARCH)
 endif
 
 ##############################################################################################################
@@ -352,4 +411,21 @@ ifeq ($(TARGET_OS),android)
 dist-%:
 	echo [DST] $(NAME)-$*
 dist: dist-x64 dist-x86 dist-arm64 dist-arm
+endif
+
+##############################################################################################################
+# WASI
+##############################################################################################################
+
+ifeq ($(TARGET_OS),wasi)
+dist-%:
+	echo [DST] $(NAME)-$*
+dist: dist-wasm32
+lib-dist-%:
+	echo [DST] $(NAME)-$*
+	-$(call rmdir,$(DISTDIR)/$(NAME)/$*)
+	$(call mkdir,$(DISTDIR)/$(NAME)/$*)
+	$(call copyfiles,$(LIBDIR)/$(LIBNAME)$(EXTDLL),$(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL))
+	$(STRIP) $(DISTDIR)/$(NAME)/$*/$(LIBNAME)$(EXTDLL)
+lib-dist: lib-dist-wasm32
 endif

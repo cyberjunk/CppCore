@@ -75,7 +75,7 @@ OUTDIST   := $(DISTDIR)/$(NAME)-$(TARGET_ARCH)/usr/bin/$(NAME)$(EXTBIN)
 DEFINES   := $(DEFINES)
 CXXFLAGS  := $(CXXFLAGS)
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS)
+LINKFLAGS := $(LINKFLAGS) -static-libstdc++ -static-libgcc 
 LINKLIBS  := $(LINKLIBS) -lpthread
 RESO      := $(RESO)
 endif
@@ -97,6 +97,16 @@ CXXFLAGS  := $(CXXFLAGS) -fdeclspec -ObjC++
 CFLAGS    := $(CFLAGS)
 LINKFLAGS := $(LINKFLAGS) -Wl,-object_path_lto,$(OBJDIR)/lto.o
 LINKLIBS  := $(LINKLIBS) -framework Foundation
+RESO      := $(RESO)
+endif
+
+ifeq ($(TARGET_OS),wasi)
+OUTDIST   := $(DISTDIR)/$(NAME)$(EXTBIN)
+DEFINES   := $(DEFINES)
+CXXFLAGS  := $(CXXFLAGS)
+CFLAGS    := $(CFLAGS)
+LINKFLAGS := $(LINKFLAGS) -Wl,-z,stack-size=0x00100000
+LINKLIBS  := $(LINKLIBS)
 RESO      := $(RESO)
 endif
 

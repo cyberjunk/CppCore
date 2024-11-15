@@ -170,6 +170,9 @@ System::Info sysinfo("CppCore.Test");
 // console based tests
 int main()
 {
+   std::cout << "--------------------------------------------------" << std::endl;
+   std::cout << "VERSION: " << CPPCORE_VERSION_MAJOR << "." << CPPCORE_VERSION_MINOR << "." << CPPCORE_VERSION_PATCH << std::endl;
+
 #if defined(CPPCORE_CPU_X86ORX64)
    std::cout << "--------------------------------------------------"             << std::endl;
    std::cout << "VEN: " << cpuid.getVendor()                                     << std::endl;
@@ -177,6 +180,7 @@ int main()
    std::cout << "COR: " << sysinfo.getCpuCoresPhysical()          << " PHYSICAL" << std::endl;
    std::cout << "COR: " << sysinfo.getCpuCoresLogical()           << " LOGICAL"  << std::endl;
    std::cout << "RAM: " << sysinfo.getRamSize()/(1024ULL*1024ULL) << " MB"       << std::endl;
+   std::cout << "SUP: " << (cpuid.isCompatible() ? "YES" : "NO")                 << std::endl;
    std::cout << "--------------------------------------------------"             << std::endl;
    std::cout << "                 ENABLED " << "SUPPORTED" << std::endl;
    std::cout << "MMX:             " << (CPPCORE_CPUFEAT_MMX_ENABLED             ? "YES" : "NO ") << "     " << (cpuid.MMX()             ? "YES" : "NO") << std::endl;
@@ -597,11 +601,13 @@ int main()
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH512>,  "test1dh512:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH1024>, "test1dh1024:   ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH2048>, "test1dh2048:   ", std::endl);
+   //TEST(CppCore::Test::Crypto::DH::test1<CppCore::DH4096>, "test1dh4096:   ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH128>,  "test2dh128:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH256>,  "test2dh256:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH512>,  "test2dh512:    ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH1024>, "test2dh1024:   ", std::endl);
    TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH2048>, "test2dh2048:   ", std::endl);
+   //TEST(CppCore::Test::Crypto::DH::test2<CppCore::DH4096>, "test2dh4096:   ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "    CppCore::Crypto::HMAC"       << std::endl;
@@ -613,6 +619,7 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "    CppCore::Crypto::PBKDF2"       << std::endl;
    std::cout << "-------------------------------" << std::endl;
+   TEST(CppCore::Test::Crypto::PBKDF2::md5test1,    "md5test1:    ", std::endl);
    TEST(CppCore::Test::Crypto::PBKDF2::sha256test1, "sha256test1: ", std::endl);
    TEST(CppCore::Test::Crypto::PBKDF2::sha512test1, "sha512test1: ", std::endl);
    TEST(CppCore::Test::Crypto::PBKDF2::sha512test2, "sha512test2: ", std::endl);
@@ -671,8 +678,10 @@ int main()
    TEST(CppCore::Test::Containers::Array::integerbulk,          "integerbulk:     ", std::endl);
    TEST(CppCore::Test::Containers::Array::integerresize,        "integerresize:   ", std::endl);
    TEST(CppCore::Test::Containers::Array::iterator,             "iterator:        ", std::endl);
+#ifndef CPPCORE_NO_THREADING
    TEST(CppCore::Test::Containers::Array::multithreaded<false>, "multithreaded:   ", std::endl);
    TEST(CppCore::Test::Containers::Array::multithreaded<true>,  "multithreaded_b: ", std::endl);
+#endif
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "  CppCore::Containers::Queue"    << std::endl;
@@ -704,20 +713,22 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::BaseX    " << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Encoding::BaseX::tostring8,  "tostring8:  ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring16, "tostring16: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring32, "tostring32: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tostring64, "tostring64: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::parse8,     "parse8:     ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::parse16,    "parse16:    ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::parse32,    "parse32:    ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::parse64,    "parse64:    ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::parse128,   "parse128:   ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tryparse8,  "tryparse8:  ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tryparse16, "tryparse16: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tryparse32, "tryparse32: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tryparse64, "tryparse64: ", std::endl);
-   TEST(CppCore::Test::Encoding::BaseX::tryparse128,"tryparse128:", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::estimatebits,    "estimatebits:    ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::estimatesymbols, "estimatesymbols: ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring8,       "tostring8:       ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring16,      "tostring16:      ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring32,      "tostring32:      ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tostring64,      "tostring64:      ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse8,          "parse8:          ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse16,         "parse16:         ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse32,         "parse32:         ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse64,         "parse64:         ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::parse128,        "parse128:        ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse8,       "tryparse8:       ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse16,      "tryparse16:      ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse32,      "tryparse32:      ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse64,      "tryparse64:      ", std::endl);
+   TEST(CppCore::Test::Encoding::BaseX::tryparse128,     "tryparse128:     ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "   CppCore::Encoding::Decimal  " << std::endl;
@@ -751,6 +762,7 @@ int main()
    TEST(CppCore::Test::Encoding::Hex::parse32,            "parse32:    ", std::endl);
    TEST(CppCore::Test::Encoding::Hex::parse64,            "parse64:    ", std::endl);
    
+#ifndef CPPCORE_NO_SOCKET
    std::cout << "-------------------------------" << std::endl;
    std::cout << "        CppCore::Socket"         << std::endl;
    std::cout << "-------------------------------" << std::endl;
@@ -765,6 +777,7 @@ int main()
    TEST(CppCore::Test::Network::Socket::bindlistenipv6dstcp,  "bindlistenipv6dstcp:  ", std::endl);
    TEST(CppCore::Test::Network::Socket::setoptsipv4tcp,       "setoptsipv4tcp:       ", std::endl);
    TEST(CppCore::Test::Network::Socket::setoptsipv6tcp,       "setoptsipv6tcp:       ", std::endl);
+#endif
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << " CppCore::V2fg                 " << std::endl;

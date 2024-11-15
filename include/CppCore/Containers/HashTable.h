@@ -377,6 +377,7 @@ namespace CppCore
          }
       };
 
+   #ifndef CPPCORE_NO_THREADING
       /// <summary>
       /// HashTable for Multi Threaded Access
       /// </summary>
@@ -425,5 +426,6 @@ namespace CppCore
             return ret;
          }
       };
+   #endif
    };
 }
