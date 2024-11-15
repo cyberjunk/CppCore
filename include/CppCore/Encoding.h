@@ -522,7 +522,9 @@ namespace CppCore
                r <<= 4;
                r |= Util::valueofhexchar(c);
             }
-            return bigendian ? r : CppCore::byteswap(r);
+            if (!bigendian)
+               CppCore::byteswap(r);
+            return r;
          }
 
          /// <summary>
@@ -553,7 +555,8 @@ namespace CppCore
                      }
                      else if (v == 0xFE) // end of str
                      {
-                        r = bigendian ? r : CppCore::byteswap(r);
+                        if (!bigendian)
+                           CppCore::byteswap(r);
                         return true;
                      }
                      else // invalid symbol
@@ -561,7 +564,8 @@ namespace CppCore
                   }
                   if (*input == 0) CPPCORE_LIKELY
                   {
-                     r = bigendian ? r : CppCore::byteswap(r);
+                     if (!bigendian)
+                        CppCore::byteswap(r);
                      return true;
                   }
                   else CPPCORE_UNLIKELY // too many symbols for T

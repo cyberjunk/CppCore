@@ -3088,30 +3088,6 @@ namespace CppCore
    }
 #endif
 
-   /// <summary>
-   /// Swaps byte order in 16-bit unsigned integer.
-   /// </summary>
-   static INLINE uint16_t byteswap(uint16_t v)
-   {
-      return CppCore::byteswap16(v);
-   }
-
-   /// <summary>
-   /// Swaps byte order in 32-bit unsigned integer.
-   /// </summary>
-   static INLINE uint32_t byteswap(uint32_t v)
-   {
-      return CppCore::byteswap32(v);
-   }
-
-   /// <summary>
-   /// Swaps byte order in 64-bit unsigned integer.
-   /// </summary>
-   static INLINE uint64_t byteswap(uint64_t v)
-   {
-      return CppCore::byteswap64(v);
-   }
-
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // BYTEDUP: Duplicate byte
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
