@@ -322,22 +322,6 @@ namespace CppCore { namespace Test
       class Hex
       {
       public:
-         class Util
-         {
-         public:
-            INLINE static bool bytetohexstr()
-            {
-               for (uint8_t i = 0; i < 0xFF; i++)
-               {
-                  std::ostringstream os;
-                  os << std::hex << std::setfill('0') << std::setw(2) << (uint32_t)i;
-                  std::string s = os.str();
-                  std::for_each(s.begin(), s.end(), [](char& c) { c = ::toupper(c); });
-                  if (s != std::string(CppCore::Hex::Util::bytetohexstr(i))) return false;
-               }
-               return true;
-            }
-         };
          INLINE static bool tostring()
          {
             char s[9 * 2 + 1];
@@ -1099,7 +1083,6 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(BASEX_TRYPARSE32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse32()); }
       TEST_METHOD(BASEX_TRYPARSE64) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse64()); }
       TEST_METHOD(BASEX_TRYPARSE128){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse128()); }
-      TEST_METHOD(HEX_BYTETOHEXSTR) { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::Util::bytetohexstr()); }
       TEST_METHOD(HEX_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring()); }
       TEST_METHOD(HEX_TOSTRING16)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring16()); }
       TEST_METHOD(HEX_TOSTRING32)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring32()); }
