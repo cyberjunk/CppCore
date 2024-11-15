@@ -10,7 +10,7 @@ TARGET     = arm-linux-gnueabihf
 DEFINES    = 
 INCLUDES   = -I/usr/$(TARGET)/include
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -fPIC -static -fno-strict-aliasing -mstack-alignment=16 -mstackrealign
+CXXFLAGS   = -target $(TARGET) -fPIC -static -fno-strict-aliasing
 CC         = clang
 CFLAGS     = -target $(TARGET) -fPIC -static -fno-strict-aliasing
 AR         = llvm-ar
@@ -24,9 +24,6 @@ LINKLIBS   =
 DEBARCH    = armhf
 LSBREL     = $(shell lsb_release -r -s)
 DISTDIR    = ../../dist/ubuntu-$(LSBREL)
-
-#-mstack-alignment=n    // sets the alignment to n bytes
-#-mstackrealign         // forces the previous set alignment
 
 # CPU Flags
 ifeq ($(TARGET_CPUREV),legacy)
