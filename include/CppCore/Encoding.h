@@ -381,34 +381,39 @@ namespace CppCore
       INLINE static void parse(const char* in, size_t n, UINT& out, const bool in_be = true, const bool out_le = true)
       {
          CppCore::clear(out);
-         uint8_t* prs = (uint8_t*)&out;
-         uint8_t* pre = prs + sizeof(UINT);
-         const char* ine = in + n;
+         uint8_t* p = (uint8_t*)&out;
          if (in_be)
          {
-            while (((in <= ine-2) & (prs < pre)) != 0)
+            in += n;
+            if (n > sizeof(UINT)*2)
+               n = sizeof(UINT)*2;
+            while (n >= 2)
             {
-               char c2 = *--ine;
-               char c1 = *--ine;
-               *prs++ = 
+               char c2 = *--in;
+               char c1 = *--in;
+               *p++ = 
                   (Util::valueofhexchar(c1) << 4) | 
                   (Util::valueofhexchar(c2));
+               n -= 2;
             }
-            if (((in < ine) & (prs < pre)) != 0)
-               *prs++ = Util::valueofhexchar(*--ine);
+            if (n)
+               *p++ = Util::valueofhexchar(*--in);
          }
          else
          {
-            while (((in <= ine-2) & (prs < pre)) != 0)
+            if (n > sizeof(UINT)*2)
+               n = sizeof(UINT)*2;
+            while (n >= 2)
             {
                char c1 = *in++;
                char c2 = *in++;
-               *prs++ = 
+               *p++ = 
                   (Util::valueofhexchar(c1) << 4) | 
                   (Util::valueofhexchar(c2));
+               n -= 2;
             }
-            if (((in < ine) & (prs < pre)) != 0)
-               *prs++ = Util::valueofhexchar(*in);
+            if (n)
+               *p++ = Util::valueofhexchar(*in);
          }
          if (!out_le)
             CppCore::byteswap(out);
