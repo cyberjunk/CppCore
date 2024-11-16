@@ -172,6 +172,7 @@ int main()
 {
    std::cout << "--------------------------------------------------" << std::endl;
    std::cout << "VERSION: " << CPPCORE_VERSION_MAJOR << "." << CPPCORE_VERSION_MINOR << "." << CPPCORE_VERSION_PATCH << std::endl;
+   std::cout << "ENDIAN:  " << (CPPCORE_ENDIANESS_LITTLE ? "LITTLE" : "BIG") << std::endl;
 
 #if defined(CPPCORE_CPU_X86ORX64)
    std::cout << "--------------------------------------------------"             << std::endl;
