@@ -573,28 +573,6 @@ namespace CppCore
          }
 
          /// <summary>
-         /// Returns 4 characters encoded in uint32_t with the string representation of parts from v selected by il and ih.
-         /// For instance, returns 0x46464646 ("FFFF") for v=0x00FF00FF and il=0 (select first byte) and ih=24 (select third byte).
-         /// </summary>
-         INLINE static uint32_t valuetohexint32(const uint32_t v, const uint32_t il, const uint32_t ih)
-         {
-            return
-               ((uint32_t)Util::bytetohexint16((uint8_t)CppCore::getbits32(v, il, 8U))) |
-               ((uint32_t)Util::bytetohexint16((uint8_t)CppCore::getbits32(v, ih, 8U)) << 16);
-         }
-
-         /// <summary>
-         /// Returns 4 characters encoded in uint32_t with the string representation of parts from v selected by il and ih.
-         /// For instance, returns 0x46464646 ("FFFF") for v=0x00FF0000000000FF and il=0 (select first byte) and ih=48 (select seventh byte).
-         /// </summary>
-         INLINE static uint32_t valuetohexint32(const uint64_t v, const uint32_t il, const uint32_t ih)
-         {
-            return
-               ((uint32_t)Util::bytetohexint16((uint8_t)CppCore::getbits64(v, il, 8U))) |
-               ((uint32_t)Util::bytetohexint16((uint8_t)CppCore::getbits64(v, ih, 8U)) << 16);
-         }
-
-         /// <summary>
          /// Template function for parsing unsigned integer from zero terminated hex string.
          /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
          /// For bigendian=true the first character must contain the highest bits.
@@ -649,146 +627,13 @@ namespace CppCore
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
-      /// Creates hex string with exactly 4 symbols (leading zeros) for 16-bit unsigned integer v.
-      /// Requires 4 (or 5 if writeterm=true) free bytes in parameter s.
+      /// Creates hex string with exactly 2*sizeof(v) symbols in s.
+      /// Requires 2*sizeof(v) (+1 if writeterm=true) free bytes in s.
       /// </summary>
-      INLINE static void tostring(const uint16_t v, char* s, const bool bigendian = true, const bool writeterm = true)
+      template<typename UINT>
+      INLINE static void tostring(const UINT& v, char* s, const bool bigendian = true, const bool writeterm = true)
       {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian) *p = Util::valuetohexint32((uint32_t)v,  8U,  0U);
-         else *p = Util::valuetohexint32((uint32_t)v,  0U,  8U);
-         if (writeterm)
-            *((char*)&p[1]) = (char)0x00;
-      }
-
-      /// <summary>
-      /// Creates hex string with exactly 8 symbols (leading zeros) for 32-bit unsigned integer v.
-      /// Requires 8 (or 9 if writeterm=true) free bytes in parameter s.
-      /// </summary>
-      INLINE static void tostring(const uint32_t v, char* s, const bool bigendian = true, const bool writeterm = true)
-      {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
-         {
-            p[0] = Util::valuetohexint32(v, 24U, 16U);
-            p[1] = Util::valuetohexint32(v,  8U,  0U);
-         }
-         else
-         {
-            p[0] = Util::valuetohexint32(v,  0U,  8U);
-            p[1] = Util::valuetohexint32(v, 16U, 24U);
-         }
-         if (writeterm)
-            *((char*)&p[2]) = (char)0x00;
-      }
-
-      /// <summary>
-      /// Creates hex string with exactly 16 symbols (leading zeros) for 64-bit unsigned integer v.
-      /// Requires 16 (or 17 if writeterm=true) free bytes in parameter s.
-      /// </summary>
-      INLINE static void tostring(const uint64_t v, char* s, const bool bigendian = true, const bool writeterm = true)
-      {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
-         {
-            p[0] = Util::valuetohexint32(v, 56ULL, 48ULL);
-            p[1] = Util::valuetohexint32(v, 40ULL, 32ULL);
-            p[2] = Util::valuetohexint32(v, 24ULL, 16ULL);
-            p[3] = Util::valuetohexint32(v,  8ULL,  0ULL);
-         }
-         else
-         {
-            p[0] = Util::valuetohexint32(v,  0ULL,  8ULL);
-            p[1] = Util::valuetohexint32(v, 16ULL, 24ULL);
-            p[2] = Util::valuetohexint32(v, 32ULL, 40ULL);
-            p[3] = Util::valuetohexint32(v, 48ULL, 56ULL);
-         }
-         if (writeterm)
-            *((char*)&p[4]) = (char)0x00;
-      }
-
-      /// <summary>
-      /// Creates hex string with exactly 4*n16 symbols (leading zeros) for memory that's a multiple of 16-bit.
-      /// Requires 4*n16 (or 4*n16+1 if writeterm=true) free bytes in parameter s,
-      /// </summary>
-      INLINE static void tostring(const uint16_t* v, char* s, const size_t n16, const bool bigendian = true, const bool writeterm = true)
-      {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
-         {
-            for (size_t i = 0; i != n16; i++)
-               *p++ = Util::valuetohexint32((uint32_t)v[i],  0U,  8U);
-         }
-         else
-         {
-            for (size_t i = n16-1U; i != std::numeric_limits<size_t>::max(); i--)
-               *p++ = Util::valuetohexint32((uint32_t)v[i],  8U,  0U);
-         }
-         if (writeterm)
-            *((char*)p) = (char)0x00;
-      }
-
-      /// <summary>
-      /// Creates hex string with exactly 8*n32 symbols (leading zeros) for memory that's a multiple of 32-bit.
-      /// Requires 8*n32 (or 8*n32+1 if writeterm=true) free bytes in parameter s,
-      /// </summary>
-      INLINE static void tostring(const uint32_t* v, char* s, const size_t n32, const bool bigendian = true, const bool writeterm = true)
-      {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
-         {
-            for (size_t i = 0; i != n32; i++)
-            {
-               const uint32_t t = v[i];
-               *p++ = Util::valuetohexint32(t,  0U,  8U);
-               *p++ = Util::valuetohexint32(t, 16U, 24U);
-            }
-         }
-         else
-         {
-            for (size_t i = n32-1U; i != std::numeric_limits<size_t>::max(); i--)
-            {
-               const uint32_t t = v[i];
-               *p++ = Util::valuetohexint32(t, 24U, 16U);
-               *p++ = Util::valuetohexint32(t,  8U,  0U);
-            }
-         }
-         if (writeterm)
-            *((char*)p) = (char)0x00;
-      }
-
-      /// <summary>
-      /// Creates hex string with exactly 16*n64 symbols (leading zeros) for memory that's a multiple of 64-bit.
-      /// Requires 16*n64 (or 16*n64+1 if writeterm=true) free bytes in parameter s,
-      /// </summary>
-      INLINE static void tostring(const uint64_t* v, char* s, const size_t n64, const bool bigendian = true, const bool writeterm = true)
-      {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
-         {
-            for (size_t i = 0; i != n64; i++)
-            {
-               const uint64_t t = v[i];
-               *p++ = Util::valuetohexint32(t,  0ULL,  8ULL);
-               *p++ = Util::valuetohexint32(t, 16ULL, 24ULL);
-               *p++ = Util::valuetohexint32(t, 32ULL, 40ULL);
-               *p++ = Util::valuetohexint32(t, 48ULL, 56ULL);
-            }
-
-         }
-         else
-         {
-            for (size_t i = n64-1U; i != std::numeric_limits<size_t>::max(); i--)
-            {
-               const uint64_t t = v[i];
-               *p++ = Util::valuetohexint32(t, 56ULL, 48ULL);
-               *p++ = Util::valuetohexint32(t, 40ULL, 32ULL);
-               *p++ = Util::valuetohexint32(t, 24ULL, 16ULL);
-               *p++ = Util::valuetohexint32(t,  8ULL,  0ULL);
-            }
-         }
-         if (writeterm)
-            *((char*)p) = (char)0x00;
+         Hex::encode(&v, s, sizeof(UINT), bigendian == CPPCORE_ENDIANESS_LITTLE, writeterm);
       }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

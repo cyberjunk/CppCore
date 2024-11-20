@@ -400,21 +400,6 @@ namespace CppCore { namespace Test
             CppCore::Hex::tostring(uint16_t(0xFF0F), s, false); if (std::string("0FFF") != s) return false;
             CppCore::Hex::tostring(uint16_t(0x3ABC), s, false); if (std::string("BC3A") != s) return false;
 
-            const uint16_t t0[]{ 0x0000U, 0x0000U };
-            const uint16_t t1[]{ 0x0001U, 0x0000U };
-            const uint16_t t2[]{ 0x1122U, 0x3344U };
-            const uint16_t t3[]{ 0xFFFFU, 0xFFFFU };
-
-            CppCore::Hex::tostring(t0, l, 2, false); if (std::string("00000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, false); if (std::string("00000001") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, false); if (std::string("33441122") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, false); if (std::string("FFFFFFFF") != l) return false;
-
-            CppCore::Hex::tostring(t0, l, 2, true); if (std::string("00000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, true); if (std::string("01000000") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, true); if (std::string("22114433") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, true); if (std::string("FFFFFFFF") != l) return false;
-
             return true;
          }
          INLINE static bool tostring32()
@@ -434,21 +419,6 @@ namespace CppCore { namespace Test
             CppCore::Hex::tostring(0xFFFFFF0FU, s, false); if (std::string("0FFFFFFF") != s) return false;
             CppCore::Hex::tostring(0xFA193ABCU, s, false); if (std::string("BC3A19FA") != s) return false;
 
-            const uint32_t t0[]{ 0x00000000U, 0x00000000U };
-            const uint32_t t1[]{ 0x00000001U, 0x00000000U };
-            const uint32_t t2[]{ 0x11223344U, 0x55667788U };
-            const uint32_t t3[]{ 0xFFFFFFFFU, 0xFFFFFFFFU };
-
-            CppCore::Hex::tostring(t0, l, 2, false); if (std::string("0000000000000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, false); if (std::string("0000000000000001") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, false); if (std::string("5566778811223344") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, false); if (std::string("FFFFFFFFFFFFFFFF") != l) return false;
-
-            CppCore::Hex::tostring(t0, l, 2, true); if (std::string("0000000000000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, true); if (std::string("0100000000000000") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, true); if (std::string("4433221188776655") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, true); if (std::string("FFFFFFFFFFFFFFFF") != l) return false;
-
             return true;
          }
          INLINE static bool tostring64()
@@ -467,21 +437,6 @@ namespace CppCore { namespace Test
             CppCore::Hex::tostring(uint64_t(0xFFFFFFFFFFFFFFFF), s, false); if (std::string("FFFFFFFFFFFFFFFF") != s) return false;
             CppCore::Hex::tostring(uint64_t(0xFFFFFFFFFFFFFF0F), s, false); if (std::string("0FFFFFFFFFFFFFFF") != s) return false;
             CppCore::Hex::tostring(uint64_t(0xFA193ABCFA193ABC), s, false); if (std::string("BC3A19FABC3A19FA") != s) return false;
-
-            const uint64_t t0[]{ 0x0000000000000000ULL, 0x0000000000000000ULL };
-            const uint64_t t1[]{ 0x0000000000000001ULL, 0x0000000000000000ULL };
-            const uint64_t t2[]{ 0x0011223344556677ULL, 0x8899AABBCCDDEEFFULL };
-            const uint64_t t3[]{ 0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL };
-
-            CppCore::Hex::tostring(t0, l, 2, false); if (std::string("00000000000000000000000000000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, false); if (std::string("00000000000000000000000000000001") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, false); if (std::string("8899AABBCCDDEEFF0011223344556677") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, false); if (std::string("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF") != l) return false;
-
-            CppCore::Hex::tostring(t0, l, 2, true); if (std::string("00000000000000000000000000000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, true); if (std::string("01000000000000000000000000000000") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, true); if (std::string("7766554433221100FFEEDDCCBBAA9988") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, true); if (std::string("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF") != l) return false;
 
             return true;
          }
