@@ -378,7 +378,7 @@ namespace CppCore
       /// Note that e.g. 0xFF1 is 0xFF01 (and neither 0x0FF1 nor 0xFF10) if 'in_be' is false.
       /// </summary>
       template<typename UINT>
-      INLINE static void parse(const char* in, size_t n, UINT& out, const bool in_be = true, const bool out_le = true)
+      INLINE static void parse(const char* in, size_t n, UINT& out, const bool in_be = true, const bool out_le = CPPCORE_ENDIANESS_LITTLE)
       {
          CppCore::clear(out);
          uint8_t* p = (uint8_t*)&out;
