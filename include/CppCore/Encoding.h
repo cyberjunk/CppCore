@@ -387,36 +387,70 @@ namespace CppCore
             in += n;
             if (n > sizeof(UINT)*2)
                n = sizeof(UINT)*2;
-            while (n >= 2)
+            if (out_le)
             {
-               char c2 = *--in;
-               char c1 = *--in;
-               *p++ = 
-                  (Util::valueofhexchar(c1) << 4) | 
-                  (Util::valueofhexchar(c2));
-               n -= 2;
+               while (n >= 2)
+               {
+                  n -= 2;
+                  char c2 = *--in;
+                  char c1 = *--in;
+                  *p++ =
+                     (Util::valueofhexchar(c1) << 4) |
+                     (Util::valueofhexchar(c2));
+               }
+               if (n)
+                  *p++ = Util::valueofhexchar(*--in);
             }
-            if (n)
-               *p++ = Util::valueofhexchar(*--in);
+            else
+            {
+               p += sizeof(UINT);
+               while (n >= 2)
+               {
+                  n -= 2;
+                  char c2 = *--in;
+                  char c1 = *--in;
+                  *--p =
+                     (Util::valueofhexchar(c1) << 4) |
+                     (Util::valueofhexchar(c2));
+               }
+               if (n)
+                  *--p = Util::valueofhexchar(*--in);
+            }
          }
          else
          {
             if (n > sizeof(UINT)*2)
                n = sizeof(UINT)*2;
-            while (n >= 2)
+            if (out_le)
             {
-               char c1 = *in++;
-               char c2 = *in++;
-               *p++ = 
-                  (Util::valueofhexchar(c1) << 4) | 
-                  (Util::valueofhexchar(c2));
-               n -= 2;
+               while (n >= 2)
+               {
+                  n -= 2;
+                  char c1 = *in++;
+                  char c2 = *in++;
+                  *p++ =
+                     (Util::valueofhexchar(c1) << 4) |
+                     (Util::valueofhexchar(c2));
+               }
+               if (n)
+                  *p++ = Util::valueofhexchar(*in);
             }
-            if (n)
-               *p++ = Util::valueofhexchar(*in);
+            else
+            {
+               p += sizeof(UINT);
+               while (n >= 2)
+               {
+                  n -= 2;
+                  char c1 = *in++;
+                  char c2 = *in++;
+                  *--p =
+                     (Util::valueofhexchar(c1) << 4) |
+                     (Util::valueofhexchar(c2));
+               }
+               if (n)
+                  *--p = Util::valueofhexchar(*in);
+            }
          }
-         if (!out_le)
-            CppCore::byteswap(out);
       }
 
       /// <summary>
