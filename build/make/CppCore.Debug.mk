@@ -15,7 +15,7 @@ CXXFLAGS  := $(CXXFLAGS) \
              -Wno-c++2a-extensions \
              -Wno-unknown-warning-option
 CFLAGS    := $(CFLAGS)
-LINKFLAGS := $(LINKFLAGS) -Xlinker /STACK:0x1000000
+LINKFLAGS := $(LINKFLAGS)
 LINKPATH  := $(LINKPATH)
 LINKLIBS  := $(LINKLIBS)
 OBJS       = main.o
