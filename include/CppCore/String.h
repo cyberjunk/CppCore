@@ -1125,14 +1125,14 @@ namespace CppCore
       /// <summary>
       /// Append memory with len in hex encoding.
       /// </summary>
-      INLINE S& appendHex(const void* mem, const size_t len, const bool bigendian = true)
+      INLINE S& appendHex(const void* mem, const size_t len, const bool reverse = false)
       {
          const auto LENMEM = len << 1U;
          const auto LENOLD = mLength;
          const auto LENNEW = LENOLD + LENMEM;
          if (thiss()->available() < LENMEM)
             thiss()->resize(LENNEW);
-         Hex::tostring(mem, len, mData + LENOLD, bigendian, true);
+         Hex::encode(mem, mData + LENOLD, len, reverse, true);
          mLength = LENNEW;
          return *thiss();
       }
