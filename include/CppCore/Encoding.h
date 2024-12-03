@@ -578,10 +578,10 @@ namespace CppCore
          /// For bigendian=true the first character must contain the highest bits.
          /// N must be the number of overflow free symbols for T (e.g. 8 for 32bit and 16 for 64bit).
          /// </summary>
-         template<typename T, size_t N>
+         template<typename T, size_t N = sizeof(T)*2>
          INLINE static bool tryparse(const char* input, T& r, const bool bigendian = true)
          {
-            r = (T)0U;
+            CppCore::clear(r);
             uint8_t v;
             if (input) CPPCORE_LIKELY
             {
@@ -645,7 +645,7 @@ namespace CppCore
       /// </summary>
       INLINE static bool tryparse(const char* input, uint16_t& r, const bool bigendian = true)
       {
-         return Util::tryparse<uint16_t, CPPCORE_MAXSYMBOLS_B16_16>(input, r, bigendian);
+         return Util::tryparse<uint16_t>(input, r, bigendian);
       }
 
       /// <summary>
@@ -655,7 +655,7 @@ namespace CppCore
       /// </summary>
       INLINE static bool tryparse(const char* input, uint32_t& r, const bool bigendian = true)
       {
-         return Util::tryparse<uint32_t, CPPCORE_MAXSYMBOLS_B16_32>(input, r, bigendian);
+         return Util::tryparse<uint32_t>(input, r, bigendian);
       }
 
       /// <summary>
@@ -665,7 +665,7 @@ namespace CppCore
       /// </summary>
       INLINE static bool tryparse(const char* input, uint64_t& r, const bool bigendian = true)
       {
-         return Util::tryparse<uint64_t, CPPCORE_MAXSYMBOLS_B16_64>(input, r, bigendian);
+         return Util::tryparse<uint64_t>(input, r, bigendian);
       }
 
       /// <summary>
@@ -675,7 +675,7 @@ namespace CppCore
       /// </summary>
       INLINE static bool tryparse(const char* input, int16_t& r, const bool bigendian = true)
       {
-         return Util::tryparse<uint16_t, CPPCORE_MAXSYMBOLS_B16_16>(input, (uint16_t&)r, bigendian);
+         return Util::tryparse<uint16_t>(input, (uint16_t&)r, bigendian);
       }
 
       /// <summary>
@@ -685,7 +685,7 @@ namespace CppCore
       /// </summary>
       INLINE static bool tryparse(const char* input, int32_t& r, const bool bigendian = true)
       {
-         return Util::tryparse<uint32_t, CPPCORE_MAXSYMBOLS_B16_32>(input, (uint32_t&)r, bigendian);
+         return Util::tryparse<uint32_t>(input, (uint32_t&)r, bigendian);
       }
 
       /// <summary>
@@ -695,7 +695,7 @@ namespace CppCore
       /// </summary>
       INLINE static bool tryparse(const char* input, int64_t& r, const bool bigendian = true)
       {
-         return Util::tryparse<uint64_t, CPPCORE_MAXSYMBOLS_B16_64>(input, (uint64_t&)r, bigendian);
+         return Util::tryparse<uint64_t>(input, (uint64_t&)r, bigendian);
       }
    };
 
