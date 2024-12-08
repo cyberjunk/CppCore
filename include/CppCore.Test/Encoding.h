@@ -487,14 +487,16 @@ namespace CppCore { namespace Test
             if (!CppCore::Hex::tryparse("FFFF", r, true) || r != 0xFFFFU) return false;
             if (!CppCore::Hex::tryparse("0FFF", r, true) || r != 0x0FFFU) return false;
             if (!CppCore::Hex::tryparse("BC3A", r, true) || r != 0xBC3AU) return false;
+            if (!CppCore::Hex::tryparse("1FF",  r, true) || r != 0x01FFU) return false;
 
             if (!CppCore::Hex::tryparse("0",    r, false) || r != 0x0000U) return false;
             if (!CppCore::Hex::tryparse("0000", r, false) || r != 0x0000U) return false;
-            if (!CppCore::Hex::tryparse("1",    r, false) || r != 0x0100U) return false;
+            if (!CppCore::Hex::tryparse("1",    r, false) || r != 0x0001U) return false;
             if (!CppCore::Hex::tryparse("0001", r, false) || r != 0x0100U) return false;
             if (!CppCore::Hex::tryparse("FFFF", r, false) || r != 0xFFFFU) return false;
             if (!CppCore::Hex::tryparse("0FFF", r, false) || r != 0xFF0FU) return false;
             if (!CppCore::Hex::tryparse("BC3A", r, false) || r != 0x3ABCU) return false;
+            if (!CppCore::Hex::tryparse("1FF",  r, false) || r != 0x0F1FU) return false;
 
             if (CppCore::Hex::tryparse("10000", r, true)) return false; // overflow
             if (CppCore::Hex::tryparse("12X3",  r, true)) return false; // invalid symbol
@@ -503,7 +505,7 @@ namespace CppCore { namespace Test
             if (CppCore::Hex::tryparse("FFFFX", r, true)) return false; // invalid symbol after valid max
             if (CppCore::Hex::tryparse("00001", r, true)) return false; // too many leading zeros
             if (CppCore::Hex::tryparse("",      r, true)) return false; // empty input
-            if (CppCore::Hex::tryparse((const char*)0,r, true)) return false; // null pointer*/
+            if (CppCore::Hex::tryparse((const char*)0,r, true)) return false; // null pointer
 
             return true;
          }
@@ -557,7 +559,7 @@ namespace CppCore { namespace Test
 
             if (!CppCore::Hex::tryparse("0",        r, false) || r != 0x00000000U) return false;
             if (!CppCore::Hex::tryparse("00000000", r, false) || r != 0x00000000U) return false;
-            if (!CppCore::Hex::tryparse("1",        r, false) || r != 0x01000000U) return false;
+            if (!CppCore::Hex::tryparse("1",        r, false) || r != 0x00000001U) return false;
             if (!CppCore::Hex::tryparse("00000001", r, false) || r != 0x01000000U) return false;
             if (!CppCore::Hex::tryparse("FFFFFFFF", r, false) || r != 0xFFFFFFFFU) return false;
             if (!CppCore::Hex::tryparse("0FFFFFFF", r, false) || r != 0xFFFFFF0FU) return false;
@@ -624,7 +626,7 @@ namespace CppCore { namespace Test
 
             if (!CppCore::Hex::tryparse("0",                r, false) || r != 0x0000000000000000ULL) return false;
             if (!CppCore::Hex::tryparse("0000000000000000", r, false) || r != 0x0000000000000000ULL) return false;
-            if (!CppCore::Hex::tryparse("1",                r, false) || r != 0x0100000000000000ULL) return false;
+            if (!CppCore::Hex::tryparse("1",                r, false) || r != 0x0000000000000001ULL) return false;
             if (!CppCore::Hex::tryparse("0000000000000001", r, false) || r != 0x0100000000000000ULL) return false;
             if (!CppCore::Hex::tryparse("FFFFFFFFFFFFFFFF", r, false) || r != 0xFFFFFFFFFFFFFFFFULL) return false;
             if (!CppCore::Hex::tryparse("0FFFFFFFFFFFFFFF", r, false) || r != 0xFFFFFFFFFFFFFF0FULL) return false;

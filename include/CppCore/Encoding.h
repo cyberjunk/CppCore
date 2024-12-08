@@ -468,7 +468,82 @@ namespace CppCore
       template<typename UINT, typename STRING>
       INLINE static void parse(const STRING& in, UINT& out, const bool in_be = true, const bool out_le = true)
       {
-         CppCore::Hex::parse(in, in.length(), out, in_be, out_le);
+         CppCore::Hex::parse(in.data(), in.length(), out, in_be, out_le);
+      }
+
+      /// <summary>
+      /// Tries to parse unsigned integer 'out' from n hex characters in 'in'.
+      /// </summary>
+      template<typename UINT>
+      INLINE static bool tryparse(const char* in, size_t n, UINT& out, const bool in_be = true)
+      {
+         static_assert(CPPCORE_ENDIANESS_LITTLE);
+         CppCore::clear(out);
+         if (!in || *in == 0x00)
+            return false;
+         if (n > sizeof(UINT)*2)
+            return false;
+         uint8_t* p = (uint8_t*)&out;
+         if (in_be)
+         {
+            in += n;
+            while (n >= 2)
+            {
+               n -= 2;
+               char c2 = *--in;
+               char c1 = *--in;
+               uint8_t v1 = Util::valueofhexchar(c1);
+               uint8_t v2 = Util::valueofhexchar(c2);
+               if (v1 > 0x0F || v2 > 0x0F)
+                  return false;
+               *p++ = (v1 << 4) | (v2);
+            }
+            if (n) {
+               uint8_t v = Util::valueofhexchar(*--in);
+               if (v > 0x0F)
+                  return false;
+               *p++ = v;
+            }
+         }
+         else
+         {
+            while (n >= 2)
+            {
+               n -= 2;
+               char c1 = *in++;
+               char c2 = *in++;
+               uint8_t v1 = Util::valueofhexchar(c1);
+               uint8_t v2 = Util::valueofhexchar(c2);
+               if (v1 > 0x0F || v2 > 0x0F)
+                  return false;
+               *p++ = (v1 << 4) | (v2);
+            }
+            if (n) {
+               uint8_t v = Util::valueofhexchar(*in);
+               if (v > 0x0F)
+                  return false;
+               *p++ = v;
+            }
+         }
+         return true;
+      }
+
+      /// <summary>
+      /// Determines C string length on-the-fly
+      /// </summary>
+      template<typename UINT>
+      INLINE static bool tryparse(const char* in, UINT& out, const bool in_be = true)
+      {
+         return (in == 0) ? false : Hex::tryparse(in, ::strlen(in), out, in_be);
+      }
+
+      /// <summary>
+      /// For C++ strings
+      /// </summary>
+      template<typename UINT, typename STRING>
+      INLINE static bool tryparse(const STRING& in, UINT& out, const bool in_be = true)
+      {
+         return Hex::tryparse(in.data(), in.length(), out, in_be);
       }
 
       /// <summary>
@@ -643,7 +718,7 @@ namespace CppCore
       /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
       /// For bigendian=true the first character must contain the highest bits.
       /// </summary>
-      INLINE static bool tryparse(const char* input, uint16_t& r, const bool bigendian = true)
+      /*INLINE static bool tryparse(const char* input, uint16_t& r, const bool bigendian = true)
       {
          return Util::tryparse<uint16_t>(input, r, bigendian);
       }
@@ -696,7 +771,7 @@ namespace CppCore
       INLINE static bool tryparse(const char* input, int64_t& r, const bool bigendian = true)
       {
          return Util::tryparse<uint64_t>(input, (uint64_t&)r, bigendian);
-      }
+      }*/
    };
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
