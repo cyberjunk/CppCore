@@ -10,6 +10,7 @@ DEFINES   := $(DEFINES)
 INCLUDES  := $(INCLUDES) -I$(INCDIR)/
 CXXFLAGS  := $(CXXFLAGS) \
              -std=c++17 \
+             -fno-exceptions \
              -Wno-deprecated-declarations \
              -Wno-c++20-extensions \
              -Wno-c++2a-extensions \
