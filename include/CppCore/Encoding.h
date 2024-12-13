@@ -560,7 +560,7 @@ namespace CppCore
       /// Determines C string length on-the-fly
       /// </summary>
       template<typename UINT>
-      INLINE static void parse(const char* in, UINT& out, const bool in_be = true, const bool out_le = true)
+      INLINE static void parse(const char* in, UINT& out, const bool in_be = true, const bool out_le = CPPCORE_ENDIANESS_LITTLE)
       {
          CppCore::Hex::parse(in, ::strlen(in), out, in_be, out_le);
       }
@@ -569,7 +569,7 @@ namespace CppCore
       /// For C++ strings
       /// </summary>
       template<typename UINT, typename STRING>
-      INLINE static void parse(const STRING& in, UINT& out, const bool in_be = true, const bool out_le = true)
+      INLINE static void parse(const STRING& in, UINT& out, const bool in_be = true, const bool out_le = CPPCORE_ENDIANESS_LITTLE)
       {
          CppCore::Hex::parse(in.data(), in.length(), out, in_be, out_le);
       }
