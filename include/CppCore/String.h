@@ -1070,7 +1070,6 @@ namespace CppCore
             thiss()->resize(LENNEW);
          Hex::tostring(v, mData + LENOLD, bigendian, true);
          mLength = LENNEW; // always writes N symbols
-         //mLength = Hex::tostring(v, mData + LENOLD, true) - mData;;
          return *thiss();
       }
 
