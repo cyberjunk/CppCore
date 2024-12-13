@@ -653,7 +653,7 @@ namespace CppCore
          /// For bigendian=true the first character must contain the highest bits.
          /// N must be the number of overflow free symbols for T (e.g. 8 for 32bit and 16 for 64bit).
          /// </summary>
-         template<typename T, size_t N = sizeof(T)*2>
+         /*template<typename T, size_t N = sizeof(T) * 2>
          INLINE static bool tryparse(const char* input, T& r, const bool bigendian = true)
          {
             CppCore::clear(r);
@@ -696,7 +696,7 @@ namespace CppCore
             }
             else CPPCORE_UNLIKELY // null pointer
                return false;
-         }
+         }*/
       };
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -710,68 +710,6 @@ namespace CppCore
       {
          Hex::encode(&v, s, sizeof(UINT), bigendian == CPPCORE_ENDIANESS_LITTLE, writeterm);
       }
-
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Tries to parse 16-bit unsigned integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      /*INLINE static bool tryparse(const char* input, uint16_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint16_t>(input, r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 32-bit unsigned integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint32_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint32_t>(input, r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 64-bit unsigned integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint64_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint64_t>(input, r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 16-bit signed integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, int16_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint16_t>(input, (uint16_t&)r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 32-bit signed integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, int32_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint32_t>(input, (uint32_t&)r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 64-bit signed integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, int64_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint64_t>(input, (uint64_t&)r, bigendian);
-      }*/
    };
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -2631,17 +2631,13 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Returns a fixed-length, leading zero padded string representation in Hex (Base16). Optimized.
+      /// Returns a fixed-length (zero padded) string representation in Hex (Base16). Optimized.
       /// </summary>
-      INLINE string toHexString() const
+      INLINE string toHexString(bool bigendian = true) const
       {
          string s;
          s.resize(N64 * 16U);
-      #if defined(CPPCORE_CPU_64BIT)
-         CppCore::Hex::tostring(d.i64, s.data(), N64, false);
-      #else
-         CppCore::Hex::tostring(d.i32, s.data(), N32, false);
-      #endif
+         CppCore::Hex::tostring(*thiss(), s.data(), bigendian, true);
          return s;
       }
 
