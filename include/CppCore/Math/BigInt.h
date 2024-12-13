@@ -2690,14 +2690,10 @@ namespace CppCore
       /// Unlike tryParse(), it does not support any alphabet and it does not detect 
       /// errors like invalid symbols or overflows. But it's faster!
       /// </summary>
-      constexpr INLINE static TC parseHex(const char* input)
+      constexpr INLINE static TC parseHex(const char* input, bool bigendian = true)
       {
-         TC r(0ULL);
-         while(const char c = *input++)
-         {
-            r <<= 4;
-            r.d.i32[0] |= Hex::Util::valueofhexchar(c);
-         }
+         TC r;
+         CppCore::Hex::tryparse(input, r, bigendian);
          return r;
       }
 
