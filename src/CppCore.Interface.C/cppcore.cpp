@@ -112,12 +112,12 @@ CPPCORE_BASEX_IMPLEMENTATION(2048, CppCore::Block2048)
 CPPCORE_BASEX_IMPLEMENTATION(4096, CppCore::Block4096)
 CPPCORE_BASEX_IMPLEMENTATION(8192, CppCore::Block8192)
 
-#define CPPCORE_BASE16_IMPLEMENTATION(size,block)                                                         \
-  void cppcore_base16_encode##size(void* in, char* out, unsigned int bigendian, unsigned int writeterm) { \
-    CppCore::Hex::tostring(*(block*)in, out, bigendian, writeterm);                                       \
-  }                                                                                                       \
-  unsigned int cppcore_base16_decode##size(char* in, void* out, unsigned int bigendian) {                 \
-    return CppCore::Hex::tryparse((const char*)in, *(block*)out, (bool)bigendian);                        \
+#define CPPCORE_BASE16_IMPLEMENTATION(size,block)                                                           \
+  void cppcore_base16_encode##size(void* in, char* out, unsigned int bigendian, unsigned int writeterm) {   \
+    CppCore::Hex::tostring(*(block*)in, out, bigendian, writeterm);                                         \
+  }                                                                                                         \
+  unsigned int cppcore_base16_decode##size(char* in, unsigned int len, void* out, unsigned int bigendian) { \
+    return CppCore::Hex::tryparse((const char*)in, len, *(block*)out, (bool)bigendian);                     \
   }
 
 CPPCORE_BASE16_IMPLEMENTATION(32, std::uint32_t)
