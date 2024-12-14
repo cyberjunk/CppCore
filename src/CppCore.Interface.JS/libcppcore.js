@@ -285,7 +285,7 @@ export class Base10 extends BaseX {
 export class Base16 {
   #strbuf
   constructor() {
-    this.#strbuf = new CString(BaseX.estimateSymbols(8192, 16));
+    this.#strbuf = new CString(2048);
   }
   get strbuf() { return this.#strbuf; }
   static estimateBits(symbols) {
@@ -319,9 +319,10 @@ export class Base16 {
   }
   decode(str, bits) {
     this.#strbuf.set(str);
+    const len = this.#strbuf.byteLength;
     let f = null;
     let t = null;
-    if (!bits) bits = BaseX.estimateBits(this.#strbuf.byteLength, 16);
+    if      (!bits) bits = len&1 ? (len+1)<<2 : len<<2;
     if      (bits <= 32)   { t = UInt32;   f = EXPORTS.cppcore_base16_decode32; }
     else if (bits <= 64)   { t = UInt64;   f = EXPORTS.cppcore_base16_decode64; }
     else if (bits <= 128)  { t = UInt128;  f = EXPORTS.cppcore_base16_decode128; }
