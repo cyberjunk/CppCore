@@ -335,22 +335,38 @@ namespace CppCore { namespace Test
             uint8_t rr5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 };
             uint8_t rr6[9] = { 0xA5,0xFF,0x3C,0x74,0xE9,0xA5,0xFF,0x3C,0x04 };
 
-            CppCore::Hex::encode(rr0, s, 1, false, true); CppCore::Hex::encode(rr0, ss, 1, false, true); if (s != ss || s != std::string("00")) return false;
-            CppCore::Hex::encode(rr1, s, 1, false, true); CppCore::Hex::encode(rr1, ss, 1, false, true); if (s != ss || s != std::string("A5")) return false;
-            CppCore::Hex::encode(rr2, s, 2, false, true); CppCore::Hex::encode(rr2, ss, 2, false, true); if (s != ss || s != std::string("A5FF")) return false;
-            CppCore::Hex::encode(rr3, s, 3, false, true); CppCore::Hex::encode(rr3, ss, 3, false, true); if (s != ss || s != std::string("A5FF3C")) return false;
-            CppCore::Hex::encode(rr4, s, 4, false, true); CppCore::Hex::encode(rr4, ss, 4, false, true); if (s != ss || s != std::string("A5FF3C74")) return false;
-            CppCore::Hex::encode(rr5, s, 5, false, true); CppCore::Hex::encode(rr5, ss, 5, false, true); if (s != ss || s != std::string("A5FF3C74E9")) return false;
-            CppCore::Hex::encode(rr6, s, 9, false, true); CppCore::Hex::encode(rr6, ss, 9, false, true); if (s != ss || s != std::string("A5FF3C74E9A5FF3C04")) return false;
+            CppCore::Hex::encode(rr0, s, 1, false, true, true); CppCore::Hex::encode(rr0, ss, 1, false, true, true); if (s != ss || s != std::string("00")) return false;
+            CppCore::Hex::encode(rr1, s, 1, false, true, true); CppCore::Hex::encode(rr1, ss, 1, false, true, true); if (s != ss || s != std::string("A5")) return false;
+            CppCore::Hex::encode(rr2, s, 2, false, true, true); CppCore::Hex::encode(rr2, ss, 2, false, true, true); if (s != ss || s != std::string("A5FF")) return false;
+            CppCore::Hex::encode(rr3, s, 3, false, true, true); CppCore::Hex::encode(rr3, ss, 3, false, true, true); if (s != ss || s != std::string("A5FF3C")) return false;
+            CppCore::Hex::encode(rr4, s, 4, false, true, true); CppCore::Hex::encode(rr4, ss, 4, false, true, true); if (s != ss || s != std::string("A5FF3C74")) return false;
+            CppCore::Hex::encode(rr5, s, 5, false, true, true); CppCore::Hex::encode(rr5, ss, 5, false, true, true); if (s != ss || s != std::string("A5FF3C74E9")) return false;
+            CppCore::Hex::encode(rr6, s, 9, false, true, true); CppCore::Hex::encode(rr6, ss, 9, false, true, true); if (s != ss || s != std::string("A5FF3C74E9A5FF3C04")) return false;
 
-            CppCore::Hex::encode(rr0, s, 1, true, true); CppCore::Hex::encode(rr0, ss, 1, true, true); if (s != ss || s != std::string("00")) return false;
-            CppCore::Hex::encode(rr1, s, 1, true, true); CppCore::Hex::encode(rr1, ss, 1, true, true); if (s != ss || s != std::string("A5")) return false;
-            CppCore::Hex::encode(rr2, s, 2, true, true); CppCore::Hex::encode(rr2, ss, 2, true, true); if (s != ss || s != std::string("FFA5")) return false;
-            CppCore::Hex::encode(rr3, s, 3, true, true); CppCore::Hex::encode(rr3, ss, 3, true, true); if (s != ss || s != std::string("3CFFA5")) return false;
-            CppCore::Hex::encode(rr4, s, 4, true, true); CppCore::Hex::encode(rr4, ss, 4, true, true); if (s != ss || s != std::string("743CFFA5")) return false;
-            CppCore::Hex::encode(rr5, s, 5, true, true); CppCore::Hex::encode(rr5, ss, 5, true, true); if (s != ss || s != std::string("E9743CFFA5")) return false;
-            CppCore::Hex::encode(rr6, s, 9, true, true); CppCore::Hex::encode(rr6, ss, 9, true, true); if (s != ss || s != std::string("043CFFA5E9743CFFA5")) return false;
+            CppCore::Hex::encode(rr0, s, 1, false, true, false); CppCore::Hex::encode(rr0, ss, 1, false, true, false); if (s != ss || s != std::string("00")) return false;
+            CppCore::Hex::encode(rr1, s, 1, false, true, false); CppCore::Hex::encode(rr1, ss, 1, false, true, false); if (s != ss || s != std::string("a5")) return false;
+            CppCore::Hex::encode(rr2, s, 2, false, true, false); CppCore::Hex::encode(rr2, ss, 2, false, true, false); if (s != ss || s != std::string("a5ff")) return false;
+            CppCore::Hex::encode(rr3, s, 3, false, true, false); CppCore::Hex::encode(rr3, ss, 3, false, true, false); if (s != ss || s != std::string("a5ff3c")) return false;
+            CppCore::Hex::encode(rr4, s, 4, false, true, false); CppCore::Hex::encode(rr4, ss, 4, false, true, false); if (s != ss || s != std::string("a5ff3c74")) return false;
+            CppCore::Hex::encode(rr5, s, 5, false, true, false); CppCore::Hex::encode(rr5, ss, 5, false, true, false); if (s != ss || s != std::string("a5ff3c74e9")) return false;
+            CppCore::Hex::encode(rr6, s, 9, false, true, false); CppCore::Hex::encode(rr6, ss, 9, false, true, false); if (s != ss || s != std::string("a5ff3c74e9a5ff3c04")) return false;
 
+            CppCore::Hex::encode(rr0, s, 1, true, true, true); CppCore::Hex::encode(rr0, ss, 1, true, true, true); if (s != ss || s != std::string("00")) return false;
+            CppCore::Hex::encode(rr1, s, 1, true, true, true); CppCore::Hex::encode(rr1, ss, 1, true, true, true); if (s != ss || s != std::string("A5")) return false;
+            CppCore::Hex::encode(rr2, s, 2, true, true, true); CppCore::Hex::encode(rr2, ss, 2, true, true, true); if (s != ss || s != std::string("FFA5")) return false;
+            CppCore::Hex::encode(rr3, s, 3, true, true, true); CppCore::Hex::encode(rr3, ss, 3, true, true, true); if (s != ss || s != std::string("3CFFA5")) return false;
+            CppCore::Hex::encode(rr4, s, 4, true, true, true); CppCore::Hex::encode(rr4, ss, 4, true, true, true); if (s != ss || s != std::string("743CFFA5")) return false;
+            CppCore::Hex::encode(rr5, s, 5, true, true, true); CppCore::Hex::encode(rr5, ss, 5, true, true, true); if (s != ss || s != std::string("E9743CFFA5")) return false;
+            CppCore::Hex::encode(rr6, s, 9, true, true, true); CppCore::Hex::encode(rr6, ss, 9, true, true, true); if (s != ss || s != std::string("043CFFA5E9743CFFA5")) return false;
+
+            CppCore::Hex::encode(rr0, s, 1, true, true, false); CppCore::Hex::encode(rr0, ss, 1, true, true, false); if (s != ss || s != std::string("00")) return false;
+            CppCore::Hex::encode(rr1, s, 1, true, true, false); CppCore::Hex::encode(rr1, ss, 1, true, true, false); if (s != ss || s != std::string("a5")) return false;
+            CppCore::Hex::encode(rr2, s, 2, true, true, false); CppCore::Hex::encode(rr2, ss, 2, true, true, false); if (s != ss || s != std::string("ffa5")) return false;
+            CppCore::Hex::encode(rr3, s, 3, true, true, false); CppCore::Hex::encode(rr3, ss, 3, true, true, false); if (s != ss || s != std::string("3cffa5")) return false;
+            CppCore::Hex::encode(rr4, s, 4, true, true, false); CppCore::Hex::encode(rr4, ss, 4, true, true, false); if (s != ss || s != std::string("743cffa5")) return false;
+            CppCore::Hex::encode(rr5, s, 5, true, true, false); CppCore::Hex::encode(rr5, ss, 5, true, true, false); if (s != ss || s != std::string("e9743cffa5")) return false;
+            CppCore::Hex::encode(rr6, s, 9, true, true, false); CppCore::Hex::encode(rr6, ss, 9, true, true, false); if (s != ss || s != std::string("043cffa5e9743cffa5")) return false;
+            
             return true;
          }
          INLINE static bool decode()
