@@ -85,6 +85,13 @@ CPPCORE_UINT_IMPLEMENTATION(cppcore_uint8192, CppCore::Block8192)
 #include <CppCore/Encoding.h>
 #include <CppCore/Block.h>
 
+unsigned int cppcore_basex_estimate_bits(unsigned int symbols, unsigned int base) {
+   return CppCore::BaseX::estimateBits(symbols, base);
+}
+unsigned int cppcore_basex_estimate_symbols(unsigned int bits, unsigned int base) {
+   return CppCore::BaseX::estimateSymbols(bits, base);
+}
+
 #define CPPCORE_BASEX_IMPLEMENTATION(size,block)                                            \
   int cppcore_basex_encode##size(                                                           \
     void*        in,   char* out,      int          len,                                    \
@@ -95,13 +102,6 @@ CPPCORE_UINT_IMPLEMENTATION(cppcore_uint8192, CppCore::Block8192)
     return CppCore::BaseX::tryparse(in, *(block*)out, alphabet);                            \
   }
 
-unsigned int cppcore_basex_estimate_bits(unsigned int symbols, unsigned int base) {
-   return CppCore::BaseX::estimateBits(symbols, base);
-}
-unsigned int cppcore_basex_estimate_symbols(unsigned int bits, unsigned int base) {
-   return CppCore::BaseX::estimateSymbols(bits, base);
-}
-
 CPPCORE_BASEX_IMPLEMENTATION(32,       std::uint32_t)
 CPPCORE_BASEX_IMPLEMENTATION(64,       std::uint64_t)
 CPPCORE_BASEX_IMPLEMENTATION(128,  CppCore::Block128)
@@ -111,6 +111,24 @@ CPPCORE_BASEX_IMPLEMENTATION(1024, CppCore::Block1024)
 CPPCORE_BASEX_IMPLEMENTATION(2048, CppCore::Block2048)
 CPPCORE_BASEX_IMPLEMENTATION(4096, CppCore::Block4096)
 CPPCORE_BASEX_IMPLEMENTATION(8192, CppCore::Block8192)
+
+#define CPPCORE_BASE16_IMPLEMENTATION(size,block)                                                         \
+  void cppcore_base16_encode##size(void* in, char* out, unsigned int bigendian, unsigned int writeterm) { \
+    CppCore::Hex::tostring(*(block*)in, out, bigendian, writeterm);                                       \
+  }                                                                                                       \
+  unsigned int cppcore_base16_decode##size(char* in, void* out, unsigned int bigendian) {                 \
+    return CppCore::Hex::tryparse((const char*)in, *(block*)out, (bool)bigendian);                        \
+  }
+
+CPPCORE_BASE16_IMPLEMENTATION(32, std::uint32_t)
+CPPCORE_BASE16_IMPLEMENTATION(64, std::uint64_t)
+CPPCORE_BASE16_IMPLEMENTATION(128, CppCore::Block128)
+CPPCORE_BASE16_IMPLEMENTATION(256, CppCore::Block256)
+CPPCORE_BASE16_IMPLEMENTATION(512, CppCore::Block512)
+CPPCORE_BASE16_IMPLEMENTATION(1024, CppCore::Block1024)
+CPPCORE_BASE16_IMPLEMENTATION(2048, CppCore::Block2048)
+CPPCORE_BASE16_IMPLEMENTATION(4096, CppCore::Block4096)
+CPPCORE_BASE16_IMPLEMENTATION(8192, CppCore::Block8192)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HASH

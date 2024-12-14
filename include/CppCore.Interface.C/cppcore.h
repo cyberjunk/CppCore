@@ -29,6 +29,11 @@
   CPPCORE_EXPORT int cppcore_basex_encode##size(void* in, char* out, int len, unsigned int base, char* alphabet, unsigned int writeterm); \
   CPPCORE_EXPORT unsigned int cppcore_basex_decode##size(char* in, void* out, char* alphabet);
 
+// macro for base16 function declarations
+#define CPPCORE_BASE16_DECLARATION(size)                                                                \
+  CPPCORE_EXPORT void cppcore_base16_encode##size(void* in, char* out, unsigned int bigendian, unsigned int writeterm); \
+  CPPCORE_EXPORT unsigned int cppcore_base16_decode##size(char* in, void* out, unsigned int bigendian);
+
 // macro for hash function declarations
 #define CPPCORE_HASH_DECLARATION(name)                                              \
   typedef struct _ ## name name;                                                    \
@@ -127,6 +132,18 @@ extern "C" {
    CPPCORE_BASEX_DECLARATION(2048)
    CPPCORE_BASEX_DECLARATION(4096)
    CPPCORE_BASEX_DECLARATION(8192)
+
+   // base16
+
+   CPPCORE_BASE16_DECLARATION(32)
+   CPPCORE_BASE16_DECLARATION(64)
+   CPPCORE_BASE16_DECLARATION(128)
+   CPPCORE_BASE16_DECLARATION(256)
+   CPPCORE_BASE16_DECLARATION(512)
+   CPPCORE_BASE16_DECLARATION(1024)
+   CPPCORE_BASE16_DECLARATION(2048)
+   CPPCORE_BASE16_DECLARATION(4096)
+   CPPCORE_BASE16_DECLARATION(8192)
 
    // hash
 
