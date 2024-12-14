@@ -31,7 +31,7 @@
 
 // macro for base16 function declarations
 #define CPPCORE_BASE16_DECLARATION(size)                                                                \
-  CPPCORE_EXPORT void cppcore_base16_encode##size(void* in, char* out, unsigned int bigendian, unsigned int writeterm); \
+  CPPCORE_EXPORT void cppcore_base16_encode##size(void* in, char* out, unsigned int bigendian, unsigned int writeterm, unsigned int uppercase); \
   CPPCORE_EXPORT unsigned int cppcore_base16_decode##size(char* in, unsigned int len, void* out, unsigned int bigendian);
 
 // macro for hash function declarations
