@@ -540,11 +540,11 @@ namespace CppCore
                   char c2 = *--in;
                   char c1 = *--in;
                   *p++ =
-                     (Util::valueofhexchar(c1) << 4) |
-                     (Util::valueofhexchar(c2));
+                     (Util::HEX2BIN[c1] << 4) |
+                     (Util::HEX2BIN[c2]);
                }
                if (n)
-                  *p++ = Util::valueofhexchar(*--in);
+                  *p++ = Util::HEX2BIN[*--in];
             }
             else
             {
@@ -555,11 +555,11 @@ namespace CppCore
                   char c2 = *--in;
                   char c1 = *--in;
                   *--p =
-                     (Util::valueofhexchar(c1) << 4) |
-                     (Util::valueofhexchar(c2));
+                     (Util::HEX2BIN[c1] << 4) |
+                     (Util::HEX2BIN[c2]);
                }
                if (n)
-                  *--p = Util::valueofhexchar(*--in);
+                  *--p = Util::HEX2BIN[*--in];
             }
          }
          else
@@ -574,11 +574,11 @@ namespace CppCore
                   char c1 = *in++;
                   char c2 = *in++;
                   *p++ =
-                     (Util::valueofhexchar(c1) << 4) |
-                     (Util::valueofhexchar(c2));
+                     (Util::HEX2BIN[c1] << 4) |
+                     (Util::HEX2BIN[c2]);
                }
                if (n)
-                  *p++ = Util::valueofhexchar(*in);
+                  *p++ = Util::HEX2BIN[*in];
             }
             else
             {
@@ -589,11 +589,11 @@ namespace CppCore
                   char c1 = *in++;
                   char c2 = *in++;
                   *--p =
-                     (Util::valueofhexchar(c1) << 4) |
-                     (Util::valueofhexchar(c2));
+                     (Util::HEX2BIN[c1] << 4) |
+                     (Util::HEX2BIN[c2]);
                }
                if (n)
-                  *--p = Util::valueofhexchar(*in);
+                  *--p = Util::HEX2BIN[*in];
             }
          }
       }
@@ -637,14 +637,14 @@ namespace CppCore
                n -= 2;
                char c2 = *--in;
                char c1 = *--in;
-               uint8_t v1 = Util::valueofhexchar(c1);
-               uint8_t v2 = Util::valueofhexchar(c2);
-               if (v1 > 0x0F || v2 > 0x0F)
+               uint8_t v1 = Util::HEX2BIN[c1];
+               uint8_t v2 = Util::HEX2BIN[c2];
+               if ((v1 | v2) > 0x0F)
                   return false;
                *p++ = (v1 << 4) | (v2);
             }
             if (n) {
-               uint8_t v = Util::valueofhexchar(*--in);
+               uint8_t v = Util::HEX2BIN[*--in];
                if (v > 0x0F)
                   return false;
                *p++ = v;
@@ -657,14 +657,14 @@ namespace CppCore
                n -= 2;
                char c1 = *in++;
                char c2 = *in++;
-               uint8_t v1 = Util::valueofhexchar(c1);
-               uint8_t v2 = Util::valueofhexchar(c2);
-               if (v1 > 0x0F || v2 > 0x0F)
+               uint8_t v1 = Util::HEX2BIN[c1];
+               uint8_t v2 = Util::HEX2BIN[c2];
+               if ((v1 | v2) > 0x0F)
                   return false;
                *p++ = (v1 << 4) | (v2);
             }
             if (n) {
-               uint8_t v = Util::valueofhexchar(*in);
+               uint8_t v = Util::HEX2BIN[*in];
                if (v > 0x0F)
                   return false;
                *p++ = v;
