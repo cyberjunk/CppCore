@@ -294,9 +294,10 @@ export class Base16 {
   static estimateSymbols(bits) {
     return EXPORTS.cppcore_basex_estimate_symbols(bits, 16);
   }
-  encode(v, uppercase) {
+  encode(v, uppercase, bigendian) {
     let f = null;
-    if (!uppercase) uppercase = false;
+    if (uppercase == null) uppercase = false;
+    if (bigendian == null) bigendian = true;
     if      (v.byteLength == 4)    { f = EXPORTS.cppcore_base16_encode32; }
     else if (v.byteLength == 8)    { f = EXPORTS.cppcore_base16_encode64; }
     else if (v.byteLength == 16)   { f = EXPORTS.cppcore_base16_encode128; }
@@ -310,14 +311,15 @@ export class Base16 {
     f(
       v.ptr,             // inbuf ptr
       this.#strbuf.ptr,  // outbuf ptr
-      1,                 // big endian output
+      bigendian,         // big endian output
       1,                 // write term 0x00
       uppercase          // uppercase
     );
     this.#strbuf.byteLength = v.byteLength << 1;
     return this.#strbuf.toString();
   }
-  decode(str, bits) {
+  decode(str, bits, bigendian) {
+    if (bigendian == null) bigendian = true;
     this.#strbuf.set(str);
     const len = this.#strbuf.byteLength;
     let f = null;
@@ -334,11 +336,12 @@ export class Base16 {
     else if (bits <= 8192) { t = UInt8192; f = EXPORTS.cppcore_base16_decode8192; }
     else throw new RangeError('Invalid bitLength in Base16.decode()');
     const uint = new t();
-    const r = f(this.#strbuf.ptr, this.#strbuf.byteLength, uint.ptr, 1);
+    const r = f(this.#strbuf.ptr, this.#strbuf.byteLength, uint.ptr, bigendian);
     if (r == 0) throw new Error('Invalid symbol or overflow');
     return uint;
   }
-  decodeInto(str, buf) {
+  decodeInto(str, buf, bigendian) {
+    if (bigendian == null) bigendian = true;
     this.#strbuf.set(str);
     const byteLength = buf.byteLength;
     let f = null;
@@ -352,7 +355,7 @@ export class Base16 {
     else if (byteLength == 512)  { f = EXPORTS.cppcore_base16_decode4096; }
     else if (byteLength == 1024) { f = EXPORTS.cppcore_base16_decode8192; }
     else throw new RangeError('Invalid byteLength in Base16.decodeInto()');
-    const r = f(this.#strbuf.ptr, this.#strbuf.byteLength, buf.ptr, 1);
+    const r = f(this.#strbuf.ptr, this.#strbuf.byteLength, buf.ptr, bigendian);
     if (r == 0) throw new Error('Invalid symbol or overflow');
   }
 }
