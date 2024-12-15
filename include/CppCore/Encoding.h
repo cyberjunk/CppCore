@@ -317,497 +317,388 @@ namespace CppCore
       private:
          INLINE Util() { }
       public:
+         CPPCORE_ALIGN64 static constexpr uint16_t BIN2HEX_UPPERCASE[] = 
+         {
+            0x3030, 0x3130, 0x3230, 0x3330, 0x3430, 0x3530, 0x3630, 0x3730,
+            0x3830, 0x3930, 0x4130, 0x4230, 0x4330, 0x4430, 0x4530, 0x4630,
+            0x3031, 0x3131, 0x3231, 0x3331, 0x3431, 0x3531, 0x3631, 0x3731,
+            0x3831, 0x3931, 0x4131, 0x4231, 0x4331, 0x4431, 0x4531, 0x4631,
+            0x3032, 0x3132, 0x3232, 0x3332, 0x3432, 0x3532, 0x3632, 0x3732,
+            0x3832, 0x3932, 0x4132, 0x4232, 0x4332, 0x4432, 0x4532, 0x4632,
+            0x3033, 0x3133, 0x3233, 0x3333, 0x3433, 0x3533, 0x3633, 0x3733,
+            0x3833, 0x3933, 0x4133, 0x4233, 0x4333, 0x4433, 0x4533, 0x4633,
+            0x3034, 0x3134, 0x3234, 0x3334, 0x3434, 0x3534, 0x3634, 0x3734,
+            0x3834, 0x3934, 0x4134, 0x4234, 0x4334, 0x4434, 0x4534, 0x4634,
+            0x3035, 0x3135, 0x3235, 0x3335, 0x3435, 0x3535, 0x3635, 0x3735,
+            0x3835, 0x3935, 0x4135, 0x4235, 0x4335, 0x4435, 0x4535, 0x4635,
+            0x3036, 0x3136, 0x3236, 0x3336, 0x3436, 0x3536, 0x3636, 0x3736,
+            0x3836, 0x3936, 0x4136, 0x4236, 0x4336, 0x4436, 0x4536, 0x4636,
+            0x3037, 0x3137, 0x3237, 0x3337, 0x3437, 0x3537, 0x3637, 0x3737,
+            0x3837, 0x3937, 0x4137, 0x4237, 0x4337, 0x4437, 0x4537, 0x4637,
+            0x3038, 0x3138, 0x3238, 0x3338, 0x3438, 0x3538, 0x3638, 0x3738,
+            0x3838, 0x3938, 0x4138, 0x4238, 0x4338, 0x4438, 0x4538, 0x4638,
+            0x3039, 0x3139, 0x3239, 0x3339, 0x3439, 0x3539, 0x3639, 0x3739,
+            0x3839, 0x3939, 0x4139, 0x4239, 0x4339, 0x4439, 0x4539, 0x4639,
+            0x3041, 0x3141, 0x3241, 0x3341, 0x3441, 0x3541, 0x3641, 0x3741,
+            0x3841, 0x3941, 0x4141, 0x4241, 0x4341, 0x4441, 0x4541, 0x4641,
+            0x3042, 0x3142, 0x3242, 0x3342, 0x3442, 0x3542, 0x3642, 0x3742,
+            0x3842, 0x3942, 0x4142, 0x4242, 0x4342, 0x4442, 0x4542, 0x4642,
+            0x3043, 0x3143, 0x3243, 0x3343, 0x3443, 0x3543, 0x3643, 0x3743,
+            0x3843, 0x3943, 0x4143, 0x4243, 0x4343, 0x4443, 0x4543, 0x4643,
+            0x3044, 0x3144, 0x3244, 0x3344, 0x3444, 0x3544, 0x3644, 0x3744,
+            0x3844, 0x3944, 0x4144, 0x4244, 0x4344, 0x4444, 0x4544, 0x4644,
+            0x3045, 0x3145, 0x3245, 0x3345, 0x3445, 0x3545, 0x3645, 0x3745,
+            0x3845, 0x3945, 0x4145, 0x4245, 0x4345, 0x4445, 0x4545, 0x4645,
+            0x3046, 0x3146, 0x3246, 0x3346, 0x3446, 0x3546, 0x3646, 0x3746,
+            0x3846, 0x3946, 0x4146, 0x4246, 0x4346, 0x4446, 0x4546, 0x4646
+         };
+
+         CPPCORE_ALIGN64 static constexpr uint16_t BIN2HEX_LOWERCASE[] =
+         {
+            0x3030, 0x3130, 0x3230, 0x3330, 0x3430, 0x3530, 0x3630, 0x3730,
+            0x3830, 0x3930, 0x6130, 0x6230, 0x6330, 0x6430, 0x6530, 0x6630,
+            0x3031, 0x3131, 0x3231, 0x3331, 0x3431, 0x3531, 0x3631, 0x3731,
+            0x3831, 0x3931, 0x6131, 0x6231, 0x6331, 0x6431, 0x6531, 0x6631,
+            0x3032, 0x3132, 0x3232, 0x3332, 0x3432, 0x3532, 0x3632, 0x3732,
+            0x3832, 0x3932, 0x6132, 0x6232, 0x6332, 0x6432, 0x6532, 0x6632,
+            0x3033, 0x3133, 0x3233, 0x3333, 0x3433, 0x3533, 0x3633, 0x3733,
+            0x3833, 0x3933, 0x6133, 0x6233, 0x6333, 0x6433, 0x6533, 0x6633,
+            0x3034, 0x3134, 0x3234, 0x3334, 0x3434, 0x3534, 0x3634, 0x3734,
+            0x3834, 0x3934, 0x6134, 0x6234, 0x6334, 0x6434, 0x6534, 0x6634,
+            0x3035, 0x3135, 0x3235, 0x3335, 0x3435, 0x3535, 0x3635, 0x3735,
+            0x3835, 0x3935, 0x6135, 0x6235, 0x6335, 0x6435, 0x6535, 0x6635,
+            0x3036, 0x3136, 0x3236, 0x3336, 0x3436, 0x3536, 0x3636, 0x3736,
+            0x3836, 0x3936, 0x6136, 0x6236, 0x6336, 0x6436, 0x6536, 0x6636,
+            0x3037, 0x3137, 0x3237, 0x3337, 0x3437, 0x3537, 0x3637, 0x3737,
+            0x3837, 0x3937, 0x6137, 0x6237, 0x6337, 0x6437, 0x6537, 0x6637,
+            0x3038, 0x3138, 0x3238, 0x3338, 0x3438, 0x3538, 0x3638, 0x3738,
+            0x3838, 0x3938, 0x6138, 0x6238, 0x6338, 0x6438, 0x6538, 0x6638,
+            0x3039, 0x3139, 0x3239, 0x3339, 0x3439, 0x3539, 0x3639, 0x3739,
+            0x3839, 0x3939, 0x6139, 0x6239, 0x6339, 0x6439, 0x6539, 0x6639,
+            0x3061, 0x3161, 0x3261, 0x3361, 0x3461, 0x3561, 0x3661, 0x3761,
+            0x3861, 0x3961, 0x6161, 0x6261, 0x6361, 0x6461, 0x6561, 0x6661,
+            0x3062, 0x3162, 0x3262, 0x3362, 0x3462, 0x3562, 0x3662, 0x3762,
+            0x3862, 0x3962, 0x6162, 0x6262, 0x6362, 0x6462, 0x6562, 0x6662,
+            0x3063, 0x3163, 0x3263, 0x3363, 0x3463, 0x3563, 0x3663, 0x3763,
+            0x3863, 0x3963, 0x6163, 0x6263, 0x6363, 0x6463, 0x6563, 0x6663,
+            0x3064, 0x3164, 0x3264, 0x3364, 0x3464, 0x3564, 0x3664, 0x3764,
+            0x3864, 0x3964, 0x6164, 0x6264, 0x6364, 0x6464, 0x6564, 0x6664,
+            0x3065, 0x3165, 0x3265, 0x3365, 0x3465, 0x3565, 0x3665, 0x3765,
+            0x3865, 0x3965, 0x6165, 0x6265, 0x6365, 0x6465, 0x6565, 0x6665,
+            0x3066, 0x3166, 0x3266, 0x3366, 0x3466, 0x3566, 0x3666, 0x3766,
+            0x3866, 0x3966, 0x6166, 0x6266, 0x6366, 0x6466, 0x6566, 0x6666
+         };
+
+         CPPCORE_ALIGN64 static constexpr uint8_t HEX2BIN[] =
+         {
+            0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //  !"#$%&'
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ()*+,-./
+            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, // 01234567
+            0x08, 0x09, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 89:;<=>?
+            0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, // @ABCDEFG
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // HIJKLMNO
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // PQRSTUVW
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // XYZ[\]^_
+            0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, // `abcdefg
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // hijklmno
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // pqrstuvw
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // xyz{|}~.
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  // ........
+         };
+
          /// <summary>
          /// Returns the value represented by the hexadecimal character c.
          /// For instance the characters 'a' and 'A' will both return 10, '0' returns 0.
          /// Returns 0xFF for any non-hexadecimal character and 0xFE for the null char.
          /// </summary>
-         INLINE static uint8_t valueofhexchar(const uint8_t c)
+         INLINE constexpr static uint8_t valueofhexchar(const uint8_t c)
          {
-            CPPCORE_ALIGN64 static constexpr uint8_t table[] =
-            {
-              0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //  !"#$%&'
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ()*+,-./
-              0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, // 01234567
-              0x08, 0x09, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 89:;<=>?
-              0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, // @ABCDEFG
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // HIJKLMNO
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // PQRSTUVW
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // XYZ[\]^_
-              0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, // `abcdefg
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // hijklmno
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // pqrstuvw
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // xyz{|}~.
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // ........
-              0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  // ........
-            };
-            return table[c];
+         #if false
+            return 9 * (c >> 6) + (c & 0xf);
+         #else
+            return HEX2BIN[c];
+         #endif
          }
 
          /// <summary>
          /// Returns 2 characters encoded in uint16_t with the string representation of the byte argument.
          /// For instance, returns 0x3030 ("00") for 0x00 because '0' is 0x30 in ascii.
          /// </summary>
-         INLINE static uint16_t bytetohexint16(const uint8_t byte)
+         template<bool UPPERCASE = true>
+         INLINE constexpr static uint16_t bytetohexint16(const uint8_t byte)
          {
-            CPPCORE_ALIGN64 static constexpr uint16_t table[] = 
-            {
-               0x3030, 0x3130, 0x3230, 0x3330, 0x3430, 0x3530, 0x3630, 0x3730,
-               0x3830, 0x3930, 0x4130, 0x4230, 0x4330, 0x4430, 0x4530, 0x4630,
-               0x3031, 0x3131, 0x3231, 0x3331, 0x3431, 0x3531, 0x3631, 0x3731,
-               0x3831, 0x3931, 0x4131, 0x4231, 0x4331, 0x4431, 0x4531, 0x4631,
-               0x3032, 0x3132, 0x3232, 0x3332, 0x3432, 0x3532, 0x3632, 0x3732,
-               0x3832, 0x3932, 0x4132, 0x4232, 0x4332, 0x4432, 0x4532, 0x4632,
-               0x3033, 0x3133, 0x3233, 0x3333, 0x3433, 0x3533, 0x3633, 0x3733,
-               0x3833, 0x3933, 0x4133, 0x4233, 0x4333, 0x4433, 0x4533, 0x4633,
-               0x3034, 0x3134, 0x3234, 0x3334, 0x3434, 0x3534, 0x3634, 0x3734,
-               0x3834, 0x3934, 0x4134, 0x4234, 0x4334, 0x4434, 0x4534, 0x4634,
-               0x3035, 0x3135, 0x3235, 0x3335, 0x3435, 0x3535, 0x3635, 0x3735,
-               0x3835, 0x3935, 0x4135, 0x4235, 0x4335, 0x4435, 0x4535, 0x4635,
-               0x3036, 0x3136, 0x3236, 0x3336, 0x3436, 0x3536, 0x3636, 0x3736,
-               0x3836, 0x3936, 0x4136, 0x4236, 0x4336, 0x4436, 0x4536, 0x4636,
-               0x3037, 0x3137, 0x3237, 0x3337, 0x3437, 0x3537, 0x3637, 0x3737,
-               0x3837, 0x3937, 0x4137, 0x4237, 0x4337, 0x4437, 0x4537, 0x4637,
-               0x3038, 0x3138, 0x3238, 0x3338, 0x3438, 0x3538, 0x3638, 0x3738,
-               0x3838, 0x3938, 0x4138, 0x4238, 0x4338, 0x4438, 0x4538, 0x4638,
-               0x3039, 0x3139, 0x3239, 0x3339, 0x3439, 0x3539, 0x3639, 0x3739,
-               0x3839, 0x3939, 0x4139, 0x4239, 0x4339, 0x4439, 0x4539, 0x4639,
-               0x3041, 0x3141, 0x3241, 0x3341, 0x3441, 0x3541, 0x3641, 0x3741,
-               0x3841, 0x3941, 0x4141, 0x4241, 0x4341, 0x4441, 0x4541, 0x4641,
-               0x3042, 0x3142, 0x3242, 0x3342, 0x3442, 0x3542, 0x3642, 0x3742,
-               0x3842, 0x3942, 0x4142, 0x4242, 0x4342, 0x4442, 0x4542, 0x4642,
-               0x3043, 0x3143, 0x3243, 0x3343, 0x3443, 0x3543, 0x3643, 0x3743,
-               0x3843, 0x3943, 0x4143, 0x4243, 0x4343, 0x4443, 0x4543, 0x4643,
-               0x3044, 0x3144, 0x3244, 0x3344, 0x3444, 0x3544, 0x3644, 0x3744,
-               0x3844, 0x3944, 0x4144, 0x4244, 0x4344, 0x4444, 0x4544, 0x4644,
-               0x3045, 0x3145, 0x3245, 0x3345, 0x3445, 0x3545, 0x3645, 0x3745,
-               0x3845, 0x3945, 0x4145, 0x4245, 0x4345, 0x4445, 0x4545, 0x4645,
-               0x3046, 0x3146, 0x3246, 0x3346, 0x3446, 0x3546, 0x3646, 0x3746,
-               0x3846, 0x3946, 0x4146, 0x4246, 0x4346, 0x4446, 0x4546, 0x4646
-            };
-            return table[byte];
-         }
-
-         /// <summary>
-         /// Returns 4 characters encoded in uint32_t with the string representation of parts from v selected by il and ih.
-         /// For instance, returns 0x46464646 ("FFFF") for v=0x00FF00FF and il=0 (select first byte) and ih=24 (select third byte).
-         /// </summary>
-         INLINE static uint32_t valuetohexint32(const uint32_t v, const uint32_t il, const uint32_t ih)
-         {
-            return
-               ((uint32_t)Util::bytetohexint16((uint8_t)CppCore::getbits32(v, il, 8U))) |
-               ((uint32_t)Util::bytetohexint16((uint8_t)CppCore::getbits32(v, ih, 8U)) << 16);
-         }
-
-         /// <summary>
-         /// Returns 4 characters encoded in uint32_t with the string representation of parts from v selected by il and ih.
-         /// For instance, returns 0x46464646 ("FFFF") for v=0x00FF0000000000FF and il=0 (select first byte) and ih=48 (select seventh byte).
-         /// </summary>
-         INLINE static uint32_t valuetohexint32(const uint64_t v, const uint32_t il, const uint32_t ih)
-         {
-            return
-               ((uint32_t)Util::bytetohexint16((uint8_t)CppCore::getbits64(v, il, 8U))) |
-               ((uint32_t)Util::bytetohexint16((uint8_t)CppCore::getbits64(v, ih, 8U)) << 16);
-         }
-
-         /// <summary>
-         /// Template function for parsing unsigned integer from zero terminated hex string.
-         /// No overflow or invalid symbol check! No support for '0x' prefix!
-         /// For bigendian=true the first character must contain the highest bits.
-         /// N must be the number of max symbols for T (e.g. 8 for 32bit and 16 for 64bit).
-         /// </summary>
-         template<typename T, size_t N>
-         INLINE static T parse(const char* input, const bool bigendian = true)
-         {
-            T r = (T)0U;
-            char c;
-            CPPCORE_UNROLL
-            for (size_t i = 0; i != N && (c = *input++); i++) // pray for unroll
-            {
-               r <<= 4;
-               r |= Util::valueofhexchar(c);
-            }
-            if (!bigendian)
-               CppCore::byteswap(r);
-            return r;
-         }
-
-         /// <summary>
-         /// Template function for parsing unsigned integer from zero terminated hex string.
-         /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-         /// For bigendian=true the first character must contain the highest bits.
-         /// N must be the number of overflow free symbols for T (e.g. 8 for 32bit and 16 for 64bit).
-         /// </summary>
-         template<typename T, size_t N>
-         INLINE static bool tryparse(const char* input, T& r, const bool bigendian = true)
-         {
-            r = (T)0U;
-            uint8_t v;
-            if (input) CPPCORE_LIKELY
-            {
-               v = Util::valueofhexchar(*input++);
-               if (v <= 0x0F) CPPCORE_LIKELY
-               {
-                  r |= v;
-                  CPPCORE_UNROLL
-                  for (size_t i = 0; i != N-1; i++)
-                  {
-                     v = Util::valueofhexchar(*input++);
-                     if (v <= 0x0F)
-                     {
-                        r <<= 4;
-                        r |= v;
-                     }
-                     else if (v == 0xFE) // end of str
-                     {
-                        if (!bigendian)
-                           CppCore::byteswap(r);
-                        return true;
-                     }
-                     else // invalid symbol
-                        return false;
-                  }
-                  if (*input == 0) CPPCORE_LIKELY
-                  {
-                     if (!bigendian)
-                        CppCore::byteswap(r);
-                     return true;
-                  }
-                  else CPPCORE_UNLIKELY // too many symbols for T
-                     return false;
-               }
-               else CPPCORE_UNLIKELY // empty string or invalid first symbol
-                  return false;
-            }
-            else CPPCORE_UNLIKELY // null pointer
-               return false;
+            return UPPERCASE ? BIN2HEX_UPPERCASE[byte] : BIN2HEX_LOWERCASE[byte];
          }
       };
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
-      /// Creates hex string with exactly 4 symbols (leading zeros) for 16-bit unsigned integer v.
-      /// Requires 4 (or 5 if writeterm=true) free bytes in parameter s.
+      /// Encodes exactly 'len' bytes from 'in' into '2*len' hex characters in 'out'.
       /// </summary>
-      INLINE static void tostring(const uint16_t v, char* s, const bool bigendian = true, const bool writeterm = true)
+      INLINE static void encode(const void* in, char* out, size_t len, bool reverse = false, bool writeterm = false, bool uppercase = true)
       {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian) *p = Util::valuetohexint32((uint32_t)v,  8U,  0U);
-         else *p = Util::valuetohexint32((uint32_t)v,  0U,  8U);
-         if (writeterm)
-            *((char*)&p[1]) = (char)0x00;
-      }
-
-      /// <summary>
-      /// Creates hex string with exactly 8 symbols (leading zeros) for 32-bit unsigned integer v.
-      /// Requires 8 (or 9 if writeterm=true) free bytes in parameter s.
-      /// </summary>
-      INLINE static void tostring(const uint32_t v, char* s, const bool bigendian = true, const bool writeterm = true)
-      {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
+         const uint16_t* TABLE = uppercase ? 
+            Util::BIN2HEX_UPPERCASE :
+            Util::BIN2HEX_LOWERCASE;
+         uint16_t* out16 = (uint16_t*)out;
+         if (reverse)
          {
-            p[0] = Util::valuetohexint32(v, 24U, 16U);
-            p[1] = Util::valuetohexint32(v,  8U,  0U);
+            uint8_t* in8 = (uint8_t*)in + len;
+            while (len--)
+               *out16++ = TABLE[*--in8];
          }
          else
          {
-            p[0] = Util::valuetohexint32(v,  0U,  8U);
-            p[1] = Util::valuetohexint32(v, 16U, 24U);
+            uint8_t* in8 = (uint8_t*)in;
+            while (len--)
+               *out16++ = TABLE[*in8++];
          }
          if (writeterm)
-            *((char*)&p[2]) = (char)0x00;
+            *((uint8_t*)out16) = 0x00;
       }
 
       /// <summary>
-      /// Creates hex string with exactly 16 symbols (leading zeros) for 64-bit unsigned integer v.
-      /// Requires 16 (or 17 if writeterm=true) free bytes in parameter s.
+      /// Encodes exactly 'len' bytes from 'in' into '2*len' hex characters in 'out'.
       /// </summary>
-      INLINE static void tostring(const uint64_t v, char* s, const bool bigendian = true, const bool writeterm = true)
+      template<typename STRING = std::string>
+      INLINE static void encode(const void* in, STRING& out, size_t len, bool reverse = false, bool writeterm = false, bool uppercase = true)
       {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
-         {
-            p[0] = Util::valuetohexint32(v, 56ULL, 48ULL);
-            p[1] = Util::valuetohexint32(v, 40ULL, 32ULL);
-            p[2] = Util::valuetohexint32(v, 24ULL, 16ULL);
-            p[3] = Util::valuetohexint32(v,  8ULL,  0ULL);
-         }
-         else
-         {
-            p[0] = Util::valuetohexint32(v,  0ULL,  8ULL);
-            p[1] = Util::valuetohexint32(v, 16ULL, 24ULL);
-            p[2] = Util::valuetohexint32(v, 32ULL, 40ULL);
-            p[3] = Util::valuetohexint32(v, 48ULL, 56ULL);
-         }
-         if (writeterm)
-            *((char*)&p[4]) = (char)0x00;
+         out.resize(len * 2U);
+         Hex::encode(in, out.data(), len, reverse, writeterm, uppercase);
       }
 
       /// <summary>
-      /// Creates hex string with exactly 4*n16 symbols (leading zeros) for memory that's a multiple of 16-bit.
-      /// Requires 4*n16 (or 4*n16+1 if writeterm=true) free bytes in parameter s,
+      /// Decodes exactly '2*len' characters from 'in' into 'len' bytes in 'out'.
       /// </summary>
-      INLINE static void tostring(const uint16_t* v, char* s, const size_t n16, const bool bigendian = true, const bool writeterm = true)
+      INLINE static void decode(const char* in, void* out, size_t len, bool reverse = false)
       {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
+         uint8_t* out8 = (uint8_t*)out;
+         if (reverse)
          {
-            for (size_t i = 0; i != n16; i++)
-               *p++ = Util::valuetohexint32((uint32_t)v[i],  0U,  8U);
-         }
-         else
-         {
-            for (size_t i = n16-1U; i != std::numeric_limits<size_t>::max(); i--)
-               *p++ = Util::valuetohexint32((uint32_t)v[i],  8U,  0U);
-         }
-         if (writeterm)
-            *((char*)p) = (char)0x00;
-      }
-
-      /// <summary>
-      /// Creates hex string with exactly 8*n32 symbols (leading zeros) for memory that's a multiple of 32-bit.
-      /// Requires 8*n32 (or 8*n32+1 if writeterm=true) free bytes in parameter s,
-      /// </summary>
-      INLINE static void tostring(const uint32_t* v, char* s, const size_t n32, const bool bigendian = true, const bool writeterm = true)
-      {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
-         {
-            for (size_t i = 0; i != n32; i++)
+            in += len + len;
+            while (len--)
             {
-               const uint32_t t = v[i];
-               *p++ = Util::valuetohexint32(t,  0U,  8U);
-               *p++ = Util::valuetohexint32(t, 16U, 24U);
+               char c2 = *--in;
+               char c1 = *--in;
+               *out8++ = 
+                  (Util::valueofhexchar(c1) << 4) | 
+                  (Util::valueofhexchar(c2));
             }
          }
          else
          {
-            for (size_t i = n32-1U; i != std::numeric_limits<size_t>::max(); i--)
+            while (len--)
             {
-               const uint32_t t = v[i];
-               *p++ = Util::valuetohexint32(t, 24U, 16U);
-               *p++ = Util::valuetohexint32(t,  8U,  0U);
+               char c1 = *in++;
+               char c2 = *in++;
+               *out8++ = 
+                  (Util::valueofhexchar(c1) << 4) | 
+                  (Util::valueofhexchar(c2));
             }
          }
-         if (writeterm)
-            *((char*)p) = (char)0x00;
       }
 
       /// <summary>
-      /// Creates hex string with exactly 16*n64 symbols (leading zeros) for memory that's a multiple of 64-bit.
-      /// Requires 16*n64 (or 16*n64+1 if writeterm=true) free bytes in parameter s,
+      /// Parses unsigned integer 'out' from n hex characters in 'in'.
+      /// Note that e.g. 0xFF1 is 0xFF01 (and neither 0x0FF1 nor 0xFF10) if 'in_be' is false.
       /// </summary>
-      INLINE static void tostring(const uint64_t* v, char* s, const size_t n64, const bool bigendian = true, const bool writeterm = true)
+      template<typename UINT>
+      INLINE static void parse(const char* in, size_t n, UINT& out, const bool in_be = true, const bool out_le = CPPCORE_ENDIANESS_LITTLE)
       {
-         uint32_t* p = (uint32_t*)s;
-         if (bigendian)
+         CppCore::clear(out);
+         uint8_t* p = (uint8_t*)&out;
+         if (in_be)
          {
-            for (size_t i = 0; i != n64; i++)
+            in += n;
+            if (n > sizeof(UINT)*2)
+               n = sizeof(UINT)*2;
+            if (out_le)
             {
-               const uint64_t t = v[i];
-               *p++ = Util::valuetohexint32(t,  0ULL,  8ULL);
-               *p++ = Util::valuetohexint32(t, 16ULL, 24ULL);
-               *p++ = Util::valuetohexint32(t, 32ULL, 40ULL);
-               *p++ = Util::valuetohexint32(t, 48ULL, 56ULL);
+               while (n >= 2)
+               {
+                  n -= 2;
+                  char c2 = *--in;
+                  char c1 = *--in;
+                  *p++ =
+                     (Util::HEX2BIN[c1] << 4) |
+                     (Util::HEX2BIN[c2]);
+               }
+               if (n)
+                  *p++ = Util::HEX2BIN[*--in];
             }
-
-         }
-         else
-         {
-            for (size_t i = n64-1U; i != std::numeric_limits<size_t>::max(); i--)
+            else
             {
-               const uint64_t t = v[i];
-               *p++ = Util::valuetohexint32(t, 56ULL, 48ULL);
-               *p++ = Util::valuetohexint32(t, 40ULL, 32ULL);
-               *p++ = Util::valuetohexint32(t, 24ULL, 16ULL);
-               *p++ = Util::valuetohexint32(t,  8ULL,  0ULL);
-            }
-         }
-         if (writeterm)
-            *((char*)p) = (char)0x00;
-      }
-
-      /// <summary>
-      /// Creates hex string for memory of certain length.
-      /// Requires len*2 (or len*2+1 if writeterm=true) free bytes in parameter s.
-      /// </summary>
-      INLINE static void tostring(const void* m, size_t len, char* s, const bool bigendian = true, const bool writeterm = true)
-      {
-         const uint8_t* mem = (const uint8_t*)m;
-         uint16_t* p16 = (uint16_t*)s;
-         if (bigendian)
-         {
-            while(len)
-            {
-               *p16++ = Util::bytetohexint16(*mem++);
-               len--;
+               p += sizeof(UINT);
+               while (n >= 2)
+               {
+                  n -= 2;
+                  char c2 = *--in;
+                  char c1 = *--in;
+                  *--p =
+                     (Util::HEX2BIN[c1] << 4) |
+                     (Util::HEX2BIN[c2]);
+               }
+               if (n)
+                  *--p = Util::HEX2BIN[*--in];
             }
          }
          else
          {
-            mem += len;
-            while(len)
+            if (n > sizeof(UINT)*2)
+               n = sizeof(UINT)*2;
+            if (out_le)
             {
-               *p16++ = Util::bytetohexint16(*--mem);
-               len--;
+               while (n >= 2)
+               {
+                  n -= 2;
+                  char c1 = *in++;
+                  char c2 = *in++;
+                  *p++ =
+                     (Util::HEX2BIN[c1] << 4) |
+                     (Util::HEX2BIN[c2]);
+               }
+               if (n)
+                  *p++ = Util::HEX2BIN[*in];
+            }
+            else
+            {
+               p += sizeof(UINT);
+               while (n >= 2)
+               {
+                  n -= 2;
+                  char c1 = *in++;
+                  char c2 = *in++;
+                  *--p =
+                     (Util::HEX2BIN[c1] << 4) |
+                     (Util::HEX2BIN[c2]);
+               }
+               if (n)
+                  *--p = Util::HEX2BIN[*in];
             }
          }
-         if (writeterm)
-            *((uint8_t*)p16) = (uint8_t)0x00;
       }
 
       /// <summary>
-      /// Creates hex string for memory of certain length.
-      /// Will resize s as necessary.
+      /// Determines C string length on-the-fly
       /// </summary>
-      INLINE static void tostring(const void* mem, const size_t len, std::string& s, const bool bigendian = true)
+      template<typename UINT>
+      INLINE static void parse(const char* in, UINT& out, const bool in_be = true, const bool out_le = CPPCORE_ENDIANESS_LITTLE)
       {
-         s.resize(len * 2U);
-         Hex::tostring(mem, len, s.data(), bigendian, false);
-      }
-
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Parses 16-bit unsigned integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static uint16_t parse16u(const char* input, const bool bigendian = true)
-      {
-         return Util::parse<uint16_t, CPPCORE_MAXSYMBOLS_B16_16>(input, bigendian);
+         CppCore::Hex::parse(in, ::strlen(in), out, in_be, out_le);
       }
 
       /// <summary>
-      /// Parses 32-bit unsigned integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
+      /// For C++ strings
       /// </summary>
-      INLINE static uint32_t parse32u(const char* input, const bool bigendian = true)
+      template<typename UINT, typename STRING>
+      INLINE static void parse(const STRING& in, UINT& out, const bool in_be = true, const bool out_le = CPPCORE_ENDIANESS_LITTLE)
       {
-         return Util::parse<uint32_t, CPPCORE_MAXSYMBOLS_B16_32>(input, bigendian);
+         CppCore::Hex::parse(in.data(), in.length(), out, in_be, out_le);
       }
 
       /// <summary>
-      /// Parses 64-bit unsigned integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
+      /// Tries to parse unsigned integer 'out' from n hex characters in 'in'.
       /// </summary>
-      INLINE static uint64_t parse64u(const char* input, const bool bigendian = true)
+      template<typename UINT>
+      INLINE static bool tryparse(const char* in, size_t n, UINT& out, const bool in_be = true)
       {
-         return Util::parse<uint64_t, CPPCORE_MAXSYMBOLS_B16_64>(input, bigendian);
+         static_assert(CPPCORE_ENDIANESS_LITTLE);
+         CppCore::clear(out);
+         if (!in || *in == 0x00)
+            return false;
+         if (n > sizeof(UINT)*2)
+            return false;
+         uint8_t* p = (uint8_t*)&out;
+         if (in_be)
+         {
+            in += n;
+            while (n >= 2)
+            {
+               n -= 2;
+               char c2 = *--in;
+               char c1 = *--in;
+               uint8_t v1 = Util::HEX2BIN[c1];
+               uint8_t v2 = Util::HEX2BIN[c2];
+               if ((v1 | v2) > 0x0F)
+                  return false;
+               *p++ = (v1 << 4) | (v2);
+            }
+            if (n) {
+               uint8_t v = Util::HEX2BIN[*--in];
+               if (v > 0x0F)
+                  return false;
+               *p++ = v;
+            }
+         }
+         else
+         {
+            while (n >= 2)
+            {
+               n -= 2;
+               char c1 = *in++;
+               char c2 = *in++;
+               uint8_t v1 = Util::HEX2BIN[c1];
+               uint8_t v2 = Util::HEX2BIN[c2];
+               if ((v1 | v2) > 0x0F)
+                  return false;
+               *p++ = (v1 << 4) | (v2);
+            }
+            if (n) {
+               uint8_t v = Util::HEX2BIN[*in];
+               if (v > 0x0F)
+                  return false;
+               *p++ = v;
+            }
+         }
+         return true;
       }
 
       /// <summary>
-      /// Parses 16-bit signed integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
+      /// Determines C string length on-the-fly
       /// </summary>
-      INLINE static int16_t parse16s(const char* input, const bool bigendian = true)
+      template<typename UINT>
+      INLINE static bool tryparse(const char* in, UINT& out, const bool in_be = true)
       {
-         return (int16_t)Hex::parse16u(input, bigendian);
+         return (in == 0) ? false : Hex::tryparse(in, ::strlen(in), out, in_be);
       }
 
       /// <summary>
-      /// Parses 32-bit signed integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
+      /// For C++ strings
       /// </summary>
-      INLINE static int32_t parse32s(const char* input, const bool bigendian = true)
+      template<typename UINT, typename STRING>
+      INLINE static bool tryparse(const STRING& in, UINT& out, const bool in_be = true)
       {
-         return (int32_t)Hex::parse32u(input, bigendian);
+         return Hex::tryparse(in.data(), in.length(), out, in_be);
       }
 
       /// <summary>
-      /// Parses 64-bit signed integer from zero terminated hex string.
-      /// No overflow or invalid symbol check! No support for '0x' prefix!
-      /// For bigendian=true the first character must contain the highest bits.
+      /// Creates hex string with exactly 2*sizeof(v) symbols in s.
+      /// Requires 2*sizeof(v) (+1 if writeterm=true) free bytes in s.
       /// </summary>
-      INLINE static int64_t parse64s(const char* input, const bool bigendian = true)
+      template<typename UINT>
+      INLINE static void tostring(const UINT& v, char* s, const bool bigendian = true, const bool writeterm = true, bool uppercase = true)
       {
-         return (int64_t)Hex::parse64u(input, bigendian);
-      }
-
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// Tries to parse 16-bit unsigned integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint16_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint16_t, CPPCORE_MAXSYMBOLS_B16_16>(input, r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 32-bit unsigned integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint32_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint32_t, CPPCORE_MAXSYMBOLS_B16_32>(input, r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 64-bit unsigned integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, uint64_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint64_t, CPPCORE_MAXSYMBOLS_B16_64>(input, r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 16-bit signed integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, int16_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint16_t, CPPCORE_MAXSYMBOLS_B16_16>(input, (uint16_t&)r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 32-bit signed integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, int32_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint32_t, CPPCORE_MAXSYMBOLS_B16_32>(input, (uint32_t&)r, bigendian);
-      }
-
-      /// <summary>
-      /// Tries to parse 64-bit signed integer from zero terminated hex string.
-      /// Returns false if input is a null pointer or empty string or has invalid symbol or overflowed.
-      /// For bigendian=true the first character must contain the highest bits.
-      /// </summary>
-      INLINE static bool tryparse(const char* input, int64_t& r, const bool bigendian = true)
-      {
-         return Util::tryparse<uint64_t, CPPCORE_MAXSYMBOLS_B16_64>(input, (uint64_t&)r, bigendian);
+         Hex::encode(&v, s, sizeof(UINT), bigendian == CPPCORE_ENDIANESS_LITTLE, writeterm, uppercase);
       }
    };
 

@@ -282,15 +282,81 @@ export class Base10 extends BaseX {
   }
 }
 
-export class Base16 extends BaseX {
+export class Base16 {
+  #strbuf
   constructor() {
-    super("0123456789abcdef");
+    this.#strbuf = new CString(2048);
   }
+  get strbuf() { return this.#strbuf; }
   static estimateBits(symbols) {
-    return super.estimateBits(symbols, 16);
+    return EXPORTS.cppcore_basex_estimate_bits(symbols, 16);
   }
   static estimateSymbols(bits) {
-    return super.estimateSymbols(bits, 16);
+    return EXPORTS.cppcore_basex_estimate_symbols(bits, 16);
+  }
+  encode(v, uppercase, bigendian) {
+    let f = null;
+    if (uppercase == null) uppercase = false;
+    if (bigendian == null) bigendian = true;
+    if      (v.byteLength == 4)    { f = EXPORTS.cppcore_base16_encode32; }
+    else if (v.byteLength == 8)    { f = EXPORTS.cppcore_base16_encode64; }
+    else if (v.byteLength == 16)   { f = EXPORTS.cppcore_base16_encode128; }
+    else if (v.byteLength == 32)   { f = EXPORTS.cppcore_base16_encode256; }
+    else if (v.byteLength == 64)   { f = EXPORTS.cppcore_base16_encode512; }
+    else if (v.byteLength == 128)  { f = EXPORTS.cppcore_base16_encode1024; }
+    else if (v.byteLength == 256)  { f = EXPORTS.cppcore_base16_encode2048; }
+    else if (v.byteLength == 512)  { f = EXPORTS.cppcore_base16_encode4096; }
+    else if (v.byteLength == 1024) { f = EXPORTS.cppcore_base16_encode8192; }
+    else throw new RangeError('Invalid byteLength in Base16.encode()');
+    f(
+      v.ptr,             // inbuf ptr
+      this.#strbuf.ptr,  // outbuf ptr
+      bigendian,         // big endian output
+      1,                 // write term 0x00
+      uppercase          // uppercase
+    );
+    this.#strbuf.byteLength = v.byteLength << 1;
+    return this.#strbuf.toString();
+  }
+  decode(str, bits, bigendian) {
+    if (bigendian == null) bigendian = true;
+    this.#strbuf.set(str);
+    const len = this.#strbuf.byteLength;
+    let f = null;
+    let t = null;
+    if      (!bits) bits = len&1 ? (len+1)<<2 : len<<2;
+    if      (bits <= 32)   { t = UInt32;   f = EXPORTS.cppcore_base16_decode32; }
+    else if (bits <= 64)   { t = UInt64;   f = EXPORTS.cppcore_base16_decode64; }
+    else if (bits <= 128)  { t = UInt128;  f = EXPORTS.cppcore_base16_decode128; }
+    else if (bits <= 256)  { t = UInt256;  f = EXPORTS.cppcore_base16_decode256; }
+    else if (bits <= 512)  { t = UInt512;  f = EXPORTS.cppcore_base16_decode512; }
+    else if (bits <= 1024) { t = UInt1024; f = EXPORTS.cppcore_base16_decode1024; }
+    else if (bits <= 2048) { t = UInt2048; f = EXPORTS.cppcore_base16_decode2048; }
+    else if (bits <= 4096) { t = UInt4096; f = EXPORTS.cppcore_base16_decode4096; }
+    else if (bits <= 8192) { t = UInt8192; f = EXPORTS.cppcore_base16_decode8192; }
+    else throw new RangeError('Invalid bitLength in Base16.decode()');
+    const uint = new t();
+    const r = f(this.#strbuf.ptr, this.#strbuf.byteLength, uint.ptr, bigendian);
+    if (r == 0) throw new Error('Invalid symbol or overflow');
+    return uint;
+  }
+  decodeInto(str, buf, bigendian) {
+    if (bigendian == null) bigendian = true;
+    this.#strbuf.set(str);
+    const byteLength = buf.byteLength;
+    let f = null;
+    if      (byteLength == 4)    { f = EXPORTS.cppcore_base16_decode32; }
+    else if (byteLength == 8)    { f = EXPORTS.cppcore_base16_decode64; }
+    else if (byteLength == 16)   { f = EXPORTS.cppcore_base16_decode128; }
+    else if (byteLength == 32)   { f = EXPORTS.cppcore_base16_decode256; }
+    else if (byteLength == 64)   { f = EXPORTS.cppcore_base16_decode512; }
+    else if (byteLength == 128)  { f = EXPORTS.cppcore_base16_decode1024; }
+    else if (byteLength == 256)  { f = EXPORTS.cppcore_base16_decode2048; }
+    else if (byteLength == 512)  { f = EXPORTS.cppcore_base16_decode4096; }
+    else if (byteLength == 1024) { f = EXPORTS.cppcore_base16_decode8192; }
+    else throw new RangeError('Invalid byteLength in Base16.decodeInto()');
+    const r = f(this.#strbuf.ptr, this.#strbuf.byteLength, buf.ptr, bigendian);
+    if (r == 0) throw new Error('Invalid symbol or overflow');
   }
 }
 

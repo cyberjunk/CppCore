@@ -322,28 +322,80 @@ namespace CppCore { namespace Test
       class Hex
       {
       public:
-         INLINE static bool tostring()
+         INLINE static bool encode()
          {
             char s[9 * 2 + 1];
             ::std::string ss;
             
-            uint8_t rr0[1] = { 0x00                     }; CppCore::Hex::tostring(rr0, 1, s, true); CppCore::Hex::tostring(rr0, 1, ss, true); if (s != ss || s != std::string("00")) return false;
-            uint8_t rr1[1] = { 0xA5                     }; CppCore::Hex::tostring(rr1, 1, s, true); CppCore::Hex::tostring(rr1, 1, ss, true); if (s != ss || s != std::string("A5")) return false;
-            uint8_t rr2[2] = { 0xA5,0xFF                }; CppCore::Hex::tostring(rr2, 2, s, true); CppCore::Hex::tostring(rr2, 2, ss, true); if (s != ss || s != std::string("A5FF")) return false;
-            uint8_t rr3[3] = { 0xA5,0xFF,0x3C           }; CppCore::Hex::tostring(rr3, 3, s, true); CppCore::Hex::tostring(rr3, 3, ss, true); if (s != ss || s != std::string("A5FF3C")) return false;
-            uint8_t rr4[4] = { 0xA5,0xFF,0x3C,0x74      }; CppCore::Hex::tostring(rr4, 4, s, true); CppCore::Hex::tostring(rr4, 4, ss, true); if (s != ss || s != std::string("A5FF3C74")) return false;
-            uint8_t rr5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 }; CppCore::Hex::tostring(rr5, 5, s, true); CppCore::Hex::tostring(rr5, 5, ss, true); if (s != ss || s != std::string("A5FF3C74E9")) return false;
-            uint8_t rr6[9] = { 0xA5,0xFF,0x3C,0x74,0xE9,
-                               0xA5,0xFF,0x3C,0x04      }; CppCore::Hex::tostring(rr6, 9, s, true); CppCore::Hex::tostring(rr6, 9, ss, true); if (s != ss || s != std::string("A5FF3C74E9A5FF3C04")) return false;
+            uint8_t rr0[1] = { 0x00 };
+            uint8_t rr1[1] = { 0xA5 };
+            uint8_t rr2[2] = { 0xA5,0xFF };
+            uint8_t rr3[3] = { 0xA5,0xFF,0x3C };
+            uint8_t rr4[4] = { 0xA5,0xFF,0x3C,0x74 };
+            uint8_t rr5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 };
+            uint8_t rr6[9] = { 0xA5,0xFF,0x3C,0x74,0xE9,0xA5,0xFF,0x3C,0x04 };
 
-            uint8_t r0[1] = { 0x00                     }; CppCore::Hex::tostring(r0, 1, s, false); CppCore::Hex::tostring(r0, 1, ss, false); if (s != ss || s != std::string("00")) return false;
-            uint8_t r1[1] = { 0xA5                     }; CppCore::Hex::tostring(r1, 1, s, false); CppCore::Hex::tostring(r1, 1, ss, false); if (s != ss || s != std::string("A5")) return false;
-            uint8_t r2[2] = { 0xA5,0xFF                }; CppCore::Hex::tostring(r2, 2, s, false); CppCore::Hex::tostring(r2, 2, ss, false); if (s != ss || s != std::string("FFA5")) return false;
-            uint8_t r3[3] = { 0xA5,0xFF,0x3C           }; CppCore::Hex::tostring(r3, 3, s, false); CppCore::Hex::tostring(r3, 3, ss, false); if (s != ss || s != std::string("3CFFA5")) return false;
-            uint8_t r4[4] = { 0xA5,0xFF,0x3C,0x74      }; CppCore::Hex::tostring(r4, 4, s, false); CppCore::Hex::tostring(r4, 4, ss, false); if (s != ss || s != std::string("743CFFA5")) return false;
-            uint8_t r5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 }; CppCore::Hex::tostring(r5, 5, s, false); CppCore::Hex::tostring(r5, 5, ss, false); if (s != ss || s != std::string("E9743CFFA5")) return false;
-            uint8_t r6[9] = { 0xA5,0xFF,0x3C,0x74,0xE9,
-                              0xA5,0xFF,0x3C,0x04      }; CppCore::Hex::tostring(r6, 9, s, false); CppCore::Hex::tostring(r6, 9, ss, false); if (s != ss || s != std::string("043CFFA5E9743CFFA5")) return false;
+            CppCore::Hex::encode(rr0, s, 1, false, true, true); CppCore::Hex::encode(rr0, ss, 1, false, true, true); if (s != ss || s != std::string("00")) return false;
+            CppCore::Hex::encode(rr1, s, 1, false, true, true); CppCore::Hex::encode(rr1, ss, 1, false, true, true); if (s != ss || s != std::string("A5")) return false;
+            CppCore::Hex::encode(rr2, s, 2, false, true, true); CppCore::Hex::encode(rr2, ss, 2, false, true, true); if (s != ss || s != std::string("A5FF")) return false;
+            CppCore::Hex::encode(rr3, s, 3, false, true, true); CppCore::Hex::encode(rr3, ss, 3, false, true, true); if (s != ss || s != std::string("A5FF3C")) return false;
+            CppCore::Hex::encode(rr4, s, 4, false, true, true); CppCore::Hex::encode(rr4, ss, 4, false, true, true); if (s != ss || s != std::string("A5FF3C74")) return false;
+            CppCore::Hex::encode(rr5, s, 5, false, true, true); CppCore::Hex::encode(rr5, ss, 5, false, true, true); if (s != ss || s != std::string("A5FF3C74E9")) return false;
+            CppCore::Hex::encode(rr6, s, 9, false, true, true); CppCore::Hex::encode(rr6, ss, 9, false, true, true); if (s != ss || s != std::string("A5FF3C74E9A5FF3C04")) return false;
+
+            CppCore::Hex::encode(rr0, s, 1, false, true, false); CppCore::Hex::encode(rr0, ss, 1, false, true, false); if (s != ss || s != std::string("00")) return false;
+            CppCore::Hex::encode(rr1, s, 1, false, true, false); CppCore::Hex::encode(rr1, ss, 1, false, true, false); if (s != ss || s != std::string("a5")) return false;
+            CppCore::Hex::encode(rr2, s, 2, false, true, false); CppCore::Hex::encode(rr2, ss, 2, false, true, false); if (s != ss || s != std::string("a5ff")) return false;
+            CppCore::Hex::encode(rr3, s, 3, false, true, false); CppCore::Hex::encode(rr3, ss, 3, false, true, false); if (s != ss || s != std::string("a5ff3c")) return false;
+            CppCore::Hex::encode(rr4, s, 4, false, true, false); CppCore::Hex::encode(rr4, ss, 4, false, true, false); if (s != ss || s != std::string("a5ff3c74")) return false;
+            CppCore::Hex::encode(rr5, s, 5, false, true, false); CppCore::Hex::encode(rr5, ss, 5, false, true, false); if (s != ss || s != std::string("a5ff3c74e9")) return false;
+            CppCore::Hex::encode(rr6, s, 9, false, true, false); CppCore::Hex::encode(rr6, ss, 9, false, true, false); if (s != ss || s != std::string("a5ff3c74e9a5ff3c04")) return false;
+
+            CppCore::Hex::encode(rr0, s, 1, true, true, true); CppCore::Hex::encode(rr0, ss, 1, true, true, true); if (s != ss || s != std::string("00")) return false;
+            CppCore::Hex::encode(rr1, s, 1, true, true, true); CppCore::Hex::encode(rr1, ss, 1, true, true, true); if (s != ss || s != std::string("A5")) return false;
+            CppCore::Hex::encode(rr2, s, 2, true, true, true); CppCore::Hex::encode(rr2, ss, 2, true, true, true); if (s != ss || s != std::string("FFA5")) return false;
+            CppCore::Hex::encode(rr3, s, 3, true, true, true); CppCore::Hex::encode(rr3, ss, 3, true, true, true); if (s != ss || s != std::string("3CFFA5")) return false;
+            CppCore::Hex::encode(rr4, s, 4, true, true, true); CppCore::Hex::encode(rr4, ss, 4, true, true, true); if (s != ss || s != std::string("743CFFA5")) return false;
+            CppCore::Hex::encode(rr5, s, 5, true, true, true); CppCore::Hex::encode(rr5, ss, 5, true, true, true); if (s != ss || s != std::string("E9743CFFA5")) return false;
+            CppCore::Hex::encode(rr6, s, 9, true, true, true); CppCore::Hex::encode(rr6, ss, 9, true, true, true); if (s != ss || s != std::string("043CFFA5E9743CFFA5")) return false;
+
+            CppCore::Hex::encode(rr0, s, 1, true, true, false); CppCore::Hex::encode(rr0, ss, 1, true, true, false); if (s != ss || s != std::string("00")) return false;
+            CppCore::Hex::encode(rr1, s, 1, true, true, false); CppCore::Hex::encode(rr1, ss, 1, true, true, false); if (s != ss || s != std::string("a5")) return false;
+            CppCore::Hex::encode(rr2, s, 2, true, true, false); CppCore::Hex::encode(rr2, ss, 2, true, true, false); if (s != ss || s != std::string("ffa5")) return false;
+            CppCore::Hex::encode(rr3, s, 3, true, true, false); CppCore::Hex::encode(rr3, ss, 3, true, true, false); if (s != ss || s != std::string("3cffa5")) return false;
+            CppCore::Hex::encode(rr4, s, 4, true, true, false); CppCore::Hex::encode(rr4, ss, 4, true, true, false); if (s != ss || s != std::string("743cffa5")) return false;
+            CppCore::Hex::encode(rr5, s, 5, true, true, false); CppCore::Hex::encode(rr5, ss, 5, true, true, false); if (s != ss || s != std::string("e9743cffa5")) return false;
+            CppCore::Hex::encode(rr6, s, 9, true, true, false); CppCore::Hex::encode(rr6, ss, 9, true, true, false); if (s != ss || s != std::string("043cffa5e9743cffa5")) return false;
+            
+            return true;
+         }
+         INLINE static bool decode()
+         {
+            uint8_t out[9];
+
+            uint8_t rr0[1] = { 0x00 };
+            uint8_t rr1[1] = { 0xA5 };
+            uint8_t rr2[2] = { 0xA5,0xFF };
+            uint8_t rr3[3] = { 0xA5,0xFF,0x3C };
+            uint8_t rr4[4] = { 0xA5,0xFF,0x3C,0x74 };
+            uint8_t rr5[5] = { 0xA5,0xFF,0x3C,0x74,0xE9 };
+            uint8_t rr6[9] = { 0xA5,0xFF,0x3C,0x74,0xE9,0xA5,0xFF,0x3C,0x04 };
+
+            CppCore::Hex::decode("00",         out, 1, false); if (::memcmp(out, rr0, 1) != 0) return false;
+            CppCore::Hex::decode("A5",         out, 1, false); if (::memcmp(out, rr1, 1) != 0) return false;
+            CppCore::Hex::decode("A5FF",       out, 2, false); if (::memcmp(out, rr2, 2) != 0) return false;
+            CppCore::Hex::decode("A5FF3C",     out, 3, false); if (::memcmp(out, rr3, 3) != 0) return false;
+            CppCore::Hex::decode("A5FF3C74",   out, 4, false); if (::memcmp(out, rr4, 4) != 0) return false;
+            CppCore::Hex::decode("A5FF3C74E9", out, 5, false); if (::memcmp(out, rr5, 5) != 0) return false;
+            CppCore::Hex::decode("A5FF3C74E9A5FF3C04", out, 9, false); if (::memcmp(out, rr6, 9) != 0) return false;
+
+            CppCore::Hex::decode("00",                 out, 1, true); if (::memcmp(out, rr0, 1) != 0) return false;
+            CppCore::Hex::decode("A5",                 out, 1, true); if (::memcmp(out, rr1, 1) != 0) return false;
+            CppCore::Hex::decode("FFA5",               out, 2, true); if (::memcmp(out, rr2, 2) != 0) return false;
+            CppCore::Hex::decode("3CFFA5",             out, 3, true); if (::memcmp(out, rr3, 3) != 0) return false;
+            CppCore::Hex::decode("743CFFA5",           out, 4, true); if (::memcmp(out, rr4, 4) != 0) return false;
+            CppCore::Hex::decode("E9743CFFA5",         out, 5, true); if (::memcmp(out, rr5, 5) != 0) return false;
+            CppCore::Hex::decode("043CFFA5E9743CFFA5", out, 9, true); if (::memcmp(out, rr6, 9) != 0) return false;
 
             return true;
          }
@@ -364,21 +416,6 @@ namespace CppCore { namespace Test
             CppCore::Hex::tostring(uint16_t(0xFF0F), s, false); if (std::string("0FFF") != s) return false;
             CppCore::Hex::tostring(uint16_t(0x3ABC), s, false); if (std::string("BC3A") != s) return false;
 
-            const uint16_t t0[]{ 0x0000U, 0x0000U };
-            const uint16_t t1[]{ 0x0001U, 0x0000U };
-            const uint16_t t2[]{ 0x1122U, 0x3344U };
-            const uint16_t t3[]{ 0xFFFFU, 0xFFFFU };
-
-            CppCore::Hex::tostring(t0, l, 2, false); if (std::string("00000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, false); if (std::string("00000001") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, false); if (std::string("33441122") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, false); if (std::string("FFFFFFFF") != l) return false;
-
-            CppCore::Hex::tostring(t0, l, 2, true); if (std::string("00000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, true); if (std::string("01000000") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, true); if (std::string("22114433") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, true); if (std::string("FFFFFFFF") != l) return false;
-
             return true;
          }
          INLINE static bool tostring32()
@@ -397,21 +434,6 @@ namespace CppCore { namespace Test
             CppCore::Hex::tostring(0xFFFFFFFFU, s, false); if (std::string("FFFFFFFF") != s) return false;
             CppCore::Hex::tostring(0xFFFFFF0FU, s, false); if (std::string("0FFFFFFF") != s) return false;
             CppCore::Hex::tostring(0xFA193ABCU, s, false); if (std::string("BC3A19FA") != s) return false;
-
-            const uint32_t t0[]{ 0x00000000U, 0x00000000U };
-            const uint32_t t1[]{ 0x00000001U, 0x00000000U };
-            const uint32_t t2[]{ 0x11223344U, 0x55667788U };
-            const uint32_t t3[]{ 0xFFFFFFFFU, 0xFFFFFFFFU };
-
-            CppCore::Hex::tostring(t0, l, 2, false); if (std::string("0000000000000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, false); if (std::string("0000000000000001") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, false); if (std::string("5566778811223344") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, false); if (std::string("FFFFFFFFFFFFFFFF") != l) return false;
-
-            CppCore::Hex::tostring(t0, l, 2, true); if (std::string("0000000000000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, true); if (std::string("0100000000000000") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, true); if (std::string("4433221188776655") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, true); if (std::string("FFFFFFFFFFFFFFFF") != l) return false;
 
             return true;
          }
@@ -432,42 +454,47 @@ namespace CppCore { namespace Test
             CppCore::Hex::tostring(uint64_t(0xFFFFFFFFFFFFFF0F), s, false); if (std::string("0FFFFFFFFFFFFFFF") != s) return false;
             CppCore::Hex::tostring(uint64_t(0xFA193ABCFA193ABC), s, false); if (std::string("BC3A19FABC3A19FA") != s) return false;
 
-            const uint64_t t0[]{ 0x0000000000000000ULL, 0x0000000000000000ULL };
-            const uint64_t t1[]{ 0x0000000000000001ULL, 0x0000000000000000ULL };
-            const uint64_t t2[]{ 0x0011223344556677ULL, 0x8899AABBCCDDEEFFULL };
-            const uint64_t t3[]{ 0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL };
-
-            CppCore::Hex::tostring(t0, l, 2, false); if (std::string("00000000000000000000000000000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, false); if (std::string("00000000000000000000000000000001") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, false); if (std::string("8899AABBCCDDEEFF0011223344556677") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, false); if (std::string("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF") != l) return false;
-
-            CppCore::Hex::tostring(t0, l, 2, true); if (std::string("00000000000000000000000000000000") != l) return false;
-            CppCore::Hex::tostring(t1, l, 2, true); if (std::string("01000000000000000000000000000000") != l) return false;
-            CppCore::Hex::tostring(t2, l, 2, true); if (std::string("7766554433221100FFEEDDCCBBAA9988") != l) return false;
-            CppCore::Hex::tostring(t3, l, 2, true); if (std::string("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF") != l) return false;
-
             return true;
          }
          INLINE static bool parse16()
          {
             uint16_t r;
 
-            if (CppCore::Hex::parse16u("0",    true) != 0x0000U) return false;
-            if (CppCore::Hex::parse16u("0000", true) != 0x0000U) return false;
-            if (CppCore::Hex::parse16u("1",    true) != 0x0001U) return false;
-            if (CppCore::Hex::parse16u("0001", true) != 0x0001U) return false;
-            if (CppCore::Hex::parse16u("FFFF", true) != 0xFFFFU) return false;
-            if (CppCore::Hex::parse16u("0FFF", true) != 0x0FFFU) return false;
-            if (CppCore::Hex::parse16u("BC3A", true) != 0xBC3AU) return false;
+            CppCore::Hex::parse("0",    r, true, true); if (r != 0x0000U) return false;
+            CppCore::Hex::parse("0000", r, true, true); if (r != 0x0000U) return false;
+            CppCore::Hex::parse("1",    r, true, true); if (r != 0x0001U) return false;
+            CppCore::Hex::parse("0001", r, true, true); if (r != 0x0001U) return false;
+            CppCore::Hex::parse("FFFF", r, true, true); if (r != 0xFFFFU) return false;
+            CppCore::Hex::parse("0FFF", r, true, true); if (r != 0x0FFFU) return false;
+            CppCore::Hex::parse("BC3A", r, true, true); if (r != 0xBC3AU) return false;
+            CppCore::Hex::parse("1FF",  r, true, true); if (r != 0x01FFU) return false;
 
-            if (CppCore::Hex::parse16u("0",    false) != 0x0000U) return false;
-            if (CppCore::Hex::parse16u("0000", false) != 0x0000U) return false;
-            if (CppCore::Hex::parse16u("1",    false) != 0x0100U) return false;
-            if (CppCore::Hex::parse16u("0001", false) != 0x0100U) return false;
-            if (CppCore::Hex::parse16u("FFFF", false) != 0xFFFFU) return false;
-            if (CppCore::Hex::parse16u("0FFF", false) != 0xFF0FU) return false;
-            if (CppCore::Hex::parse16u("BC3A", false) != 0x3ABCU) return false;
+            CppCore::Hex::parse("0",    r, false, true); if (r != 0x0000U) return false;
+            CppCore::Hex::parse("0000", r, false, true); if (r != 0x0000U) return false;
+            CppCore::Hex::parse("1",    r, false, true); if (r != 0x0001U) return false;
+            CppCore::Hex::parse("0100", r, false, true); if (r != 0x0001U) return false;
+            CppCore::Hex::parse("FFFF", r, false, true); if (r != 0xFFFFU) return false;
+            CppCore::Hex::parse("FF0F", r, false, true); if (r != 0x0FFFU) return false;
+            CppCore::Hex::parse("3ABC", r, false, true); if (r != 0xBC3AU) return false;
+            CppCore::Hex::parse("FF1",  r, false, true); if (r != 0x01FFU) return false;
+
+            CppCore::Hex::parse("0",    r, true, false); if (r != 0x0000U) return false;
+            CppCore::Hex::parse("0000", r, true, false); if (r != 0x0000U) return false;
+            CppCore::Hex::parse("1",    r, true, false); if (r != 0x0100U) return false;
+            CppCore::Hex::parse("0001", r, true, false); if (r != 0x0100U) return false;
+            CppCore::Hex::parse("FFFF", r, true, false); if (r != 0xFFFFU) return false;
+            CppCore::Hex::parse("0FFF", r, true, false); if (r != 0xFF0FU) return false;
+            CppCore::Hex::parse("BC3A", r, true, false); if (r != 0x3ABCU) return false;
+            CppCore::Hex::parse("1FF",  r, true, false); if (r != 0xFF01U) return false;
+
+            CppCore::Hex::parse("0",    r, false, false); if (r != 0x0000U) return false;
+            CppCore::Hex::parse("0000", r, false, false); if (r != 0x0000U) return false;
+            CppCore::Hex::parse("1",    r, false, false); if (r != 0x0100U) return false;
+            CppCore::Hex::parse("0100", r, false, false); if (r != 0x0100U) return false;
+            CppCore::Hex::parse("FFFF", r, false, false); if (r != 0xFFFFU) return false;
+            CppCore::Hex::parse("FF0F", r, false, false); if (r != 0xFF0FU) return false;
+            CppCore::Hex::parse("3ABC", r, false, false); if (r != 0x3ABCU) return false;
+            CppCore::Hex::parse("FF1",  r, false, false); if (r != 0xFF01U) return false;
 
             if (!CppCore::Hex::tryparse("0",    r, true) || r != 0x0000U) return false;
             if (!CppCore::Hex::tryparse("0000", r, true) || r != 0x0000U) return false;
@@ -476,14 +503,16 @@ namespace CppCore { namespace Test
             if (!CppCore::Hex::tryparse("FFFF", r, true) || r != 0xFFFFU) return false;
             if (!CppCore::Hex::tryparse("0FFF", r, true) || r != 0x0FFFU) return false;
             if (!CppCore::Hex::tryparse("BC3A", r, true) || r != 0xBC3AU) return false;
+            if (!CppCore::Hex::tryparse("1FF",  r, true) || r != 0x01FFU) return false;
 
             if (!CppCore::Hex::tryparse("0",    r, false) || r != 0x0000U) return false;
             if (!CppCore::Hex::tryparse("0000", r, false) || r != 0x0000U) return false;
-            if (!CppCore::Hex::tryparse("1",    r, false) || r != 0x0100U) return false;
+            if (!CppCore::Hex::tryparse("1",    r, false) || r != 0x0001U) return false;
             if (!CppCore::Hex::tryparse("0001", r, false) || r != 0x0100U) return false;
             if (!CppCore::Hex::tryparse("FFFF", r, false) || r != 0xFFFFU) return false;
             if (!CppCore::Hex::tryparse("0FFF", r, false) || r != 0xFF0FU) return false;
             if (!CppCore::Hex::tryparse("BC3A", r, false) || r != 0x3ABCU) return false;
+            if (!CppCore::Hex::tryparse("1FF",  r, false) || r != 0x0F1FU) return false;
 
             if (CppCore::Hex::tryparse("10000", r, true)) return false; // overflow
             if (CppCore::Hex::tryparse("12X3",  r, true)) return false; // invalid symbol
@@ -492,7 +521,7 @@ namespace CppCore { namespace Test
             if (CppCore::Hex::tryparse("FFFFX", r, true)) return false; // invalid symbol after valid max
             if (CppCore::Hex::tryparse("00001", r, true)) return false; // too many leading zeros
             if (CppCore::Hex::tryparse("",      r, true)) return false; // empty input
-            if (CppCore::Hex::tryparse((const char*)0,r, true)) return false; // null pointer*/
+            if (CppCore::Hex::tryparse((const char*)0,r, true)) return false; // null pointer
 
             return true;
          }
@@ -500,21 +529,41 @@ namespace CppCore { namespace Test
          {
             uint32_t r;
 
-            if (CppCore::Hex::parse32u("0",        true) != 0x00000000U) return false;
-            if (CppCore::Hex::parse32u("00000000", true) != 0x00000000U) return false;
-            if (CppCore::Hex::parse32u("1",        true) != 0x00000001U) return false;
-            if (CppCore::Hex::parse32u("00000001", true) != 0x00000001U) return false;
-            if (CppCore::Hex::parse32u("FFFFFFFF", true) != 0xFFFFFFFFU) return false;
-            if (CppCore::Hex::parse32u("0FFFFFFF", true) != 0x0FFFFFFFU) return false;
-            if (CppCore::Hex::parse32u("BC3A19FA", true) != 0xBC3A19FAU) return false;
+            CppCore::Hex::parse("0",       r, true, true); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("00000000",r, true, true); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("1",       r, true, true); if (r != 0x00000001U) return false;
+            CppCore::Hex::parse("00000001",r, true, true); if (r != 0x00000001U) return false;
+            CppCore::Hex::parse("FFFFFFFF",r, true, true); if (r != 0xFFFFFFFFU) return false;
+            CppCore::Hex::parse("0FFFFFFF",r, true, true); if (r != 0x0FFFFFFFU) return false;
+            CppCore::Hex::parse("BC3A19FA",r, true, true); if (r != 0xBC3A19FAU) return false;
+            CppCore::Hex::parse("1FFFFFF", r, true, true); if (r != 0x01FFFFFFU) return false;
 
-            if (CppCore::Hex::parse32u("0",        false) != 0x00000000U) return false;
-            if (CppCore::Hex::parse32u("00000000", false) != 0x00000000U) return false;
-            if (CppCore::Hex::parse32u("1",        false) != 0x01000000U) return false;
-            if (CppCore::Hex::parse32u("00000001", false) != 0x01000000U) return false;
-            if (CppCore::Hex::parse32u("FFFFFFFF", false) != 0xFFFFFFFFU) return false;
-            if (CppCore::Hex::parse32u("0FFFFFFF", false) != 0xFFFFFF0FU) return false;
-            if (CppCore::Hex::parse32u("BC3A19FA", false) != 0xFA193ABCU) return false;
+            CppCore::Hex::parse("0",       r, false, true); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("00000000",r, false, true); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("1",       r, false, true); if (r != 0x00000001U) return false;
+            CppCore::Hex::parse("01000000",r, false, true); if (r != 0x00000001U) return false;
+            CppCore::Hex::parse("FFFFFFFF",r, false, true); if (r != 0xFFFFFFFFU) return false;
+            CppCore::Hex::parse("FFFFFF0F",r, false, true); if (r != 0x0FFFFFFFU) return false;
+            CppCore::Hex::parse("FA193ABC",r, false, true); if (r != 0xBC3A19FAU) return false;
+            CppCore::Hex::parse("FFFFFF1", r, false, true); if (r != 0x01FFFFFFU) return false;
+
+            CppCore::Hex::parse("0",       r, true, false); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("00000000",r, true, false); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("1",       r, true, false); if (r != 0x01000000U) return false;
+            CppCore::Hex::parse("00000001",r, true, false); if (r != 0x01000000U) return false;
+            CppCore::Hex::parse("FFFFFFFF",r, true, false); if (r != 0xFFFFFFFFU) return false;
+            CppCore::Hex::parse("0FFFFFFF",r, true, false); if (r != 0xFFFFFF0FU) return false;
+            CppCore::Hex::parse("BC3A19FA",r, true, false); if (r != 0xFA193ABCU) return false;
+            CppCore::Hex::parse("1FFFFFF", r, true, false); if (r != 0xFFFFFF01U) return false;
+
+            CppCore::Hex::parse("0",       r, false, false); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("00000000",r, false, false); if (r != 0x00000000U) return false;
+            CppCore::Hex::parse("1",       r, false, false); if (r != 0x01000000U) return false;
+            CppCore::Hex::parse("01000000",r, false, false); if (r != 0x01000000U) return false;
+            CppCore::Hex::parse("FFFFFFFF",r, false, false); if (r != 0xFFFFFFFFU) return false;
+            CppCore::Hex::parse("FFFFFF0F",r, false, false); if (r != 0xFFFFFF0FU) return false;
+            CppCore::Hex::parse("FA193ABC",r, false, false); if (r != 0xFA193ABCU) return false;
+            CppCore::Hex::parse("FFFFFF1", r, false, false); if (r != 0xFFFFFF01U) return false;
 
             if (!CppCore::Hex::tryparse("0",        r, true) || r != 0x00000000U) return false;
             if (!CppCore::Hex::tryparse("00000000", r, true) || r != 0x00000000U) return false;
@@ -526,7 +575,7 @@ namespace CppCore { namespace Test
 
             if (!CppCore::Hex::tryparse("0",        r, false) || r != 0x00000000U) return false;
             if (!CppCore::Hex::tryparse("00000000", r, false) || r != 0x00000000U) return false;
-            if (!CppCore::Hex::tryparse("1",        r, false) || r != 0x01000000U) return false;
+            if (!CppCore::Hex::tryparse("1",        r, false) || r != 0x00000001U) return false;
             if (!CppCore::Hex::tryparse("00000001", r, false) || r != 0x01000000U) return false;
             if (!CppCore::Hex::tryparse("FFFFFFFF", r, false) || r != 0xFFFFFFFFU) return false;
             if (!CppCore::Hex::tryparse("0FFFFFFF", r, false) || r != 0xFFFFFF0FU) return false;
@@ -547,21 +596,41 @@ namespace CppCore { namespace Test
          {
             uint64_t r;
 
-            if (CppCore::Hex::parse64u("0",                true) != 0x0000000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("0000000000000000", true) != 0x0000000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("1",                true) != 0x0000000000000001ULL) return false;
-            if (CppCore::Hex::parse64u("0000000000000001", true) != 0x0000000000000001ULL) return false;
-            if (CppCore::Hex::parse64u("FFFFFFFFFFFFFFFF", true) != 0xFFFFFFFFFFFFFFFFULL) return false;
-            if (CppCore::Hex::parse64u("0FFFFFFFFFFFFFFF", true) != 0x0FFFFFFFFFFFFFFFULL) return false;
-            if (CppCore::Hex::parse64u("BC3A19FABC3A19FA", true) != 0xBC3A19FABC3A19FAULL) return false;
+            CppCore::Hex::parse("0",               r, true, true); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("0000000000000000",r, true, true); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("1",               r, true, true); if (r != 0x0000000000000001ULL) return false;
+            CppCore::Hex::parse("0000000000000001",r, true, true); if (r != 0x0000000000000001ULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFFFF",r, true, true); if (r != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("0FFFFFFFFFFFFFFF",r, true, true); if (r != 0x0FFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("BC3A19FABC3A19FA",r, true, true); if (r != 0xBC3A19FABC3A19FAULL) return false;
+            CppCore::Hex::parse("1FFFFFFFFFFFFFF", r, true, true); if (r != 0x01FFFFFFFFFFFFFFULL) return false;
 
-            if (CppCore::Hex::parse64u("0",                false) != 0x0000000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("0000000000000000", false) != 0x0000000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("1",                false) != 0x0100000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("0000000000000001", false) != 0x0100000000000000ULL) return false;
-            if (CppCore::Hex::parse64u("FFFFFFFFFFFFFFFF", false) != 0xFFFFFFFFFFFFFFFFULL) return false;
-            if (CppCore::Hex::parse64u("0FFFFFFFFFFFFFFF", false) != 0xFFFFFFFFFFFFFF0FULL) return false;
-            if (CppCore::Hex::parse64u("BC3A19FABC3A19FA", false) != 0xFA193ABCFA193ABCULL) return false;
+            CppCore::Hex::parse("0",               r, false, true); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("0000000000000000",r, false, true); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("1",               r, false, true); if (r != 0x0000000000000001ULL) return false;
+            CppCore::Hex::parse("0100000000000000",r, false, true); if (r != 0x0000000000000001ULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFFFF",r, false, true); if (r != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFF0F",r, false, true); if (r != 0x0FFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("FA193ABCFA193ABC",r, false, true); if (r != 0xBC3A19FABC3A19FAULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFF1", r, false, true); if (r != 0x01FFFFFFFFFFFFFFULL) return false;
+
+            CppCore::Hex::parse("0",               r, true, false); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("0000000000000000",r, true, false); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("1",               r, true, false); if (r != 0x0100000000000000ULL) return false;
+            CppCore::Hex::parse("0000000000000001",r, true, false); if (r != 0x0100000000000000ULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFFFF",r, true, false); if (r != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("0FFFFFFFFFFFFFFF",r, true, false); if (r != 0xFFFFFFFFFFFFFF0FULL) return false;
+            CppCore::Hex::parse("BC3A19FABC3A19FA",r, true, false); if (r != 0xFA193ABCFA193ABCULL) return false;
+            CppCore::Hex::parse("1FFFFFFFFFFFFFF", r, true, false); if (r != 0xFFFFFFFFFFFFFF01ULL) return false;
+
+            CppCore::Hex::parse("0",               r, false, false); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("0000000000000000",r, false, false); if (r != 0x0000000000000000ULL) return false;
+            CppCore::Hex::parse("1",               r, false, false); if (r != 0x0100000000000000ULL) return false;
+            CppCore::Hex::parse("0100000000000000",r, false, false); if (r != 0x0100000000000000ULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFFFF",r, false, false); if (r != 0xFFFFFFFFFFFFFFFFULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFF0F",r, false, false); if (r != 0xFFFFFFFFFFFFFF0FULL) return false;
+            CppCore::Hex::parse("FA193ABCFA193ABC",r, false, false); if (r != 0xFA193ABCFA193ABCULL) return false;
+            CppCore::Hex::parse("FFFFFFFFFFFFFF1", r, false, false); if (r != 0xFFFFFFFFFFFFFF01ULL) return false;
 
             if (!CppCore::Hex::tryparse("0",                r, true) || r != 0x0000000000000000ULL) return false;
             if (!CppCore::Hex::tryparse("0000000000000000", r, true) || r != 0x0000000000000000ULL) return false;
@@ -573,7 +642,7 @@ namespace CppCore { namespace Test
 
             if (!CppCore::Hex::tryparse("0",                r, false) || r != 0x0000000000000000ULL) return false;
             if (!CppCore::Hex::tryparse("0000000000000000", r, false) || r != 0x0000000000000000ULL) return false;
-            if (!CppCore::Hex::tryparse("1",                r, false) || r != 0x0100000000000000ULL) return false;
+            if (!CppCore::Hex::tryparse("1",                r, false) || r != 0x0000000000000001ULL) return false;
             if (!CppCore::Hex::tryparse("0000000000000001", r, false) || r != 0x0100000000000000ULL) return false;
             if (!CppCore::Hex::tryparse("FFFFFFFFFFFFFFFF", r, false) || r != 0xFFFFFFFFFFFFFFFFULL) return false;
             if (!CppCore::Hex::tryparse("0FFFFFFFFFFFFFFF", r, false) || r != 0xFFFFFFFFFFFFFF0FULL) return false;
@@ -1083,7 +1152,8 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(BASEX_TRYPARSE32) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse32()); }
       TEST_METHOD(BASEX_TRYPARSE64) { Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse64()); }
       TEST_METHOD(BASEX_TRYPARSE128){ Assert::AreEqual(true, CppCore::Test::Encoding::BaseX::tryparse128()); }
-      TEST_METHOD(HEX_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring()); }
+      TEST_METHOD(HEX_ENCODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::encode()); }
+      TEST_METHOD(HEX_DECODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::decode()); }
       TEST_METHOD(HEX_TOSTRING16)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring16()); }
       TEST_METHOD(HEX_TOSTRING32)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring32()); }
       TEST_METHOD(HEX_TOSTRING64)   { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::tostring64()); }

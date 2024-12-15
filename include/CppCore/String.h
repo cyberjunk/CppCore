@@ -189,22 +189,6 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Helper for appending hex number.
-      /// </summary>
-      template<typename T, size_t N>
-      INLINE S& _appendHex(const T v, const bool bigendian)
-      {
-         const auto LENOLD = mLength;
-         const auto LENNEW = LENOLD + N;
-         if (thiss()->available() < N)
-            thiss()->resize(LENNEW);
-         Hex::tostring(v, mData + LENOLD, bigendian, true);
-         mLength = LENNEW; // always writes N symbols
-         //mLength = Hex::tostring(v, mData + LENOLD, true) - mData;;
-         return *thiss();
-      }
-
-      /// <summary>
       /// Helper for appending number in any encoding.
       /// </summary>
       template<typename T>
@@ -1075,64 +1059,31 @@ namespace CppCore
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       /// <summary>
-      /// Append v in hex encoding.
+      /// Append integer in hex encoding.
       /// </summary>
-      INLINE S& appendHex(const uint16_t v, const bool bigendian = true)
+      template<typename T, size_t N = sizeof(T)*2>
+      INLINE S& appendHex(const T v, const bool bigendian = true)
       {
-         return thiss()->template _appendHex<uint16_t, CPPCORE_MAXLENGTH_B16_16>(v, bigendian);
-      }
-
-      /// <summary>
-      /// Append v in hex encoding.
-      /// </summary>
-      INLINE S& appendHex(const uint32_t v, const bool bigendian = true)
-      {
-         return thiss()->template _appendHex<uint32_t, CPPCORE_MAXLENGTH_B16_32>(v, bigendian);
-      }
-
-      /// <summary>
-      /// Append v in hex encoding.
-      /// </summary>
-      INLINE S& appendHex(const uint64_t v, const bool bigendian = true)
-      {
-         return thiss()->template _appendHex<uint64_t, CPPCORE_MAXLENGTH_B16_64>(v, bigendian);
-      }
-
-      /// <summary>
-      /// Append v in hex encoding.
-      /// </summary>
-      INLINE S& appendHex(const int16_t v, const bool bigendian = true)
-      {
-         return thiss()->appendHex((uint16_t)v, bigendian);
-      }
-
-      /// <summary>
-      /// Append v in hex encoding.
-      /// </summary>
-      INLINE S& appendHex(const int32_t v, const bool bigendian = true)
-      {
-         return thiss()->appendHex((uint32_t)v, bigendian);
-      }
-
-      /// <summary>
-      /// Append v in hex encoding.
-      /// </summary>
-      INLINE S& appendHex(const int64_t v, const bool bigendian = true)
-      {
-         return thiss()->appendHex((uint64_t)v, bigendian);
+         const auto LENOLD = mLength;
+         const auto LENNEW = LENOLD + N;
+         if (thiss()->available() < N)
+            thiss()->resize(LENNEW);
+         Hex::tostring(v, mData + LENOLD, bigendian, true);
+         mLength = LENNEW; // always writes N symbols
+         return *thiss();
       }
 
       /// <summary>
       /// Append memory with len in hex encoding.
       /// </summary>
-      INLINE S& appendHex(const void* mem, const size_t len, const bool bigendian = true)
+      INLINE S& appendHex(const void* mem, const size_t len, const bool reverse = false)
       {
          const auto LENMEM = len << 1U;
          const auto LENOLD = mLength;
          const auto LENNEW = LENOLD + LENMEM;
          if (thiss()->available() < LENMEM)
             thiss()->resize(LENNEW);
-         Hex::tostring(mem, len, mData + LENOLD, bigendian, true);
+         Hex::encode(mem, mData + LENOLD, len, reverse, true);
          mLength = LENNEW;
          return *thiss();
       }

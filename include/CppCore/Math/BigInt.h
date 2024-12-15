@@ -1044,6 +1044,14 @@ namespace CppCore
       constexpr INLINE uintx_t(const int32_t v) : uintx_t((uint32_t)v) { }
 
       /// <summary>
+      /// Constructor from Hex string
+      /// </summary>
+      INLINE uintx_t(const ::std::string& input, bool bigendian)
+      {
+         CppCore::Hex::parse(input, *thiss(), bigendian);
+      }
+
+      /// <summary>
       /// Constructor from Decimal string
       /// </summary>
       INLINE uintx_t(const ::std::string& input)
@@ -2631,17 +2639,13 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Returns a fixed-length, leading zero padded string representation in Hex (Base16). Optimized.
+      /// Returns a fixed-length (zero padded) string representation in Hex (Base16). Optimized.
       /// </summary>
-      INLINE string toHexString() const
+      INLINE string toHexString(bool bigendian = true) const
       {
          string s;
          s.resize(N64 * 16U);
-      #if defined(CPPCORE_CPU_64BIT)
-         CppCore::Hex::tostring(d.i64, s.data(), N64, false);
-      #else
-         CppCore::Hex::tostring(d.i32, s.data(), N32, false);
-      #endif
+         CppCore::Hex::tostring(*thiss(), s.data(), bigendian, true);
          return s;
       }
 
@@ -2694,14 +2698,10 @@ namespace CppCore
       /// Unlike tryParse(), it does not support any alphabet and it does not detect 
       /// errors like invalid symbols or overflows. But it's faster!
       /// </summary>
-      constexpr INLINE static TC parseHex(const char* input)
+      constexpr INLINE static TC parseHex(const char* input, bool bigendian = true)
       {
-         TC r(0ULL);
-         while(const char c = *input++)
-         {
-            r <<= 4;
-            r.d.i32[0] |= Hex::Util::valueofhexchar(c);
-         }
+         TC r;
+         CppCore::Hex::parse(input, r, bigendian);
          return r;
       }
 
