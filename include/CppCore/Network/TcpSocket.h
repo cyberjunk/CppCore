@@ -110,6 +110,21 @@ namespace CppCore
       };
 
       /// <summary>
+      /// Defaults used in acceptFrom() if not specified.
+      /// </summary>
+      class AcceptFromDefaults
+      {
+      private:
+         INLINE AcceptFromDefaults() { }
+      public:
+         static constexpr bool NODELAY   = true;
+         static constexpr bool REUSEADDR = true;
+         static constexpr bool LINGER    = true;
+         static constexpr int  LTIME     = 2;
+         static constexpr bool KEEPALIVE = true;
+      };
+
+      /// <summary>
       /// Tries to start listening on specififed 
       /// tcp port with specified options.
       /// </summary>
@@ -180,7 +195,13 @@ namespace CppCore
       /// Accepts a pending incoming TCP connection from a listenerSocket
       /// and assigns the accepted socket to this instance.
       /// </summary>
-      INLINE bool acceptFrom(TcpSocket& listenerSocket)
+      INLINE bool acceptFrom(
+         TcpSocket& listenerSocket,
+         const bool nodelay   = AcceptFromDefaults::NODELAY,
+         const bool reuseaddr = AcceptFromDefaults::REUSEADDR,
+         const bool linger    = AcceptFromDefaults::LINGER,
+         const int  ltime     = AcceptFromDefaults::LTIME,
+         const bool keepalive = AcceptFromDefaults::KEEPALIVE)
       {
          // already in use
          if (mSocket != INVALID_SOCKET)
@@ -191,6 +212,16 @@ namespace CppCore
 
          // try to accept from listener, this sets mAddress
          mSocket = listenerSocket.accept((sockaddr*)&mAddress, &addrsize);
+
+         // configure required socket options
+         if (!this->setNoBlock(true))
+            return false;
+
+         // configure optional socket options
+         this->setOptionTcpNoDelay(nodelay);
+         this->setOptionReuseAddress(reuseaddr);
+         this->setOptionLinger(linger, ltime);
+         this->setOptionKeepAlive(keepalive);
 
          // update string of address
          this->updateAddressString();
