@@ -214,19 +214,36 @@ namespace CppCore
       // STRING OPS
 
       /// <summary>
-      /// Returns hexadecimal Uuid string with '-' included.
+      /// Creates hexadecimal Uuid string.
       /// </summary>
-      INLINE ::std::string toUuidString(const bool uppercase = false) const
+      INLINE bool toUuidString(char* s, const size_t len, const bool writeterm = true, const bool uppercase = false) const
       {
-         std::string s(36, 0x00);
-         char* cs = s.data();
+         if (len == SIZE_STRING_HYPHEN)
+         {
+            Hex::encode(d.arrays.time_low, &s[0],  4, true, false, uppercase); s[8]  = '-';
+            Hex::encode(d.arrays.time_mid, &s[9],  2, true, false, uppercase); s[13] = '-';
+            Hex::encode(d.arrays.time_hi,  &s[14], 2, true, false, uppercase); s[18] = '-';
+            Hex::encode(d.arrays.clockseq, &s[19], 2, true, false, uppercase); s[23] = '-';
+            Hex::encode(d.arrays.node,     &s[24], 6, true, writeterm, uppercase);
+            return true;
+         }
+         else if (len == SIZE_STRING_NO_HYPHEN)
+         {
+            Hex::encode(&d, s, 16, true, writeterm, uppercase);
+            return true;
+         }
+         else
+            return false;
+      }
 
-         Hex::encode(d.arrays.time_low, &cs[0],  4, true, false, uppercase); cs[8]  = '-';
-         Hex::encode(d.arrays.time_mid, &cs[9],  2, true, false, uppercase); cs[13] = '-';
-         Hex::encode(d.arrays.time_hi,  &cs[14], 2, true, false, uppercase); cs[18] = '-';
-         Hex::encode(d.arrays.clockseq, &cs[19], 2, true, false, uppercase); cs[23] = '-';
-         Hex::encode(d.arrays.node,     &cs[24], 6, true, true,  uppercase);
-
+      /// <summary>
+      /// Returns hexadecimal Uuid string
+      /// </summary>
+      INLINE ::std::string toUuidString(const bool hyphen = true, const bool uppercase = false) const
+      {
+         const size_t len = hyphen ? SIZE_STRING_HYPHEN : SIZE_STRING_NO_HYPHEN;
+         std::string s(len, 0x00);
+         this->toUuidString(s.data(), len, true, uppercase);
          return s;
       }
 
@@ -285,6 +302,23 @@ namespace CppCore
          id.fromUuidString(s);
          return id;
       }
+
+      /// <summary>
+      /// UUID Generator
+      /// </summary>
+      template<typename PRNG = Random::Default>
+      class Generator
+      {
+      protected:
+         PRNG mPRNG;
+      public:
+         INLINE Generator() { }
+         INLINE void generate(Uuid& v)
+         {
+            mPRNG.fill(v);
+            v.tag();
+         }
+      };
    };
 
    INLINE std::ostream& operator << (std::ostream& os, const Uuid& v) { os << v.toUuidString(); return os; }
