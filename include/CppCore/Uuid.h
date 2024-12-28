@@ -4,6 +4,7 @@
 #include <CppCore/Root.h>
 #include <CppCore/Random.h>
 #include <CppCore/Math/BigInt.h>
+#include <CppCore/Encoding.h>
 
 namespace CppCore
 {
@@ -43,6 +44,13 @@ namespace CppCore
          uint64_t time_mid : 16;
          uint64_t time_low : 32;
       } basic;
+      struct {
+         uint8_t node[6];
+         uint8_t clockseq[2];
+         uint8_t time_hi[2];
+         uint8_t time_mid[2];
+         uint8_t time_low[4];
+      } arrays;
       INLINE UuidData() { }
    };
 
@@ -55,10 +63,11 @@ namespace CppCore
       UuidData d;
 
    public:
-      static const size_t SIZE_STRING = 36; // 32x hexadecimal characters + 4x '-' 
-      static const size_t SIZE_BINARY = 16; // 128 bit
-      static const size_t VERSION     = 4;  // version 4 only
-      static const size_t VARIANT     = 2;  // variant 1 (bin 10 = dec 2)
+      static constexpr size_t SIZE_STRING_HYPHEN    = 36; // 32x hexadecimal characters + 4x '-' 
+      static constexpr size_t SIZE_STRING_NO_HYPHEN = 32; // 32x hexadecimal characters
+
+      static constexpr size_t VERSION = 4;  // version 4 only
+      static constexpr size_t VARIANT = 2;  // variant 1 (bin 10 = dec 2)
 
    public:
       ///////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +125,7 @@ namespace CppCore
       INLINE static bool isUuidString(const string& s)
       {
          // validate length
-         if (s.length() != SIZE_STRING)
+         if (s.length() != SIZE_STRING_HYPHEN)
             return false;
 
          // validate hyphen characters
@@ -206,52 +215,51 @@ namespace CppCore
 
       /// <summary>
       /// Returns hexadecimal Uuid string with '-' included.
-      /// TODO: Optimize this
       /// </summary>
-      INLINE ::std::string toUuidString() const
+      INLINE ::std::string toUuidString(const bool uppercase = false) const
       {
-         std::stringstream stream;
+         std::string s(36, 0x00);
+         char* cs = s.data();
 
-         stream 
-            << std::setfill('0') << std::setw(8)  << std::hex << d.basic.time_low << '-'
-            << std::setfill('0') << std::setw(4)  << std::hex << d.basic.time_mid << '-'
-            << std::setfill('0') << std::setw(4)  << std::hex << d.basic.time_hi  << '-'
-            << std::setfill('0') << std::setw(4)  << std::hex << d.basic.clockseq << '-'
-            << std::setfill('0') << std::setw(12) << std::hex << d.basic.node;
+         Hex::encode(d.arrays.time_low, &cs[0],  4, true, false, uppercase); cs[8]  = '-';
+         Hex::encode(d.arrays.time_mid, &cs[9],  2, true, false, uppercase); cs[13] = '-';
+         Hex::encode(d.arrays.time_hi,  &cs[14], 2, true, false, uppercase); cs[18] = '-';
+         Hex::encode(d.arrays.clockseq, &cs[19], 2, true, false, uppercase); cs[23] = '-';
+         Hex::encode(d.arrays.node,     &cs[24], 6, true, true,  uppercase);
 
-         return stream.str();
+         return s;
       }
 
       /// <summary>
-      /// Parses the UUID from string. Does not guarantee Version 4.
-      /// TODO: Optimize this
+      /// Parses the UUID from C string. 
+      /// Does not guarantee Version 4.
       /// </summary>
-      INLINE bool fromUuidString(const string& s)
+      INLINE bool fromUuidString(const char* s, const size_t len)
       {
-         if (isUuidString(s))
+         if (len == SIZE_STRING_HYPHEN)
          {
-            std::stringstream ss;
-
-            // 64 bit chunks in string notation
-            // hhhhhhhh-hhhh-hhhh-llll-llllllllllll
-
-            // load first 64 high bits
-            ss << std::hex << s.substr(0,  8);
-            ss << std::hex << s.substr(9,  4);
-            ss << std::hex << s.substr(14, 4);
-            ss >> d.h;
-
-            ss.clear();
-
-            // load second 64 low bits
-            ss << std::hex << s.substr(19, 4);
-            ss << std::hex << s.substr(24, 12);
-            ss >> d.l;
-
-            return true;
+            return 
+               Hex::tryparse(&s[0],   8, d.arrays.time_low) && s[8]  == '-' &&
+               Hex::tryparse(&s[9],   4, d.arrays.time_mid) && s[13] == '-' &&
+               Hex::tryparse(&s[14],  4, d.arrays.time_hi)  && s[18] == '-' &&
+               Hex::tryparse(&s[19],  4, d.arrays.clockseq) && s[23] == '-' &&
+               Hex::tryparse(&s[24], 12, d.arrays.node);
+         }
+         else if (len == SIZE_STRING_NO_HYPHEN)
+         {
+            return Hex::tryparse(s, 32, d);
          }
          else
             return false;
+      }
+
+      /// <summary>
+      /// Parses the UUID from C++ string. 
+      /// Does not guarantee Version 4.
+      /// </summary>
+      INLINE bool fromUuidString(const string& s)
+      {
+         return fromUuidString(s.c_str(), s.length());
       }
       
       ///////////////////////////////////////////////////////////////////////////////////////
