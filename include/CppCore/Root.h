@@ -571,6 +571,9 @@
 #if defined(__ARM_FEATURE_SHA512) && !defined(CPPCORE_CPUFEAT_ARM_SHA512)
 #define CPPCORE_CPUFEAT_ARM_SHA512
 #endif
+#if defined(__ARM_FEATURE_RNG) && !defined(CPPCORE_CPUFEAT_ARM_RNG)
+#define CPPCORE_CPUFEAT_ARM_RNG
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // WASM CPU

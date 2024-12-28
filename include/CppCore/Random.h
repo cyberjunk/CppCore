@@ -46,22 +46,26 @@ namespace CppCore
       INLINE static uint32_t seed32()
       {
          uint32_t v = 1;
-      #if defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDSEED)
-         while (0 == _rdseed32_step(&v)) CPPCORE_UNLIKELY _mm_pause();
-      #elif defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDRAND)
-         while (0 == _rdrand32_step(&v)) CPPCORE_UNLIKELY _mm_pause();
-      #endif
+         uint64_t t;
+      #if defined(CPPCORE_CPUFEAT_RDSEED)
+         while (0 == _rdseed32_step(&v)) CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+      #elif defined(CPPCORE_CPUFEAT_RDRAND)
+         while (0 == _rdrand32_step(&v)) CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+      #elif defined(CPPCORE_CPUFEAT_ARM_RNG)
+         while (0 != __rndr(&t)) CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+         v = (uint32_t)t;
+      #elif defined(CPPCORE_OS_WASI)
+         auto r = __wasi_random_get((uint8_t*)&v, 4);
+      #else
          v ^= seedmix32((uint32_t)(size_t)&v);
       #if defined(CPPCORE_CPU_X86ORX64)
          v ^= seedmix32((uint32_t)__rdtsc());
       #elif defined(CPPCORE_CPU_ARM64) && defined(CPPCORE_COMPILER_CLANG)
-         uint64_t t;
          __asm volatile ("MRS %0, CNTVCT_EL0;" : "=r"(t) :: "memory");
          v ^= seedmix32((uint32_t)t);
-      #elif defined(CPPCORE_OS_WASI)
-         uint32_t t;
-         auto r = __wasi_random_get((uint8_t*)&t, 4);
-         v ^= seedmix32(t);
+      #else
+         v ^= seedmix32((uint32_t)::time(0));
+      #endif
       #endif
          return v;
       }
@@ -73,28 +77,31 @@ namespace CppCore
       INLINE static uint64_t seed64()
       {
          uint64_t v = 1;
-      #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDSEED)
-         while (0 == _rdseed64_step((unsigned long long*)&v)) CPPCORE_UNLIKELY _mm_pause();
-      #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDRAND)
-         while (0 == _rdrand64_step((unsigned long long*)&v)) CPPCORE_UNLIKELY _mm_pause();
-      #elif defined(CPPCORE_CPU_X86) && defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDSEED)
-         while (0 == _rdseed32_step( (uint32_t*)&v))    CPPCORE_UNLIKELY _mm_pause();
-         while (0 == _rdseed32_step(((uint32_t*)&v)+1)) CPPCORE_UNLIKELY _mm_pause();
-      #elif defined(CPPCORE_CPU_X86) && defined(CPPCORE_CPUFEAT_SSE2) && defined(CPPCORE_CPUFEAT_RDRAND)
-         while (0 == _rdrand32_step( (uint32_t*)&v))    CPPCORE_UNLIKELY _mm_pause();
-         while (0 == _rdrand32_step(((uint32_t*)&v)+1)) CPPCORE_UNLIKELY _mm_pause();
-      #endif
+         uint64_t t;
+      #if defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_RDSEED)
+         while (0 == _rdseed64_step((unsigned long long*)&v)) CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+      #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_CPUFEAT_RDRAND)
+         while (0 == _rdrand64_step((unsigned long long*)&v)) CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+      #elif defined(CPPCORE_CPU_X86) && defined(CPPCORE_CPUFEAT_RDSEED)
+         while (0 == _rdseed32_step( (uint32_t*)&v))    CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+         while (0 == _rdseed32_step(((uint32_t*)&v)+1)) CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+      #elif defined(CPPCORE_CPU_X86) && defined(CPPCORE_CPUFEAT_RDRAND)
+         while (0 == _rdrand32_step( (uint32_t*)&v))    CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+         while (0 == _rdrand32_step(((uint32_t*)&v)+1)) CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+      #elif defined(CPPCORE_CPU_ARM64) && defined(CPPCORE_CPUFEAT_ARM_RNG)
+         while (0 != __rndr(&v)) CPPCORE_UNLIKELY CPPCORE_NANOSLEEP();
+      #elif defined(CPPCORE_OS_WASI)
+         auto r = __wasi_random_get((uint8_t*)&v, 8);
+      #else
          v ^= seedmix64((uint64_t)&v);
       #if defined(CPPCORE_CPU_X86ORX64)
          v ^= seedmix64((uint64_t)__rdtsc());
       #elif defined(CPPCORE_CPU_ARM64) && defined(CPPCORE_COMPILER_CLANG)
-         uint64_t t;
          __asm volatile ("MRS %0, CNTVCT_EL0;" : "=r"(t) :: "memory");
          v ^= seedmix64(t);
-      #elif defined(CPPCORE_OS_WASI)
-         uint64_t t;
-         auto r = __wasi_random_get((uint8_t*)&t, 8);
-         v ^= seedmix64(t);
+      #else
+         v ^= seedmix64((uint64_t)::time(0));
+      #endif
       #endif
          return v;
       }
