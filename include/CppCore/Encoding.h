@@ -624,11 +624,10 @@ namespace CppCore
       {
          static_assert(CPPCORE_ENDIANESS_LITTLE);
          CppCore::clear(out);
-         if (!in || *in == 0x00)
-            return false;
-         if (n > sizeof(UINT)*2)
+         if (!in || *in == 0x00 || n > sizeof(UINT)*2) CPPCORE_UNLIKELY
             return false;
          uint8_t* p = (uint8_t*)&out;
+         uint8_t  r = 0x00;
          if (in_be)
          {
             in += n;
@@ -639,14 +638,12 @@ namespace CppCore
                char c1 = *--in;
                uint8_t v1 = Util::HEX2BIN[c1];
                uint8_t v2 = Util::HEX2BIN[c2];
-               if ((v1 | v2) > 0x0F)
-                  return false;
+               r |= v1 | v2;
                *p++ = (v1 << 4) | (v2);
             }
             if (n) {
                uint8_t v = Util::HEX2BIN[*--in];
-               if (v > 0x0F)
-                  return false;
+               r |= v;
                *p++ = v;
             }
          }
@@ -659,18 +656,16 @@ namespace CppCore
                char c2 = *in++;
                uint8_t v1 = Util::HEX2BIN[c1];
                uint8_t v2 = Util::HEX2BIN[c2];
-               if ((v1 | v2) > 0x0F)
-                  return false;
+               r |= v1 | v2;
                *p++ = (v1 << 4) | (v2);
             }
             if (n) {
                uint8_t v = Util::HEX2BIN[*in];
-               if (v > 0x0F)
-                  return false;
+               r |= v;
                *p++ = v;
             }
          }
-         return true;
+         return r <= 0x0F;
       }
 
       /// <summary>

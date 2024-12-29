@@ -65,7 +65,6 @@ namespace CppCore
    public:
       static constexpr size_t SIZE_STRING_HYPHEN    = 36; // 32x hexadecimal characters + 4x '-' 
       static constexpr size_t SIZE_STRING_NO_HYPHEN = 32; // 32x hexadecimal characters
-
       static constexpr size_t VERSION = 4;  // version 4 only
       static constexpr size_t VARIANT = 2;  // variant 1 (bin 10 = dec 2)
 
@@ -74,31 +73,20 @@ namespace CppCore
       // CONSTRUCTORS
 
       /// <summary>
-      /// Empty Constructor. NO VALID UUID. Must call generate().
+      /// Empty Constructor.
+      /// NO VALID UUID.
       /// </summary>
-      INLINE Uuid() 
-      {
-      }
+      INLINE Uuid() { }
 
       /// <summary>
       /// Efficient constructor using provided random bits (from a generator).
       /// </summary>
-      INLINE Uuid(const uint64_t l, const uint64_t h = 0ULL, const bool tag = false)
+      INLINE Uuid(const uint64_t l, const uint64_t h, const bool tag = true)
       {
          d.l = l;
          d.h = h;
-
          if (tag)
             this->tag();
-      }
-
-      /// <summary>
-      /// Efficient constructor using provided Pseudo Random Number Generatorr.
-      /// </summary>
-      template<typename PRNG64 = Random::Default64>
-      INLINE Uuid(PRNG64& prng)
-      {
-         this->generate(prng);
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////
@@ -120,55 +108,6 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Checks if a string includes a valid UUID. Does not verify embedded version or variant.
-      /// </summary>
-      INLINE static bool isUuidString(const string& s)
-      {
-         // validate length
-         if (s.length() != SIZE_STRING_HYPHEN)
-            return false;
-
-         // validate hyphen characters
-         if (s[8] != '-' || s[13] != '-' || s[18] != '-' || s[23] != '-')
-            return false;
-
-         // validate hexadecimal characters
-         return
-            isxdigit(s[0]) &&
-            isxdigit(s[1]) &&
-            isxdigit(s[2]) &&
-            isxdigit(s[3]) &&
-            isxdigit(s[4]) &&
-            isxdigit(s[5]) &&
-            isxdigit(s[6]) &&
-            isxdigit(s[7]) &&
-            isxdigit(s[9]) &&
-            isxdigit(s[10]) &&
-            isxdigit(s[11]) &&
-            isxdigit(s[12]) &&
-            isxdigit(s[14]) &&
-            isxdigit(s[15]) &&
-            isxdigit(s[16]) &&
-            isxdigit(s[17]) &&
-            isxdigit(s[19]) &&
-            isxdigit(s[20]) &&
-            isxdigit(s[21]) &&
-            isxdigit(s[22]) &&
-            isxdigit(s[24]) &&
-            isxdigit(s[25]) &&
-            isxdigit(s[26]) &&
-            isxdigit(s[27]) &&
-            isxdigit(s[28]) &&
-            isxdigit(s[29]) &&
-            isxdigit(s[30]) &&
-            isxdigit(s[31]) &&
-            isxdigit(s[32]) &&
-            isxdigit(s[33]) &&
-            isxdigit(s[34]) &&
-            isxdigit(s[35]);
-      }
-
-      /// <summary>
       /// Sets the version and variant bits in the UUID.
       /// </summary>
       INLINE void tag()
@@ -178,62 +117,60 @@ namespace CppCore
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////
-      // GENERATE OPS
-
-      /// <summary>
-      /// Generates the UUIDv4 efficiently using provided randoms.
-      /// </summary>
-      INLINE void generate(const uint64_t rnd1, const uint64_t rnd2)
-      {
-         d.l = rnd1;  // randomize low 64 bits
-         d.h = rnd2;  // randomize high 64 bits
-         this->tag();
-      }
-
-      /// <summary>
-      /// Generates the UUIDv4 efficiently using provided Pseudo Random Number Generator.
-      /// </summary>
-      template<typename PRNG64 = Random::Default64>
-      INLINE void generate(PRNG64& prng)
-      {
-         this->generate(prng.next(), prng.next());
-      }
-
-      /// <summary>
-      /// Generates the UUIDv4 inefficiently using on-the-fly initialized and discarded generator.
-      /// Don't use this if you have to create a lot of UUIDs or very regulary.
-      /// </summary>
-      template<typename PRNG64 = Random::Default64>
-      INLINE void generate()
-      {
-         PRNG64 prng;
-         this->generate<PRNG64>(prng);
-      }
-
-      ///////////////////////////////////////////////////////////////////////////////////////
       // STRING OPS
 
       /// <summary>
-      /// Creates hexadecimal Uuid string.
+      /// Checks if a string includes a valid UUID. Does not verify embedded version or variant.
       /// </summary>
-      INLINE bool toUuidString(char* s, const size_t len, const bool writeterm = true, const bool uppercase = false) const
+      INLINE static bool isUuidString(const string& s)
       {
-         if (len == SIZE_STRING_HYPHEN)
+         if (s.length() == SIZE_STRING_HYPHEN)
+         {
+            // validate hexadecimal characters and hyphens
+            return (
+               isxdigit(s[0])  & isxdigit(s[1])  & isxdigit(s[2])  & isxdigit(s[3])  &
+               isxdigit(s[4])  & isxdigit(s[5])  & isxdigit(s[6])  & isxdigit(s[7])  & (s[8]  == '-') &
+               isxdigit(s[9])  & isxdigit(s[10]) & isxdigit(s[11]) & isxdigit(s[12]) & (s[13] == '-') &
+               isxdigit(s[14]) & isxdigit(s[15]) & isxdigit(s[16]) & isxdigit(s[17]) & (s[18] == '-') &
+               isxdigit(s[19]) & isxdigit(s[20]) & isxdigit(s[21]) & isxdigit(s[22]) & (s[23] == '-') &
+               isxdigit(s[24]) & isxdigit(s[25]) & isxdigit(s[26]) & isxdigit(s[27]) &
+               isxdigit(s[28]) & isxdigit(s[29]) & isxdigit(s[30]) & isxdigit(s[31]) &
+               isxdigit(s[32]) & isxdigit(s[33]) & isxdigit(s[34]) & isxdigit(s[35])) != 0;
+         }
+         else if (s.length() == SIZE_STRING_NO_HYPHEN)
+         {
+            // validate hexadecimal characters
+            return (
+               isxdigit(s[0])  & isxdigit(s[1])  & isxdigit(s[2])  & isxdigit(s[3])  &
+               isxdigit(s[4])  & isxdigit(s[5])  & isxdigit(s[6])  & isxdigit(s[7])  &
+               isxdigit(s[8])  & isxdigit(s[9])  & isxdigit(s[10]) & isxdigit(s[11]) &
+               isxdigit(s[12]) & isxdigit(s[13]) & isxdigit(s[14]) & isxdigit(s[15]) &
+               isxdigit(s[16]) & isxdigit(s[17]) & isxdigit(s[18]) & isxdigit(s[19]) &
+               isxdigit(s[20]) & isxdigit(s[21]) & isxdigit(s[22]) & isxdigit(s[23]) &
+               isxdigit(s[24]) & isxdigit(s[25]) & isxdigit(s[26]) & isxdigit(s[27]) &
+               isxdigit(s[28]) & isxdigit(s[29]) & isxdigit(s[30]) & isxdigit(s[31])) != 0;
+         }
+         else
+            return false;
+      }
+
+      /// <summary>
+      /// Creates hexadecimal Uuid string. 
+      /// Writes 36 bytes if hyphen is true else 32 bytes.
+      /// One more if writeterm is true.
+      /// </summary>
+      INLINE void toUuidString(char* s, const bool hyphen, const bool writeterm = true, const bool uppercase = false) const
+      {
+         if (hyphen)
          {
             Hex::encode(d.arrays.time_low, &s[0],  4, true, false, uppercase); s[8]  = '-';
             Hex::encode(d.arrays.time_mid, &s[9],  2, true, false, uppercase); s[13] = '-';
             Hex::encode(d.arrays.time_hi,  &s[14], 2, true, false, uppercase); s[18] = '-';
             Hex::encode(d.arrays.clockseq, &s[19], 2, true, false, uppercase); s[23] = '-';
             Hex::encode(d.arrays.node,     &s[24], 6, true, writeterm, uppercase);
-            return true;
-         }
-         else if (len == SIZE_STRING_NO_HYPHEN)
-         {
-            Hex::encode(&d, s, 16, true, writeterm, uppercase);
-            return true;
          }
          else
-            return false;
+            Hex::encode(&d, s, 16, true, writeterm, uppercase);
       }
 
       /// <summary>
@@ -241,26 +178,26 @@ namespace CppCore
       /// </summary>
       INLINE ::std::string toUuidString(const bool hyphen = true, const bool uppercase = false) const
       {
-         const size_t len = hyphen ? SIZE_STRING_HYPHEN : SIZE_STRING_NO_HYPHEN;
-         std::string s(len, 0x00);
-         this->toUuidString(s.data(), len, true, uppercase);
+         std::string s(hyphen ? SIZE_STRING_HYPHEN : SIZE_STRING_NO_HYPHEN, 0x00);
+         this->toUuidString(s.data(), hyphen, true, uppercase);
          return s;
       }
 
       /// <summary>
       /// Parses the UUID from C string. 
       /// Does not guarantee Version 4.
+      /// len must be 36 with hyphens or 32 without.
       /// </summary>
       INLINE bool fromUuidString(const char* s, const size_t len)
       {
          if (len == SIZE_STRING_HYPHEN)
          {
-            return 
-               Hex::tryparse(&s[0],   8, d.arrays.time_low) && s[8]  == '-' &&
-               Hex::tryparse(&s[9],   4, d.arrays.time_mid) && s[13] == '-' &&
-               Hex::tryparse(&s[14],  4, d.arrays.time_hi)  && s[18] == '-' &&
-               Hex::tryparse(&s[19],  4, d.arrays.clockseq) && s[23] == '-' &&
-               Hex::tryparse(&s[24], 12, d.arrays.node);
+            return (
+               Hex::tryparse(&s[0],   8, d.arrays.time_low) & (s[8]  == '-') &
+               Hex::tryparse(&s[9],   4, d.arrays.time_mid) & (s[13] == '-') &
+               Hex::tryparse(&s[14],  4, d.arrays.time_hi)  & (s[18] == '-') &
+               Hex::tryparse(&s[19],  4, d.arrays.clockseq) & (s[23] == '-') &
+               Hex::tryparse(&s[24], 12, d.arrays.node)) != 0;
          }
          else if (len == SIZE_STRING_NO_HYPHEN)
          {
@@ -289,7 +226,8 @@ namespace CppCore
       INLINE static Uuid create()
       {
          Uuid id;
-         id.generate();
+         Generator gen;
+         gen.generate(id);
          return id;
       }
 
