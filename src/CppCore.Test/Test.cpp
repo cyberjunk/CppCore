@@ -701,9 +701,11 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    std::cout << "          CppCore::Uuid"         << std::endl;
    std::cout << "-------------------------------" << std::endl;
-   TEST(CppCore::Test::Uuid::sizeOf,       "sizeof:       ", std::endl);
-   TEST(CppCore::Test::Uuid::constructor,  "constructor:  ", std::endl);
-   TEST(CppCore::Test::Uuid::isuuidstring, "isuuidstring: ", std::endl);
+   TEST(CppCore::Test::Uuid::sizeOf,         "sizeof:       ", std::endl);
+   TEST(CppCore::Test::Uuid::constructor,    "constructor:  ", std::endl);
+   TEST(CppCore::Test::Uuid::isuuidstring,   "isuuidstring: ", std::endl);
+   TEST(CppCore::Test::Uuid::touuidstring,   "touuidstring: ", std::endl);
+   TEST(CppCore::Test::Uuid::fromuuidstring, "fromuuidstring: ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "      CppCore::Encoding"         << std::endl;
