@@ -698,6 +698,111 @@ namespace CppCore
    };
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // BASE64
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   class Base64
+   {
+   private:
+      INLINE Base64() { }
+   public:
+
+      INLINE static bool encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
+      {
+         const uint8_t* p = (const uint8_t*)in;
+         const char* tbl = url ? CPPCORE_ALPHABET_B64_URL : CPPCORE_ALPHABET_B64_STD;
+
+         while (len >= 3)
+         {
+         #if defined(CPPCORE_CPUFEAT_BMI1)
+            uint32_t v = *(uint32_t*)p;
+            *out++ = tbl[_bextr_u32(v, 2, 6)];
+            *out++ = tbl[((v & 0x03) << 4) | _bextr_u32(v, 12, 4)];
+            *out++ = tbl[(_bextr_u32(v, 8, 4) << 2) | _bextr_u32(v, 22, 2)];
+            *out++ = tbl[_bextr_u32(v, 16, 6)];
+         #else
+            *out++ = tbl[p[0] >> 2];
+            *out++ = tbl[((p[0] & 0x03) << 4) | (p[1] >> 4)];
+            *out++ = tbl[((p[1] & 0x0F) << 2) | (p[2] >> 6)];
+            *out++ = tbl[p[2] & 0x3F];
+         #endif
+            p += 3;
+            len -= 3;
+         }
+
+         if (len)
+         {
+            *out++ = tbl[p[0] >> 2];
+            if (len == 1)
+            {
+               *out++ = tbl[(p[0] & 0x03) << 4];
+               *out++ = '=';
+            }
+            else
+            {
+               *out++ = tbl[((p[0] & 0x03) << 4) | (p[1] >> 4)];
+               *out++ = tbl[(p[1] & 0x0f) << 2];
+            }
+            *out++ = '=';
+         }
+
+         if (writeterm)
+            *out = 0x00;
+         return true;
+      }
+
+      INLINE static bool encode2(const void* in, size_t len, char* out, bool writeterm = true)
+      {
+         const uint8_t* p = (const uint8_t*)in;
+
+         while (len >= 3)
+         {
+            *out++ = CPPCORE_ALPHABET_B64_STD[p[0] >> 2];
+            *out++ = CPPCORE_ALPHABET_B64_STD[((p[0] & 0x03) << 4) | (p[1] >> 4)];
+            *out++ = CPPCORE_ALPHABET_B64_STD[((p[1] & 0x0F) << 2) | (p[2] >> 6)];
+            *out++ = CPPCORE_ALPHABET_B64_STD[p[2] & 0x3F];
+            p += 3;
+            len -= 3;
+         }
+
+         /*if (len == 1)
+         {
+            *out++ = CPPCORE_ALPHABET_B64_STD[p[0] >> 2];
+            *out++ = CPPCORE_ALPHABET_B64_STD[(p[0] & 0x03) << 4];
+            *out++ = '=';
+            *out++ = '=';
+         }
+         else if (len == 2)
+         {
+            *out++ = CPPCORE_ALPHABET_B64_STD[p[0] >> 2];
+            *out++ = CPPCORE_ALPHABET_B64_STD[((p[0] & 0x03) << 4) | (p[1] >> 4)];
+            *out++ = CPPCORE_ALPHABET_B64_STD[(p[1] & 0x0f) << 2];
+            *out++ = '=';
+         }*/
+
+         if (len)
+         {
+            *out++ = CPPCORE_ALPHABET_B64_STD[p[0] >> 2];
+            if (len == 1)
+            {
+               *out++ = CPPCORE_ALPHABET_B64_STD[(p[0] & 0x03) << 4];
+               *out++ = '=';
+            }
+            else
+            {
+               *out++ = CPPCORE_ALPHABET_B64_STD[((p[0] & 0x03) << 4) | (p[1] >> 4)];
+               *out++ = CPPCORE_ALPHABET_B64_STD[(p[1] & 0x0f) << 2];
+            }
+            *out++ = '=';
+         }
+
+         if (writeterm)
+            *out = 0x00;
+         return true;
+      }
+   };
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // DECIMAL
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
