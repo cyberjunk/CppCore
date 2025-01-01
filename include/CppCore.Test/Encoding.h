@@ -687,6 +687,28 @@ namespace CppCore { namespace Test
             if (CppCore::Base64::symbollength(6) != 8) return false;
             return true;
          }
+         INLINE static bool tostring()
+         {
+            std::string s;
+            CppCore::Base64::tostring("1",    1, s); if (s != "MQ==")     return false;
+            CppCore::Base64::tostring("12",   2, s); if (s != "MTI=")     return false;
+            CppCore::Base64::tostring("123",  3, s); if (s != "MTIz")     return false;
+            CppCore::Base64::tostring("1234", 4, s); if (s != "MTIzNA==") return false;
+            return true;
+         }
+         INLINE static bool tryparse()
+         {
+            char d[5];
+            if (!CppCore::Base64::tryparse(std::string("MQ=="), d)     || d[0]!='1')                                        return false;
+            if (!CppCore::Base64::tryparse(std::string("MTI="), d)     || d[0]!='1' || d[1]!='2')                           return false;
+            if (!CppCore::Base64::tryparse(std::string("MTIz"), d)     || d[0]!='1' || d[1]!='2' || d[2]!='3')              return false;
+            if (!CppCore::Base64::tryparse(std::string("MTIzNA=="), d) || d[0]!='1' || d[1]!='2' || d[2]!='3' || d[3]!='4') return false;
+            if (CppCore::Base64::tryparse(std::string(""),     d)) return false;
+            if (CppCore::Base64::tryparse(std::string("Z"),    d)) return false;
+            if (CppCore::Base64::tryparse(std::string("(aaa"), d)) return false;
+            if (CppCore::Base64::tryparse(std::string("M=="),  d)) return false;
+            return true;
+         }
       };
       class Decimal
       {
@@ -1190,6 +1212,8 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(HEX_PARSE64)      { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::parse64()); }
       TEST_METHOD(BASE64_BYTELENGTH)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::bytelength()); }
       TEST_METHOD(BASE64_SYMBOLLENGTH) { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::symbollength()); }
+      TEST_METHOD(BASE64_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::tostring()); }
+      TEST_METHOD(BASE64_TRYPARSE)     { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::tryparse()); }
       TEST_METHOD(DEC_TOSTRING8U)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8u()); }
       TEST_METHOD(DEC_TOSTRING8S)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8s()); }
       TEST_METHOD(DEC_TOSTRING16U)  { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring16u()); }

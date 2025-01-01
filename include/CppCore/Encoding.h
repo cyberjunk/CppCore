@@ -818,8 +818,6 @@ namespace CppCore
             *out++ = '=';
             *out++ = '=';
          }
-         else
-            assert(false);
          if (writeterm)
             *out = 0x00;
       }
@@ -883,8 +881,6 @@ namespace CppCore
             r |= s1 | s2;
             *p++ = (uint8_t)(v >> 16);
          }
-         else
-            assert(false);
          return r <= 0x3F;
       }
 
