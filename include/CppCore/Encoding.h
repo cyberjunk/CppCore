@@ -744,6 +744,22 @@ namespace CppCore
          0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
       };
 
+      /// <summary>
+      /// Returns the number of bytes needed to store symbols.
+      /// </summary>
+      INLINE static uint32_t bytelength(uint32_t symbols)
+      {
+         return (CppCore::rupptwo32(symbols, 4U) * 3U) / 4U;
+      }
+
+      /// <summary>
+      /// Returns the number of symbols needed to store bytes.
+      /// </summary>
+      INLINE static uint32_t symbollength(uint32_t bytes)
+      {
+         return (CppCore::rup32(bytes, 3U) * 4U) / 3U;
+      }
+
       INLINE static bool encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
       {
          const uint8_t* p = (const uint8_t*)in;
