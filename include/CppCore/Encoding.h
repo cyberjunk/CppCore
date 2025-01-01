@@ -760,13 +760,18 @@ namespace CppCore
          return (CppCore::rup32(bytes, 3U) * 4U) / 3U;
       }
 
-      INLINE static bool encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
+      /// <summary>
+      /// Writes base64 encoded symbols of data with len from in to out.
+      /// </summary>
+      INLINE static void tostring(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
       {
+         const char* tbl = url ? 
+            CPPCORE_ALPHABET_B64_URL :
+            CPPCORE_ALPHABET_B64_STD;
          const uint8_t* p = (const uint8_t*)in;
-         const char* tbl = url ? CPPCORE_ALPHABET_B64_URL : CPPCORE_ALPHABET_B64_STD;
-
          while (len >= 3)
          {
+            // 4 symbols from 3 bytes
          #if defined(CPPCORE_CPUFEAT_BMI1)
             uint32_t v = *(uint32_t*)p;
             *out++ = tbl[_bextr_u32(v, 2, 6)];
@@ -782,8 +787,7 @@ namespace CppCore
             p += 3;
             len -= 3;
          }
-
-         if (len)
+         /*if (len)
          {
             *out++ = tbl[p[0] >> 2];
             if (len == 1)
@@ -797,25 +801,37 @@ namespace CppCore
                *out++ = tbl[(p[1] & 0x0f) << 2];
             }
             *out++ = '=';
-         }
-         /*if (len == 1)
-         {
-            *out++ = CPPCORE_ALPHABET_B64_STD[p[0] >> 2];
-            *out++ = CPPCORE_ALPHABET_B64_STD[(p[0] & 0x03) << 4];
-            *out++ = '=';
-            *out++ = '=';
-         }
-         else if (len == 2)
-         {
-            *out++ = CPPCORE_ALPHABET_B64_STD[p[0] >> 2];
-            *out++ = CPPCORE_ALPHABET_B64_STD[((p[0] & 0x03) << 4) | (p[1] >> 4)];
-            *out++ = CPPCORE_ALPHABET_B64_STD[(p[1] & 0x0f) << 2];
-            *out++ = '=';
          }*/
-
+         if (len == 2)
+         {
+            // 3 symbols from 2 bytes (+1 padding symbols)
+            *out++ = tbl[p[0] >> 2];
+            *out++ = tbl[((p[0] & 0x03) << 4) | (p[1] >> 4)];
+            *out++ = tbl[(p[1] & 0x0f) << 2];
+            *out++ = '=';
+         }
+         else if (len == 1)
+         {
+            // 2 symbols from 1 byte (+2 padding symbols)
+            *out++ = tbl[p[0] >> 2];
+            *out++ = tbl[(p[0] & 0x03) << 4];
+            *out++ = '=';
+            *out++ = '=';
+         }
+         else
+            assert(false);
          if (writeterm)
             *out = 0x00;
-         return true;
+      }
+
+      /// <summary>
+      /// For C++ Strings
+      /// </summary>
+      template<typename STRING>
+      INLINE static void tostring(const void* in, size_t len, STRING& out, bool url = false, bool writeterm = true)
+      {
+         out.resize(Base64::symbollength((uint32_t)len));
+         Base64::tostring(in, len, out.data(), url, writeterm);
       }
 
       /// <summary>
@@ -830,7 +846,9 @@ namespace CppCore
          uint8_t* p = (uint8_t*)out;
          uint32_t r = 0;
          uint32_t v;
-         const uint8_t* tbl = url ? B64TOBIN_URL : B64TOBIN_STD;
+         const uint8_t* tbl = url ? 
+            Base64::B64TOBIN_URL : 
+            Base64::B64TOBIN_STD;
          while (len >= 4)
          {
             // 3 bytes from 4 symbols
@@ -876,7 +894,7 @@ namespace CppCore
       template<typename STRING>
       INLINE static bool tryparse(const STRING& in, void* out, bool url = false)
       {
-         return Base64::tryparse(in.data(), in.length(), out, url);
+         return Base64::tryparse(in.c_str(), in.length(), out, url);
       }
    };
 

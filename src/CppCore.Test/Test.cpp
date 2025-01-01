@@ -765,6 +765,12 @@ int main()
    TEST(CppCore::Test::Encoding::Hex::parse32,            "parse32:    ", std::endl);
    TEST(CppCore::Test::Encoding::Hex::parse64,            "parse64:    ", std::endl);
 
+   std::cout << "-------------------------------" << std::endl;
+   std::cout << "   CppCore::Encoding::Base64   " << std::endl;
+   std::cout << "-------------------------------" << std::endl;
+   TEST(CppCore::Test::Encoding::Base64::bytelength,   "bytelength:   ", std::endl);
+   TEST(CppCore::Test::Encoding::Base64::symbollength, "symbollength: ", std::endl);
+
 #ifndef CPPCORE_NO_SOCKET
    std::cout << "-------------------------------" << std::endl;
    std::cout << "        CppCore::Socket"         << std::endl;

@@ -660,6 +660,34 @@ namespace CppCore { namespace Test
             return true;
          }
       };
+      class Base64
+      {
+      public:
+         INLINE static bool bytelength()
+         {
+            if (CppCore::Base64::bytelength(0) != 0) return false;
+            if (CppCore::Base64::bytelength(1) != 3) return false;
+            if (CppCore::Base64::bytelength(2) != 3) return false;
+            if (CppCore::Base64::bytelength(3) != 3) return false;
+            if (CppCore::Base64::bytelength(4) != 3) return false;
+            if (CppCore::Base64::bytelength(5) != 6) return false;
+            if (CppCore::Base64::bytelength(6) != 6) return false;
+            if (CppCore::Base64::bytelength(7) != 6) return false;
+            if (CppCore::Base64::bytelength(8) != 6) return false;
+            return true;
+         }
+         INLINE static bool symbollength()
+         {
+            if (CppCore::Base64::symbollength(0) != 0) return false;
+            if (CppCore::Base64::symbollength(1) != 4) return false;
+            if (CppCore::Base64::symbollength(2) != 4) return false;
+            if (CppCore::Base64::symbollength(3) != 4) return false;
+            if (CppCore::Base64::symbollength(4) != 8) return false;
+            if (CppCore::Base64::symbollength(5) != 8) return false;
+            if (CppCore::Base64::symbollength(6) != 8) return false;
+            return true;
+         }
+      };
       class Decimal
       {
       public:
@@ -1160,6 +1188,8 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(HEX_PARSE16)      { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::parse16()); }
       TEST_METHOD(HEX_PARSE32)      { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::parse32()); }
       TEST_METHOD(HEX_PARSE64)      { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::parse64()); }
+      TEST_METHOD(BASE64_BYTELENGTH)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::bytelength()); }
+      TEST_METHOD(BASE64_SYMBOLLENGTH) { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::symbollength()); }
       TEST_METHOD(DEC_TOSTRING8U)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8u()); }
       TEST_METHOD(DEC_TOSTRING8S)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8s()); }
       TEST_METHOD(DEC_TOSTRING16U)  { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring16u()); }
