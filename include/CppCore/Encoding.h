@@ -802,65 +802,65 @@ namespace CppCore
          return true;
       }
 
-      INLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
+      /// <summary>
+      /// Tries to parse base64 encoded data with len symbols from in into out.
+      /// </summary>
+      INLINE static bool tryparse(const char* in, size_t len, void* out, bool url = false)
       {
          if (((len == 0) | (len & 0x03)) != 0)
             return false;
-
-         const uint8_t* tbl = url ? B64TOBIN_URL : B64TOBIN_STD;
-
+         if (in[len-1] == '=') len--;
+         if (in[len-1] == '=') len--;
          uint8_t* p = (uint8_t*)out;
          uint32_t r = 0;
-
-         if (in[len-1] == '=')
-            len--;
-         if (in[len-1] == '=')
-            len--;
-
+         uint32_t v;
+         const uint8_t* tbl = url ? B64TOBIN_URL : B64TOBIN_STD;
          while (len >= 4)
          {
+            // 3 bytes from 4 symbols
             uint32_t s1 = tbl[(uint8_t)*in++];
             uint32_t s2 = tbl[(uint8_t)*in++];
             uint32_t s3 = tbl[(uint8_t)*in++];
             uint32_t s4 = tbl[(uint8_t)*in++];
-            uint32_t  v = (s1 << 18) | (s2 << 12) | (s3 << 6) | s4;
-
+            v = (s1 << 18) | (s2 << 12) | (s3 << 6) | s4;
             r |= s1 | s2 | s3 | s4;
-
-            *p++ = (uint8_t)(v>>16);
-            *p++ = (uint8_t)(v>>8);
+            *p++ = (uint8_t)(v >> 16);
+            *p++ = (uint8_t)(v >> 8);
             *p++ = (uint8_t)(v);
-
-
             len -= 4;
          }
-
-         if (len == 2)
-         {
-            // 1 byte from 2 symbols
-            uint32_t s1 = tbl[(uint8_t)*in++];
-            uint32_t s2 = tbl[(uint8_t)*in++];
-            uint32_t  v = (s1 << 18) | (s2 << 12);
-
-            r |= s1 | s2;
-
-            *p++ = (uint8_t)(v>>16);
-         }
-         else if (len == 3)
+         if (len == 3)
          {
             // 2 bytes from 3 symbols
             uint32_t s1 = tbl[(uint8_t)*in++];
             uint32_t s2 = tbl[(uint8_t)*in++];
             uint32_t s3 = tbl[(uint8_t)*in++];
-            uint32_t  v = (s1 << 18) | (s2 << 12) | (s3 << 6);
-
+            v = (s1 << 18) | (s2 << 12) | (s3 << 6);
             r |= s1 | s2 | s3;
-
             *p++ = (uint8_t)(v >> 16);
             *p++ = (uint8_t)(v >> 8);
          }
-
+         else if (len == 2)
+         {
+            // 1 byte from 2 symbols
+            uint32_t s1 = tbl[(uint8_t)*in++];
+            uint32_t s2 = tbl[(uint8_t)*in++];
+            v = (s1 << 18) | (s2 << 12);
+            r |= s1 | s2;
+            *p++ = (uint8_t)(v >> 16);
+         }
+         else
+            assert(false);
          return r <= 0x3F;
+      }
+
+      /// <summary>
+      /// For C++ Strings
+      /// </summary>
+      template<typename STRING>
+      INLINE static bool tryparse(const STRING& in, void* out, bool url = false)
+      {
+         return Base64::tryparse(in.data(), in.length(), out, url);
       }
    };
 
