@@ -805,52 +805,46 @@ namespace CppCore
             Base64::BINTOB64_URL :
             Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
-         while (len >= 3)
+         while (len >= 3U)
          {
             // 4 symbols from 3 bytes
          #if defined(CPPCORE_CPUFEAT_BMI1)
-            uint32_t v = *(uint32_t*)p;
-            *out++ = tbl[_bextr_u32(v, 2, 6)];
-            *out++ = tbl[((v & 0x03) << 4) | _bextr_u32(v, 12, 4)];
-            *out++ = tbl[(_bextr_u32(v, 8, 4) << 2) | _bextr_u32(v, 22, 2)];
-            *out++ = tbl[_bextr_u32(v, 16, 6)];
+            uint32_t v  = *(uint32_t*)p;
+            uint32_t s1 = _bextr_u32(v, 2, 6);
+            uint32_t s2 = ((v & 0x03) << 4) | _bextr_u32(v, 12, 4);
+            uint32_t s3 = (_bextr_u32(v, 8, 4) << 2) | _bextr_u32(v, 22, 2);
+            uint32_t s4 = _bextr_u32(v, 16, 6);
          #else
-            *out++ = tbl[p[0] >> 2];
-            *out++ = tbl[((p[0] & 0x03) << 4) | (p[1] >> 4)];
-            *out++ = tbl[((p[1] & 0x0F) << 2) | (p[2] >> 6)];
-            *out++ = tbl[p[2] & 0x3F];
+            uint8_t s1 = ((p[0] >> 2));
+            uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
+            uint8_t s3 = ((p[1] & 0x0F) << 2) | (p[2] >> 6);
+            uint8_t s4 = ((p[2] & 0x3F));
          #endif
-            p += 3;
-            len -= 3;
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = tbl[s3];
+            *out++ = tbl[s4];
+            len -= 3U;
+            p += 3U;
          }
-         /*if (len)
-         {
-            *out++ = tbl[p[0] >> 2];
-            if (len == 1)
-            {
-               *out++ = tbl[(p[0] & 0x03) << 4];
-               *out++ = '=';
-            }
-            else
-            {
-               *out++ = tbl[((p[0] & 0x03) << 4) | (p[1] >> 4)];
-               *out++ = tbl[(p[1] & 0x0f) << 2];
-            }
-            *out++ = '=';
-         }*/
-         if (len == 2)
+         if (len == 2U)
          {
             // 3 symbols from 2 bytes (+1 padding symbols)
-            *out++ = tbl[p[0] >> 2];
-            *out++ = tbl[((p[0] & 0x03) << 4) | (p[1] >> 4)];
-            *out++ = tbl[(p[1] & 0x0f) << 2];
+            uint8_t s1 = ((p[0] >> 2));
+            uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
+            uint8_t s3 = ((p[1] & 0x0f) << 2);
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = tbl[s3];
             *out++ = '=';
          }
-         else if (len == 1)
+         else if (len == 1U)
          {
             // 2 symbols from 1 byte (+2 padding symbols)
-            *out++ = tbl[p[0] >> 2];
-            *out++ = tbl[(p[0] & 0x03) << 4];
+            uint8_t s1 = (p[0] >> 2);
+            uint8_t s2 = (p[0] & 0x03) << 4;
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
             *out++ = '=';
             *out++ = '=';
          }
