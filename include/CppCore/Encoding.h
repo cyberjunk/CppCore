@@ -701,11 +701,17 @@ namespace CppCore
    // BASE64
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+   /// <summary>
+   /// Base64 Encoding
+   /// </summary>
    class Base64
    {
    private:
       INLINE Base64() { }
    public:
+      /// <summary>
+      /// Lookup Table for B64 symbol to byte
+      /// </summary>
       CPPCORE_ALIGN64 static constexpr uint8_t B64TOBIN_STD[256] = {
          0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
          0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -725,6 +731,9 @@ namespace CppCore
          0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
       };
 
+      /// <summary>
+      /// Lookup Table for B64 url symbol to byte
+      /// </summary>
       CPPCORE_ALIGN64 static constexpr uint8_t B64TOBIN_URL[256] = {
          0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
          0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -746,10 +755,15 @@ namespace CppCore
 
       /// <summary>
       /// Returns the number of bytes needed to store symbols.
+      /// Returns 0 if len isn't a multiple of 4.
       /// </summary>
-      INLINE static uint32_t bytelength(uint32_t symbols)
+      INLINE static uint32_t bytelength(const char* s, uint32_t len)
       {
-         return (CppCore::rupptwo32(symbols, 4U) / 4U) * 3U;
+         if (((len == 0) | (len & 0x03)) != 0) return 0;
+         uint32_t n = (len / 4U) * 3U;
+         if (s[len-1] == '=') n--;
+         if (s[len-2] == '=') n--;
+         return n;
       }
 
       /// <summary>
@@ -763,7 +777,7 @@ namespace CppCore
       /// <summary>
       /// Writes base64 encoded symbols of data with len from in to out.
       /// </summary>
-      INLINE static void tostring(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
       {
          const char* tbl = url ? 
             CPPCORE_ALPHABET_B64_URL :
@@ -822,39 +836,58 @@ namespace CppCore
             *out = 0x00;
       }
 
-      /// <summary>
-      /// Writes base64 encoded symbols of data from in to out.
-      /// </summary>
-      template<typename T>
-      INLINE static void tostring(const T& in, char* out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const char* in, char* out, bool url = false, bool writeterm = true)
       {
-         Base64::tostring(&in, sizeof(T), out, url, writeterm);
+         Base64::encode(in, ::strlen(in), out, url, writeterm);
       }
 
-      /// <summary>
-      /// For C++ String compatible out
-      /// </summary>
-      template<typename STRING>
-      INLINE static void tostring(const void* in, size_t len, STRING& out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const std::string& in, char* out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in.c_str(), in.length(), out, url, writeterm);
+      }
+
+      INLINE static void encode(const std::string_view& in, char* out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in.data(), in.length(), out, url, writeterm);
+      }
+
+      INLINE static void encode(const void* in, size_t len, std::string& out, bool url = false, bool writeterm = true)
       {
          out.resize(Base64::symbollength((uint32_t)len));
-         Base64::tostring(in, len, out.data(), url, writeterm);
+         Base64::encode(in, len, out.data(), url, writeterm);
       }
 
-      /// <summary>
-      /// For C++ String compatible out
-      /// </summary>
-      template<typename T, typename STRING>
-      INLINE static void tostring(const T& in, STRING& out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const char* in, std::string& out, bool url = false, bool writeterm = true)
       {
-         out.resize(Base64::symbollength((uint32_t)sizeof(T)));
-         Base64::tostring(in, out.data(), url, writeterm);
+         Base64::encode(in, ::strlen(in), out, url, writeterm);
+      }
+
+      INLINE static void encode(const std::string& in, std::string& out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in.c_str(), in.length(), out, url, writeterm);
+      }
+
+      INLINE static void encode(const std::string_view& in, std::string& out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in.data(), in.length(), out, url, writeterm);
+      }
+
+      template<typename T>
+      INLINE static void encode(const T& in, char* out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(&in, sizeof(T), out, url, writeterm);
+      }
+
+      template<typename T>
+      INLINE static void encode(const T& in, std::string& out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(&in, sizeof(T), out, url, writeterm);
       }
 
       /// <summary>
       /// Tries to parse base64 encoded data with len symbols from in into out.
       /// </summary>
-      INLINE static bool tryparse(const char* in, size_t len, void* out, bool url = false)
+      INLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
       {
          if (((len == 0) | (len & 0x03)) != 0)
             return false;
@@ -903,13 +936,68 @@ namespace CppCore
          return r <= 0x3F;
       }
 
-      /// <summary>
-      /// For C++ Strings
-      /// </summary>
-      template<typename STRING>
-      INLINE static bool tryparse(const STRING& in, void* out, bool url = false)
+      INLINE static bool decode(const char* in, void* out, bool url = false)
       {
-         return Base64::tryparse(in.c_str(), in.length(), out, url);
+         return Base64::decode(in, ::strlen(in), out, url);
+      }
+
+      INLINE static bool decode(const std::string& in, void* out, bool url = false)
+      {
+         return Base64::decode(in.c_str(), in.length(), out, url);
+      }
+
+      INLINE static bool decode(const std::string_view& in, void* out, bool url = false)
+      {
+         return Base64::decode(in.data(), in.length(), out, url);
+      }
+
+      INLINE static bool decode(const char* in, size_t len, std::string& out, bool url = false)
+      {
+         out.resize(Base64::bytelength(in, (uint32_t)len));
+         return Base64::decode(in, len, out.data(), url);
+      }
+      
+      INLINE static bool decode(const char* in, std::string& out, bool url = false)
+      {
+         return Base64::decode(in, ::strlen(in), out, url);
+      }
+      
+      INLINE static bool decode(const std::string& in, std::string& out, bool url = false)
+      {
+         return Base64::decode(in.c_str(), in.length(), out, url);
+      }
+      
+      INLINE static bool decode(const std::string_view& in, std::string& out, bool url = false)
+      {
+         return Base64::decode(in.data(), in.length(), out, url);
+      }
+
+      template<typename T>
+      INLINE static bool decode(const char* in, size_t len, T& out, bool url = false, bool clear = true)
+      {
+         const auto BLEN = Base64::bytelength(in, (uint32_t)len);
+         if (BLEN > sizeof(T)) 
+            return false;
+         if (clear && BLEN < sizeof(T))
+            CppCore::clear(out);
+         return Base64::decode(in, len, &out, url);
+      }
+
+      template<typename T>
+      INLINE static bool decode(const char* in, T& out, bool url = false, bool clear = true)
+      {
+         return Base64::decode<T>(in, ::strlen(in), out, url, clear);
+      }
+
+      template<typename T>
+      INLINE static bool decode(const std::string& in, T& out, bool url = false, bool clear = true)
+      {
+         return Base64::decode<T>(in.c_str(), in.length(), out, url, clear);
+      }
+      template<typename T>
+      INLINE static bool decode(const std::string_view& in, T& out, bool url = false, bool clear = true)
+      {
+         return Base64::decode<T>(in.data(), in.length(), out, url, clear);
       }
    };
 
