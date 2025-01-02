@@ -832,7 +832,7 @@ namespace CppCore
             // 3 symbols from 2 bytes (+1 padding symbols)
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
-            uint8_t s3 = ((p[1] & 0x0f) << 2);
+            uint8_t s3 = ((p[1] & 0x0F) << 2);
             *out++ = tbl[s1];
             *out++ = tbl[s2];
             *out++ = tbl[s3];
