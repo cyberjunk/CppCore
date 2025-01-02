@@ -710,7 +710,7 @@ namespace CppCore
       INLINE Base64() { }
    public:
       /// <summary>
-      /// Lookup Table for B64 symbol to byte
+      /// Lookup Table from B64 SYMBOL to BINARY
       /// </summary>
       CPPCORE_ALIGN64 static constexpr uint8_t B64TOBIN_STD[256] = {
          0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -732,7 +732,7 @@ namespace CppCore
       };
 
       /// <summary>
-      /// Lookup Table for B64 url symbol to byte
+      /// Lookup Table from B64 URL SYMBOL to BINARY
       /// </summary>
       CPPCORE_ALIGN64 static constexpr uint8_t B64TOBIN_URL[256] = {
          0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -751,6 +751,26 @@ namespace CppCore
          0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
          0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
          0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+      };
+
+      /// <summary>
+      /// Lookup Table from BINARY to B64 SYMBOL
+      /// </summary>
+      CPPCORE_ALIGN64 static constexpr char BINTOB64_STD[64] = {
+         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+         'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+         'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+      };
+
+      /// <summary>
+      /// Lookup Table from BINARY to B64 URL SYMBOL
+      /// </summary>
+      CPPCORE_ALIGN64 static constexpr char BINTOB64_URL[64] = {
+         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+         'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+         'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'
       };
 
       /// <summary>
@@ -781,9 +801,9 @@ namespace CppCore
       /// </summary>
       INLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
       {
-         const char* tbl = url ? 
-            CPPCORE_ALPHABET_B64_URL :
-            CPPCORE_ALPHABET_B64_STD;
+         const char* tbl = url ?
+            Base64::BINTOB64_URL :
+            Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
          while (len >= 3)
          {
