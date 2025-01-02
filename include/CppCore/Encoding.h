@@ -749,7 +749,7 @@ namespace CppCore
       /// </summary>
       INLINE static uint32_t bytelength(uint32_t symbols)
       {
-         return (CppCore::rupptwo32(symbols, 4U) * 3U) / 4U;
+         return (CppCore::rupptwo32(symbols, 4U) / 4U) * 3U;
       }
 
       /// <summary>
@@ -757,7 +757,7 @@ namespace CppCore
       /// </summary>
       INLINE static uint32_t symbollength(uint32_t bytes)
       {
-         return (CppCore::rup32(bytes, 3U) * 4U) / 3U;
+         return (CppCore::rup32(bytes, 3U) / 3U) * 4U;
       }
 
       /// <summary>
