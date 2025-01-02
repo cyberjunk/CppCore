@@ -694,6 +694,7 @@ namespace CppCore { namespace Test
             CppCore::Base64::tostring("12",   2, s); if (s != "MTI=")     return false;
             CppCore::Base64::tostring("123",  3, s); if (s != "MTIz")     return false;
             CppCore::Base64::tostring("1234", 4, s); if (s != "MTIzNA==") return false;
+            CppCore::Base64::tostring("",     0, s); if (s != "")         return false;
             uint8_t d1[] = { 0x01, 0x02, 0x03 }; CppCore::Base64::tostring(d1, s); if (s != "AQID") return false;
             uint8_t d2[] = { 0x00 };             CppCore::Base64::tostring(d2, s); if (s != "AA==") return false;
             return true;
