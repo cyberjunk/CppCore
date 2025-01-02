@@ -823,13 +823,32 @@ namespace CppCore
       }
 
       /// <summary>
-      /// For C++ Strings
+      /// Writes base64 encoded symbols of data from in to out.
+      /// </summary>
+      template<typename T>
+      INLINE static void tostring(const T& in, char* out, bool url = false, bool writeterm = true)
+      {
+         Base64::tostring(&in, sizeof(T), out, url, writeterm);
+      }
+
+      /// <summary>
+      /// For C++ String compatible out
       /// </summary>
       template<typename STRING>
       INLINE static void tostring(const void* in, size_t len, STRING& out, bool url = false, bool writeterm = true)
       {
          out.resize(Base64::symbollength((uint32_t)len));
          Base64::tostring(in, len, out.data(), url, writeterm);
+      }
+
+      /// <summary>
+      /// For C++ String compatible out
+      /// </summary>
+      template<typename T, typename STRING>
+      INLINE static void tostring(const T& in, STRING& out, bool url = false, bool writeterm = true)
+      {
+         out.resize(Base64::symbollength((uint32_t)sizeof(T)));
+         Base64::tostring(in, out.data(), url, writeterm);
       }
 
       /// <summary>
