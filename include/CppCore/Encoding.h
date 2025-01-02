@@ -775,7 +775,9 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Writes base64 encoded symbols of data with len from in to out.
+      /// Encodes 'len' bytes from 'in' into 'out'.
+      /// Use Base64::symbollength() to pre-calculate the number of symbols written to 'out'.
+      /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
       INLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
       {
@@ -885,7 +887,9 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Tries to parse base64 encoded data with len symbols from in into out.
+      /// Tries to decode 'len' base64 symbols from 'in' into 'out'.
+      /// Use Base64::bytelength() to pre-calculate the number of bytes written to 'out'.
+      /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
       INLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
       {
@@ -994,6 +998,7 @@ namespace CppCore
       {
          return Base64::decode<T>(in.c_str(), in.length(), out, url, clear);
       }
+      
       template<typename T>
       INLINE static bool decode(const std::string_view& in, T& out, bool url = false, bool clear = true)
       {
