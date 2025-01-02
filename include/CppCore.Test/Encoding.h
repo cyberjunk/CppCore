@@ -693,7 +693,7 @@ namespace CppCore { namespace Test
             if (CppCore::Base64::symbollength(6) != 8) return false;
             return true;
          }
-         INLINE static bool tostring()
+         INLINE static bool encode()
          {
             std::string s;
             CppCore::Base64::encode("1",    s); if (s != "MQ==")     return false;
@@ -705,7 +705,7 @@ namespace CppCore { namespace Test
             uint8_t d2[] = { 0xFF };             CppCore::Base64::encode(d2, s); if (s != "/w==") return false;
             return true;
          }
-         INLINE static bool tryparse()
+         INLINE static bool decode()
          {
             std::string s;
             if (!CppCore::Base64::decode("MQ==",     s) || s != "1")    return false;
@@ -1229,8 +1229,8 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(HEX_PARSE64)      { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::parse64()); }
       TEST_METHOD(BASE64_BYTELENGTH)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::bytelength()); }
       TEST_METHOD(BASE64_SYMBOLLENGTH) { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::symbollength()); }
-      TEST_METHOD(BASE64_TOSTRING)     { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::tostring()); }
-      TEST_METHOD(BASE64_TRYPARSE)     { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::tryparse()); }
+      TEST_METHOD(BASE64_ENCODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::encode()); }
+      TEST_METHOD(BASE64_DECODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::decode()); }
       TEST_METHOD(DEC_TOSTRING8U)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8u()); }
       TEST_METHOD(DEC_TOSTRING8S)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8s()); }
       TEST_METHOD(DEC_TOSTRING16U)  { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring16u()); }

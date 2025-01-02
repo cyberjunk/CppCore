@@ -770,8 +770,8 @@ int main()
    std::cout << "-------------------------------" << std::endl;
    TEST(CppCore::Test::Encoding::Base64::bytelength,   "bytelength:   ", std::endl);
    TEST(CppCore::Test::Encoding::Base64::symbollength, "symbollength: ", std::endl);
-   TEST(CppCore::Test::Encoding::Base64::tostring,     "tostring:     ", std::endl);
-   TEST(CppCore::Test::Encoding::Base64::tryparse,     "tryparse:     ", std::endl);
+   TEST(CppCore::Test::Encoding::Base64::encode,       "encode:       ", std::endl);
+   TEST(CppCore::Test::Encoding::Base64::decode,       "decode:       ", std::endl);
 
 #ifndef CPPCORE_NO_SOCKET
    std::cout << "-------------------------------" << std::endl;
