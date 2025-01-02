@@ -712,18 +712,18 @@ namespace CppCore { namespace Test
             if (!CppCore::Base64::decode("MTI=",     s) || s != "12")   return false;
             if (!CppCore::Base64::decode("MTIz",     s) || s != "123")  return false;
             if (!CppCore::Base64::decode("MTIzNA==", s) || s != "1234") return false;
-            if ( CppCore::Base64::decode("",     s)) return false;
-            if ( CppCore::Base64::decode("Z",    s)) return false;
-            if ( CppCore::Base64::decode("(aaa", s)) return false;
-            if ( CppCore::Base64::decode("M==",  s)) return false;
+            if ( CppCore::Base64::decode("",     s)) return false; // empty string
+            if ( CppCore::Base64::decode("Z",    s)) return false; // invalid length
+            if ( CppCore::Base64::decode("AB",   s)) return false; // invalid length
+            if ( CppCore::Base64::decode("M=",   s)) return false; // invalid length
+            if ( CppCore::Base64::decode("M==",  s)) return false; // invalid length
+            if ( CppCore::Base64::decode("(aaa", s)) return false; // invalid symbol
             uint8_t d1[3];
             uint8_t d2[1];
             if (!CppCore::Base64::decode("AQID", d1) || d1[0] != 0x01 || d1[1] != 0x02 || d1[2] != 0x03) return false;
             if (!CppCore::Base64::decode("/w==", d1) || d1[0] != 0xFF || d1[1] != 0x00 || d1[2] != 0x00) return false;
-
-            if (!CppCore::Base64::decode("/w==", d2) || d2[0] != 0xFF) return false;
-            if ( CppCore::Base64::decode("AQID", d2)) return false;
-
+            if (!CppCore::Base64::decode("/w==", d2) || d2[0] != 0xFF)                                   return false;
+            if ( CppCore::Base64::decode("AQID", d2)) return false; // too large
             return true;
          }
       };
