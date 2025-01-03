@@ -10,63 +10,44 @@ using namespace CppCore;
 class PEM
 {
 public:
-   INLINE static uint32_t calcsize(uint32_t type, uint32_t b64, uint32_t cr = 0)
+   static constexpr char PREFIX_SL[11] = { '-','-','-','-','-','B','E','G','I','N',' ' };
+   static constexpr char PREFIX_EL[9]  = { '-','-','-','-','-','E','N','D',' ' };
+   static constexpr char POSTFIX[6]    = { '-','-','-','-','-','\n' };
+
+   INLINE static size_t calcsize(size_t tlen, size_t blen)
    {
-      const uint32_t SL = 5U + 6U + type + 5U + 1U + cr;
-      const uint32_t EL = 5U + 4U + type + 5U;
-      const uint32_t NL1 = (1U + cr) * (b64 >> 6);
-      const uint32_t NL2 = (1U + cr) * ((b64 & 0x3F) != 0);
-      return SL + EL + NL1 + NL2 + b64;
+      const size_t SL  = 11U + tlen + 6U;    // start line
+      const size_t EL  = 9U  + tlen + 6U;    // end line
+      const size_t NL1 = blen >> 6;          // line breaks full rows
+      const size_t NL2 = (blen & 0x3F) != 0; // line break tail row
+      return SL + EL + NL1 + NL2 + blen;     // sum
    }
 
-   INLINE static void serialize(const char* type, const char* b64, char* out)
+   INLINE static void serialize(const char* type, size_t tlen, const char* b64, size_t blen, char* out, bool writeterm = true)
    {
-      const char* t;
-      for (size_t i = 0; i < 5; i++)
-         *out++ = '-';
-      *out++ = 'B';
-      *out++ = 'E';
-      *out++ = 'G';
-      *out++ = 'I';
-      *out++ = 'N';
-      *out++ = ' ';
-      t = type;
-      while (char c = *t++)
-         *out++ = c;
-      for (size_t i = 0; i < 5; i++)
-         *out++ = '-';
-
-      *out++ = '\n';
-      //*out++ = '\r';
-
-      uint32_t n = 0;
-      while (char c = *b64++) {
-         *out++ = c;
-         if (++n == 64U) {
-            *out++ = '\n';
-            n = 0;
-         }
-      }
-      if (n)
+      Memory::copy(out, PREFIX_SL, 11); out += 11;
+      Memory::copy(out, type, tlen);    out += tlen;
+      Memory::copy(out, POSTFIX, 6);    out += 6;
+      while (blen >= 64)
+      {
+         Memory::singlecopy512(out, b64);
+         out  += 64;
+         b64  += 64;
+         blen -= 64;
          *out++ = '\n';
-
-      for (size_t i = 0; i < 5; i++)
-         *out++ = '-';
-      *out++ = 'E';
-      *out++ = 'N';
-      *out++ = 'D';
-      *out++ = ' ';
-      t = type;
-      while (char c = *t++)
-         *out++ = c;
-      for (size_t i = 0; i < 5; i++)
-         *out++ = '-';
-
-      *out = 0x00;
-
-      //0x2D2D2D2D
+      }
+      if (blen)
+      {
+         Memory::copy(out, b64, blen);
+         out += blen;
+         *out++ = '\n';
+      }
+      Memory::copy(out, PREFIX_EL, 9); out += 9;
+      Memory::copy(out, type, tlen);   out += tlen;
+      Memory::copy(out, POSTFIX, 6);   out += 6;
+      if (writeterm)
+         *out = 0x00;
    }
-
 };
 
 
@@ -87,7 +68,7 @@ int main()
    uint32_t l1 = Base64::symbollength(sizeof(v));
    uint32_t l2 = PEM::calcsize(4, l1);
 
-   PEM::serialize("TEST", b64, out);
+   PEM::serialize("TEST", 4, b64, l1, out);
    uint32_t w = ::strlen(out);
    printf("%s", out);
 
