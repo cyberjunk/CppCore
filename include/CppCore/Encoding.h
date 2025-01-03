@@ -812,17 +812,17 @@ namespace CppCore
          while (len >= 3U)
          {
             // 4 symbols from 3 bytes
-         #if defined(CPPCORE_CPUFEAT_BMI1)
+         #if false
+            uint8_t s1 = ((p[0] >> 2));
+            uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
+            uint8_t s3 = ((p[1] & 0x0F) << 2) | (p[2] >> 6);
+            uint8_t s4 = ((p[2] & 0x3F));
+         #elif defined(CPPCORE_CPUFEAT_BMI1)
             uint32_t v  = CppCore::loadr32((uint32_t*)p);
             uint32_t s1 = _bextr_u32(v, 26, 6);
             uint32_t s2 = _bextr_u32(v, 20, 6);
             uint32_t s3 = _bextr_u32(v, 14, 6);
             uint32_t s4 = _bextr_u32(v,  8, 6);
-         #elif false
-            uint8_t s1 = ((p[0] >> 2));
-            uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
-            uint8_t s3 = ((p[1] & 0x0F) << 2) | (p[2] >> 6);
-            uint8_t s4 = ((p[2] & 0x3F));
          #else
             uint32_t v  = CppCore::loadr32((uint32_t*)p);
             uint32_t s1 = (v >> 26);
@@ -840,9 +840,16 @@ namespace CppCore
          if (len == 2U)
          {
             // 3 symbols from 2 bytes (+1 padding symbols)
+         #if false
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
             uint8_t s3 = ((p[1] & 0x0F) << 2);
+         #else
+            uint16_t v  = CppCore::loadr16((uint16_t*)p);
+            uint16_t s1 = (v >> 10);
+            uint16_t s2 = (v >>  4) & 0x3F;
+            uint16_t s3 = (v <<  2) & 0x3C;
+         #endif
             *out++ = tbl[s1];
             *out++ = tbl[s2];
             *out++ = tbl[s3];
@@ -852,7 +859,7 @@ namespace CppCore
          {
             // 2 symbols from 1 byte (+2 padding symbols)
             uint8_t s1 = (p[0] >> 2);
-            uint8_t s2 = (p[0] & 0x03) << 4;
+            uint8_t s2 = (p[0] << 4) & 0x30;
             *out++ = tbl[s1];
             *out++ = tbl[s2];
             *out++ = '=';
