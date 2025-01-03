@@ -812,7 +812,7 @@ namespace CppCore
          while (len >= 3U)
          {
             // 4 symbols from 3 bytes
-         #if false
+         #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
             uint8_t s3 = ((p[1] & 0x0F) << 2) | (p[2] >> 6);
@@ -840,7 +840,7 @@ namespace CppCore
          if (len == 2U)
          {
             // 3 symbols from 2 bytes (+1 padding symbols)
-         #if false
+         #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
             uint8_t s3 = ((p[1] & 0x0F) << 2);
