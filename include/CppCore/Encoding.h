@@ -813,16 +813,22 @@ namespace CppCore
          {
             // 4 symbols from 3 bytes
          #if defined(CPPCORE_CPUFEAT_BMI1)
-            uint32_t v  = *(uint32_t*)p;
-            uint32_t s1 = _bextr_u32(v, 2, 6);
-            uint32_t s2 = ((v & 0x03) << 4) | _bextr_u32(v, 12, 4);
-            uint32_t s3 = (_bextr_u32(v, 8, 4) << 2) | _bextr_u32(v, 22, 2);
-            uint32_t s4 = _bextr_u32(v, 16, 6);
-         #else
+            uint32_t v  = CppCore::loadr32((uint32_t*)p);
+            uint32_t s1 = _bextr_u32(v, 26, 6);
+            uint32_t s2 = _bextr_u32(v, 20, 6);
+            uint32_t s3 = _bextr_u32(v, 14, 6);
+            uint32_t s4 = _bextr_u32(v,  8, 6);
+         #elif false
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
             uint8_t s3 = ((p[1] & 0x0F) << 2) | (p[2] >> 6);
             uint8_t s4 = ((p[2] & 0x3F));
+         #else
+            uint32_t v  = CppCore::loadr32((uint32_t*)p);
+            uint32_t s1 = (v >> 26);
+            uint32_t s2 = (v >> 20) & 0x3F;
+            uint32_t s3 = (v >> 14) & 0x3F;
+            uint32_t s4 = (v >>  8) & 0x3F;
          #endif
             *out++ = tbl[s1];
             *out++ = tbl[s2];
