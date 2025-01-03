@@ -131,6 +131,41 @@ CPPCORE_BASE16_IMPLEMENTATION(4096, CppCore::Block4096)
 CPPCORE_BASE16_IMPLEMENTATION(8192, CppCore::Block8192)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BASE64
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+unsigned int cppcore_base64_symbollength(unsigned int bytes) {
+   return CppCore::Base64::symbollength(bytes);
+}
+unsigned int cppcore_base64_bytelength(char* s, unsigned int len) {
+   return CppCore::Base64::bytelength(s, len);
+}
+void cppcore_base64_encode(void* in, unsigned int len, char* out, unsigned int url, unsigned int writeterm) {
+   CppCore::Base64::encode(in, len, out, (bool)url, (bool)writeterm);
+}
+unsigned int cppcore_base64_decode(char* in, unsigned int len, void* out, unsigned int url) {
+   return CppCore::Base64::decode((const char*)in, (size_t)len, out, (bool)url);
+}
+
+#define CPPCORE_BASE64_IMPLEMENTATION(size,block)                                                     \
+  void cppcore_base64_encode##size(void* in, char* out, unsigned int url, unsigned int writeterm) {   \
+    CppCore::Base64::encode(*(block*)in, out, (bool)url, (bool)writeterm);                            \
+  }                                                                                                   \
+  unsigned int cppcore_base64_decode##size(char* in, unsigned int len, void* out, unsigned int url) { \
+    return CppCore::Base64::decode((const char*)in, len, *(block*)out, (bool)url, true);              \
+  }
+
+CPPCORE_BASE64_IMPLEMENTATION(32, std::uint32_t)
+CPPCORE_BASE64_IMPLEMENTATION(64, std::uint64_t)
+CPPCORE_BASE64_IMPLEMENTATION(128, CppCore::Block128)
+CPPCORE_BASE64_IMPLEMENTATION(256, CppCore::Block256)
+CPPCORE_BASE64_IMPLEMENTATION(512, CppCore::Block512)
+CPPCORE_BASE64_IMPLEMENTATION(1024, CppCore::Block1024)
+CPPCORE_BASE64_IMPLEMENTATION(2048, CppCore::Block2048)
+CPPCORE_BASE64_IMPLEMENTATION(4096, CppCore::Block4096)
+CPPCORE_BASE64_IMPLEMENTATION(8192, CppCore::Block8192)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HASH
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
