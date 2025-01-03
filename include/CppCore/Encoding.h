@@ -698,6 +698,346 @@ namespace CppCore
    };
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // BASE64
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Base64 Encoding
+   /// </summary>
+   class Base64
+   {
+   private:
+      INLINE Base64() { }
+   public:
+      /// <summary>
+      /// Lookup Table from B64 SYMBOL to BINARY
+      /// </summary>
+      CPPCORE_ALIGN64 static constexpr uint8_t B64TOBIN_STD[256] = {
+         0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x3e, 0xFF, 0xFF, 0xFF, 0x3f,
+         0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+         0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+         0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+      };
+
+      /// <summary>
+      /// Lookup Table from B64 URL SYMBOL to BINARY
+      /// </summary>
+      CPPCORE_ALIGN64 static constexpr uint8_t B64TOBIN_URL[256] = {
+         0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x3e, 0xFF, 0xFF,
+         0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+         0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0xFF, 0xFF, 0xFF, 0xFF, 0x3f,
+         0xFF, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+         0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+      };
+
+      /// <summary>
+      /// Lookup Table from BINARY to B64 SYMBOL
+      /// </summary>
+      CPPCORE_ALIGN64 static constexpr char BINTOB64_STD[64] = {
+         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+         'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+         'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+      };
+
+      /// <summary>
+      /// Lookup Table from BINARY to B64 URL SYMBOL
+      /// </summary>
+      CPPCORE_ALIGN64 static constexpr char BINTOB64_URL[64] = {
+         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+         'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+         'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'
+      };
+
+      /// <summary>
+      /// Returns the number of bytes needed to store symbols.
+      /// Returns 0 if len isn't a multiple of 4.
+      /// </summary>
+      INLINE static uint32_t bytelength(const char* s, uint32_t len)
+      {
+         if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
+            return 0;
+         uint32_t n = (len / 4U) * 3U;
+         if (s[len-1] == '=') {
+            n--;
+            if (s[len-2] == '=') 
+               n--;
+         }
+         return n;
+      }
+
+      /// <summary>
+      /// Returns the number of symbols needed to store bytes.
+      /// </summary>
+      INLINE static uint32_t symbollength(uint32_t bytes)
+      {
+         return (CppCore::rup32(bytes, 3U) / 3U) * 4U;
+      }
+
+      /// <summary>
+      /// Encodes 'len' bytes from 'in' into 'out'.
+      /// Use Base64::symbollength() to pre-calculate the number of symbols written to 'out'.
+      /// This contains the actual algorithm and is base function for all the other variants.
+      /// </summary>
+      INLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
+      {
+         const char* tbl = url ?
+            Base64::BINTOB64_URL :
+            Base64::BINTOB64_STD;
+         const uint8_t* p = (const uint8_t*)in;
+         while (len >= 3U)
+         {
+            // 4 symbols from 3 bytes
+         #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
+            uint8_t s1 = ((p[0] >> 2));
+            uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
+            uint8_t s3 = ((p[1] & 0x0F) << 2) | (p[2] >> 6);
+            uint8_t s4 = ((p[2] & 0x3F));
+         #elif defined(CPPCORE_CPUFEAT_BMI1)
+            uint32_t v  = CppCore::loadr32((uint32_t*)p);
+            uint32_t s1 = _bextr_u32(v, 26, 6);
+            uint32_t s2 = _bextr_u32(v, 20, 6);
+            uint32_t s3 = _bextr_u32(v, 14, 6);
+            uint32_t s4 = _bextr_u32(v,  8, 6);
+         #else
+            uint32_t v  = CppCore::loadr32((uint32_t*)p);
+            uint32_t s1 = (v >> 26);
+            uint32_t s2 = (v >> 20) & 0x3F;
+            uint32_t s3 = (v >> 14) & 0x3F;
+            uint32_t s4 = (v >>  8) & 0x3F;
+         #endif
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = tbl[s3];
+            *out++ = tbl[s4];
+            len -= 3U;
+            p += 3U;
+         }
+         if (len == 2U)
+         {
+            // 3 symbols from 2 bytes (+1 padding symbols)
+         #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
+            uint8_t s1 = ((p[0] >> 2));
+            uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
+            uint8_t s3 = ((p[1] & 0x0F) << 2);
+         #else
+            uint16_t v  = CppCore::loadr16((uint16_t*)p);
+            uint16_t s1 = (v >> 10);
+            uint16_t s2 = (v >>  4) & 0x3F;
+            uint16_t s3 = (v <<  2) & 0x3C;
+         #endif
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = tbl[s3];
+            *out++ = '=';
+         }
+         else if (len == 1U)
+         {
+            // 2 symbols from 1 byte (+2 padding symbols)
+            uint8_t s1 = (p[0] >> 2);
+            uint8_t s2 = (p[0] << 4) & 0x30;
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = '=';
+            *out++ = '=';
+         }
+         if (writeterm)
+            *out = 0x00;
+      }
+
+      INLINE static void encode(const char* in, char* out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in, ::strlen(in), out, url, writeterm);
+      }
+
+      INLINE static void encode(const std::string& in, char* out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in.c_str(), in.length(), out, url, writeterm);
+      }
+
+      INLINE static void encode(const std::string_view& in, char* out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in.data(), in.length(), out, url, writeterm);
+      }
+
+      INLINE static void encode(const void* in, size_t len, std::string& out, bool url = false, bool writeterm = true)
+      {
+         out.resize(Base64::symbollength((uint32_t)len));
+         Base64::encode(in, len, out.data(), url, writeterm);
+      }
+
+      INLINE static void encode(const char* in, std::string& out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in, ::strlen(in), out, url, writeterm);
+      }
+
+      INLINE static void encode(const std::string& in, std::string& out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in.c_str(), in.length(), out, url, writeterm);
+      }
+
+      INLINE static void encode(const std::string_view& in, std::string& out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(in.data(), in.length(), out, url, writeterm);
+      }
+
+      template<typename T>
+      INLINE static void encode(const T& in, char* out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(&in, sizeof(T), out, url, writeterm);
+      }
+
+      template<typename T>
+      INLINE static void encode(const T& in, std::string& out, bool url = false, bool writeterm = true)
+      {
+         Base64::encode(&in, sizeof(T), out, url, writeterm);
+      }
+
+      /// <summary>
+      /// Tries to decode 'len' base64 symbols from 'in' into 'out'.
+      /// Use Base64::bytelength() to pre-calculate the number of bytes written to 'out'.
+      /// This contains the actual algorithm and is base function for all the other variants.
+      /// </summary>
+      INLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
+      {
+         if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
+            return false;
+         if (in[len-1] == '=') len--;
+         if (in[len-1] == '=') len--;
+         uint8_t* p = (uint8_t*)out;
+         uint32_t r = 0;
+         uint32_t v;
+         const uint8_t* tbl = url ? 
+            Base64::B64TOBIN_URL : 
+            Base64::B64TOBIN_STD;
+         while (len >= 4)
+         {
+            // 3 bytes from 4 symbols
+            uint32_t s1 = tbl[(uint8_t)*in++];
+            uint32_t s2 = tbl[(uint8_t)*in++];
+            uint32_t s3 = tbl[(uint8_t)*in++];
+            uint32_t s4 = tbl[(uint8_t)*in++];
+            v = (s1 << 18) | (s2 << 12) | (s3 << 6) | s4;
+            r |= s1 | s2 | s3 | s4;
+            *p++ = (uint8_t)(v >> 16);
+            *p++ = (uint8_t)(v >> 8);
+            *p++ = (uint8_t)(v);
+            len -= 4;
+         }
+         if (len == 3)
+         {
+            // 2 bytes from 3 symbols
+            uint32_t s1 = tbl[(uint8_t)*in++];
+            uint32_t s2 = tbl[(uint8_t)*in++];
+            uint32_t s3 = tbl[(uint8_t)*in++];
+            v = (s1 << 18) | (s2 << 12) | (s3 << 6);
+            r |= s1 | s2 | s3;
+            *p++ = (uint8_t)(v >> 16);
+            *p++ = (uint8_t)(v >> 8);
+         }
+         else if (len == 2)
+         {
+            // 1 byte from 2 symbols
+            uint32_t s1 = tbl[(uint8_t)*in++];
+            uint32_t s2 = tbl[(uint8_t)*in++];
+            v = (s1 << 18) | (s2 << 12);
+            r |= s1 | s2;
+            *p++ = (uint8_t)(v >> 16);
+         }
+         return r <= 0x3F;
+      }
+
+      INLINE static bool decode(const char* in, void* out, bool url = false)
+      {
+         return Base64::decode(in, ::strlen(in), out, url);
+      }
+
+      INLINE static bool decode(const std::string& in, void* out, bool url = false)
+      {
+         return Base64::decode(in.c_str(), in.length(), out, url);
+      }
+
+      INLINE static bool decode(const std::string_view& in, void* out, bool url = false)
+      {
+         return Base64::decode(in.data(), in.length(), out, url);
+      }
+
+      INLINE static bool decode(const char* in, size_t len, std::string& out, bool url = false)
+      {
+         out.resize(Base64::bytelength(in, (uint32_t)len));
+         return Base64::decode(in, len, out.data(), url);
+      }
+      
+      INLINE static bool decode(const char* in, std::string& out, bool url = false)
+      {
+         return Base64::decode(in, ::strlen(in), out, url);
+      }
+      
+      INLINE static bool decode(const std::string& in, std::string& out, bool url = false)
+      {
+         return Base64::decode(in.c_str(), in.length(), out, url);
+      }
+      
+      INLINE static bool decode(const std::string_view& in, std::string& out, bool url = false)
+      {
+         return Base64::decode(in.data(), in.length(), out, url);
+      }
+
+      template<typename T>
+      INLINE static bool decode(const char* in, size_t len, T& out, bool url = false, bool clear = true)
+      {
+         const auto BLEN = Base64::bytelength(in, (uint32_t)len);
+         if (BLEN > sizeof(T)) 
+            return false;
+         if (clear && BLEN < sizeof(T))
+            CppCore::clear(out);
+         return Base64::decode(in, len, &out, url);
+      }
+
+      template<typename T>
+      INLINE static bool decode(const char* in, T& out, bool url = false, bool clear = true)
+      {
+         return Base64::decode<T>(in, ::strlen(in), out, url, clear);
+      }
+
+      template<typename T>
+      INLINE static bool decode(const std::string& in, T& out, bool url = false, bool clear = true)
+      {
+         return Base64::decode<T>(in.c_str(), in.length(), out, url, clear);
+      }
+      
+      template<typename T>
+      INLINE static bool decode(const std::string_view& in, T& out, bool url = false, bool clear = true)
+      {
+         return Base64::decode<T>(in.data(), in.length(), out, url, clear);
+      }
+   };
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // DECIMAL
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

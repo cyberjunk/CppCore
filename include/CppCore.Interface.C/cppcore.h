@@ -34,6 +34,11 @@
   CPPCORE_EXPORT void cppcore_base16_encode##size(void* in, char* out, unsigned int bigendian, unsigned int writeterm, unsigned int uppercase); \
   CPPCORE_EXPORT unsigned int cppcore_base16_decode##size(char* in, unsigned int len, void* out, unsigned int bigendian);
 
+// macro for base64 function declarations
+#define CPPCORE_BASE64_DECLARATION(size)                                                                          \
+  CPPCORE_EXPORT void cppcore_base64_encode##size(void* in, char* out, unsigned int url, unsigned int writeterm); \
+  CPPCORE_EXPORT unsigned int cppcore_base64_decode##size(char* in, unsigned int len, void* out, unsigned int url);
+
 // macro for hash function declarations
 #define CPPCORE_HASH_DECLARATION(name)                                              \
   typedef struct _ ## name name;                                                    \
@@ -144,6 +149,23 @@ extern "C" {
    CPPCORE_BASE16_DECLARATION(2048)
    CPPCORE_BASE16_DECLARATION(4096)
    CPPCORE_BASE16_DECLARATION(8192)
+
+   // base64
+
+   CPPCORE_EXPORT unsigned int cppcore_base64_symbollength(unsigned int bytes);
+   CPPCORE_EXPORT unsigned int cppcore_base64_bytelength(char* s, unsigned int len);
+   CPPCORE_EXPORT void         cppcore_base64_encode(void* in, unsigned int len, char* out, unsigned int url, unsigned int writeterm);
+   CPPCORE_EXPORT unsigned int cppcore_base64_decode(char* in, unsigned int len, void* out, unsigned int url);
+
+   CPPCORE_BASE64_DECLARATION(32)
+   CPPCORE_BASE64_DECLARATION(64)
+   CPPCORE_BASE64_DECLARATION(128)
+   CPPCORE_BASE64_DECLARATION(256)
+   CPPCORE_BASE64_DECLARATION(512)
+   CPPCORE_BASE64_DECLARATION(1024)
+   CPPCORE_BASE64_DECLARATION(2048)
+   CPPCORE_BASE64_DECLARATION(4096)
+   CPPCORE_BASE64_DECLARATION(8192)
 
    // hash
 
