@@ -665,21 +665,23 @@ namespace CppCore { namespace Test
       public:
          INLINE static bool bytelength()
          {
-            if (CppCore::Base64::bytelength("",         0) != 0) return false;
-            if (CppCore::Base64::bytelength("=",        1) != 0) return false;
-            if (CppCore::Base64::bytelength("==",       2) != 0) return false;
-            if (CppCore::Base64::bytelength("a",        1) != 0) return false;
-            if (CppCore::Base64::bytelength("aa",       2) != 0) return false;
-            if (CppCore::Base64::bytelength("aa=",      3) != 0) return false;
-            if (CppCore::Base64::bytelength("aa==",     4) != 1) return false;
-            if (CppCore::Base64::bytelength("aaa=",     4) != 2) return false;
-            if (CppCore::Base64::bytelength("aaaa",     4) != 3) return false;
-            if (CppCore::Base64::bytelength("aaaaa",    5) != 0) return false;
-            if (CppCore::Base64::bytelength("aaaaaa",   6) != 0) return false;
-            if (CppCore::Base64::bytelength("aaaaaa=",  7) != 0) return false;
-            if (CppCore::Base64::bytelength("aaaaaa==", 8) != 4) return false;
-            if (CppCore::Base64::bytelength("aaaaaaa=", 8) != 5) return false;
-            if (CppCore::Base64::bytelength("aaaaaaaa", 8) != 6) return false;
+            if (CppCore::Base64::bytelength("",         0) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("=",        1) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("==",       2) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("a",        1) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("aa",       2) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("aa=",      3) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("aa==",     4) != 1) return false; // ok
+            if (CppCore::Base64::bytelength("aaa=",     4) != 2) return false; // ok
+            if (CppCore::Base64::bytelength("aaaa",     4) != 3) return false; // ok
+            if (CppCore::Base64::bytelength("aa=a",     4) != 3) return false; // invalid symbol
+            if (CppCore::Base64::bytelength("(aaa",     4) != 3) return false; // invalid symbol
+            if (CppCore::Base64::bytelength("aaaaa",    5) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("aaaaaa",   6) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("aaaaaa=",  7) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("aaaaaa==", 8) != 4) return false; // ok
+            if (CppCore::Base64::bytelength("aaaaaaa=", 8) != 5) return false; // ok
+            if (CppCore::Base64::bytelength("aaaaaaaa", 8) != 6) return false; // ok
             return true;
          }
          INLINE static bool symbollength()
@@ -718,6 +720,7 @@ namespace CppCore { namespace Test
             if ( CppCore::Base64::decode("M=",   s)) return false; // invalid length
             if ( CppCore::Base64::decode("M==",  s)) return false; // invalid length
             if ( CppCore::Base64::decode("(aaa", s)) return false; // invalid symbol
+            if ( CppCore::Base64::decode("aa=a", s)) return false; // invalid symbol
             uint8_t d1[3];
             uint8_t d2[1];
             if (!CppCore::Base64::decode("AQID", d1) || d1[0] != 0x01 || d1[1] != 0x02 || d1[2] != 0x03) return false;

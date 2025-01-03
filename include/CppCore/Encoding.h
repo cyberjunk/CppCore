@@ -779,10 +779,14 @@ namespace CppCore
       /// </summary>
       INLINE static uint32_t bytelength(const char* s, uint32_t len)
       {
-         if (((len == 0) | (len & 0x03)) != 0) return 0;
+         if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
+            return 0;
          uint32_t n = (len / 4U) * 3U;
-         if (s[len-1] == '=') n--;
-         if (s[len-2] == '=') n--;
+         if (s[len-1] == '=') {
+            n--;
+            if (s[len-2] == '=') 
+               n--;
+         }
          return n;
       }
 
@@ -907,7 +911,7 @@ namespace CppCore
       /// </summary>
       INLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
       {
-         if (((len == 0) | (len & 0x03)) != 0)
+         if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
             return false;
          if (in[len-1] == '=') len--;
          if (in[len-1] == '=') len--;
