@@ -811,7 +811,46 @@ namespace CppCore
             Base64::BINTOB64_URL :
             Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
-         while (len >= 3U)
+         while (len >= 6U)
+         {
+            // 8 symbols from 6 bytes
+            uint32_t v = CppCore::loadr32((uint32_t*)p);
+         #if defined(CPPCORE_CPUFEAT_BMI1)
+            uint32_t s1 = _bextr_u32(v, 26, 6);
+            uint32_t s2 = _bextr_u32(v, 20, 6);
+            uint32_t s3 = _bextr_u32(v, 14, 6);
+            uint32_t s4 = _bextr_u32(v,  8, 6);
+         #else
+            uint32_t s1 = (v >> 26);
+            uint32_t s2 = (v >> 20) & 0x3F;
+            uint32_t s3 = (v >> 14) & 0x3F;
+            uint32_t s4 = (v >>  8) & 0x3F;
+         #endif
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = tbl[s3];
+            *out++ = tbl[s4];
+            p += 4;
+            v = CppCore::shrd32(CppCore::byteswap32(*(uint16_t*)p), v, 8U);
+         #if defined(CPPCORE_CPUFEAT_BMI1)
+            s1 = _bextr_u32(v, 26, 6);
+            s2 = _bextr_u32(v, 20, 6);
+            s3 = _bextr_u32(v, 14, 6);
+            s4 = _bextr_u32(v,  8, 6);
+         #else
+            s1 = (v >> 26);
+            s2 = (v >> 20) & 0x3F;
+            s3 = (v >> 14) & 0x3F;
+            s4 = (v >>  8) & 0x3F;
+         #endif
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = tbl[s3];
+            *out++ = tbl[s4];
+            p += 2U;
+            len -= 6U;
+         }
+         if (len >= 3U)
          {
             // 4 symbols from 3 bytes
          #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
