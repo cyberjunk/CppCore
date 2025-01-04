@@ -931,7 +931,7 @@ namespace CppCore
          while (in.good())
          {
             in.read(bin+tail, sizeof(bin)-tail);
-            read = in.gcount();
+            read = in.gcount() + tail;
             tail = read % 3U;
             diff = read - tail;
             CppCore::Base64::encode(bin, diff, bout, url, false);
@@ -1099,6 +1099,50 @@ namespace CppCore
       INLINE static bool decode(const std::string_view& in, T& out, bool url = false, bool clear = true)
       {
          return Base64::decode<T>(in.data(), in.length(), out, url, clear);
+      }
+
+      INLINE static bool decode(istream& in, ostream& out, bool url = false)
+      {
+         CPPCORE_ALIGN64 char bin [4096]; // base64
+         CPPCORE_ALIGN64 char bout[4096]; // binary
+         in.clear();
+         in.seekg(0, in.beg);
+         while (in.good())
+         {
+            in.read(bin, sizeof(bin));
+            size_t read = in.gcount();
+            if (!CppCore::Base64::decode(bin, read, (void*)bout, url))
+               return false;
+            out.write(bout, CppCore::Base64::bytelength(bin, read));
+         }
+         return true;
+      }
+
+      INLINE static bool decode(const path& in, ostream& out, bool url = false)
+      {
+         ifstream stream(in, ifstream::binary | ifstream::in);
+         if (!stream.is_open())
+            return false;
+         return Base64::decode(stream, out, url);
+      }
+
+      INLINE static bool decode(istream& in, const path& out, bool url = false)
+      {
+         ofstream stream(out, ifstream::binary | ifstream::out);
+         if (!stream.is_open())
+            return false;
+         return Base64::decode(in, stream, url);
+      }
+
+      INLINE static bool decode(const path& in, const path& out, bool url = false)
+      {
+         ifstream sin(in, ifstream::binary | ifstream::in);
+         if (!sin.is_open())
+            return false;
+         ofstream sout(out, ofstream::binary | ofstream::out);
+         if (!sout.is_open())
+            return false;
+         return Base64::decode(sin, sout, url);
       }
    };
 
