@@ -853,7 +853,7 @@ namespace CppCore
          if (len >= 3U)
          {
             // 4 symbols from 3 bytes
-         #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
+         #if true // others may overread 1 byte
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
             uint8_t s3 = ((p[1] & 0x0F) << 2) | (p[2] >> 6);
@@ -881,7 +881,7 @@ namespace CppCore
          if (len == 2U)
          {
             // 3 symbols from 2 bytes (+1 padding symbols)
-         #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
+         #if true // other ok but not worth
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
             uint8_t s3 = ((p[1] & 0x0F) << 2);
@@ -896,7 +896,7 @@ namespace CppCore
             *out++ = tbl[s3];
             *out++ = '=';
          }
-         else if (len == 1U)
+         else if (len)
          {
             // 2 symbols from 1 byte (+2 padding symbols)
             uint8_t s1 = (p[0] >> 2);
