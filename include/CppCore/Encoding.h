@@ -777,11 +777,11 @@ namespace CppCore
       /// Returns the number of bytes needed to store symbols.
       /// Returns 0 if len isn't a multiple of 4.
       /// </summary>
-      INLINE static uint32_t bytelength(const char* s, uint32_t len)
+      INLINE static size_t bytelength(const char* s, size_t len)
       {
          if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
             return 0;
-         uint32_t n = (len / 4U) * 3U;
+         size_t n = (len / 4U) * 3U;
          if (s[len-1] == '=') {
             n--;
             if (s[len-2] == '=') 
@@ -793,9 +793,11 @@ namespace CppCore
       /// <summary>
       /// Returns the number of symbols needed to store bytes.
       /// </summary>
-      INLINE static uint32_t symbollength(uint32_t bytes)
+      INLINE static size_t symbollength(size_t bytes)
       {
-         return (CppCore::rup32(bytes, 3U) / 3U) * 4U;
+         if      constexpr(sizeof(size_t) == 4U) return (CppCore::rup32((uint32_t)bytes, 3U) / 3U) * 4U;
+         else if constexpr(sizeof(size_t) == 8U) return (CppCore::rup64((uint64_t)bytes, 3U) / 3U) * 4U;
+         else assert(false);
       }
 
       /// <summary>
@@ -809,10 +811,49 @@ namespace CppCore
             Base64::BINTOB64_URL :
             Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
-         while (len >= 3U)
+         while (len >= 6U)
+         {
+            // 8 symbols from 6 bytes
+            uint32_t v = CppCore::loadr32((uint32_t*)p);
+         #if defined(CPPCORE_CPUFEAT_BMI1)
+            uint32_t s1 = _bextr_u32(v, 26, 6);
+            uint32_t s2 = _bextr_u32(v, 20, 6);
+            uint32_t s3 = _bextr_u32(v, 14, 6);
+            uint32_t s4 = _bextr_u32(v,  8, 6);
+         #else
+            uint32_t s1 = (v >> 26);
+            uint32_t s2 = (v >> 20) & 0x3F;
+            uint32_t s3 = (v >> 14) & 0x3F;
+            uint32_t s4 = (v >>  8) & 0x3F;
+         #endif
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = tbl[s3];
+            *out++ = tbl[s4];
+            p += 4;
+            v = CppCore::shrd32(CppCore::byteswap32(*(uint16_t*)p), v, 8U);
+         #if defined(CPPCORE_CPUFEAT_BMI1)
+            s1 = _bextr_u32(v, 26, 6);
+            s2 = _bextr_u32(v, 20, 6);
+            s3 = _bextr_u32(v, 14, 6);
+            s4 = _bextr_u32(v,  8, 6);
+         #else
+            s1 = (v >> 26);
+            s2 = (v >> 20) & 0x3F;
+            s3 = (v >> 14) & 0x3F;
+            s4 = (v >>  8) & 0x3F;
+         #endif
+            *out++ = tbl[s1];
+            *out++ = tbl[s2];
+            *out++ = tbl[s3];
+            *out++ = tbl[s4];
+            p += 2U;
+            len -= 6U;
+         }
+         if (len >= 3U)
          {
             // 4 symbols from 3 bytes
-         #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
+         #if true // others may overread 1 byte
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
             uint8_t s3 = ((p[1] & 0x0F) << 2) | (p[2] >> 6);
@@ -840,7 +881,7 @@ namespace CppCore
          if (len == 2U)
          {
             // 3 symbols from 2 bytes (+1 padding symbols)
-         #if defined(CPPCORE_BASE64_NO_OPTIMIZATIONS)
+         #if true // other ok but not worth
             uint8_t s1 = ((p[0] >> 2));
             uint8_t s2 = ((p[0] & 0x03) << 4) | (p[1] >> 4);
             uint8_t s3 = ((p[1] & 0x0F) << 2);
@@ -855,7 +896,7 @@ namespace CppCore
             *out++ = tbl[s3];
             *out++ = '=';
          }
-         else if (len == 1U)
+         else if (len)
          {
             // 2 symbols from 1 byte (+2 padding symbols)
             uint8_t s1 = (p[0] >> 2);
@@ -886,7 +927,7 @@ namespace CppCore
 
       INLINE static void encode(const void* in, size_t len, std::string& out, bool url = false, bool writeterm = true)
       {
-         out.resize(Base64::symbollength((uint32_t)len));
+         out.resize(Base64::symbollength(len));
          Base64::encode(in, len, out.data(), url, writeterm);
       }
 
@@ -915,6 +956,69 @@ namespace CppCore
       INLINE static void encode(const T& in, std::string& out, bool url = false, bool writeterm = true)
       {
          Base64::encode(&in, sizeof(T), out, url, writeterm);
+      }
+
+      INLINE static bool encode(istream& in, ostream& out, bool url = false, bool writeterm = false)
+      {
+         CPPCORE_ALIGN64 char bin [4096];      // binary
+         CPPCORE_ALIGN64 char bout[4096+2048]; // base64 (must be at least 33% larger)
+         size_t tail = 0;
+         size_t diff;
+         size_t read;
+         in.clear();
+         in.seekg(0, in.beg);
+         while (in.good())
+         {
+            in.read(bin+tail, sizeof(bin)-tail);
+            read = in.gcount() + tail;
+            tail = read % 3U;
+            diff = read - tail;
+            CppCore::Base64::encode(bin, diff, bout, url, false);
+            out.write(bout, CppCore::Base64::symbollength(diff));
+            if (tail == 1)
+            {
+               bin[0] = bin[read-1];
+            }
+            else if (tail == 2)
+            {
+               bin[0] = bin[read-2];
+               bin[1] = bin[read-1];
+            }
+         }
+         if (tail) {
+            CppCore::Base64::encode(bin, tail, bout, url, false);
+            out.write(bout, CppCore::Base64::symbollength(tail));
+         }
+         if (writeterm)
+            out << '\0';
+         return true;
+      }
+
+      INLINE static bool encode(const path& in, ostream& out, bool url = false, bool writeterm = false)
+      {
+         ifstream stream(in, ifstream::binary | ifstream::in);
+         if (!stream.is_open())
+            return false;
+         return Base64::encode(stream, out, url, writeterm);
+      }
+
+      INLINE static bool encode(istream& in, const path& out, bool url = false, bool writeterm = false)
+      {
+         ofstream stream(out, ifstream::binary | ifstream::out);
+         if (!stream.is_open())
+            return false;
+         return Base64::encode(in, stream, url, writeterm);
+      }
+
+      INLINE static bool encode(const path& in, const path& out, bool url = false, bool writeterm = false)
+      {
+         ifstream sin(in, ifstream::binary | ifstream::in);
+         if (!sin.is_open())
+            return false;
+         ofstream sout(out, ofstream::binary | ofstream::out);
+         if (!sout.is_open())
+            return false;
+         return Base64::encode(sin, sout, url, writeterm);
       }
 
       /// <summary>
@@ -988,7 +1092,7 @@ namespace CppCore
 
       INLINE static bool decode(const char* in, size_t len, std::string& out, bool url = false)
       {
-         out.resize(Base64::bytelength(in, (uint32_t)len));
+         out.resize(Base64::bytelength(in, len));
          return Base64::decode(in, len, out.data(), url);
       }
       
@@ -1010,7 +1114,7 @@ namespace CppCore
       template<typename T>
       INLINE static bool decode(const char* in, size_t len, T& out, bool url = false, bool clear = true)
       {
-         const auto BLEN = Base64::bytelength(in, (uint32_t)len);
+         const auto BLEN = Base64::bytelength(in, len);
          if (BLEN > sizeof(T)) 
             return false;
          if (clear && BLEN < sizeof(T))
@@ -1034,6 +1138,50 @@ namespace CppCore
       INLINE static bool decode(const std::string_view& in, T& out, bool url = false, bool clear = true)
       {
          return Base64::decode<T>(in.data(), in.length(), out, url, clear);
+      }
+
+      INLINE static bool decode(istream& in, ostream& out, bool url = false)
+      {
+         CPPCORE_ALIGN64 char bin [4096]; // base64
+         CPPCORE_ALIGN64 char bout[4096]; // binary
+         in.clear();
+         in.seekg(0, in.beg);
+         while (in.good())
+         {
+            in.read(bin, sizeof(bin));
+            size_t read = in.gcount();
+            if (!CppCore::Base64::decode(bin, read, (void*)bout, url))
+               return false;
+            out.write(bout, CppCore::Base64::bytelength(bin, read));
+         }
+         return true;
+      }
+
+      INLINE static bool decode(const path& in, ostream& out, bool url = false)
+      {
+         ifstream stream(in, ifstream::binary | ifstream::in);
+         if (!stream.is_open())
+            return false;
+         return Base64::decode(stream, out, url);
+      }
+
+      INLINE static bool decode(istream& in, const path& out, bool url = false)
+      {
+         ofstream stream(out, ifstream::binary | ifstream::out);
+         if (!stream.is_open())
+            return false;
+         return Base64::decode(in, stream, url);
+      }
+
+      INLINE static bool decode(const path& in, const path& out, bool url = false)
+      {
+         ifstream sin(in, ifstream::binary | ifstream::in);
+         if (!sin.is_open())
+            return false;
+         ofstream sout(out, ofstream::binary | ofstream::out);
+         if (!sout.is_open())
+            return false;
+         return Base64::decode(sin, sout, url);
       }
    };
 
