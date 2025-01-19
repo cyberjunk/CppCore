@@ -695,7 +695,7 @@ namespace CppCore { namespace Test
             if (CppCore::Base64::symbollength(6) != 8) return false;
             return true;
          }
-         INLINE static bool encode()
+         INLINE static bool encode_std()
          {
             std::string s;
             CppCore::Base64::encode("1",                s); if (s != "MQ==")                      return false;
@@ -713,7 +713,11 @@ namespace CppCore { namespace Test
             uint8_t d2[] = { 0xFF };             CppCore::Base64::encode(d2, s); if (s != "/w==") return false;
             return true;
          }
-         INLINE static bool decode()
+         INLINE static bool encode_url()
+         {
+            return true;
+         }
+         INLINE static bool decode_std()
          {
             std::string s;
             if (!CppCore::Base64::decode("MQ==",     s) || s != "1")    return false;
@@ -733,6 +737,10 @@ namespace CppCore { namespace Test
             if (!CppCore::Base64::decode("/w==", d1) || d1[0] != 0xFF || d1[1] != 0x00 || d1[2] != 0x00) return false;
             if (!CppCore::Base64::decode("/w==", d2) || d2[0] != 0xFF)                                   return false;
             if ( CppCore::Base64::decode("AQID", d2)) return false; // too large
+            return true;
+         }
+         INLINE static bool decode_url()
+         {
             return true;
          }
       };
@@ -1238,8 +1246,10 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(HEX_PARSE64)      { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::parse64()); }
       TEST_METHOD(BASE64_BYTELENGTH)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::bytelength()); }
       TEST_METHOD(BASE64_SYMBOLLENGTH) { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::symbollength()); }
-      TEST_METHOD(BASE64_ENCODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::encode()); }
-      TEST_METHOD(BASE64_DECODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::decode()); }
+      TEST_METHOD(BASE64_ENCODE_STD)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::encode_std()); }
+      TEST_METHOD(BASE64_ENCODE_URL)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::encode_url()); }
+      TEST_METHOD(BASE64_DECODE_STD)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::decode_std()); }
+      TEST_METHOD(BASE64_DECODE_URL)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::decode_url()); }
       TEST_METHOD(DEC_TOSTRING8U)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8u()); }
       TEST_METHOD(DEC_TOSTRING8S)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8s()); }
       TEST_METHOD(DEC_TOSTRING16U)  { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring16u()); }

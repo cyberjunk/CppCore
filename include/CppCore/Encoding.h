@@ -811,7 +811,7 @@ namespace CppCore
             Base64::BINTOB64_URL :
             Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
-      #if defined(CPPCORE_CPUFEAT_SSSE3)
+      #if false && defined(CPPCORE_CPUFEAT_SSSE3) // TODO: URL
          while (len >= 16U)
          {
             // 16 symbols from 12 bytes
