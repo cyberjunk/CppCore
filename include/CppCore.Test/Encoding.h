@@ -698,16 +698,17 @@ namespace CppCore { namespace Test
          INLINE static bool encode()
          {
             std::string s;
-            CppCore::Base64::encode("1",         s); if (s != "MQ==")         return false;
-            CppCore::Base64::encode("12",        s); if (s != "MTI=")         return false;
-            CppCore::Base64::encode("123",       s); if (s != "MTIz")         return false;
-            CppCore::Base64::encode("1234",      s); if (s != "MTIzNA==")     return false;
-            CppCore::Base64::encode("12345",     s); if (s != "MTIzNDU=")     return false;
-            CppCore::Base64::encode("123456",    s); if (s != "MTIzNDU2")     return false;
-            CppCore::Base64::encode("1234567",   s); if (s != "MTIzNDU2Nw==") return false;
-            CppCore::Base64::encode("12345678",  s); if (s != "MTIzNDU2Nzg=") return false;
-            CppCore::Base64::encode("123456789", s); if (s != "MTIzNDU2Nzg5") return false;
-            CppCore::Base64::encode("",          s); if (s != "")             return false;
+            CppCore::Base64::encode("1",                s); if (s != "MQ==")                      return false;
+            CppCore::Base64::encode("12",               s); if (s != "MTI=")                      return false;
+            CppCore::Base64::encode("123",              s); if (s != "MTIz")                      return false;
+            CppCore::Base64::encode("1234",             s); if (s != "MTIzNA==")                  return false;
+            CppCore::Base64::encode("12345",            s); if (s != "MTIzNDU=")                  return false;
+            CppCore::Base64::encode("123456",           s); if (s != "MTIzNDU2")                  return false;
+            CppCore::Base64::encode("1234567",          s); if (s != "MTIzNDU2Nw==")              return false;
+            CppCore::Base64::encode("12345678",         s); if (s != "MTIzNDU2Nzg=")              return false;
+            CppCore::Base64::encode("123456789",        s); if (s != "MTIzNDU2Nzg5")              return false;
+            CppCore::Base64::encode("1234567890abcdef", s); if (s != "MTIzNDU2Nzg5MGFiY2RlZg==")  return false;
+            CppCore::Base64::encode("",                 s); if (s != "")                          return false;
             uint8_t d1[] = { 0x01, 0x02, 0x03 }; CppCore::Base64::encode(d1, s); if (s != "AQID") return false;
             uint8_t d2[] = { 0xFF };             CppCore::Base64::encode(d2, s); if (s != "/w==") return false;
             return true;
