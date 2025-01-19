@@ -793,11 +793,16 @@ namespace CppCore
       /// <summary>
       /// Returns the number of symbols needed to store bytes.
       /// </summary>
-      INLINE static size_t symbollength(size_t bytes)
+      INLINE static size_t symbollength(size_t bytes, bool url = false)
       {
-         if      constexpr(sizeof(size_t) == 4U) return (CppCore::rup32((uint32_t)bytes, 3U) / 3U) * 4U;
-         else if constexpr(sizeof(size_t) == 8U) return (CppCore::rup64((uint64_t)bytes, 3U) / 3U) * 4U;
-         else assert(false);
+         if (bytes)
+         {
+            size_t full = (bytes / 3U) * 4U;
+            size_t tail = (bytes % 3U);
+            return full + (tail ? (url ? tail + 1 : 4U) : 0U);
+         }
+         else
+            return 0U;
       }
 
       /// <summary>
@@ -930,7 +935,8 @@ namespace CppCore
             *out++ = tbl[s1];
             *out++ = tbl[s2];
             *out++ = tbl[s3];
-            *out++ = '=';
+            if (!url)
+               *out++ = '=';
          }
          else if (len)
          {
@@ -939,8 +945,10 @@ namespace CppCore
             uint8_t s2 = (p[0] << 4) & 0x30;
             *out++ = tbl[s1];
             *out++ = tbl[s2];
-            *out++ = '=';
-            *out++ = '=';
+            if (!url) {
+               *out++ = '=';
+               *out++ = '=';
+            }
          }
          if (writeterm)
             *out = 0x00;
@@ -963,7 +971,7 @@ namespace CppCore
 
       INLINE static void encode(const void* in, size_t len, std::string& out, bool url = false, bool writeterm = true)
       {
-         out.resize(Base64::symbollength(len));
+         out.resize(Base64::symbollength(len, url));
          Base64::encode(in, len, out.data(), url, writeterm);
       }
 
@@ -1010,7 +1018,7 @@ namespace CppCore
             tail = read % 3U;
             diff = read - tail;
             CppCore::Base64::encode(bin, diff, bout, url, false);
-            out.write(bout, CppCore::Base64::symbollength(diff));
+            out.write(bout, CppCore::Base64::symbollength(diff, url));
             if (tail == 1)
             {
                bin[0] = bin[read-1];
@@ -1023,7 +1031,7 @@ namespace CppCore
          }
          if (tail) {
             CppCore::Base64::encode(bin, tail, bout, url, false);
-            out.write(bout, CppCore::Base64::symbollength(tail));
+            out.write(bout, CppCore::Base64::symbollength(tail, url));
          }
          if (writeterm)
             out << '\0';
