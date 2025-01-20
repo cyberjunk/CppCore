@@ -775,19 +775,32 @@ namespace CppCore
 
       /// <summary>
       /// Returns the number of bytes needed to store symbols.
-      /// Returns 0 if len isn't a multiple of 4.
+      /// Returns 0 if len%4!=0 (url=false) or len%4=1 (url=true).
       /// </summary>
-      INLINE static size_t bytelength(const char* s, size_t len)
+      INLINE static size_t bytelength(const char* s, size_t len, bool url = false)
       {
-         if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
-            return 0;
-         size_t n = (len / 4U) * 3U;
-         if (s[len-1] == '=') {
-            n--;
-            if (s[len-2] == '=') 
-               n--;
+         size_t full = (len >> 2U) * 3U;
+         size_t tail = (len & 0x03U);
+         if (url)
+         {
+            if      (tail == 1U) return 0U;
+            else if (tail == 2U) return full + 1U;
+            else if (tail == 3U) return full + 2U;
+            else                 return full;
          }
-         return n;
+         else
+         {
+            if (len == 0U) CPPCORE_UNLIKELY
+               return 0U;
+            if (tail)
+               return 0U;
+            if (s[len-1] == '=') {
+               full--;
+               if (s[len-2] == '=')
+                  full--;
+            }
+            return full;
+         }
       }
 
       /// <summary>
@@ -795,14 +808,9 @@ namespace CppCore
       /// </summary>
       INLINE static size_t symbollength(size_t bytes, bool url = false)
       {
-         if (bytes)
-         {
-            size_t full = (bytes / 3U) * 4U;
-            size_t tail = (bytes % 3U);
-            return full + (tail ? (url ? tail + 1 : 4U) : 0U);
-         }
-         else
-            return 0U;
+         size_t full = (bytes / 3U) * 4U;
+         size_t tail = (bytes % 3U);
+         return full + (tail ? (url ? tail + 1 : 4U) : 0U);
       }
 
       /// <summary>
@@ -1072,10 +1080,20 @@ namespace CppCore
       /// </summary>
       INLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
       {
-         if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
+         if (len == 0) CPPCORE_UNLIKELY
             return false;
-         if (in[len-1] == '=') len--;
-         if (in[len-1] == '=') len--;
+         size_t tail = (len & 0x03);
+         if (url)
+         {
+            if (tail == 1U)
+               return false;
+         }
+         else
+         {
+            if (tail) return false;
+            if (in[len-1] == '=') len--;
+            if (in[len-1] == '=') len--;
+         }
          uint8_t* p = (uint8_t*)out;
          uint32_t r = 0;
          uint32_t v;
@@ -1136,7 +1154,7 @@ namespace CppCore
 
       INLINE static bool decode(const char* in, size_t len, std::string& out, bool url = false)
       {
-         out.resize(Base64::bytelength(in, len));
+         out.resize(Base64::bytelength(in, len, url));
          return Base64::decode(in, len, out.data(), url);
       }
       
@@ -1158,7 +1176,7 @@ namespace CppCore
       template<typename T>
       INLINE static bool decode(const char* in, size_t len, T& out, bool url = false, bool clear = true)
       {
-         const auto BLEN = Base64::bytelength(in, len);
+         const auto BLEN = Base64::bytelength(in, len, url);
          if (BLEN > sizeof(T)) 
             return false;
          if (clear && BLEN < sizeof(T))
@@ -1196,7 +1214,7 @@ namespace CppCore
             size_t read = in.gcount();
             if (!CppCore::Base64::decode(bin, read, (void*)bout, url))
                return false;
-            out.write(bout, CppCore::Base64::bytelength(bin, read));
+            out.write(bout, CppCore::Base64::bytelength(bin, read, url));
          }
          return true;
       }
