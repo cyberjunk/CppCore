@@ -783,16 +783,13 @@ namespace CppCore
          size_t tail = (len & 0x03U);
          if (url)
          {
-            if      (tail == 1U) return 0U;
-            else if (tail == 2U) return full + 1U;
-            else if (tail == 3U) return full + 2U;
-            else                 return full;
+            return
+               (tail == 0U)  ? (full) : 
+               (tail & 0x02U ? (full + (tail-1U)) : 0U);
          }
          else
          {
-            if (len == 0U) CPPCORE_UNLIKELY
-               return 0U;
-            if (tail)
+            if ((len == 0U) | (tail != 0U))
                return 0U;
             if (s[len-1] == '=') {
                full--;
