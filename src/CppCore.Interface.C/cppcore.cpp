@@ -134,11 +134,11 @@ CPPCORE_BASE16_IMPLEMENTATION(8192, CppCore::Block8192)
 // BASE64
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-unsigned int cppcore_base64_symbollength(unsigned int bytes) {
-   return CppCore::Base64::symbollength(bytes);
+unsigned int cppcore_base64_symbollength(unsigned int bytes, unsigned int url) {
+   return CppCore::Base64::symbollength(bytes, (bool)url);
 }
-unsigned int cppcore_base64_bytelength(char* s, unsigned int len) {
-   return CppCore::Base64::bytelength(s, len);
+unsigned int cppcore_base64_bytelength(char* s, unsigned int len, unsigned int url) {
+   return CppCore::Base64::bytelength(s, len, (bool)url);
 }
 void cppcore_base64_encode(void* in, unsigned int len, char* out, unsigned int url, unsigned int writeterm) {
    CppCore::Base64::encode(in, (size_t)len, out, (bool)url, (bool)writeterm);
