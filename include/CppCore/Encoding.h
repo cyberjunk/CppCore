@@ -819,7 +819,16 @@ namespace CppCore
             Base64::BINTOB64_URL :
             Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
-      #if false && defined(CPPCORE_CPUFEAT_SSSE3) // TODO: URL
+      #if defined(CPPCORE_CPUFEAT_SSSE3)
+         const __m128i SHUF2_URL = _mm_setr_epi8(
+            'a'-26, '0'-52, '0'-52, '0'-52, '0'-52, '0'-52,
+            '0'-52, '0'-52, '0'-52, '0'-52, '0'-52, '-'-62,
+            '_'-63, 'A', 0, 0);
+         const __m128i SHUF2_STD = _mm_setr_epi8(
+            'a'-26, '0'-52, '0'-52, '0'-52, '0'-52, '0'-52,
+            '0'-52, '0'-52, '0'-52, '0'-52, '0'-52, '+'-62,
+            '/'-63, 'A', 0, 0);
+
          while (len >= 16U)
          {
             // 16 symbols from 12 bytes
@@ -827,11 +836,7 @@ namespace CppCore
             const __m128i SHUF1 = _mm_set_epi8(
                10, 11, 9, 10, 7,  8, 6,  7, 4,  5, 3,  4, 1,  2, 0,  1
             );
-            const __m128i SHUF2 = _mm_setr_epi8(
-               'a'-26, '0'-52, '0'-52, '0'-52, '0'-52, '0'-52,
-               '0'-52, '0'-52, '0'-52, '0'-52, '0'-52, '+'-62,
-               '/'-63, 'A', 0, 0
-            );
+            const __m128i SHUF2 = url ? SHUF2_URL : SHUF2_STD;
             const __m128i M1 = _mm_set1_epi32(0x0fc0fc00);
             const __m128i M2 = _mm_set1_epi32(0x04000040);
             const __m128i M3 = _mm_set1_epi32(0x003f03f0);

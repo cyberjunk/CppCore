@@ -738,7 +738,13 @@ namespace CppCore { namespace Test
             CppCore::Base64::encode("1234567890abcdef", s); if (s != "MTIzNDU2Nzg5MGFiY2RlZg==")  return false;
             CppCore::Base64::encode("",                 s); if (s != "")                          return false;
             uint8_t d1[] = { 0x01, 0x02, 0x03 }; CppCore::Base64::encode(d1, s); if (s != "AQID") return false;
-            uint8_t d2[] = { 0xFF };             CppCore::Base64::encode(d2, s); if (s != "/w==") return false;
+            uint8_t d2[] = { 0xFF, 0xEE };       CppCore::Base64::encode(d2, s); if (s != "/+4=") return false;
+            uint8_t d3[] = { 0xFF };             CppCore::Base64::encode(d3, s); if (s != "/w==") return false;
+            uint8_t d4[] = { 0xff, 0xee, 0xff, 0xff,
+                             0xee, 0xff, 0xff, 0xee,
+                             0xff, 0xff, 0xee, 0xff,
+                             0xff, 0xee, 0xff, 0xff};
+            CppCore::Base64::encode(d4, s); if (s != "/+7//+7//+7//+7//+7//w==") return false;
             return true;
          }
          INLINE static bool encode_url()
@@ -756,7 +762,13 @@ namespace CppCore { namespace Test
             CppCore::Base64::encode("1234567890abcdef", s, true); if (s != "MTIzNDU2Nzg5MGFiY2RlZg")  return false;
             CppCore::Base64::encode("",                 s, true); if (s != "")                        return false;
             uint8_t d1[] = { 0x01, 0x02, 0x03 }; CppCore::Base64::encode(d1, s, true); if (s != "AQID") return false;
-            uint8_t d2[] = { 0xFF };             CppCore::Base64::encode(d2, s, true); if (s != "_w")   return false;
+            uint8_t d2[] = { 0xFF, 0xEE };       CppCore::Base64::encode(d2, s, true); if (s != "_-4")  return false;
+            uint8_t d3[] = { 0xFF };             CppCore::Base64::encode(d3, s, true); if (s != "_w")   return false;
+            uint8_t d4[] = { 0xff, 0xee, 0xff, 0xff,
+                             0xee, 0xff, 0xff, 0xee,
+                             0xff, 0xff, 0xee, 0xff,
+                             0xff, 0xee, 0xff, 0xff};
+            CppCore::Base64::encode(d4, s, true); if (s != "_-7__-7__-7__-7__-7__w") return false;
             return true;
          }
          INLINE static bool decode_std()
