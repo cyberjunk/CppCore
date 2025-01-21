@@ -791,12 +791,10 @@ namespace CppCore
          {
             if ((len == 0U) | (tail != 0U))
                return 0U;
-            if (s[len-1] == '=') {
-               full--;
-               if (s[len-2] == '=')
-                  full--;
-            }
-            return full;
+            size_t t = len;
+            if (s[len-1] == '=') len--;
+            if (s[len-1] == '=') len--;
+            return full - (t-len);
          }
       }
 
