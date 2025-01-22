@@ -815,27 +815,28 @@ namespace CppCore
       /// </summary>
       INLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
       {
+         static_assert(CPPCORE_ENDIANESS_LITTLE);
          const char* tbl = url ?
             Base64::BINTOB64_URL :
             Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
       #if defined(CPPCORE_CPUFEAT_SSSE3)
-         const __m128i SHUF2_URL = _mm_setr_epi8(
-            'a'-26, '0'-52, '0'-52, '0'-52, '0'-52, '0'-52,
-            '0'-52, '0'-52, '0'-52, '0'-52, '0'-52, '-'-62,
-            '_'-63, 'A', 0, 0);
-         const __m128i SHUF2_STD = _mm_setr_epi8(
-            'a'-26, '0'-52, '0'-52, '0'-52, '0'-52, '0'-52,
-            '0'-52, '0'-52, '0'-52, '0'-52, '0'-52, '+'-62,
-            '/'-63, 'A', 0, 0);
-
-         while (len >= 16U)
+         if (len >= 64U)
          {
             // 16 symbols from 12 bytes
             // adapted from: https://github.com/WojciechMula/base64simd
+            // only if reasonable large due to overhead for loading masks to sse registers
             const __m128i SHUF1 = _mm_set_epi8(
                10, 11, 9, 10, 7,  8, 6,  7, 4,  5, 3,  4, 1,  2, 0,  1
             );
+            const __m128i SHUF2_URL = _mm_setr_epi8(
+               'a' - 26, '0' - 52, '0' - 52, '0' - 52, '0' - 52, '0' - 52,
+               '0' - 52, '0' - 52, '0' - 52, '0' - 52, '0' - 52, '-' - 62,
+               '_' - 63, 'A', 0, 0);
+            const __m128i SHUF2_STD = _mm_setr_epi8(
+               'a' - 26, '0' - 52, '0' - 52, '0' - 52, '0' - 52, '0' - 52,
+               '0' - 52, '0' - 52, '0' - 52, '0' - 52, '0' - 52, '+' - 62,
+               '/' - 63, 'A', 0, 0);
             const __m128i SHUF2 = url ? SHUF2_URL : SHUF2_STD;
             const __m128i M1 = _mm_set1_epi32(0x0fc0fc00);
             const __m128i M2 = _mm_set1_epi32(0x04000040);
@@ -844,20 +845,23 @@ namespace CppCore
             const __m128i M5 = _mm_set1_epi8(51);
             const __m128i M6 = _mm_set1_epi8(26);
             const __m128i M7 = _mm_set1_epi8(13);
-            __m128i t, r;
-            t = _mm_loadu_si128((const __m128i*)p);
-            t = _mm_shuffle_epi8(t, SHUF1);
-            t = _mm_or_si128(
-              _mm_mulhi_epu16(_mm_and_si128(t, M1), M2),
-              _mm_mullo_epi16(_mm_and_si128(t, M3), M4));
-            r = _mm_subs_epu8(t, M5);
-            r = _mm_or_si128(r, _mm_and_si128(_mm_cmpgt_epi8(M6, t), M7));
-            r = _mm_shuffle_epi8(SHUF2, r);
-            r = _mm_add_epi8(r, t);
-            _mm_storeu_si128((__m128i*)out, r);
-            p   += 12;
-            len -= 12;
-            out += 16;
+            do
+            {
+               __m128i t, r;
+               t = _mm_loadu_si128((const __m128i*)p);
+               t = _mm_shuffle_epi8(t, SHUF1);
+               t = _mm_or_si128(
+                 _mm_mulhi_epu16(_mm_and_si128(t, M1), M2),
+                 _mm_mullo_epi16(_mm_and_si128(t, M3), M4));
+               r = _mm_subs_epu8(t, M5);
+               r = _mm_or_si128(r, _mm_and_si128(_mm_cmpgt_epi8(M6, t), M7));
+               r = _mm_shuffle_epi8(SHUF2, r);
+               r = _mm_add_epi8(r, t);
+               _mm_storeu_si128((__m128i*)out, r);
+               p   += 12;
+               len -= 12;
+               out += 16;
+            } while (len >= 16U);
          }
       #endif
          while (len >= 6U)
