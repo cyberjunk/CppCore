@@ -799,6 +799,17 @@ namespace CppCore { namespace Test
             if (!CppCore::Base64::decode("/w==", d1) || d1[0] != 0xFF || d1[1] != 0x00 || d1[2] != 0x00) return false;
             if (!CppCore::Base64::decode("/w==", d2) || d2[0] != 0xFF)                                   return false;
             if ( CppCore::Base64::decode("AQID", d2)) return false; // too large
+            uint8_t d3_gen[48];
+            uint8_t d3_exp[48] = {
+               0x00, 0x10, 0x83, 0x10, 0x51, 0x87, 0x20, 0x92, 0x8b, 0x30, 0xd3, 0x8f,
+               0x41, 0x14, 0x93, 0x51, 0x55, 0x97, 0x61, 0x96, 0x9b, 0x71, 0xd7, 0x9f,
+               0x82, 0x18, 0xa3, 0x92, 0x59, 0xa7, 0xa2, 0x9a, 0xab, 0xb2, 0xdb, 0xaf,
+               0xc3, 0x1c, 0xb3, 0xd3, 0x5d, 0xb7, 0xe3, 0x9e, 0xbb, 0xf3, 0xdf, 0xbf
+            };
+            if (!CppCore::Base64::decode("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", d3_gen))
+               return false;
+            if (::memcmp(d3_gen, d3_exp, 48) != 0)
+               return false;
             return true;
          }
          INLINE static bool decode_url()
@@ -823,6 +834,17 @@ namespace CppCore { namespace Test
             if (!CppCore::Base64::decode("_w",   d1, true) || d1[0] != 0xFF || d1[1] != 0x00 || d1[2] != 0x00) return false;
             if (!CppCore::Base64::decode("_w",   d2, true) || d2[0] != 0xFF)                                   return false;
             if ( CppCore::Base64::decode("AQID", d2, true)) return false; // too large
+            uint8_t d3_gen[48];
+            uint8_t d3_exp[48] = {
+               0x00, 0x10, 0x83, 0x10, 0x51, 0x87, 0x20, 0x92, 0x8b, 0x30, 0xd3, 0x8f,
+               0x41, 0x14, 0x93, 0x51, 0x55, 0x97, 0x61, 0x96, 0x9b, 0x71, 0xd7, 0x9f,
+               0x82, 0x18, 0xa3, 0x92, 0x59, 0xa7, 0xa2, 0x9a, 0xab, 0xb2, 0xdb, 0xaf,
+               0xc3, 0x1c, 0xb3, 0xd3, 0x5d, 0xb7, 0xe3, 0x9e, 0xbb, 0xf3, 0xdf, 0xbf
+            };
+            if (!CppCore::Base64::decode("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", d3_gen, true))
+               return false;
+            if (::memcmp(d3_gen, d3_exp, 48) != 0)
+               return false;
             return true;
          }
       };
