@@ -1104,6 +1104,66 @@ namespace CppCore
          const uint8_t* tbl = url ? 
             Base64::B64TOBIN_URL : 
             Base64::B64TOBIN_STD;
+      #if false && defined(CPPCORE_CPUFEAT_SSSE3)
+         if (len >= 64)
+         {
+            // 12 bytes from 16 symbols
+            // adapted from: https://github.com/WojciechMula/base64simd
+            // only if reasonable large due to overhead for loading masks to sse registers
+            const __m128i CMP_GT_A = _mm_set1_epi8('A'-1);
+            const __m128i CMP_LT_Z = _mm_set1_epi8('Z'+1);
+            const __m128i CMP_GT_a = _mm_set1_epi8('a'-1);
+            const __m128i CMP_LT_z = _mm_set1_epi8('z'+1);
+            const __m128i CMP_GT_0 = _mm_set1_epi8('0'-1);
+            const __m128i CMP_LT_9 = _mm_set1_epi8('9'+1);
+            const __m128i CMP_E_C1 = url ? _mm_set1_epi8('-') : _mm_set1_epi8('+');
+            const __m128i CMP_E_C2 = url ? _mm_set1_epi8('_') : _mm_set1_epi8('/');
+            const __m128i M1 = _mm_set1_epi8(-65);
+            const __m128i M2 = _mm_set1_epi8(-71);
+            const __m128i M3 = _mm_set1_epi8(4);
+            const __m128i M4 = url ? _mm_set1_epi8(17)  : _mm_set1_epi8(19);
+            const __m128i M5 = url ? _mm_set1_epi8(-32) : _mm_set1_epi8(16);
+            const __m128i M6 = _mm_set1_epi32(0x01400140);
+            const __m128i M7 = _mm_set1_epi32(0x00011000);
+            const __m128i SHUF = _mm_setr_epi8(
+               2,  1,  0,  6,  5,  4,
+              10,  9,  8, 14, 13, 12,
+              -1, -1, -1, -1);
+            do
+            {
+               __m128i v = _mm_loadu_si128((__m128i*)in);
+               const __m128i ge_A  = _mm_cmpgt_epi8(v, CMP_GT_A);
+               const __m128i le_Z  = _mm_cmplt_epi8(v, CMP_LT_Z);
+               const __m128i r_AZ  = _mm_and_si128(M1, _mm_and_si128(ge_A, le_Z));
+               const __m128i ge_a  = _mm_cmpgt_epi8(v, CMP_GT_a);
+               const __m128i le_z  = _mm_cmplt_epi8(v, CMP_LT_z);
+               const __m128i r_az  = _mm_and_si128(M2, _mm_and_si128(ge_a, le_z));
+               const __m128i ge_0  = _mm_cmpgt_epi8(v, CMP_GT_0);
+               const __m128i le_9  = _mm_cmplt_epi8(v, CMP_LT_9);
+               const __m128i r_09  = _mm_and_si128(M3, _mm_and_si128(ge_0, le_9));
+               const __m128i e_c1  = _mm_cmpeq_epi8(v, CMP_E_C1);
+               const __m128i r_c1  = _mm_and_si128(M4, e_c1);
+               const __m128i e_c2  = _mm_cmpeq_epi8(v, CMP_E_C2);
+               const __m128i r_c2  = _mm_and_si128(M5, e_c2);
+               const __m128i shift =
+                 _mm_or_si128(r_AZ,
+                 _mm_or_si128(r_az,
+                 _mm_or_si128(r_09,
+                 _mm_or_si128(r_c1, r_c2))));
+               r |= _mm_movemask_epi8(_mm_cmpeq_epi8(shift, _mm_setzero_si128()));
+               v  = _mm_add_epi8(v, shift);
+               v  = _mm_maddubs_epi16(v, M6);
+               v  = _mm_madd_epi16(v, M7);
+               v  = _mm_shuffle_epi8(v, SHUF);
+               _mm_storeu_si64((__m128i*)p, v);                   p += 8U;
+               _mm_storeu_si32((__m128i*)p, _mm_movehl_ps(v, v)); p += 4U;
+               len -= 16;
+               in  += 16;
+            } while (len >= 16);
+            if (r)
+               return false;
+         }
+      #endif
          while (len >= 4)
          {
             // 3 bytes from 4 symbols
