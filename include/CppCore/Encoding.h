@@ -1104,7 +1104,7 @@ namespace CppCore
          const uint8_t* tbl = url ? 
             Base64::B64TOBIN_URL : 
             Base64::B64TOBIN_STD;
-      #if false && defined(CPPCORE_CPUFEAT_SSSE3)
+      #if defined(CPPCORE_CPUFEAT_SSSE3)
          if (len >= 64)
          {
             // 12 bytes from 16 symbols
@@ -1129,6 +1129,7 @@ namespace CppCore
                2,  1,  0,  6,  5,  4,
               10,  9,  8, 14, 13, 12,
               -1, -1, -1, -1);
+            __m128i e = _mm_setzero_si128();
             do
             {
                __m128i v = _mm_loadu_si128((__m128i*)in);
@@ -1150,18 +1151,23 @@ namespace CppCore
                  _mm_or_si128(r_az,
                  _mm_or_si128(r_09,
                  _mm_or_si128(r_c1, r_c2))));
-               r |= _mm_movemask_epi8(_mm_cmpeq_epi8(shift, _mm_setzero_si128()));
-               v  = _mm_add_epi8(v, shift);
-               v  = _mm_maddubs_epi16(v, M6);
-               v  = _mm_madd_epi16(v, M7);
-               v  = _mm_shuffle_epi8(v, SHUF);
+               e = _mm_or_si128(e, _mm_cmpeq_epi8(shift, _mm_setzero_si128()));
+               v = _mm_add_epi8(v, shift);
+               v = _mm_maddubs_epi16(v, M6);
+               v = _mm_madd_epi16(v, M7);
+               v = _mm_shuffle_epi8(v, SHUF);
                _mm_storeu_si64((__m128i*)p, v);                   p += 8U;
                _mm_storeu_si32((__m128i*)p, _mm_movehl_ps(v, v)); p += 4U;
                len -= 16;
                in  += 16;
             } while (len >= 16);
-            if (r)
+         #if defined(CPPCORE_CPUFEAT_SSE41)
+            if (_mm_testz_si128(e, e) == 0)
                return false;
+         #else
+            if (_mm_movemask_epi8(e) != 0)
+               return false;
+         #endif
          }
       #endif
          while (len >= 4)
