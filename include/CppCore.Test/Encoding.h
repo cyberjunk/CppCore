@@ -810,6 +810,10 @@ namespace CppCore { namespace Test
                return false;
             if (::memcmp(d3_gen, d3_exp, 48) != 0)
                return false;
+            if (CppCore::Base64::decode("#BCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", d3_gen))
+               return false; // invalid symbol '#' at index 0
+            if (CppCore::Base64::decode("ABCDEFGHIJKLMNOPQRSTUVWXY!abcdefghijklmnopqrstuvwxyz0123456789+/", d3_gen))
+               return false; // invalid symbol '!' at index 25
             return true;
          }
          INLINE static bool decode_url()
@@ -845,6 +849,10 @@ namespace CppCore { namespace Test
                return false;
             if (::memcmp(d3_gen, d3_exp, 48) != 0)
                return false;
+            if (CppCore::Base64::decode("#BCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", d3_gen, true))
+               return false; // invalid symbol '#' at index 0
+            if (CppCore::Base64::decode("ABCDEFGHIJKLMNOPQRSTUVWXY!abcdefghijklmnopqrstuvwxyz0123456789-_", d3_gen, true))
+               return false; // invalid symbol '!' at index 25
             return true;
          }
       };
