@@ -1156,8 +1156,10 @@ namespace CppCore
                v = _mm_maddubs_epi16(v, M6);
                v = _mm_madd_epi16(v, M7);
                v = _mm_shuffle_epi8(v, SHUF);
-               _mm_storeu_si64((__m128i*)p, v);                   p += 8U;
-               _mm_storeu_si32((__m128i*)p, _mm_movehl_ps(v, v)); p += 4U;
+               _mm_storeu_si64((__m128i*)(p), v);
+               _mm_storeu_si32((__m128i*)(p+8U), _mm_castps_si128(_mm_movehl_ps(
+                  _mm_castsi128_ps(v), _mm_castsi128_ps(v))));
+               p   += 12;
                len -= 16;
                in  += 16;
             } while (len >= 16);
