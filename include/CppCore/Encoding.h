@@ -775,29 +775,37 @@ namespace CppCore
 
       /// <summary>
       /// Returns the number of bytes needed to store symbols.
-      /// Returns 0 if len isn't a multiple of 4.
+      /// Returns 0 if len%4!=0 (url=false) or len%4=1 (url=true).
       /// </summary>
-      INLINE static size_t bytelength(const char* s, size_t len)
+      INLINE static size_t bytelength(const char* s, size_t len, bool url = false)
       {
-         if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
-            return 0;
-         size_t n = (len / 4U) * 3U;
-         if (s[len-1] == '=') {
-            n--;
-            if (s[len-2] == '=') 
-               n--;
+         size_t full = (len >> 2U) * 3U;
+         size_t tail = (len & 0x03U);
+         if (url)
+         {
+            return
+               (tail == 0U)  ? (full) : 
+               (tail & 0x02U ? (full + (tail-1U)) : 0U);
          }
-         return n;
+         else
+         {
+            if ((len == 0U) | (tail != 0U))
+               return 0U;
+            size_t t = len;
+            if (s[len-1] == '=') len--;
+            if (s[len-1] == '=') len--;
+            return full - (t-len);
+         }
       }
 
       /// <summary>
       /// Returns the number of symbols needed to store bytes.
       /// </summary>
-      INLINE static size_t symbollength(size_t bytes)
+      INLINE static size_t symbollength(size_t bytes, bool url = false)
       {
-         if      constexpr(sizeof(size_t) == 4U) return (CppCore::rup32((uint32_t)bytes, 3U) / 3U) * 4U;
-         else if constexpr(sizeof(size_t) == 8U) return (CppCore::rup64((uint64_t)bytes, 3U) / 3U) * 4U;
-         else assert(false);
+         size_t full = (bytes / 3U) * 4U;
+         size_t tail = (bytes % 3U);
+         return full + (tail ? (url ? tail + 1 : 4U) : 0U);
       }
 
       /// <summary>
@@ -807,10 +815,55 @@ namespace CppCore
       /// </summary>
       INLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
       {
+         static_assert(CPPCORE_ENDIANESS_LITTLE);
          const char* tbl = url ?
             Base64::BINTOB64_URL :
             Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
+      #if defined(CPPCORE_CPUFEAT_SSSE3)
+         if (len >= 64U)
+         {
+            // 16 symbols from 12 bytes
+            // adapted from: https://github.com/WojciechMula/base64simd
+            // only if reasonable large due to overhead for loading masks to sse registers
+            const __m128i SHUF1 = _mm_set_epi8(
+               10, 11, 9, 10, 7,  8, 6,  7, 4,  5, 3,  4, 1,  2, 0,  1
+            );
+            const __m128i SHUF2_URL = _mm_setr_epi8(
+               'a' - 26, '0' - 52, '0' - 52, '0' - 52, '0' - 52, '0' - 52,
+               '0' - 52, '0' - 52, '0' - 52, '0' - 52, '0' - 52, '-' - 62,
+               '_' - 63, 'A', 0, 0);
+            const __m128i SHUF2_STD = _mm_setr_epi8(
+               'a' - 26, '0' - 52, '0' - 52, '0' - 52, '0' - 52, '0' - 52,
+               '0' - 52, '0' - 52, '0' - 52, '0' - 52, '0' - 52, '+' - 62,
+               '/' - 63, 'A', 0, 0);
+            const __m128i SHUF2 = url ? SHUF2_URL : SHUF2_STD;
+            const __m128i M1 = _mm_set1_epi32(0x0fc0fc00);
+            const __m128i M2 = _mm_set1_epi32(0x04000040);
+            const __m128i M3 = _mm_set1_epi32(0x003f03f0);
+            const __m128i M4 = _mm_set1_epi32(0x01000010);
+            const __m128i M5 = _mm_set1_epi8(51);
+            const __m128i M6 = _mm_set1_epi8(26);
+            const __m128i M7 = _mm_set1_epi8(13);
+            do
+            {
+               __m128i t, r;
+               t = _mm_loadu_si128((const __m128i*)p);
+               t = _mm_shuffle_epi8(t, SHUF1);
+               t = _mm_or_si128(
+                 _mm_mulhi_epu16(_mm_and_si128(t, M1), M2),
+                 _mm_mullo_epi16(_mm_and_si128(t, M3), M4));
+               r = _mm_subs_epu8(t, M5);
+               r = _mm_or_si128(r, _mm_and_si128(_mm_cmpgt_epi8(M6, t), M7));
+               r = _mm_shuffle_epi8(SHUF2, r);
+               r = _mm_add_epi8(r, t);
+               _mm_storeu_si128((__m128i*)out, r);
+               p   += 12;
+               len -= 12;
+               out += 16;
+            } while (len >= 16U);
+         }
+      #endif
          while (len >= 6U)
          {
             // 8 symbols from 6 bytes
@@ -894,7 +947,8 @@ namespace CppCore
             *out++ = tbl[s1];
             *out++ = tbl[s2];
             *out++ = tbl[s3];
-            *out++ = '=';
+            if (!url)
+               *out++ = '=';
          }
          else if (len)
          {
@@ -903,8 +957,10 @@ namespace CppCore
             uint8_t s2 = (p[0] << 4) & 0x30;
             *out++ = tbl[s1];
             *out++ = tbl[s2];
-            *out++ = '=';
-            *out++ = '=';
+            if (!url) {
+               *out++ = '=';
+               *out++ = '=';
+            }
          }
          if (writeterm)
             *out = 0x00;
@@ -927,7 +983,7 @@ namespace CppCore
 
       INLINE static void encode(const void* in, size_t len, std::string& out, bool url = false, bool writeterm = true)
       {
-         out.resize(Base64::symbollength(len));
+         out.resize(Base64::symbollength(len, url));
          Base64::encode(in, len, out.data(), url, writeterm);
       }
 
@@ -974,7 +1030,7 @@ namespace CppCore
             tail = read % 3U;
             diff = read - tail;
             CppCore::Base64::encode(bin, diff, bout, url, false);
-            out.write(bout, CppCore::Base64::symbollength(diff));
+            out.write(bout, CppCore::Base64::symbollength(diff, url));
             if (tail == 1)
             {
                bin[0] = bin[read-1];
@@ -987,7 +1043,7 @@ namespace CppCore
          }
          if (tail) {
             CppCore::Base64::encode(bin, tail, bout, url, false);
-            out.write(bout, CppCore::Base64::symbollength(tail));
+            out.write(bout, CppCore::Base64::symbollength(tail, url));
          }
          if (writeterm)
             out << '\0';
@@ -1028,16 +1084,94 @@ namespace CppCore
       /// </summary>
       INLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
       {
-         if (((len == 0) | (len & 0x03)) != 0) CPPCORE_UNLIKELY
+         if (len == 0) CPPCORE_UNLIKELY
             return false;
-         if (in[len-1] == '=') len--;
-         if (in[len-1] == '=') len--;
+         size_t tail = (len & 0x03);
+         if (url)
+         {
+            if (tail == 1U)
+               return false;
+         }
+         else
+         {
+            if (tail) return false;
+            if (in[len-1] == '=') len--;
+            if (in[len-1] == '=') len--;
+         }
          uint8_t* p = (uint8_t*)out;
          uint32_t r = 0;
          uint32_t v;
          const uint8_t* tbl = url ? 
             Base64::B64TOBIN_URL : 
             Base64::B64TOBIN_STD;
+      #if defined(CPPCORE_CPUFEAT_SSSE3)
+         if (len >= 64)
+         {
+            // 12 bytes from 16 symbols
+            // adapted from: https://github.com/WojciechMula/base64simd
+            // only if reasonable large due to overhead for loading masks to sse registers
+            const __m128i CMP_GT_A = _mm_set1_epi8('A'-1);
+            const __m128i CMP_LT_Z = _mm_set1_epi8('Z'+1);
+            const __m128i CMP_GT_a = _mm_set1_epi8('a'-1);
+            const __m128i CMP_LT_z = _mm_set1_epi8('z'+1);
+            const __m128i CMP_GT_0 = _mm_set1_epi8('0'-1);
+            const __m128i CMP_LT_9 = _mm_set1_epi8('9'+1);
+            const __m128i CMP_E_C1 = url ? _mm_set1_epi8('-') : _mm_set1_epi8('+');
+            const __m128i CMP_E_C2 = url ? _mm_set1_epi8('_') : _mm_set1_epi8('/');
+            const __m128i M1 = _mm_set1_epi8(-65);
+            const __m128i M2 = _mm_set1_epi8(-71);
+            const __m128i M3 = _mm_set1_epi8(4);
+            const __m128i M4 = url ? _mm_set1_epi8(17)  : _mm_set1_epi8(19);
+            const __m128i M5 = url ? _mm_set1_epi8(-32) : _mm_set1_epi8(16);
+            const __m128i M6 = _mm_set1_epi32(0x01400140);
+            const __m128i M7 = _mm_set1_epi32(0x00011000);
+            const __m128i SHUF = _mm_setr_epi8(
+               2,  1,  0,  6,  5,  4,
+              10,  9,  8, 14, 13, 12,
+              -1, -1, -1, -1);
+            __m128i e = _mm_setzero_si128();
+            do
+            {
+               __m128i v = _mm_loadu_si128((__m128i*)in);
+               const __m128i ge_A  = _mm_cmpgt_epi8(v, CMP_GT_A);
+               const __m128i le_Z  = _mm_cmplt_epi8(v, CMP_LT_Z);
+               const __m128i r_AZ  = _mm_and_si128(M1, _mm_and_si128(ge_A, le_Z));
+               const __m128i ge_a  = _mm_cmpgt_epi8(v, CMP_GT_a);
+               const __m128i le_z  = _mm_cmplt_epi8(v, CMP_LT_z);
+               const __m128i r_az  = _mm_and_si128(M2, _mm_and_si128(ge_a, le_z));
+               const __m128i ge_0  = _mm_cmpgt_epi8(v, CMP_GT_0);
+               const __m128i le_9  = _mm_cmplt_epi8(v, CMP_LT_9);
+               const __m128i r_09  = _mm_and_si128(M3, _mm_and_si128(ge_0, le_9));
+               const __m128i e_c1  = _mm_cmpeq_epi8(v, CMP_E_C1);
+               const __m128i r_c1  = _mm_and_si128(M4, e_c1);
+               const __m128i e_c2  = _mm_cmpeq_epi8(v, CMP_E_C2);
+               const __m128i r_c2  = _mm_and_si128(M5, e_c2);
+               const __m128i shift =
+                 _mm_or_si128(r_AZ,
+                 _mm_or_si128(r_az,
+                 _mm_or_si128(r_09,
+                 _mm_or_si128(r_c1, r_c2))));
+               e = _mm_or_si128(e, _mm_cmpeq_epi8(shift, _mm_setzero_si128()));
+               v = _mm_add_epi8(v, shift);
+               v = _mm_maddubs_epi16(v, M6);
+               v = _mm_madd_epi16(v, M7);
+               v = _mm_shuffle_epi8(v, SHUF);
+               _mm_storeu_si64((__m128i*)(p), v);
+               _mm_storeu_si32((__m128i*)(p+8U), _mm_castps_si128(_mm_movehl_ps(
+                  _mm_castsi128_ps(v), _mm_castsi128_ps(v))));
+               p   += 12;
+               len -= 16;
+               in  += 16;
+            } while (len >= 16);
+         #if defined(CPPCORE_CPUFEAT_SSE41)
+            if (_mm_testz_si128(e, e) == 0)
+               return false;
+         #else
+            if (_mm_movemask_epi8(e) != 0)
+               return false;
+         #endif
+         }
+      #endif
          while (len >= 4)
          {
             // 3 bytes from 4 symbols
@@ -1092,7 +1226,7 @@ namespace CppCore
 
       INLINE static bool decode(const char* in, size_t len, std::string& out, bool url = false)
       {
-         out.resize(Base64::bytelength(in, len));
+         out.resize(Base64::bytelength(in, len, url));
          return Base64::decode(in, len, out.data(), url);
       }
       
@@ -1114,7 +1248,7 @@ namespace CppCore
       template<typename T>
       INLINE static bool decode(const char* in, size_t len, T& out, bool url = false, bool clear = true)
       {
-         const auto BLEN = Base64::bytelength(in, len);
+         const auto BLEN = Base64::bytelength(in, len, url);
          if (BLEN > sizeof(T)) 
             return false;
          if (clear && BLEN < sizeof(T))
@@ -1152,7 +1286,7 @@ namespace CppCore
             size_t read = in.gcount();
             if (!CppCore::Base64::decode(bin, read, (void*)bout, url))
                return false;
-            out.write(bout, CppCore::Base64::bytelength(bin, read));
+            out.write(bout, CppCore::Base64::bytelength(bin, read, url));
          }
          return true;
       }

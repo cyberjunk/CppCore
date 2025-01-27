@@ -665,6 +665,7 @@ namespace CppCore { namespace Test
       public:
          INLINE static bool bytelength()
          {
+            // STD
             if (CppCore::Base64::bytelength("",         0) != 0) return false; // invalid length
             if (CppCore::Base64::bytelength("=",        1) != 0) return false; // invalid length
             if (CppCore::Base64::bytelength("==",       2) != 0) return false; // invalid length
@@ -674,45 +675,111 @@ namespace CppCore { namespace Test
             if (CppCore::Base64::bytelength("aa==",     4) != 1) return false; // ok
             if (CppCore::Base64::bytelength("aaa=",     4) != 2) return false; // ok
             if (CppCore::Base64::bytelength("aaaa",     4) != 3) return false; // ok
-            if (CppCore::Base64::bytelength("aa=a",     4) != 3) return false; // invalid symbol
-            if (CppCore::Base64::bytelength("(aaa",     4) != 3) return false; // invalid symbol
+            if (CppCore::Base64::bytelength("aa=a",     4) != 3) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("(aaa",     4) != 3) return false; // ok (invalid symbol)
             if (CppCore::Base64::bytelength("aaaaa",    5) != 0) return false; // invalid length
             if (CppCore::Base64::bytelength("aaaaaa",   6) != 0) return false; // invalid length
             if (CppCore::Base64::bytelength("aaaaaa=",  7) != 0) return false; // invalid length
             if (CppCore::Base64::bytelength("aaaaaa==", 8) != 4) return false; // ok
             if (CppCore::Base64::bytelength("aaaaaaa=", 8) != 5) return false; // ok
             if (CppCore::Base64::bytelength("aaaaaaaa", 8) != 6) return false; // ok
+            // URL
+            if (CppCore::Base64::bytelength("",         0, true) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("=",        1, true) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("==",       2, true) != 1) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("a",        1, true) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("aa",       2, true) != 1) return false; // ok
+            if (CppCore::Base64::bytelength("aa=",      3, true) != 2) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("aa==",     4, true) != 3) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("aaa=",     4, true) != 3) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("aaaa",     4, true) != 3) return false; // ok
+            if (CppCore::Base64::bytelength("aa=a",     4, true) != 3) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("(aaa",     4, true) != 3) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("aaaaa",    5, true) != 0) return false; // invalid length
+            if (CppCore::Base64::bytelength("aaaaaa",   6, true) != 4) return false; // ok
+            if (CppCore::Base64::bytelength("aaaaaa=",  7, true) != 5) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("aaaaaa==", 8, true) != 6) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("aaaaaaa=", 8, true) != 6) return false; // ok (invalid symbol)
+            if (CppCore::Base64::bytelength("aaaaaaaa", 8, true) != 6) return false; // ok
             return true;
          }
          INLINE static bool symbollength()
          {
-            if (CppCore::Base64::symbollength(0) != 0) return false;
-            if (CppCore::Base64::symbollength(1) != 4) return false;
-            if (CppCore::Base64::symbollength(2) != 4) return false;
-            if (CppCore::Base64::symbollength(3) != 4) return false;
-            if (CppCore::Base64::symbollength(4) != 8) return false;
-            if (CppCore::Base64::symbollength(5) != 8) return false;
-            if (CppCore::Base64::symbollength(6) != 8) return false;
+            // STD
+            if (CppCore::Base64::symbollength(0, false) != 0) return false;
+            if (CppCore::Base64::symbollength(1, false) != 4) return false;
+            if (CppCore::Base64::symbollength(2, false) != 4) return false;
+            if (CppCore::Base64::symbollength(3, false) != 4) return false;
+            if (CppCore::Base64::symbollength(4, false) != 8) return false;
+            if (CppCore::Base64::symbollength(5, false) != 8) return false;
+            if (CppCore::Base64::symbollength(6, false) != 8) return false;
+            // URL
+            if (CppCore::Base64::symbollength(0, true) != 0) return false;
+            if (CppCore::Base64::symbollength(1, true) != 2) return false;
+            if (CppCore::Base64::symbollength(2, true) != 3) return false;
+            if (CppCore::Base64::symbollength(3, true) != 4) return false;
+            if (CppCore::Base64::symbollength(4, true) != 6) return false;
+            if (CppCore::Base64::symbollength(5, true) != 7) return false;
+            if (CppCore::Base64::symbollength(6, true) != 8) return false;
             return true;
          }
-         INLINE static bool encode()
+         INLINE static bool encode_std()
          {
             std::string s;
-            CppCore::Base64::encode("1",         s); if (s != "MQ==")         return false;
-            CppCore::Base64::encode("12",        s); if (s != "MTI=")         return false;
-            CppCore::Base64::encode("123",       s); if (s != "MTIz")         return false;
-            CppCore::Base64::encode("1234",      s); if (s != "MTIzNA==")     return false;
-            CppCore::Base64::encode("12345",     s); if (s != "MTIzNDU=")     return false;
-            CppCore::Base64::encode("123456",    s); if (s != "MTIzNDU2")     return false;
-            CppCore::Base64::encode("1234567",   s); if (s != "MTIzNDU2Nw==") return false;
-            CppCore::Base64::encode("12345678",  s); if (s != "MTIzNDU2Nzg=") return false;
-            CppCore::Base64::encode("123456789", s); if (s != "MTIzNDU2Nzg5") return false;
-            CppCore::Base64::encode("",          s); if (s != "")             return false;
+            CppCore::Base64::encode("1",                s); if (s != "MQ==")                      return false;
+            CppCore::Base64::encode("12",               s); if (s != "MTI=")                      return false;
+            CppCore::Base64::encode("123",              s); if (s != "MTIz")                      return false;
+            CppCore::Base64::encode("1234",             s); if (s != "MTIzNA==")                  return false;
+            CppCore::Base64::encode("12345",            s); if (s != "MTIzNDU=")                  return false;
+            CppCore::Base64::encode("123456",           s); if (s != "MTIzNDU2")                  return false;
+            CppCore::Base64::encode("1234567",          s); if (s != "MTIzNDU2Nw==")              return false;
+            CppCore::Base64::encode("12345678",         s); if (s != "MTIzNDU2Nzg=")              return false;
+            CppCore::Base64::encode("123456789",        s); if (s != "MTIzNDU2Nzg5")              return false;
+            CppCore::Base64::encode("1234567890abcdef", s); if (s != "MTIzNDU2Nzg5MGFiY2RlZg==")  return false;
+            CppCore::Base64::encode("",                 s); if (s != "")                          return false;
             uint8_t d1[] = { 0x01, 0x02, 0x03 }; CppCore::Base64::encode(d1, s); if (s != "AQID") return false;
-            uint8_t d2[] = { 0xFF };             CppCore::Base64::encode(d2, s); if (s != "/w==") return false;
+            uint8_t d2[] = { 0xFF, 0xEE };       CppCore::Base64::encode(d2, s); if (s != "/+4=") return false;
+            uint8_t d3[] = { 0xFF };             CppCore::Base64::encode(d3, s); if (s != "/w==") return false;
+            uint8_t d4[] = {
+               0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff,
+               0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff,
+               0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff,
+               0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff
+            };
+            CppCore::Base64::encode(d4, s);
+            if (s != "/+7//+7//+7//+7//+7////u///u///u///u///u////7v//7v//7v//7v//7v///+7//+7//+7//+7//+7//w==")
+               return false;
             return true;
          }
-         INLINE static bool decode()
+         INLINE static bool encode_url()
+         {
+            std::string s;
+            CppCore::Base64::encode("1",                s, true); if (s != "MQ")                      return false;
+            CppCore::Base64::encode("12",               s, true); if (s != "MTI")                     return false;
+            CppCore::Base64::encode("123",              s, true); if (s != "MTIz")                    return false;
+            CppCore::Base64::encode("1234",             s, true); if (s != "MTIzNA")                  return false;
+            CppCore::Base64::encode("12345",            s, true); if (s != "MTIzNDU")                 return false;
+            CppCore::Base64::encode("123456",           s, true); if (s != "MTIzNDU2")                return false;
+            CppCore::Base64::encode("1234567",          s, true); if (s != "MTIzNDU2Nw")              return false;
+            CppCore::Base64::encode("12345678",         s, true); if (s != "MTIzNDU2Nzg")             return false;
+            CppCore::Base64::encode("123456789",        s, true); if (s != "MTIzNDU2Nzg5")            return false;
+            CppCore::Base64::encode("1234567890abcdef", s, true); if (s != "MTIzNDU2Nzg5MGFiY2RlZg")  return false;
+            CppCore::Base64::encode("",                 s, true); if (s != "")                        return false;
+            uint8_t d1[] = { 0x01, 0x02, 0x03 }; CppCore::Base64::encode(d1, s, true); if (s != "AQID") return false;
+            uint8_t d2[] = { 0xFF, 0xEE };       CppCore::Base64::encode(d2, s, true); if (s != "_-4")  return false;
+            uint8_t d3[] = { 0xFF };             CppCore::Base64::encode(d3, s, true); if (s != "_w")   return false;
+            uint8_t d4[] = {
+               0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff,
+               0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff,
+               0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff,
+               0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff, 0xee, 0xff, 0xff
+            };
+            CppCore::Base64::encode(d4, s, true);
+            if (s != "_-7__-7__-7__-7__-7____u___u___u___u___u____7v__7v__7v__7v__7v___-7__-7__-7__-7__-7__w")
+               return false;
+            return true;
+         }
+         INLINE static bool decode_std()
          {
             std::string s;
             if (!CppCore::Base64::decode("MQ==",     s) || s != "1")    return false;
@@ -732,6 +799,60 @@ namespace CppCore { namespace Test
             if (!CppCore::Base64::decode("/w==", d1) || d1[0] != 0xFF || d1[1] != 0x00 || d1[2] != 0x00) return false;
             if (!CppCore::Base64::decode("/w==", d2) || d2[0] != 0xFF)                                   return false;
             if ( CppCore::Base64::decode("AQID", d2)) return false; // too large
+            uint8_t d3_gen[48];
+            uint8_t d3_exp[48] = {
+               0x00, 0x10, 0x83, 0x10, 0x51, 0x87, 0x20, 0x92, 0x8b, 0x30, 0xd3, 0x8f,
+               0x41, 0x14, 0x93, 0x51, 0x55, 0x97, 0x61, 0x96, 0x9b, 0x71, 0xd7, 0x9f,
+               0x82, 0x18, 0xa3, 0x92, 0x59, 0xa7, 0xa2, 0x9a, 0xab, 0xb2, 0xdb, 0xaf,
+               0xc3, 0x1c, 0xb3, 0xd3, 0x5d, 0xb7, 0xe3, 0x9e, 0xbb, 0xf3, 0xdf, 0xbf
+            };
+            if (!CppCore::Base64::decode("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", d3_gen))
+               return false;
+            if (::memcmp(d3_gen, d3_exp, 48) != 0)
+               return false;
+            if (CppCore::Base64::decode("#BCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", d3_gen))
+               return false; // invalid symbol '#' at index 0
+            if (CppCore::Base64::decode("ABCDEFGHIJKLMNOPQRSTUVWXY!abcdefghijklmnopqrstuvwxyz0123456789+/", d3_gen))
+               return false; // invalid symbol '!' at index 25
+            return true;
+         }
+         INLINE static bool decode_url()
+         {
+            std::string s;
+            if (!CppCore::Base64::decode("MQ",     s, true) || s != "1")    return false;
+            if (!CppCore::Base64::decode("MTI",    s, true) || s != "12")   return false;
+            if (!CppCore::Base64::decode("MTIz",   s, true) || s != "123")  return false;
+            if (!CppCore::Base64::decode("MTIzNA", s, true) || s != "1234") return false;
+            if ( CppCore::Base64::decode("",       s, true)) return false; // empty string
+            if ( CppCore::Base64::decode("Z",      s, true)) return false; // invalid length
+            if ( CppCore::Base64::decode("M=",     s, true)) return false; // invalid symbol
+            if ( CppCore::Base64::decode("M==",    s, true)) return false; // invalid symbol
+            if ( CppCore::Base64::decode("(aaa",   s, true)) return false; // invalid symbol
+            if ( CppCore::Base64::decode("aa=a",   s, true)) return false; // invalid symbol
+            if ( CppCore::Base64::decode("MQ==",   s, true)) return false; // invalid symbol
+            if ( CppCore::Base64::decode("MTI=",   s, true)) return false; // invalid symbol
+            if ( CppCore::Base64::decode("MTIaa",  s, true)) return false; // invalid length
+            uint8_t d1[3];
+            uint8_t d2[1];
+            if (!CppCore::Base64::decode("AQID", d1, true) || d1[0] != 0x01 || d1[1] != 0x02 || d1[2] != 0x03) return false;
+            if (!CppCore::Base64::decode("_w",   d1, true) || d1[0] != 0xFF || d1[1] != 0x00 || d1[2] != 0x00) return false;
+            if (!CppCore::Base64::decode("_w",   d2, true) || d2[0] != 0xFF)                                   return false;
+            if ( CppCore::Base64::decode("AQID", d2, true)) return false; // too large
+            uint8_t d3_gen[48];
+            uint8_t d3_exp[48] = {
+               0x00, 0x10, 0x83, 0x10, 0x51, 0x87, 0x20, 0x92, 0x8b, 0x30, 0xd3, 0x8f,
+               0x41, 0x14, 0x93, 0x51, 0x55, 0x97, 0x61, 0x96, 0x9b, 0x71, 0xd7, 0x9f,
+               0x82, 0x18, 0xa3, 0x92, 0x59, 0xa7, 0xa2, 0x9a, 0xab, 0xb2, 0xdb, 0xaf,
+               0xc3, 0x1c, 0xb3, 0xd3, 0x5d, 0xb7, 0xe3, 0x9e, 0xbb, 0xf3, 0xdf, 0xbf
+            };
+            if (!CppCore::Base64::decode("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", d3_gen, true))
+               return false;
+            if (::memcmp(d3_gen, d3_exp, 48) != 0)
+               return false;
+            if (CppCore::Base64::decode("#BCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", d3_gen, true))
+               return false; // invalid symbol '#' at index 0
+            if (CppCore::Base64::decode("ABCDEFGHIJKLMNOPQRSTUVWXY!abcdefghijklmnopqrstuvwxyz0123456789-_", d3_gen, true))
+               return false; // invalid symbol '!' at index 25
             return true;
          }
       };
@@ -1237,8 +1358,10 @@ namespace CppCore { namespace Test { namespace VS
       TEST_METHOD(HEX_PARSE64)      { Assert::AreEqual(true, CppCore::Test::Encoding::Hex::parse64()); }
       TEST_METHOD(BASE64_BYTELENGTH)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::bytelength()); }
       TEST_METHOD(BASE64_SYMBOLLENGTH) { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::symbollength()); }
-      TEST_METHOD(BASE64_ENCODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::encode()); }
-      TEST_METHOD(BASE64_DECODE)       { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::decode()); }
+      TEST_METHOD(BASE64_ENCODE_STD)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::encode_std()); }
+      TEST_METHOD(BASE64_ENCODE_URL)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::encode_url()); }
+      TEST_METHOD(BASE64_DECODE_STD)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::decode_std()); }
+      TEST_METHOD(BASE64_DECODE_URL)   { Assert::AreEqual(true, CppCore::Test::Encoding::Base64::decode_url()); }
       TEST_METHOD(DEC_TOSTRING8U)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8u()); }
       TEST_METHOD(DEC_TOSTRING8S)   { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring8s()); }
       TEST_METHOD(DEC_TOSTRING16U)  { Assert::AreEqual(true, CppCore::Test::Encoding::Decimal::tostring16u()); }
