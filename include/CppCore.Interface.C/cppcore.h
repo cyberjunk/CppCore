@@ -36,7 +36,7 @@
 
 // macro for base64 function declarations
 #define CPPCORE_BASE64_DECLARATION(size)                                                                          \
-  CPPCORE_EXPORT void cppcore_base64_encode##size(void* in, char* out, unsigned int url, unsigned int writeterm); \
+  CPPCORE_EXPORT void cppcore_base64_encode##size(void* in, char* out, unsigned int flags); \
   CPPCORE_EXPORT unsigned int cppcore_base64_decode##size(char* in, unsigned int len, void* out, unsigned int url);
 
 // macro for hash function declarations
@@ -154,7 +154,7 @@ extern "C" {
 
    CPPCORE_EXPORT unsigned int cppcore_base64_symbollength(unsigned int bytes, unsigned int url);
    CPPCORE_EXPORT unsigned int cppcore_base64_bytelength(char* s, unsigned int len, unsigned int url);
-   CPPCORE_EXPORT void         cppcore_base64_encode(void* in, unsigned int len, char* out, unsigned int url, unsigned int writeterm);
+   CPPCORE_EXPORT void         cppcore_base64_encode(void* in, unsigned int len, char* out, unsigned int flags);
    CPPCORE_EXPORT unsigned int cppcore_base64_decode(char* in, unsigned int len, void* out, unsigned int url);
 
    CPPCORE_BASE64_DECLARATION(32)

@@ -774,6 +774,18 @@ namespace CppCore
       };
 
       /// <summary>
+      /// Flags
+      /// </summary>
+      class Flags
+      {
+      private:
+         INLINE Flags() {}
+      public:
+         static constexpr uint32_t WRITETERM = 0x00000001U;
+         static constexpr uint32_t URLMODE   = 0x00000002U;
+      };
+
+      /// <summary>
       /// Returns the number of bytes needed to store symbols.
       /// Returns 0 if len%4!=0 (url=false) or len%4=1 (url=true).
       /// </summary>
@@ -813,9 +825,11 @@ namespace CppCore
       /// Use Base64::symbollength() to pre-calculate the number of symbols written to 'out'.
       /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
-      INLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const void* in, size_t len, char* out, const uint32_t flags = Flags::WRITETERM)
       {
          static_assert(CPPCORE_ENDIANESS_LITTLE);
+         const bool url = (flags & Flags::URLMODE);
+         const bool writeterm = (flags & Flags::WRITETERM);
          const char* tbl = url ?
             Base64::BINTOB64_URL :
             Base64::BINTOB64_STD;
@@ -966,56 +980,58 @@ namespace CppCore
             *out = 0x00;
       }
 
-      INLINE static void encode(const char* in, char* out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const char* in, char* out, const uint32_t flags = Flags::WRITETERM)
       {
-         Base64::encode(in, ::strlen(in), out, url, writeterm);
+         Base64::encode(in, ::strlen(in), out, flags);
       }
 
-      INLINE static void encode(const std::string& in, char* out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const std::string& in, char* out, const uint32_t flags = Flags::WRITETERM)
       {
-         Base64::encode(in.c_str(), in.length(), out, url, writeterm);
+         Base64::encode(in.c_str(), in.length(), out, flags);
       }
 
-      INLINE static void encode(const std::string_view& in, char* out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const std::string_view& in, char* out, const uint32_t flags = Flags::WRITETERM)
       {
-         Base64::encode(in.data(), in.length(), out, url, writeterm);
+         Base64::encode(in.data(), in.length(), out, flags);
       }
 
-      INLINE static void encode(const void* in, size_t len, std::string& out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const void* in, size_t len, std::string& out, const uint32_t flags = Flags::WRITETERM)
       {
-         out.resize(Base64::symbollength(len, url));
-         Base64::encode(in, len, out.data(), url, writeterm);
+         out.resize(Base64::symbollength(len, flags & Flags::WRITETERM));
+         Base64::encode(in, len, out.data(), flags);
       }
 
-      INLINE static void encode(const char* in, std::string& out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const char* in, std::string& out, const uint32_t flags = Flags::WRITETERM)
       {
-         Base64::encode(in, ::strlen(in), out, url, writeterm);
+         Base64::encode(in, ::strlen(in), out, flags);
       }
 
-      INLINE static void encode(const std::string& in, std::string& out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const std::string& in, std::string& out, const uint32_t flags = Flags::WRITETERM)
       {
-         Base64::encode(in.c_str(), in.length(), out, url, writeterm);
+         Base64::encode(in.c_str(), in.length(), out, flags);
       }
 
-      INLINE static void encode(const std::string_view& in, std::string& out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const std::string_view& in, std::string& out, const uint32_t flags = Flags::WRITETERM)
       {
-         Base64::encode(in.data(), in.length(), out, url, writeterm);
-      }
-
-      template<typename T>
-      INLINE static void encode(const T& in, char* out, bool url = false, bool writeterm = true)
-      {
-         Base64::encode(&in, sizeof(T), out, url, writeterm);
+         Base64::encode(in.data(), in.length(), out, flags);
       }
 
       template<typename T>
-      INLINE static void encode(const T& in, std::string& out, bool url = false, bool writeterm = true)
+      INLINE static void encode(const T& in, char* out, const uint32_t flags = Flags::WRITETERM)
       {
-         Base64::encode(&in, sizeof(T), out, url, writeterm);
+         Base64::encode(&in, sizeof(T), out, flags);
       }
 
-      INLINE static bool encode(istream& in, ostream& out, bool url = false, bool writeterm = false)
+      template<typename T>
+      INLINE static void encode(const T& in, std::string& out, const uint32_t flags = Flags::WRITETERM)
       {
+         Base64::encode(&in, sizeof(T), out, flags);
+      }
+
+      INLINE static bool encode(istream& in, ostream& out, const uint32_t flags = 0)
+      {
+         const bool url = (flags & Flags::URLMODE);
+         const bool writeterm = (flags & Flags::WRITETERM);
          CPPCORE_ALIGN64 char bin [4096];      // binary
          CPPCORE_ALIGN64 char bout[4096+2048]; // base64 (must be at least 33% larger)
          size_t tail = 0;
@@ -1029,7 +1045,7 @@ namespace CppCore
             read = in.gcount() + tail;
             tail = read % 3U;
             diff = read - tail;
-            CppCore::Base64::encode(bin, diff, bout, url, false);
+            CppCore::Base64::encode(bin, diff, bout, flags);
             out.write(bout, CppCore::Base64::symbollength(diff, url));
             if (tail == 1)
             {
@@ -1042,7 +1058,7 @@ namespace CppCore
             }
          }
          if (tail) {
-            CppCore::Base64::encode(bin, tail, bout, url, false);
+            CppCore::Base64::encode(bin, tail, bout, flags);
             out.write(bout, CppCore::Base64::symbollength(tail, url));
          }
          if (writeterm)
@@ -1050,23 +1066,23 @@ namespace CppCore
          return true;
       }
 
-      INLINE static bool encode(const path& in, ostream& out, bool url = false, bool writeterm = false)
+      INLINE static bool encode(const path& in, ostream& out, const uint32_t flags = 0)
       {
          ifstream stream(in, ifstream::binary | ifstream::in);
          if (!stream.is_open())
             return false;
-         return Base64::encode(stream, out, url, writeterm);
+         return Base64::encode(stream, out, flags);
       }
 
-      INLINE static bool encode(istream& in, const path& out, bool url = false, bool writeterm = false)
+      INLINE static bool encode(istream& in, const path& out, const uint32_t flags = 0)
       {
          ofstream stream(out, ifstream::binary | ifstream::out);
          if (!stream.is_open())
             return false;
-         return Base64::encode(in, stream, url, writeterm);
+         return Base64::encode(in, stream, flags);
       }
 
-      INLINE static bool encode(const path& in, const path& out, bool url = false, bool writeterm = false)
+      INLINE static bool encode(const path& in, const path& out, const uint32_t flags = 0)
       {
          ifstream sin(in, ifstream::binary | ifstream::in);
          if (!sin.is_open())
@@ -1074,7 +1090,7 @@ namespace CppCore
          ofstream sout(out, ofstream::binary | ofstream::out);
          if (!sout.is_open())
             return false;
-         return Base64::encode(sin, sout, url, writeterm);
+         return Base64::encode(sin, sout, flags);
       }
 
       /// <summary>

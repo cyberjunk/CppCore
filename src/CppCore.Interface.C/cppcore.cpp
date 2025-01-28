@@ -140,19 +140,19 @@ unsigned int cppcore_base64_symbollength(unsigned int bytes, unsigned int url) {
 unsigned int cppcore_base64_bytelength(char* s, unsigned int len, unsigned int url) {
    return CppCore::Base64::bytelength(s, len, (bool)url);
 }
-void cppcore_base64_encode(void* in, unsigned int len, char* out, unsigned int url, unsigned int writeterm) {
-   CppCore::Base64::encode(in, (size_t)len, out, (bool)url, (bool)writeterm);
+void cppcore_base64_encode(void* in, unsigned int len, char* out, unsigned int flags) {
+   CppCore::Base64::encode(in, (size_t)len, out, flags);
 }
 unsigned int cppcore_base64_decode(char* in, unsigned int len, void* out, unsigned int url) {
    return CppCore::Base64::decode((const char*)in, (size_t)len, out, (bool)url);
 }
 
 #define CPPCORE_BASE64_IMPLEMENTATION(size,block)                                                     \
-  void cppcore_base64_encode##size(void* in, char* out, unsigned int url, unsigned int writeterm) {   \
-    CppCore::Base64::encode(*(block*)in, out, (bool)url, (bool)writeterm);                            \
+  void cppcore_base64_encode##size(void* in, char* out, unsigned int flags) {                         \
+    CppCore::Base64::encode(*(block*)in, out, flags);                                                 \
   }                                                                                                   \
   unsigned int cppcore_base64_decode##size(char* in, unsigned int len, void* out, unsigned int url) { \
-    return CppCore::Base64::decode((const char*)in, (size_t)len, *(block*)out, (bool)url, true);              \
+    return CppCore::Base64::decode((const char*)in, (size_t)len, *(block*)out, (bool)url, true);      \
   }
 
 CPPCORE_BASE64_IMPLEMENTATION(32, std::uint32_t)
