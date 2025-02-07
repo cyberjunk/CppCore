@@ -81,11 +81,16 @@ int main()
 
    /////////////////////////////////////////////////////////////////////////////////////////////
 
-   const __m128i clt = _mm_cmplt_epi8(val, CMP);
+   /*const __m128i clt = _mm_cmplt_epi8(val, CMP);
    const __m128i cge = _mm_xor_si128(clt, _mm_cmpeq_epi8(clt, clt));
    const __m128i add = _mm_or_si128(
       _mm_and_si128(ADD_NUM, clt),
-      _mm_and_si128(ADD_ALP, cge));
+      _mm_and_si128(ADD_ALP, cge));*/
+
+   const __m128i clt = _mm_cmplt_epi8(val, CMP);
+   const __m128i add = _mm_or_si128(
+      _mm_and_si128(ADD_NUM, clt),
+      _mm_andnot_si128(clt, ADD_ALP));
 
    /////////////////////////////////////////////////////////////////////////////////////////////
 
