@@ -460,21 +460,78 @@ namespace CppCore
          const uint16_t* TABLE = uppercase ? 
             Util::BIN2HEX_UPPERCASE :
             Util::BIN2HEX_LOWERCASE;
-         uint16_t* out16 = (uint16_t*)out;
-         if (reverse)
+         uint8_t* out8 = (uint8_t*)out;
+         if (len)
          {
-            uint8_t* in8 = (uint8_t*)in + len;
-            while (len--)
-               *out16++ = TABLE[*--in8];
-         }
-         else
-         {
-            uint8_t* in8 = (uint8_t*)in;
-            while (len--)
-               *out16++ = TABLE[*in8++];
+            uint8_t* in8;// = reverse ? (uint8_t*)in + len - 1 : (uint8_t*)in;
+            intptr_t inc;// = reverse ? (intptr_t)(-1) : (intptr_t)(1);
+
+            if (len >= 8U)
+            {
+               inc = reverse ? (intptr_t)(-8) : (intptr_t)(8);
+               //in8 = reverse ? (uint8_t*)in+len-8 : (uint8_t*)in;
+               in8 = reverse ? (uint8_t*)in+len : (uint8_t*)in;
+
+               
+               const __m128i SHUF = reverse ?
+                  _mm_setr_epi8(7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0) :
+                  _mm_set_epi8 (7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0);
+               const __m128i M1 = _mm_set_epi8(
+                  0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00,
+                  0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00, 0x0f, 0x00);
+               const __m128i M2 = _mm_srli_si128(M1, 1);
+               const __m128i CMP = _mm_set1_epi8(0x0A);
+               const __m128i ADD_NUM = _mm_set1_epi8('0');
+               const __m128i ADD_ALP = uppercase ?
+                  _mm_set1_epi8('A'-10) :
+                  _mm_set1_epi8('a'-10);
+
+               do
+               {
+
+                  if (reverse) in8 -= 8;
+
+                  __m128i val;
+                  val = _mm_loadu_si64(in8);
+                  val = _mm_shuffle_epi8(val, SHUF);
+                  val = _mm_or_si128(
+                     _mm_and_si128(val, M1),
+                     _mm_and_si128(_mm_srli_epi64(val, 4), M2));
+                  const __m128i clt = _mm_cmplt_epi8(val, CMP);
+                  const __m128i add = _mm_or_si128(
+                     _mm_and_si128(ADD_NUM, clt),
+                     _mm_andnot_si128(clt, ADD_ALP));
+                  _mm_storeu_si128((__m128i*)out8, _mm_add_epi8(val, add));
+
+                  out8 += 16U;
+
+                  if (!reverse) in8 += 8;
+
+                  //in8 += inc;
+                  len -= 8U;
+               } while (len >= 8U);
+            }
+            else
+            {
+
+               //inc = reverse ? (intptr_t)(-1) : (intptr_t)(8);
+               in8 = reverse ? (uint8_t*)in+len : (uint8_t*)in;
+            }
+
+            inc = reverse ? (intptr_t)(-1) : (intptr_t)(1);
+            while (len--) 
+            {
+               if (reverse) in8--;
+               *(uint16_t*)out8 = TABLE[*in8];
+               
+               if (!reverse) in8++;
+               out8 += 2;
+
+               //in8 += inc;
+            }
          }
          if (writeterm)
-            *((uint8_t*)out16) = 0x00;
+            *out8 = 0x00;
       }
 
       /// <summary>
