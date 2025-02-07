@@ -462,8 +462,7 @@ namespace CppCore
             Util::BIN2HEX_LOWERCASE;
          uint8_t* out8 = (uint8_t*)out;
          uint8_t* in8  = reverse ? (uint8_t*)in+len : (uint8_t*)in;
-         intptr_t inc;
-         intptr_t dec;
+         size_t   inc, dec;
          if (len >= 8U)
          {
             dec = reverse ? 8 : 0;
