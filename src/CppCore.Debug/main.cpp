@@ -43,7 +43,7 @@ int main_old()
    return 0;
 }
 
-int main()
+/*int main_encode()
 {
    constexpr bool UPPERCASE = false;
    constexpr bool REVERSE   = false;
@@ -81,11 +81,11 @@ int main()
 
    /////////////////////////////////////////////////////////////////////////////////////////////
 
-   /*const __m128i clt = _mm_cmplt_epi8(val, CMP);
-   const __m128i cge = _mm_xor_si128(clt, _mm_cmpeq_epi8(clt, clt));
-   const __m128i add = _mm_or_si128(
-      _mm_and_si128(ADD_NUM, clt),
-      _mm_and_si128(ADD_ALP, cge));*/
+   //const __m128i clt = _mm_cmplt_epi8(val, CMP);
+   //const __m128i cge = _mm_xor_si128(clt, _mm_cmpeq_epi8(clt, clt));
+   //const __m128i add = _mm_or_si128(
+   //   _mm_and_si128(ADD_NUM, clt),
+   //   _mm_and_si128(ADD_ALP, cge));
 
    const __m128i clt = _mm_cmplt_epi8(val, CMP);
    const __m128i add = _mm_or_si128(
@@ -113,4 +113,88 @@ int main()
    std::cout << output;
 
    int kjdf = 1;
+}*/
+
+int main()
+{
+  __m128i e = _mm_setzero_si128();
+            
+   char* input = "a1f2f3f4f5f6f7F9";
+   uint8_t temp[16];
+   uint8_t output[8];
+
+   __m128i val = _mm_loadu_si128((__m128i*)input);
+
+   _mm_storeu_si128((__m128i*)temp, val);
+   for (size_t i = 0; i < 16; i++)
+   {
+      std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)temp[i] << " ";
+   }
+   std::cout << std::endl;
+
+   __m128i cmp1_min = _mm_set1_epi8(0x2f); // ge 0
+   __m128i cmp1_max = _mm_set1_epi8(0x3a); // le 9
+   __m128i cmp1_gt = _mm_cmpgt_epi8(val, cmp1_min);
+   __m128i cmp1_lt = _mm_cmplt_epi8(val, cmp1_max);
+   __m128i cmp1 = _mm_and_si128(cmp1_gt, cmp1_lt);
+   __m128i cmp1_sub = _mm_set1_epi8('0');
+   __m128i cmp1_suba = _mm_and_si128(cmp1_sub, cmp1);
+
+   __m128i cmp2_min = _mm_set1_epi8(0x40); // ge A
+   __m128i cmp2_max = _mm_set1_epi8(0x47); // le F
+   __m128i cmp2_gt = _mm_cmpgt_epi8(val, cmp2_min);
+   __m128i cmp2_lt = _mm_cmplt_epi8(val, cmp2_max);
+   __m128i cmp2 = _mm_and_si128(cmp2_gt, cmp2_lt);
+   __m128i cmp2_sub = _mm_set1_epi8('A'-10);
+   __m128i cmp2_suba = _mm_and_si128(cmp2_sub, cmp2);
+
+   __m128i cmp3_min = _mm_set1_epi8(0x60); // ge a
+   __m128i cmp3_max = _mm_set1_epi8(0x67); // le f
+   __m128i cmp3_gt = _mm_cmpgt_epi8(val, cmp3_min);
+   __m128i cmp3_lt = _mm_cmplt_epi8(val, cmp3_max);
+   __m128i cmp3 = _mm_and_si128(cmp3_gt, cmp3_lt);
+   __m128i cmp3_sub = _mm_set1_epi8('a'-10);
+   __m128i cmp3_suba = _mm_and_si128(cmp3_sub, cmp3);
+
+   __m128i sub = _mm_or_si128(cmp1_suba, _mm_or_si128(cmp2_suba, cmp3_suba));
+
+   e = _mm_or_si128(e, _mm_cmpeq_epi8(sub, _mm_setzero_si128()));
+   if (_mm_testz_si128(e, e) == 0)
+   {
+      std::cout << "ERROR" << std::endl;
+   }
+
+   val = _mm_sub_epi8(val, sub);
+
+   __m128i v1 = _mm_shuffle_epi8(val, _mm_setr_epi8(0, 2, 4, 6, 8, 10, 12, 14, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80));
+   __m128i v2 = _mm_shuffle_epi8(val, _mm_setr_epi8(1, 3, 5, 7, 9, 11, 13, 15, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80));
+   __m128i v3 = _mm_or_si128(_mm_slli_epi64(v1, 4), v2);
+
+   _mm_storeu_si64(output, v3);
+   for (size_t i = 0; i < 8; i++)
+   {
+      std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)output[i] << " ";
+   }
+   std::cout << std::endl;
+
+
+
+   /*_mm_storeu_si128((__m128i*)temp, v1);
+   for (size_t i = 0; i < 16; i++)
+   {
+      std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)temp[i] << " ";
+   }
+   std::cout << std::endl;
+    _mm_storeu_si128((__m128i*)temp, v2);
+   for (size_t i = 0; i < 16; i++)
+   {
+      std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)temp[i] << " ";
+   }
+   std::cout << std::endl;
+   _mm_storeu_si128((__m128i*)temp, v3);
+   for (size_t i = 0; i < 16; i++)
+   {
+      std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)temp[i] << " ";
+   }
+   std::cout << std::endl;*/
 }
