@@ -119,9 +119,13 @@ int main()
 {     
    const bool reverse = true;
 
-   __m128i SHUF1 = _mm_setr_epi8(14,15,12,13,10,11,8,9,6,7,4,5,2,3,0,1);
-   __m128i SHUF2 = _mm_setr_epi8(0,2,4,6,8,10,12,14,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80);
-   __m128i SHUF3 = _mm_setr_epi8(1,3,5,7,9,11,13,15,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80);
+   //__m128i SHUF1 = _mm_setr_epi8(14,15,12,13,10,11,8,9,6,7,4,5,2,3,0,1);
+   __m128i SHUF2 = reverse ? 
+      _mm_setr_epi8(14,12,10,8,6,4,2,0,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80) :
+      _mm_setr_epi8(0,2,4,6,8,10,12,14,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80);
+   __m128i SHUF3 = reverse ? 
+      _mm_setr_epi8(15,13,11,9,7,5,3,1,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80) :
+      _mm_setr_epi8(1,3,5,7,9,11,13,15,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80);
    __m128i cmp1_min = _mm_set1_epi8('0'-1); // ge 0
    __m128i cmp1_max = _mm_set1_epi8('9'+1); // le 9
    __m128i cmp1_sub = _mm_set1_epi8('0');
@@ -140,8 +144,8 @@ int main()
 
    __m128i val = _mm_loadu_si128((__m128i*)input);
 
-   if (reverse)
-      val = _mm_shuffle_epi8(val, SHUF1);
+   //if (reverse)
+   //   val = _mm_shuffle_epi8(val, SHUF1);
 
    _mm_storeu_si128((__m128i*)temp, val);
    for (size_t i = 0; i < 16; i++)
