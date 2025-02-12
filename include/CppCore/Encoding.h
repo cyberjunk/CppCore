@@ -463,6 +463,7 @@ namespace CppCore
          uint8_t* out8 = (uint8_t*)out;
          uint8_t* in8  = reverse ? (uint8_t*)in+len : (uint8_t*)in;
          size_t   inc, dec;
+      #if defined(CPPCORE_CPUFEAT_SSSE3)
          if (len >= 8U)
          {
             dec = reverse ? 8 : 0;
@@ -498,11 +499,12 @@ namespace CppCore
                len  -= 8U;
             } while (len >= 8U);
          }
+      #endif
          dec = reverse ? 1 : 0;
          inc = reverse ? 0 : 1;
          while (len--) 
          {
-            in8 -= dec;
+            in8  -= dec;
             *(uint16_t*)out8 = TABLE[*in8];
             in8  += inc;
             out8 += 2U;
