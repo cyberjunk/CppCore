@@ -558,20 +558,15 @@ namespace CppCore
             {
                in -= dec;
                val = _mm_loadu_si128((__m128i*)in);
-
-               __m128i cmp1_gt = _mm_cmpgt_epi8(val, CMP1_MIN);
-               __m128i cmp1_lt = _mm_cmplt_epi8(val, CMP1_MAX);
-               __m128i sub1 = _mm_and_si128(CMP1_SUB, _mm_and_si128(cmp1_gt, cmp1_lt));
-
-               __m128i cmp2_gt = _mm_cmpgt_epi8(val, CMP2_MIN);
-               __m128i cmp2_lt = _mm_cmplt_epi8(val, CMP2_MAX);
-               __m128i sub2 = _mm_and_si128(CMP2_SUB, _mm_and_si128(cmp2_gt, cmp2_lt));
-
-               __m128i cmp3_gt = _mm_cmpgt_epi8(val, CMP3_MIN);
-               __m128i cmp3_lt = _mm_cmplt_epi8(val, CMP3_MAX);
-               __m128i sub3 = _mm_and_si128(CMP3_SUB, _mm_and_si128(cmp3_gt, cmp3_lt));
-
-               sub = _mm_or_si128(sub1, _mm_or_si128(sub2, sub3));
+               sub = _mm_and_si128(CMP1_SUB, _mm_and_si128(
+                  _mm_cmpgt_epi8(val, CMP1_MIN),
+                  _mm_cmplt_epi8(val, CMP1_MAX)));
+               sub = _mm_or_si128(sub, _mm_and_si128(CMP2_SUB, _mm_and_si128(
+                  _mm_cmpgt_epi8(val, CMP2_MIN),
+                  _mm_cmplt_epi8(val, CMP2_MAX))));
+               sub = _mm_or_si128(sub, _mm_and_si128(CMP3_SUB, _mm_and_si128(
+                  _mm_cmpgt_epi8(val, CMP3_MIN),
+                  _mm_cmplt_epi8(val, CMP3_MAX))));
                err = _mm_or_si128(err, _mm_cmpeq_epi8(sub, _mm_setzero_si128()));
                val = _mm_sub_epi8(val, sub);
                val = _mm_or_si128(
