@@ -1048,7 +1048,7 @@ namespace CppCore
       /// </summary>
       INLINE uintx_t(const ::std::string& input, bool bigendian)
       {
-         CppCore::Hex::parse(input, *thiss(), bigendian);
+         CppCore::Hex::tryparse(input, *thiss(), bigendian);
       }
 
       /// <summary>
@@ -2701,7 +2701,7 @@ namespace CppCore
       constexpr INLINE static TC parseHex(const char* input, bool bigendian = true)
       {
          TC r;
-         CppCore::Hex::parse(input, r, bigendian);
+         CppCore::Hex::tryparse(input, r, bigendian);
          return r;
       }
 
