@@ -530,12 +530,71 @@ namespace CppCore
          if (len == 0)
             return false;
          uint8_t* p = (uint8_t*)out;
+         size_t inc, dec;
+         in  = reverse ? in+len : in;
+      #if defined(CPPCORE_CPUFEAT_SSSE3)
+         if (len >= 16)
+         {
+            dec = reverse ? 16 : 0;
+            inc = reverse ? 0 : 16;
+            const __m128i SHUF1 = reverse ? 
+               _mm_setr_epi8(14,12,10,8,6,4,2,0,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80) :
+               _mm_setr_epi8(0,2,4,6,8,10,12,14,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80);
+            const __m128i SHUF2 = reverse ?
+               _mm_setr_epi8(15,13,11,9,7,5,3,1,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80) :
+               _mm_setr_epi8(1,3,5,7,9,11,13,15,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x80);
+            const __m128i CMP1_MIN = _mm_set1_epi8('0'-1); // ge 0
+            const __m128i CMP1_MAX = _mm_set1_epi8('9'+1); // le 9
+            const __m128i CMP1_SUB = _mm_set1_epi8('0');
+            const __m128i CMP2_MIN = _mm_set1_epi8('A'-1); // ge A
+            const __m128i CMP2_MAX = _mm_set1_epi8('F'+1); // le F
+            const __m128i CMP2_SUB = _mm_set1_epi8('A'-10);
+            const __m128i CMP3_MIN = _mm_set1_epi8('a'-1); // ge a
+            const __m128i CMP3_MAX = _mm_set1_epi8('f'+1); // le f
+            const __m128i CMP3_SUB = _mm_set1_epi8('a'-10);
+            __m128i err = _mm_setzero_si128();
+            __m128i val, sub;
+            do
+            {
+               in -= dec;
+               val = _mm_loadu_si128((__m128i*)in);
+
+               __m128i cmp1_gt = _mm_cmpgt_epi8(val, CMP1_MIN);
+               __m128i cmp1_lt = _mm_cmplt_epi8(val, CMP1_MAX);
+               __m128i sub1 = _mm_and_si128(CMP1_SUB, _mm_and_si128(cmp1_gt, cmp1_lt));
+
+               __m128i cmp2_gt = _mm_cmpgt_epi8(val, CMP2_MIN);
+               __m128i cmp2_lt = _mm_cmplt_epi8(val, CMP2_MAX);
+               __m128i sub2 = _mm_and_si128(CMP2_SUB, _mm_and_si128(cmp2_gt, cmp2_lt));
+
+               __m128i cmp3_gt = _mm_cmpgt_epi8(val, CMP3_MIN);
+               __m128i cmp3_lt = _mm_cmplt_epi8(val, CMP3_MAX);
+               __m128i sub3 = _mm_and_si128(CMP3_SUB, _mm_and_si128(cmp3_gt, cmp3_lt));
+
+               sub = _mm_or_si128(sub1, _mm_or_si128(sub2, sub3));
+               err = _mm_or_si128(err, _mm_cmpeq_epi8(sub, _mm_setzero_si128()));
+               val = _mm_sub_epi8(val, sub);
+               val = _mm_or_si128(
+                  _mm_slli_epi64(_mm_shuffle_epi8(val, SHUF1), 4),
+                  _mm_shuffle_epi8(val, SHUF2));
+               _mm_storeu_si64(p, val);
+               p   += 8;
+               in  += inc;
+               len -= 16;
+            } while (len >= 16);
+         #if defined(CPPCORE_CPUFEAT_SSE41)
+            if (_mm_testz_si128(err, err) == 0)
+               return false;
+         #else
+            if (_mm_movemask_epi8(err) != 0)
+               return false;
+         #endif
+         }
+      #endif
          uint8_t  r = 0x00;
          uint8_t v1, v2;
-         size_t inc, dec;
-         inc = reverse ? 0 : 2;
          dec = reverse ? 2 : 0;
-         in  = reverse ? in+len : in;
+         inc = reverse ? 0 : 2;
          while (len >= 2)
          {
             len -= 2;
