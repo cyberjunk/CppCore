@@ -454,6 +454,7 @@ namespace CppCore
 
       /// <summary>
       /// Encodes exactly 'len' bytes from 'in' into '2*len' hex characters in 'out'.
+      /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
       INLINE static void encode(const void* in, char* out, size_t len, bool reverse = false, bool writeterm = false, bool uppercase = true)
       {
@@ -513,9 +514,6 @@ namespace CppCore
             *out8 = 0x00;
       }
 
-      /// <summary>
-      /// Encodes exactly 'len' bytes from 'in' into '2*len' hex characters in 'out'.
-      /// </summary>
       template<typename STRING = std::string>
       INLINE static void encode(const void* in, STRING& out, size_t len, bool reverse = false, bool writeterm = false, bool uppercase = true)
       {
@@ -524,34 +522,36 @@ namespace CppCore
       }
 
       /// <summary>
-      /// Decodes exactly '2*len' characters from 'in' into 'len' bytes in 'out'.
+      /// Decodes 'len' characters from 'in' into len/2 (+1 if odd) bytes in 'out'.
+      /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
-      INLINE static void decode(const char* in, void* out, size_t len, bool reverse = false)
+      INLINE static bool decode(const char* in, void* out, size_t len, bool reverse = false)
       {
-         uint8_t* out8 = (uint8_t*)out;
-         if (reverse)
+         if (len == 0)
+            return false;
+         uint8_t* p = (uint8_t*)out;
+         uint8_t  r = 0x00;
+         uint8_t v1, v2;
+         size_t inc, dec;
+         inc = reverse ? 0 : 2;
+         dec = reverse ? 2 : 0;
+         in  = reverse ? in+len : in;
+         while (len >= 2)
          {
-            in += len + len;
-            while (len--)
-            {
-               char c2 = *--in;
-               char c1 = *--in;
-               *out8++ = 
-                  (Util::valueofhexchar(c1) << 4) | 
-                  (Util::valueofhexchar(c2));
-            }
+            len -= 2;
+            in -= dec;
+            v1 = Util::HEX2BIN[(uint8_t)in[0]];
+            v2 = Util::HEX2BIN[(uint8_t)in[1]];
+            r |= v1 | v2;
+            *p++ = (v1 << 4) | (v2);
+            in += inc;
          }
-         else
-         {
-            while (len--)
-            {
-               char c1 = *in++;
-               char c2 = *in++;
-               *out8++ = 
-                  (Util::valueofhexchar(c1) << 4) | 
-                  (Util::valueofhexchar(c2));
-            }
+         if (len) {
+            v1 = Util::HEX2BIN[(uint8_t)(reverse ? *--in : *in)];
+            r |= v1;
+            *p = v1;
          }
+         return r <= 0x0F;
       }
 
       /// <summary>
@@ -660,31 +660,9 @@ namespace CppCore
       {
          static_assert(CPPCORE_ENDIANESS_LITTLE);
          CppCore::clear(out);
-         if (!in || *in == 0x00 || n > sizeof(UINT)*2) CPPCORE_UNLIKELY
+         if (n > sizeof(UINT)*2) CPPCORE_UNLIKELY
             return false;
-         uint8_t* p = (uint8_t*)&out;
-         uint8_t  r = 0x00;
-         uint8_t v1, v2;
-         size_t inc, dec;
-         inc = in_be ? 0 : 2;
-         dec = in_be ? 2 : 0;
-         in = in_be ? in+n : in;
-         while (n >= 2)
-         {
-            n -= 2;
-            in -= dec;
-            v1 = Util::HEX2BIN[(uint8_t)in[0]];
-            v2 = Util::HEX2BIN[(uint8_t)in[1]];
-            r |= v1 | v2;
-            *p++ = (v1 << 4) | (v2);
-            in += inc;
-         }
-         if (n) {
-            v1 = Util::HEX2BIN[(uint8_t)(in_be ? *--in : *in)];
-            r |= v1;
-            *p = v1;
-         }
-         return r <= 0x0F;
+         return Hex::decode(in, &out, n, in_be);
       }
 
       /// <summary>
