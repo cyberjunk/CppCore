@@ -664,42 +664,25 @@ namespace CppCore
             return false;
          uint8_t* p = (uint8_t*)&out;
          uint8_t  r = 0x00;
-         if (in_be)
+         uint8_t v1, v2;
+         size_t inc, dec;
+         inc = in_be ? 0 : 2;
+         dec = in_be ? 2 : 0;
+         in = in_be ? in+n : in;
+         while (n >= 2)
          {
-            in += n;
-            while (n >= 2)
-            {
-               n -= 2;
-               char c2 = *--in;
-               char c1 = *--in;
-               uint8_t v1 = Util::HEX2BIN[c1];
-               uint8_t v2 = Util::HEX2BIN[c2];
-               r |= v1 | v2;
-               *p++ = (v1 << 4) | (v2);
-            }
-            if (n) {
-               uint8_t v = Util::HEX2BIN[*--in];
-               r |= v;
-               *p++ = v;
-            }
+            n -= 2;
+            in -= dec;
+            v1 = Util::HEX2BIN[(uint8_t)in[0]];
+            v2 = Util::HEX2BIN[(uint8_t)in[1]];
+            r |= v1 | v2;
+            *p++ = (v1 << 4) | (v2);
+            in += inc;
          }
-         else
-         {
-            while (n >= 2)
-            {
-               n -= 2;
-               char c1 = *in++;
-               char c2 = *in++;
-               uint8_t v1 = Util::HEX2BIN[c1];
-               uint8_t v2 = Util::HEX2BIN[c2];
-               r |= v1 | v2;
-               *p++ = (v1 << 4) | (v2);
-            }
-            if (n) {
-               uint8_t v = Util::HEX2BIN[*in];
-               r |= v;
-               *p++ = v;
-            }
+         if (n) {
+            v1 = Util::HEX2BIN[(uint8_t)(in_be ? *--in : *in)];
+            r |= v1;
+            *p = v1;
          }
          return r <= 0x0F;
       }
