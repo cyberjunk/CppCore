@@ -456,7 +456,7 @@ namespace CppCore
       /// Encodes exactly 'len' bytes from 'in' into '2*len' hex characters in 'out'.
       /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
-      INLINE static void encode(const void* in, char* out, size_t len, bool reverse = false, bool writeterm = false, bool uppercase = true)
+      FORCEINLINE static void encode(const void* in, char* out, size_t len, bool reverse = false, bool writeterm = false, bool uppercase = true)
       {
          const uint16_t* TABLE = uppercase ?
             Util::BIN2HEX_UPPERCASE :
@@ -525,7 +525,7 @@ namespace CppCore
       /// Decodes 'len' characters from 'in' into len/2 (+1 if odd) bytes in 'out'.
       /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
-      INLINE static bool decode(const char* in, void* out, size_t len, bool reverse = false)
+      FORCEINLINE static bool decode(const char* in, void* out, size_t len, bool reverse = false)
       {
          if (len == 0)
             return false;
@@ -864,7 +864,7 @@ namespace CppCore
       /// Use Base64::symbollength() to pre-calculate the number of symbols written to 'out'.
       /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
-      INLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
+      FORCEINLINE static void encode(const void* in, size_t len, char* out, bool url = false, bool writeterm = true)
       {
          static_assert(CPPCORE_ENDIANESS_LITTLE);
          const char* tbl = url ?
@@ -872,7 +872,7 @@ namespace CppCore
             Base64::BINTOB64_STD;
          const uint8_t* p = (const uint8_t*)in;
       #if defined(CPPCORE_CPUFEAT_SSSE3)
-         if (len >= 64U)
+         if (len >= 32U)
          {
             // 16 symbols from 12 bytes
             // adapted from: https://github.com/WojciechMula/base64simd
@@ -1133,7 +1133,7 @@ namespace CppCore
       /// Use Base64::bytelength() to pre-calculate the number of bytes written to 'out'.
       /// This contains the actual algorithm and is base function for all the other variants.
       /// </summary>
-      INLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
+      FORCEINLINE static bool decode(const char* in, size_t len, void* out, bool url = false)
       {
          if (len == 0) CPPCORE_UNLIKELY
             return false;
@@ -1156,7 +1156,7 @@ namespace CppCore
             Base64::B64TOBIN_URL : 
             Base64::B64TOBIN_STD;
       #if defined(CPPCORE_CPUFEAT_SSSE3)
-         if (len >= 64)
+         if (len >= 32U)
          {
             // 12 bytes from 16 symbols
             // adapted from: https://github.com/WojciechMula/base64simd
