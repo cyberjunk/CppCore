@@ -29,7 +29,7 @@ RCFLAGS    = -L0x0409 -NOLOGO
 
 # CPU Flags
 ifeq ($(TARGET_CPUREV),legacy)
-CPUFLAGS   = -march=i686 -mtune=generic -mmmx
+CPUFLAGS   = -march=i686 -mtune=generic -mmmx -msse -msse2
 endif
 ifeq ($(TARGET_CPUREV),default)
 CPUFLAGS   = -march=i686 -mtune=generic -mmmx -msse -msse2
