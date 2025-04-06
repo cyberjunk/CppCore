@@ -31,12 +31,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    # Setup Win 10/11 SDK Version
-    - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
-      if: matrix.arch == 'x86'
-      with:
-        sdk-version: 22621
-    
     # Upgrade LLVM
     #- name: Upgrade LLVM
     #  run: choco upgrade llvm -y
