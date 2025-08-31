@@ -2656,6 +2656,13 @@ namespace CppCore
          CppCore::clone(r, t.v);
       }
    #if defined(CPPCORE_CPU_64BIT)
+      else if constexpr (sizeof(UINT1) == 16 && sizeof(UINT2) == 16 && sizeof(UINT3) == 16)
+      {
+         uint64_t* ap = (uint64_t*)&a;
+         uint64_t* bp = (uint64_t*)&b;
+         uint64_t* rp = (uint64_t*)&r;
+         CppCore::umul128(ap[0], ap[1], bp[0], bp[1], rp[0], rp[1]);
+      }
       else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0 && sizeof(UINT3) % 8 == 0)
       {
          // 64-Bit CPU and Multiples of 64-Bit
