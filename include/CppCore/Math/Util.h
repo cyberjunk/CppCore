@@ -1285,7 +1285,7 @@ namespace CppCore
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       l = _umul128(a, b, &h);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("MULQ %4" : "=a" (l), "=d" (h) : "0" (a), "1" (b), "r" (b));
+      __asm("MULQ %3" : "=a" (l), "=d" (h) : "0" (a), "r" (b));
    #elif defined(CPPCORE_COMPILER_CLANG) && defined(__SIZEOF_INT128__)
       __uint128_t t = (__uint128_t)a * b;
       l = (uint64_t)t;
