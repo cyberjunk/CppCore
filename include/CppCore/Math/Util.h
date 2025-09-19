@@ -3021,6 +3021,7 @@ namespace CppCore
    {
       static_assert(sizeof(UINT1) % 4 == 0);
       static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT1) >= sizeof(UINT2));
       assert(&q != &u && &r != &v);
       CppCore::clear(q);
    #if defined(CPPCORE_CPU_X64)
@@ -3038,7 +3039,7 @@ namespace CppCore
          uint32_t  n = N;
          while (n != 0U && vp[n-1] == 0U)
             n--;
-         if (((M < n) | (n == 0)) != 0)
+         if (n == 0U)
             return false;
          if (n == 1U) {
             uint64_t k;
@@ -3128,7 +3129,7 @@ namespace CppCore
          uint32_t  n = N;
          while (n != 0U && vp[n-1] == 0U)
             n--;
-         if (((M < n) | (n == 0)) != 0)
+         if (n == 0U)
             return false;
          if (n == 1U) {
             uint32_t k;
@@ -3260,6 +3261,7 @@ namespace CppCore
       assert(&r != &v);
       static_assert(sizeof(UINT1) % 4 == 0);
       static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT1) >= sizeof(UINT2));
    #if defined(CPPCORE_CPU_X64)
       if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0)
       {
@@ -3275,7 +3277,7 @@ namespace CppCore
          uint32_t  n = N;
          while (n != 0U && vp[n-1] == 0U)
             n--;
-         if (((M < n) | (n == 0U)) != 0)
+         if (n == 0U)
             return;
          if (n == 1U) {
             CppCore::clear(r);
@@ -3370,7 +3372,7 @@ namespace CppCore
          uint32_t  n = N;
          while (n != 0U && vp[n-1] == 0U)
             n--;
-         if (((M < n) | (n == 0)) != 0)
+         if (n == 0U)
             return;
          if (n == 1U) {
             CppCore::clear(r);
