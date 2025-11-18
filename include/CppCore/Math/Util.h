@@ -1313,12 +1313,12 @@ namespace CppCore
       l = _mulx_u64(a, b, (unsigned long long*)&h);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       l = _umul128(a, b, &h);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("MULQ %3" : "=a" (l), "=d" (h) : "0" (a), "r" (b));
    #elif defined(CPPCORE_COMPILER_CLANG) && defined(__SIZEOF_INT128__)
       __uint128_t t = (__uint128_t)a * b;
       l = (uint64_t)t;
       h = (uint64_t)(t >> 64);
+   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
+      __asm("MULQ %3" : "=a" (l), "=d" (h) : "0" (a), "r" (b));
    #else
       uint32_t al = (uint32_t)a;
       uint32_t ah = (uint32_t)(a >> 32);
