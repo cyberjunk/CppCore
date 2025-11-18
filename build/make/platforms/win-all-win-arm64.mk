@@ -18,7 +18,7 @@ AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
 STRIPFLAGS = --strip-all
-LINK       = $(CXX)
+LINK       = $(CXX) -v
 LINKFLAGS  = -target $(TARGET) -fuse-ld=lld -Xlinker /MACHINE:ARM64 -fno-strict-aliasing
 LINKPATH   =
 LINKLIBS   = 
