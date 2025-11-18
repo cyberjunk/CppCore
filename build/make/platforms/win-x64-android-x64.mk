@@ -26,11 +26,13 @@ INCLUDES   = -I$(ANDROID_NDK_HOME)/sources/android/cpufeatures
 CXX        = $(ANDROID_TOOLCHAIN)/bin/$(TARGET)$(ANDROID_API)-clang++.cmd
 CXXFLAGS   = -static -fPIC \
              -fno-strict-aliasing \
+             -fno-strict-overflow \
              -target $(TARGET) \
              -isystem $(ANDROID_TOOLCHAIN)/sysroot/usr/include/$(TARGET)
 CC         = $(ANDROID_TOOLCHAIN)/bin/$(TARGET)$(ANDROID_API)-clang.cmd
 CFLAGS     = -static -fPIC \
              -fno-strict-aliasing \
+             -fno-strict-overflow \
              -target $(TARGET) \
              -isystem $(ANDROID_TOOLCHAIN)/sysroot/usr/include/$(TARGET)
 AR         = $(ANDROID_TOOLCHAIN)/bin/llvm-ar.exe

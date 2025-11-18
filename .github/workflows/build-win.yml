@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2019,windows-2022]
+        os: [windows-2022,windows-2025]
         arch: [x64,x86,arm64]
         cpurev: [legacy, default, modern]
     steps:
@@ -34,6 +34,15 @@ jobs:
     # Upgrade LLVM
     #- name: Upgrade LLVM
     #  run: choco upgrade llvm -y
+
+    # Clang Version
+    - name: Clang Version
+      run: clang --version
+
+    # Build
+    - name: Build
+      run: | 
+        make -j${{ env.JOBS }}
 
     # Developer Console (X64)
     - name: MSVC Developer Console (X64)
@@ -55,15 +64,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: amd64_arm64
-
-    # Clang Version
-    - name: Clang Version
-      run: clang --version
-
-    # Build
-    - name: Build
-      run: | 
-        make -j${{ env.JOBS }}
 
     # Binary Info
     - name: Binary Info
@@ -183,21 +183,21 @@ jobs:
         arch: amd64
     
     # Load Code Signing Certificate
-    - name: Load Code Signing Certificate
-      shell: pwsh
-      env:
-        PFX_BASE64: ${{ secrets.SIGN_PFX_FILE }}
-      run: |
-        echo $env:PFX_BASE64 > ./certs/TrueCert.pfx.base64
-        certutil -decode ./certs/TrueCert.pfx.base64 ./certs/TrueCert.pfx
+    #- name: Load Code Signing Certificate
+    #  shell: pwsh
+    #  env:
+    #    PFX_BASE64: ${{ secrets.SIGN_PFX_FILE }}
+    #  run: |
+    #    echo $env:PFX_BASE64 > ./certs/TrueCert.pfx.base64
+    #    certutil -decode ./certs/TrueCert.pfx.base64 ./certs/TrueCert.pfx
 
     # Pack
     - name: Make (dist)
-      env:
-        SIGN_PFX_FILE: ../../certs/TrueCert.pfx
-        SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
-        PUBLISHERCN: Clint Banzhaf
-        PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
+      #env:
+      #  SIGN_PFX_FILE: ../../certs/TrueCert.pfx
+      #  SIGN_PFX_PASS: ${{ secrets.SIGN_PFX_PASS }}
+      #  PUBLISHERCN: Clint Banzhaf
+      #  PUBLISHER: CN=Clint Banzhaf, O=Clint Banzhaf, S=Baden-Württemberg, C=DE
       run: |
         make dist -j${{ env.JOBS }}
 

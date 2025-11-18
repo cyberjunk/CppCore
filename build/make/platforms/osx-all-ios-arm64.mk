@@ -14,11 +14,13 @@ INCLUDES   =
 CXX        = clang++
 CXXFLAGS   = $(MINVER) -target $(TARGET) -static \
              -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) \
-             -fno-strict-aliasing
+             -fno-strict-aliasing \
+             -fno-strict-overflow
 CC         = clang
 CFLAGS     = $(MINVER) -target $(TARGET) -static \
              -isysroot $(shell xcrun --sdk iphoneos --show-sdk-path) \
-             -fno-strict-aliasing
+             -fno-strict-aliasing \
+             -fno-strict-overflow
 AR         = ar
 ARFLAGS    = rcs
 STRIP      = strip
