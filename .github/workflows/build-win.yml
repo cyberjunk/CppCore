@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-2022,windows-2025]
-        arch: [x64,x86]
+        arch: [x64,x86,arm64]
         cpurev: [legacy, default, modern]
     steps:
 
@@ -163,18 +163,18 @@ jobs:
         path: ./build/make/lib/win-x86/
 
     # Download ARM64 Binaries
-    #- name: Download ARM64 Binaries
-    #  uses: actions/download-artifact@v4
-    #  with:
-    #    name: Binaries (${{ matrix.os }}-arm64-${{ matrix.cpurev }})
-    #    path: ./build/make/bin/win-arm64/
+    - name: Download ARM64 Binaries
+      uses: actions/download-artifact@v4
+      with:
+        name: Binaries (${{ matrix.os }}-arm64-${{ matrix.cpurev }})
+        path: ./build/make/bin/win-arm64/
 
     # Download ARM64 Libraries
-    #- name: Download ARM64 Libraries
-    #  uses: actions/download-artifact@v4
-    #  with:
-    #    name: Libraries (${{ matrix.os }}-arm64-${{ matrix.cpurev }})
-    #    path: ./build/make/lib/win-arm64/
+    - name: Download ARM64 Libraries
+      uses: actions/download-artifact@v4
+      with:
+        name: Libraries (${{ matrix.os }}-arm64-${{ matrix.cpurev }})
+        path: ./build/make/lib/win-arm64/
 
     # Developer Console (X64)
     - name: MSVC Developer Console (X64)
@@ -229,8 +229,8 @@ jobs:
       run: make TARGET_ARCH=x86 CppCore.Interface.Python
 
     # Python Wheel (arm64)
-    #- name: Python Wheel (arm64)
-    #  run: make TARGET_ARCH=arm64 CppCore.Interface.Python
+    - name: Python Wheel (arm64)
+      run: make TARGET_ARCH=arm64 CppCore.Interface.Python
 
     # Upload
     - name: Upload
