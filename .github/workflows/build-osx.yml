@@ -101,6 +101,7 @@ jobs:
 ###########################################################################
 
   dist:
+    if: false # temporarily disabled
     needs: build
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -222,6 +223,7 @@ jobs:
 ###########################################################################
  
   dist-store:
+    if: false # temporarily disabled
     needs: build
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60

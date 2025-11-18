@@ -22,11 +22,13 @@ INCLUDES   = -I$(ANDROID_NDK_HOME)/sources/android/cpufeatures
 CXX        = $(ANDROID_TOOLCHAIN)/bin/armv7a-linux-androideabi$(ANDROID_API)-clang++
 CXXFLAGS   = -static -fPIC \
              -fno-strict-aliasing \
+             -fno-strict-overflow \
              -target $(TARGET) \
              -isystem $(ANDROID_TOOLCHAIN)/sysroot/usr/include/$(TARGET)
 CC         = $(ANDROID_TOOLCHAIN)/bin/armv7a-linux-androideabi$(ANDROID_API)-clang
 CFLAGS     = -static -fPIC \
              -fno-strict-aliasing \
+             -fno-strict-overflow \
              -target $(TARGET) \
              -isystem $(ANDROID_TOOLCHAIN)/sysroot/usr/include/$(TARGET)
 AR         = $(ANDROID_TOOLCHAIN)/bin/llvm-ar

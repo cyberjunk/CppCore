@@ -12,9 +12,9 @@ MINVER     = -mmacosx-version-min=10.15
 DEFINES    = 
 INCLUDES   = 
 CXX        = clang++
-CXXFLAGS   = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk macosx --show-sdk-path) -static -fno-strict-aliasing
+CXXFLAGS   = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk macosx --show-sdk-path) -static -fno-strict-aliasing -fno-strict-overflow
 CC         = clang
-CFLAGS     = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk macosx --show-sdk-path) -static -fno-strict-aliasing
+CFLAGS     = $(MINVER) -target $(TARGET) -isysroot $(shell xcrun --sdk macosx --show-sdk-path) -static -fno-strict-aliasing -fno-strict-overflow
 AR         = ar
 ARFLAGS    = rcs
 STRIP      = strip
