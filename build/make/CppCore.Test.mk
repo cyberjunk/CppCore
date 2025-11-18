@@ -159,9 +159,9 @@ ifeq ($(TARGET_OS),android)
 	$(AVDMANAGER) list avd
 	$(ADB) start-server
 ifeq ($(DETECTED_OS),win)
-	start "" $(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD
+	start "" $(EMULATOR) -no-window -no-audio -no-snapshot -gpu swiftshader_indirect -avd $(NAME)_AVD
 else
-	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu guest -avd $(NAME)_AVD &
+	$(EMULATOR) -no-window -no-audio -no-snapshot -gpu swiftshader_indirect -avd $(NAME)_AVD &
 endif
 	$(ADB) wait-for-any-device
 	$(ADB) devices
