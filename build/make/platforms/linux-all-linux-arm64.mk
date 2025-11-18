@@ -10,9 +10,9 @@ TARGET     = aarch64-linux-gnu
 DEFINES    =
 INCLUDES   = -I/usr/$(TARGET)/include
 CXX        = clang++
-CXXFLAGS   = -target $(TARGET) -fPIC -static -fno-strict-aliasing
+CXXFLAGS   = -target $(TARGET) -fPIC -static -fno-strict-aliasing -fno-strict-overflow
 CC         = clang
-CFLAGS     = -target $(TARGET) -fPIC -static -fno-strict-aliasing
+CFLAGS     = -target $(TARGET) -fPIC -static -fno-strict-aliasing -fno-strict-overflow
 AR         = llvm-ar
 ARFLAGS    = rcs
 STRIP      = llvm-strip
@@ -33,7 +33,7 @@ ifeq ($(TARGET_CPUREV),default)
 CPUFLAGS   = -march=armv8-a -mtune=generic
 endif
 ifeq ($(TARGET_CPUREV),modern)
-CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
+CPUFLAGS   = -march=armv8-a+crc+sha2+rng -mtune=generic
 endif
 
 # Debug vs. Release
