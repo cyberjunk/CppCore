@@ -33,7 +33,7 @@ ifeq ($(TARGET_CPUREV),default)
 CPUFLAGS   = -march=armv8-a -mtune=generic
 endif
 ifeq ($(TARGET_CPUREV),modern)
-CPUFLAGS   = -march=armv8-a+crc+sha2+rng -mtune=generic
+CPUFLAGS   = -march=armv8-a+crc+sha2 -mtune=generic
 endif
 
 # Debug vs. Release
