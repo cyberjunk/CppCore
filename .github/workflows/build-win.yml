@@ -32,29 +32,29 @@ jobs:
       uses: actions/checkout@v4
 
     # Upgrade LLVM
-    #- name: Upgrade LLVM
-    #  run: choco upgrade llvm -y
+    - name: Upgrade LLVM
+      run: choco upgrade llvm -y
 
     # Developer Console (X64)
-    - name: MSVC Developer Console (X64)
-      if: matrix.arch == 'x64'
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: amd64
+    #- name: MSVC Developer Console (X64)
+    #  if: matrix.arch == 'x64'
+    #  uses: ilammy/msvc-dev-cmd@v1
+    #  with:
+    #    arch: amd64
 
     # Developer Console (X86)
-    - name: MSVC Developer Console (X86)
-      if: matrix.arch == 'x86'
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: amd64_x86
+    #- name: MSVC Developer Console (X86)
+    #  if: matrix.arch == 'x86'
+    #  uses: ilammy/msvc-dev-cmd@v1
+    #  with:
+    #    arch: amd64_x86
 
     # Developer Console (ARM64)
-    - name: MSVC Developer Console (ARM64)
-      if: matrix.arch == 'arm64'
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: amd64_arm64
+    #- name: MSVC Developer Console (ARM64)
+    #  if: matrix.arch == 'arm64'
+    #  uses: ilammy/msvc-dev-cmd@v1
+    #  with:
+    #    arch: amd64_arm64
 
     # Clang Version
     - name: Clang Version
