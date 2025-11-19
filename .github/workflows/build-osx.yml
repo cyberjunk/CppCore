@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13,macos-14]
+        os: [macos-15,macos-15-intel]
         arch: [x64,arm64]
         cpurev: [legacy, default, modern]
     steps:
@@ -66,10 +66,9 @@ jobs:
     # Test
     - name: Test
       if: |
-        (matrix.os == 'macos-12' && matrix.arch == 'x64') ||
-        (matrix.os == 'macos-13' && matrix.arch == 'x64') ||
-        (matrix.os == 'macos-14' && matrix.arch == 'arm64') ||
-        (matrix.os == 'macos-14' && matrix.arch == 'x64' && matrix.cpurev == 'legacy')
+        (matrix.os == 'macos-15' && matrix.arch == 'arm64') ||
+        (matrix.os == 'macos-15-intel' && matrix.arch == 'x64') ||
+        (matrix.os == 'macos-15' && matrix.arch == 'x64' && matrix.cpurev == 'legacy')
       run: make test
 
     # Upload Binaries
