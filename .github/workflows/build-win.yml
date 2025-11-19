@@ -94,8 +94,8 @@ jobs:
     # Test
     - name: Test
       if: | 
-        ((matrix.os == windows-2022 || matrix.os == windows-2025) && (matrix.arch == 'x64' || matrix.arch == 'x86')) ||
-        ((matrix.os == windows-11-arm) && (matrix.arch == 'arm64' || matrix.arch == 'x86' || (matrix.arch == 'x64' && matrix.cpurev != 'modern')))
+        ((matrix.os == 'windows-2022' || matrix.os == 'windows-2025') && (matrix.arch == 'x64' || matrix.arch == 'x86')) ||
+        ((matrix.os == 'windows-11-arm') && (matrix.arch == 'arm64' || matrix.arch == 'x86' || (matrix.arch == 'x64' && matrix.cpurev != 'modern')))
       run: make test
 
     # Upload Binaries
