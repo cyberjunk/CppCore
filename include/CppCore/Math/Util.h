@@ -535,6 +535,35 @@ namespace CppCore
 #pragma pack(pop)
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // TEMPLATE UNIONS
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Union of two types
+   /// </summary>
+   template<typename T1, typename T2>
+   union U2
+   {
+   public:
+      T1 t1;
+      T2 t2;
+      INLINE U2() {}
+   };
+
+   /// <summary>
+   /// Union of three types
+   /// </summary>
+   template<typename T1, typename T2, typename T3>
+   union U3
+   {
+   public:
+      T1 t1;
+      T2 t2;
+      T3 t3;
+      INLINE U3() {}
+   };
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // ADDITION OPERATIONS WITH OVERFLOW BIT
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1284,12 +1313,12 @@ namespace CppCore
       l = _mulx_u64(a, b, (unsigned long long*)&h);
    #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_MSVC)
       l = _umul128(a, b, &h);
-   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
-      __asm("MULQ %4" : "=a" (l), "=d" (h) : "0" (a), "1" (b), "r" (b));
    #elif defined(CPPCORE_COMPILER_CLANG) && defined(__SIZEOF_INT128__)
       __uint128_t t = (__uint128_t)a * b;
       l = (uint64_t)t;
       h = (uint64_t)(t >> 64);
+   #elif defined(CPPCORE_CPU_X64) && defined(CPPCORE_COMPILER_CLANG)
+      __asm("MULQ %3" : "=a" (l), "=d" (h) : "0" (a), "r" (b));
    #else
       uint32_t al = (uint32_t)a;
       uint32_t ah = (uint32_t)(a >> 32);
@@ -2656,6 +2685,13 @@ namespace CppCore
          CppCore::clone(r, t.v);
       }
    #if defined(CPPCORE_CPU_64BIT)
+      else if constexpr (sizeof(UINT1) == 16 && sizeof(UINT2) == 16 && sizeof(UINT3) == 16)
+      {
+         uint64_t* ap = (uint64_t*)&a;
+         uint64_t* bp = (uint64_t*)&b;
+         uint64_t* rp = (uint64_t*)&r;
+         CppCore::umul128(ap[0], ap[1], bp[0], bp[1], rp[0], rp[1]);
+      }
       else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0 && sizeof(UINT3) % 8 == 0)
       {
          // 64-Bit CPU and Multiples of 64-Bit
@@ -3014,6 +3050,7 @@ namespace CppCore
    {
       static_assert(sizeof(UINT1) % 4 == 0);
       static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT1) >= sizeof(UINT2));
       assert(&q != &u && &r != &v);
       CppCore::clear(q);
    #if defined(CPPCORE_CPU_X64)
@@ -3031,7 +3068,7 @@ namespace CppCore
          uint32_t  n = N;
          while (n != 0U && vp[n-1] == 0U)
             n--;
-         if (((M < n) | (n == 0)) != 0)
+         if (n == 0U)
             return false;
          if (n == 1U) {
             uint64_t k;
@@ -3121,7 +3158,7 @@ namespace CppCore
          uint32_t  n = N;
          while (n != 0U && vp[n-1] == 0U)
             n--;
-         if (((M < n) | (n == 0)) != 0)
+         if (n == 0U)
             return false;
          if (n == 1U) {
             uint32_t k;
@@ -3253,6 +3290,7 @@ namespace CppCore
       assert(&r != &v);
       static_assert(sizeof(UINT1) % 4 == 0);
       static_assert(sizeof(UINT2) % 4 == 0);
+      static_assert(sizeof(UINT1) >= sizeof(UINT2));
    #if defined(CPPCORE_CPU_X64)
       if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0)
       {
@@ -3268,7 +3306,7 @@ namespace CppCore
          uint32_t  n = N;
          while (n != 0U && vp[n-1] == 0U)
             n--;
-         if (((M < n) | (n == 0U)) != 0)
+         if (n == 0U)
             return;
          if (n == 1U) {
             CppCore::clear(r);
@@ -3363,7 +3401,7 @@ namespace CppCore
          uint32_t  n = N;
          while (n != 0U && vp[n-1] == 0U)
             n--;
-         if (((M < n) | (n == 0)) != 0)
+         if (n == 0U)
             return;
          if (n == 1U) {
             CppCore::clear(r);
