@@ -217,7 +217,7 @@ namespace CppCore
             if (n == x)      return 1U;  // n is a precomuted prime
             if (n % x == 0U) return 0U;  // precomputed prime is factor of n
          }
-         return (n < 13490929U) ? 1U : x; // covered by trial above (3673*3673=13490929)
+         return (n < (size_t)13490929U) ? 1U : x; // covered by trial above (3673*3673=13490929)
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////////
