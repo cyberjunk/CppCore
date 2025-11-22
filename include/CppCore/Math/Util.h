@@ -1536,7 +1536,7 @@ namespace CppCore
       // build the zero (positive) sign bit and the exponent bits
       // exp is neg for 0-1022, zero for 1023 and pos above.
       // shift the exponent in place (52 bits mantissa)
-      const uint64_t exp = (uint64_t)(IH + 1023U) << 52;
+      uint64_t exp = (uint64_t)(IH + 1023U) << 52;
       
       // start mantissa building by left-shifting the high bit out of x.
       // this removes it and creates a fixed offset to the hidden highbit position in IEEE-754.
@@ -1572,18 +1572,17 @@ namespace CppCore
       case FE_TONEAREST:
          // round up for upper range (break tie by only rounding odd up)
          man += ((lost > 2048U) | ((lost == 2048U) & man & 1U));
-
-         //if (_bittest((long*)&lost, 11))
-         //   man += ((lost & 2047) | (man & 1)) != 0;
-
-         // if rounding overflowed into exp bits, increment exponent and remove overflow bit.
-         // disabled because just ORing the overflow into exp below gives same result here.
-         //if (man & MASKEXP) { exp++; man &= MASKMAN; }
          break;
       }
 
+      // if rounding overflowed into exp bits,
+      // increment exponent and remove overflow bit from mantissa
+      if (man & MASKEXP) {
+         exp += MASKHHI;
+         man &= MASKMAN;
+      }
+
       // combine the exponent bits with the mantissa bits
-      // OR a possible overflow bit of mantissa into exponent
       const uint64_t ri = exp | man;
       return reinterpret_cast<const double&>(ri);
    }
