@@ -1415,6 +1415,18 @@ namespace CppCore { namespace Test { namespace Math
          if (!specials)
             return false;
 
+         // test some other special cases
+         uint64_t x = 0U;
+         for (size_t i = 0; i < 64U; i++)
+         {
+            x <<= 1;
+            x |= 1;
+            double d1 = CppCore::todouble(x);
+            double d2 = (double)x;
+            if (d1 != d2)
+               return false;
+         }
+
          // test some random ones
          CppCore::Random::Default64 rnd;
          for (size_t i = 0; i < 100000; i++)
