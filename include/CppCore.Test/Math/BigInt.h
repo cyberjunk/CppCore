@@ -205,6 +205,7 @@ namespace CppCore { namespace Test { namespace Math
       }
       INLINE static bool todouble128()
       {
+         /*
          // test low 64-bit ones that can be tested with double chast
          for (uint64_t i = 0; i <= 0x000000000000FFFFULL; i++)
          {
@@ -244,7 +245,7 @@ namespace CppCore { namespace Test { namespace Math
 
          if (!specials128)
             return false;
-
+         */
          return true;
       }
 

@@ -2575,8 +2575,9 @@ namespace CppCore
 
       /// <summary>
       /// Convert to IEEE-754 Double Precision
+      /// TODO: This has bugs and should not be used
       /// </summary>
-      constexpr INLINE explicit operator double () const
+      /*constexpr INLINE explicit operator double() const
       {
          constexpr uint32_t BITS = N8 * 8U;
          constexpr uint32_t LOSS = BITS - 52U;
@@ -2602,10 +2603,10 @@ namespace CppCore
          los = man & LMSK;
          man >>= LOSS;
          man += ((los > LCMP) || ((los == LCMP) && ((uint32_t)man & 1U)));
-         exp |= (uint64_t)man;
+         exp |= (uint64_t)man; // this needs refactoring, see CppCore::todouble()
 
          return reinterpret_cast<double&>(exp);
-      }
+      }*/
 
       /// <summary>
       /// Convert to Decimal String
