@@ -7,74 +7,64 @@
 
 using namespace CppCore;
 
-CppCore::Random::Default64 prng;
-
-
-
-
-
-typedef uint2048_t UINTX;
-//typedef uint4096_t UINTX2;
+typedef uint1024_t UINTX;
 
 #define N 1024*1024
-UINTX a[N];
-UINTX v;
-Stopwatch w1;
-Stopwatch w2;
-uint64_t t;
-uint64_t s1, s2;
 
+CppCore::Random::Default64 prng;
+
+UINTX d;
+UINTX a[N];
+UINTX r1[N];
+UINTX r2[N];
+
+UINTX bc[2];
+
+uint64_t NOINLINE test1()
+{
+   barrett_constant(bc, d);
+
+   uint64_t t = __rdtsc();
+
+   for (size_t i = 0; i < N; i++)
+      barrett_umod(r1[i], a[i], bc, d);
+
+   return __rdtsc() - t;
+}
+
+uint64_t NOINLINE test2() 
+{
+   uint64_t t = __rdtsc();
+
+   for (size_t i = 0; i < N; i++)
+      CppCore::umod(r2[i], a[i], d);
+
+   return __rdtsc() - t;
+}
 
 int main()
 {
-
-   //union { UINTX2 r; UINTX d; };
-   
    prng.fill(a);
-   prng.fill(v);
-   
-   s1 = 0;
-   s2 = 0;
+   prng.fill(d);
 
-   const UINTX& divisor = v;
+   for (size_t i = 0; i < N; i++)
+      ((uint8_t*)&a[i])[sizeof(UINTX) - 1] |= 0x80;
 
-   //uint128_t divisor = uint128_t(2,0);
-   UINTX bc[2];
-   barrett_constant(bc, divisor);
-   //std::cout << std::hex << bc.toHexString() << std::endl;
+   uint64_t t2 = test2();
+   uint64_t t1 = test1();
+
+   std::cout << "BARRETT: " << t1 << std::endl;
+   std::cout << "KNUTH:   " << t2 << std::endl;
 
    for (size_t i = 0; i < N; i++)
    {
-
-      //std::cout << std::hex << divisor.toHexString() << std::endl;
-      t = __rdtsc();
-      UINTX r;
-      //uint128_t& a = a[i];
-      barrett_umod(r, a[i], bc, divisor);
-      //std::cout << std::hex << r.toHexString() << std::endl;
-      s1 += __rdtsc() -t;
-
-      t = __rdtsc();
-      UINTX r2;
-      CppCore::umod(r2, a[i], divisor);
-      //w2.stop();
-      s2 += __rdtsc() - t;
-
-
-
-
-
-      if (r != r2)
+      if (r1[i] != r2[i])
       {
          std::cout << "FAIL" << std::endl;
-         std::cout << std::hex << r2.toHexString() << std::endl;
+         //std::cout << std::hex << r2.toHexString() << std::endl;
          return 1;
       }
-      //std::cout << "------------" << std::endl;
    }
-   
-   std::cout << s1 << std::endl;
-   std::cout << s2 << std::endl;
 
    return 0;
 }
