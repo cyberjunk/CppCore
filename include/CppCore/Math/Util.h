@@ -3884,6 +3884,50 @@ namespace CppCore
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // BARRETT REDUCTION
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Calculate constant c of divisor d for Barrett reduction.
+   /// Note that c must have at least twice the size of d.
+   /// </summary>
+   template<typename UINTD, typename UINTR>
+   INLINE void barrett_constant(UINTR& c, const UINTD& d)
+   {
+      static_assert(CPPCORE_ENDIANESS_LITTLE);
+      static_assert(sizeof(UINTR) >= sizeof(UINTD) * 2U);
+      union U { UINTR r; UINTD d; INLINE U(){}; };
+      U t1; UINTD t2; UINTD t3;
+      CppCore::clear(t1.r);
+      ((uint8_t*)&t1.r)[sizeof(UINTR)-1] = 0x80;
+      CppCore::udivmod(c, t2, t1.r, d);
+      CppCore::shl(c, c, 1);
+      if (!CppCore::testzero(t2)) 
+      {
+         CppCore::shl(t2, t2, 1);
+         CppCore::udivmod(t1.d, t3, t2, d);
+         CppCore::uadd(c, t1.d, c);
+      }
+   }
+
+   /// <summary>
+   /// Barrett Reduction calculating r=a%d a using precomputed constant c and divisor d.
+   /// </summary>
+   template<typename UINTA, typename UINTC>
+   INLINE void barrett_umod(UINTA&r, const UINTA& a, const UINTC& c, const UINTA& d)
+   {
+      assert((&r != &a) && (&r != &d));
+      struct PRODAC { UINTC c; UINTA a; };
+      PRODAC prod;
+      CppCore::umul(a, c, prod);
+      CppCore::umul(prod.a, d, r);
+      CppCore::usub(a, r, r);
+      while (r >= d) { // TODO: this requires implemented operator
+         CppCore::usub(r, d, r);
+      }
+   }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // GREATEST COMMON DIVISOR (GCD)
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
