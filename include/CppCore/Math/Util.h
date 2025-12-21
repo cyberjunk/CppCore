@@ -2768,7 +2768,6 @@ namespace CppCore
             bj = *bp++;
             ap = (uint32_t*)&a;
             rp = &((uint32_t*)&r)[j];
-            CPPCORE_UNROLL
             for (size_t i = 0; i < NA && i+j < NR; i++, ap++, rp++)
             {
                CppCore::umul64(*ap, bj, tl, th);
