@@ -3812,6 +3812,58 @@ namespace CppCore
       CppCore::upowmod(a, b, m, r, t);
    }
 
+   template<typename UINT>
+   INLINE static void upowmod_kary(UINT base, UINT exp, const UINT& mod, UINT& result, uint32_t k = 4U)
+   {
+      if (mod == 1) { CppCore::clear(result); return; }
+      if (exp == 0) { result = 1; return; }
+
+      base %= mod;
+
+      // Precompute powers: base^0, base^1, ..., base^(2^k - 1)
+      uint32_t table_size = 1 << k;
+      std::vector<UINT> powers(table_size);
+      powers[0] = 1;
+      powers[1] = base;
+
+      for (uint32_t i = 2; i < table_size; i++) {
+         CppCore::umulmod(powers[i-1], base, mod, powers[i]);
+      }
+
+      // Find the position of the highest bit in exp
+      constexpr auto NUMBITS = sizeof(UINT) * 8U;
+      const auto LZB = CppCore::lzcnt(exp);
+      const auto bits = NUMBITS - LZB;
+
+      // Round up to multiple of k
+      const int total_bits = ((bits + k - 1) / k) * k;
+      //int total_bits = CppCore::rup32(bits, k);
+      //int total_bits = CppCore::rupptwo32(bits, k);
+
+      const uint32_t MASK = ((1 << k) - 1);
+
+      result = 1;
+
+      // Process k bits at a time from left to right (MSB to LSB)
+      for (int pos = total_bits - k; pos >= 0; pos -= k) {
+         // Square result k times (except for the first iteration)
+         if (pos < total_bits - k) {
+            for (int i = 0; i < k; i++) {
+               CppCore::umulmod(result, result, mod, result);
+               //result = (__uint128_t)result * result % mod;
+            }
+         }
+
+         // Extract k-bit chunk at position pos
+         int chunk = (exp >> pos) & MASK;
+
+         // Multiply by base^chunk
+         //result = (__uint128_t)result * powers[chunk] % mod;
+         CppCore::umulmod(result, powers[chunk], mod, result);
+      }
+      //return result;
+   }
+
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // MERSENNE NUMBERS (2^i)-1
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
