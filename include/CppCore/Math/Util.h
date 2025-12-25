@@ -132,6 +132,35 @@ namespace CppCore
    #endif
    }
 
+   template<typename UINT>
+   static INLINE uint64_t getbits64(const UINT& v, const uint32_t i, const uint32_t n)
+   {
+      static_assert(sizeof(UINT) % 8 == 0);
+      assert(i+n <= sizeof(UINT) * 8);
+      assert(n <= 64);
+      //if (n > sizeof(uint64_t)*8) return 0;
+      //if (i+n > sizeof(UINT)*8) return 0;
+
+      const uint64_t* p = (uint64_t*)&v;
+      const uint32_t idx = i >> 6;
+      const uint32_t off = i & 0x3F;
+
+      //std::cout << idx << std::endl;
+      //std::cout << off << std::endl;
+      uint64_t r = p[idx];
+
+      if (off)
+         r = (idx+1 < sizeof(UINT)/8) ? CppCore::shrd64(r, p[idx+1], off) : r >> off;
+      //else
+      //   r = p[idx];
+      //std::cout << r << std::endl;
+      
+      if (n < 64)
+         r &= (1 << n) - 1U;
+
+      return r;
+   }
+
    /// <summary>
    /// Sets bits that are 1 in mask to 0 in 32-bit integer v and returns it.
    /// Uses BMI1 if enabled.

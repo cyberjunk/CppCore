@@ -41,7 +41,19 @@ namespace CppCore { namespace Test { namespace Math
             CppCore::getbits64(0x0000000000000011ULL, 0x00000000000000FFULL) == 0x0000000000000011ULL &&
             CppCore::getbits64(0x000000000000FF00ULL, 0x00000000000000FFULL) == 0x0000000000000000ULL &&
             CppCore::getbits64(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL) == 0xFFFFFFFFFFFFFFFFULL;
-         return a && b;
+         if (!a || !b)
+            return false;
+         uint64_t r[2];
+         r[1]=0x0000000000000000ULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 0,  64) != 0x0000000000000000ULL) return false;
+         r[1]=0x0000000000000001ULL; r[0]= 0x8000000000000000ULL; if (CppCore::getbits64(r, 63,  2) != 0x0000000000000003ULL) return false;
+         r[1]=0x000000000000FF01ULL; r[0]= 0x80FF000000000000ULL; if (CppCore::getbits64(r, 63,  2) != 0x0000000000000003ULL) return false;
+         
+         r[1]=0x8000000000000000ULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 127, 1) != 0x0000000000000001ULL) return false;
+         
+         r[1]=0x00000000FFFFFFFFULL; r[0]= 0xFFFFFFFF00000000ULL; if (CppCore::getbits64(r, 32, 64) != 0xFFFFFFFFFFFFFFFFULL) return false;
+         r[1]=0x0000000000000000ULL; r[0]= 0xFFFFFFFFFFFFFFFFULL; if (CppCore::getbits64(r, 0,  64) != 0xFFFFFFFFFFFFFFFFULL) return false;
+         r[1]=0xFFFFFFFFFFFFFFFFULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 64, 64) != 0xFFFFFFFFFFFFFFFFULL) return false;
+         return true;
       }
 
       INLINE static bool setbit32()
