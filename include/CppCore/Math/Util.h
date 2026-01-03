@@ -106,6 +106,27 @@ namespace CppCore
    }
 
    /// <summary>
+   /// Extracts up to 32 bits from an integer that's a multiple of 32 bit.
+   /// </summary>
+   template<typename UINT>
+   static INLINE uint32_t getbits32(const UINT& v, const uint32_t i, const uint32_t n)
+   {
+      static_assert(sizeof(UINT) % 4 == 0);
+      assert(i+n <= sizeof(UINT) * 8);
+      assert(n <= 32);
+      static constexpr size_t N32 = sizeof(UINT) / 4;
+      const uint32_t* p = (uint32_t*)&v;
+      const uint32_t idx = i >> 5;
+      const uint32_t off = i & 0x1F;
+      uint32_t r = p[idx];
+      if (off)
+         r = (idx+1 < N32) ? CppCore::shrd32(r, p[idx+1], off) : r >> off;
+      if (n < 32)
+         r &= (1U << n) - 1U;
+      return r;
+   }
+
+   /// <summary>
    /// Returns in lowbits the n bits starting at index i from 64-bit integer v.
    /// Undefined return for i >= 64 (use i AND 0x3F to map cyclic).
    /// Uses BMI1 if enabled.
@@ -130,6 +151,27 @@ namespace CppCore
    #else
       return (v & mask) >> CppCore::tzcnt64(mask);
    #endif
+   }
+
+   /// <summary>
+   /// Extracts up to 64 bits from an integer that's a multiple of 64 bit.
+   /// </summary>
+   template<typename UINT>
+   static INLINE uint64_t getbits64(const UINT& v, const uint32_t i, const uint32_t n)
+   {
+      static_assert(sizeof(UINT) % 8 == 0);
+      assert(i+n <= sizeof(UINT) * 8);
+      assert(n <= 64);
+      static constexpr size_t N64 = sizeof(UINT) / 8;
+      const uint64_t* p = (uint64_t*)&v;
+      const uint32_t idx = i >> 6;
+      const uint32_t off = i & 0x3F;
+      uint64_t r = p[idx];
+      if (off)
+         r = (idx+1 < N64) ? CppCore::shrd64(r, p[idx+1], off) : r >> off;
+      if (n < 64)
+         r &= (1ULL << n) - 1ULL;
+      return r;
    }
 
    /// <summary>
