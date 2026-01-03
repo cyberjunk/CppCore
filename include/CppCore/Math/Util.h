@@ -3892,7 +3892,8 @@ namespace CppCore
                CppCore::umulmod(r, r, m, r);
             }
          }
-         const uint32_t CHUNK = CppCore::getbits32(exp, pos, K);
+         const uint32_t N = MIN(K, NUMBITS-pos);
+         const uint32_t CHUNK = CppCore::getbits32(exp, pos, N);
          CppCore::umulmod(r, powers[CHUNK], m, r);
       }
    }

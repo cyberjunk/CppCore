@@ -7,7 +7,7 @@
 
 using namespace CppCore;
 
-typedef uint1024_t UINTX;
+typedef uint2048_t UINTX;
 
 #define N 1024
 
@@ -103,7 +103,7 @@ int main()
          std::cout << i << std::endl;
       }*/
       CppCore::upowmod(a1[i], b[i], m[i], r1[i]);
-      CppCore::upowmod_kary(a2[i], b[i], m[i], r2[i]);
+      CppCore::upowmod_kary<UINTX, 5U>(a2[i], b[i], m[i], r2[i]);
       if (!CppCore::equal(r1[i], r2[i])) {
          std::cout << a1[i] << "^" << b[i] << " % " << m[i] << " = " << r1[i] << std::endl;
          std::cout << a2[i] << "^" << b[i] << " % " << m[i] << " = " << r2[i] << std::endl;
@@ -116,7 +116,7 @@ int main()
    UINTX r = 0;
    for (size_t i = 0; i < N; i++)
    {
-      r += r2[i];
+      r += r1[i];
    }
    std::cout << r << std::endl;
 
