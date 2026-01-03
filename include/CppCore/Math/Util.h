@@ -3854,50 +3854,46 @@ namespace CppCore
       CppCore::upowmod(a, b, m, r, t);
    }
 
-   template<typename UINT>
-   INLINE static void upowmod_kary(UINT& base, const UINT& exp, const UINT& m, UINT& result, uint32_t k = 4U)
+   template<typename UINT, uint32_t K = 4U>
+   INLINE static void upowmod_kary(UINT& base, const UINT& exp, const UINT& m, UINT& r)
    {
       //assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
-      CppCore::clear(result);
+      CppCore::clear(r);
       if (m == 1U)
          return; // n % 1 = 0
-      *(uint32_t*)&result = 1U;
+      *(uint32_t*)&r = 1U;
       if (CppCore::testzero(exp))
          return; // 1 % n = 1
 
-      base %= m;
+      base %= m;//TODO
 
       // Precompute powers: base^0, base^1, ..., base^(2^k - 1)
-      uint32_t table_size = 1 << k;
-      std::vector<UINT> powers(table_size);
-      powers[0] = 1;
+      constexpr size_t TABLE_SIZE = 1U << K;
+      UINT powers[TABLE_SIZE];
+      powers[0] = 1U;
       powers[1] = base;
-      for (uint32_t i = 2; i < table_size; i++) {
+      for (size_t i = 2; i < TABLE_SIZE; i++)
          CppCore::umulmod(powers[i-1], base, m, powers[i]);
-      }
 
       // Find the position of the highest bit in exp
+      // Round up to multiple of k
       constexpr auto NUMBITS = sizeof(UINT) * 8U;
       const auto LZB = CppCore::lzcnt(exp);
-      const auto bits = NUMBITS - LZB;
-      // Round up to multiple of k
-      const int total_bits = ((bits + k - 1) / k) * k;
+      const auto HIDX = NUMBITS - LZB;
+      const auto HIDX_K = ((HIDX + K - 1U) / K) * K;
 
       // Process k bits at a time from left to right (MSB to LSB)
-      for (int pos = total_bits - k; pos >= 0; pos -= k) {
+      for (int pos = HIDX_K - K; pos >= 0; pos -= K) {
 
          // Square result k times (except for the first iteration)
-         if (pos < total_bits - k) {
-            for (int i = 0; i < k; i++) {
-               CppCore::umulmod(result, result, m, result);
+         if (pos < HIDX_K - K) {
+            for (size_t i = 0; i < K; i++) {
+               CppCore::umulmod(r, r, m, r);
             }
          }
-
-         // Extract k-bit chunk at position pos
-         const uint32_t chunk = CppCore::getbits32(exp, pos, k);
-         // Multiply by base^chunk
-         CppCore::umulmod(result, powers[chunk], m, result);
+         const uint32_t CHUNK = CppCore::getbits32(exp, pos, K);
+         CppCore::umulmod(r, powers[CHUNK], m, r);
       }
    }
 

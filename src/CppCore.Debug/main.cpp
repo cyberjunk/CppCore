@@ -7,9 +7,9 @@
 
 using namespace CppCore;
 
-typedef uint64_t UINTX;
+typedef uint1024_t UINTX;
 
-#define N 1024*1024
+#define N 1024
 
 CppCore::Random::Default64 prng;
 
@@ -69,15 +69,17 @@ int main()
    return 0;
 }*/
 
-UINTX a[N];
+UINTX a1[N];
+UINTX a2[N];
 UINTX b[N];
 UINTX m[N];
 UINTX r1[N];
 UINTX r2[N];
+//UINTX at;
 
 int main()
 {
-   uint64_t ta = 245373463472;
+   /*uint64_t ta = 245373463472;
    uint64_t tb = 3252764873;
    uint64_t tm = 32534684;
    uint64_t tr;
@@ -85,26 +87,39 @@ int main()
    std::cout << tr << std::endl;
 
    CppCore::upowmod(ta, tb, tm, tr);
-   std::cout << tr << std::endl;
+   std::cout << tr << std::endl;*/
 
 
-   prng.fill(a);
+
+   prng.fill(a1);
    prng.fill(b);
    prng.fill(m);
+   CppCore::clone(a2, a1);
 
+   uint64_t t = __rdtsc();
    for (size_t i = 0; i < N; i++)
    {
-      UINTX at;
-      CppCore::clone(at, a[i]);
-      CppCore::upowmod(at, b[i], m[i], r1[i]);
-      CppCore::upowmod_kary(a[i], b[i], m[i], r2[i]);
-
+      /*if (i % 1024 == 0) {
+         std::cout << i << std::endl;
+      }*/
+      CppCore::upowmod(a1[i], b[i], m[i], r1[i]);
+      CppCore::upowmod_kary(a2[i], b[i], m[i], r2[i]);
       if (!CppCore::equal(r1[i], r2[i])) {
-         std::cout << a[i] << "^" << b[i] << " % " << m[i] << " = " << r1[i] << std::endl;
-         std::cout << a[i] << "^" << b[i] << " % " << m[i] << " = " << r2[i] << std::endl;
+         std::cout << a1[i] << "^" << b[i] << " % " << m[i] << " = " << r1[i] << std::endl;
+         std::cout << a2[i] << "^" << b[i] << " % " << m[i] << " = " << r2[i] << std::endl;
          return 1;
       }
    }
+   t = __rdtsc() - t;
+   std::cout << t << std::endl;
+
+   UINTX r = 0;
+   for (size_t i = 0; i < N; i++)
+   {
+      r += r2[i];
+   }
+   std::cout << r << std::endl;
+
    return 0;
 }
 
