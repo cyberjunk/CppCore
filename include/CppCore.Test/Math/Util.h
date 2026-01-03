@@ -24,7 +24,17 @@ namespace CppCore { namespace Test { namespace Math
             CppCore::getbits32(0x00000011U, 0x000000FFU) == 0x00000011U &&
             CppCore::getbits32(0x0000FF00U, 0x000000FFU) == 0x00000000U &&
             CppCore::getbits32(0xFFFFFFFFU, 0xFFFFFFFFU) == 0xFFFFFFFFU;
-         return a && b;
+         if (!a || !b)
+            return false;
+         uint32_t r[2];
+         r[1] = 0x00000000U; r[0] = 0x00000000U; if (CppCore::getbits32(r,  0, 32) != 0x00000000U) return false;
+         r[1] = 0x00000001U; r[0] = 0x80000000U; if (CppCore::getbits32(r, 31,  2) != 0x00000003U) return false;
+         r[1] = 0x0000FF01U; r[0] = 0x80FF0000U; if (CppCore::getbits32(r, 31,  2) != 0x00000003U) return false;
+         r[1] = 0x80000000U; r[0] = 0x00000000U; if (CppCore::getbits32(r, 63,  1) != 0x00000001U) return false;
+         r[1] = 0xFFFFFFFFU; r[0] = 0xFFFFFFFFU; if (CppCore::getbits32(r, 16, 32) != 0xFFFFFFFFU) return false;
+         r[1] = 0x00000000U; r[0] = 0xFFFFFFFFU; if (CppCore::getbits32(r,  0, 32) != 0xFFFFFFFFU) return false;
+         r[1] = 0xFFFFFFFFU; r[0] = 0x00000000U; if (CppCore::getbits32(r, 32, 32) != 0xFFFFFFFFU) return false;
+         return true;
       }
 
       INLINE static bool getbits64()
@@ -47,9 +57,7 @@ namespace CppCore { namespace Test { namespace Math
          r[1]=0x0000000000000000ULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 0,  64) != 0x0000000000000000ULL) return false;
          r[1]=0x0000000000000001ULL; r[0]= 0x8000000000000000ULL; if (CppCore::getbits64(r, 63,  2) != 0x0000000000000003ULL) return false;
          r[1]=0x000000000000FF01ULL; r[0]= 0x80FF000000000000ULL; if (CppCore::getbits64(r, 63,  2) != 0x0000000000000003ULL) return false;
-         
          r[1]=0x8000000000000000ULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 127, 1) != 0x0000000000000001ULL) return false;
-         
          r[1]=0x00000000FFFFFFFFULL; r[0]= 0xFFFFFFFF00000000ULL; if (CppCore::getbits64(r, 32, 64) != 0xFFFFFFFFFFFFFFFFULL) return false;
          r[1]=0x0000000000000000ULL; r[0]= 0xFFFFFFFFFFFFFFFFULL; if (CppCore::getbits64(r, 0,  64) != 0xFFFFFFFFFFFFFFFFULL) return false;
          r[1]=0xFFFFFFFFFFFFFFFFULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 64, 64) != 0xFFFFFFFFFFFFFFFFULL) return false;
