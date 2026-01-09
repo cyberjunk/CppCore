@@ -3854,8 +3854,11 @@ namespace CppCore
       CppCore::upowmod(a, b, m, r, t);
    }
 
+   /// <summary>
+   /// a^b mod m
+   /// </summary>
    template<typename UINT, uint32_t K = 4U>
-   INLINE static void upowmod_kary(UINT& base, const UINT& exp, const UINT& m, UINT& r)
+   INLINE static void upowmod_kary(UINT& base, const UINT& exp, const UINT& m, UINT& r, UINT t[3])
    {
       //assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
@@ -3866,15 +3869,16 @@ namespace CppCore
       if (CppCore::testzero(exp))
          return; // 1 % n = 1
 
-      base %= m;//TODO
+      //base %= m;//TODO
 
       // Precompute powers: base^0, base^1, ..., base^(2^k - 1)
       constexpr size_t TABLE_SIZE = 1U << K;
       UINT powers[TABLE_SIZE];
-      powers[0] = 1U;
-      powers[1] = base;
+      CppCore::clear(powers[0]);
+      *(uint32_t*)&powers[0] = 1U;
+      CppCore::clone(powers[1], base);
       for (size_t i = 2; i < TABLE_SIZE; i++)
-         CppCore::umulmod(powers[i-1], base, m, powers[i]);
+         CppCore::umulmod(powers[i-1], base, m, powers[i], t);
 
       // Find the position of the highest bit in exp
       // Round up to multiple of k
@@ -3889,13 +3893,23 @@ namespace CppCore
          // Square result k times (except for the first iteration)
          if (pos < HIDX_K - K) {
             for (size_t i = 0; i < K; i++) {
-               CppCore::umulmod(r, r, m, r);
+               CppCore::umulmod(r, r, m, r, t);
             }
          }
          const uint32_t N = MIN(K, NUMBITS-pos);
          const uint32_t CHUNK = CppCore::getbits32(exp, pos, N);
-         CppCore::umulmod(r, powers[CHUNK], m, r);
+         CppCore::umulmod(r, powers[CHUNK], m, r, t);
       }
+   }
+
+   /// <summary>
+   /// a^b mod m
+   /// </summary>
+   template<typename UINT, uint32_t K = 4U>
+   INLINE static void upowmod_kary(UINT& a, const UINT& b, const UINT& m, UINT& r)
+   {
+      CPPCORE_ALIGN_OPTIM(UINT) t[3];
+      CppCore::upowmod_kary<UINT, K>(a, b, m, r, t);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
