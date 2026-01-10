@@ -122,7 +122,7 @@ namespace CppCore
       /// SPRP with precalculated t, s and d and work memory m
       /// </summary>
       template<typename UINT>
-      INLINE static bool sprp(const UINT& n, UINT& a, const UINT& t, const uint32_t& s, const UINT& d, UINT& r, UINT m[3])
+      INLINE static bool sprp(const UINT& n, const UINT& a, const UINT& t, const uint32_t& s, const UINT& d, UINT& r, UINT m[3])
       {
          assert(a != 1U);
          CppCore::upowmod(a, d, n, r, m);

@@ -3822,7 +3822,7 @@ namespace CppCore
    /// a^b mod m
    /// </summary>
    template<typename UINT>
-   INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
+   INLINE static void upowmod_single(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
    {
       assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
@@ -3848,56 +3848,51 @@ namespace CppCore
    /// a^b mod m
    /// </summary>
    template<typename UINT>
-   INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r)
+   INLINE static void upowmod_single(UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
       CPPCORE_ALIGN_OPTIM(UINT) t[3];
-      CppCore::upowmod(a, b, m, r, t);
+      CppCore::upowmod_single(a, b, m, r, t);
    }
 
    /// <summary>
    /// a^b mod m
    /// </summary>
    template<typename UINT, uint32_t K = 4U>
-   INLINE static void upowmod_kary(UINT& base, const UINT& exp, const UINT& m, UINT& r, UINT t[3])
+   INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
    {
-      //assert((&a != &r) && (&b != &r) && (&m != &r));
+      assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
       CppCore::clear(r);
-      if (m == 1U)
-         return; // n % 1 = 0
+      constexpr auto NUMBITS = sizeof(UINT)*8U;
+      const auto LZB = CppCore::lzcnt(b);
+      if (LZB == NUMBITS) CPPCORE_UNLIKELY {
+         if (NUMBITS-CppCore::lzcnt(m) != 1U) CPPCORE_LIKELY
+            *(uint32_t*)&r = 1U;
+         return;
+      }
       *(uint32_t*)&r = 1U;
-      if (CppCore::testzero(exp))
-         return; // 1 % n = 1
-
-      //base %= m;//TODO
 
       // Precompute powers: base^0, base^1, ..., base^(2^k - 1)
       constexpr size_t TABLE_SIZE = 1U << K;
-      UINT powers[TABLE_SIZE];
-      CppCore::clear(powers[0]);
-      *(uint32_t*)&powers[0] = 1U;
-      CppCore::clone(powers[1], base);
+      CPPCORE_ALIGN_OPTIM(UINT) powers[TABLE_SIZE];
+      CppCore::clear(powers[0]); *(uint32_t*)&powers[0] = 1U;
+      CppCore::clone(powers[1], a);
       for (size_t i = 2; i < TABLE_SIZE; i++)
-         CppCore::umulmod(powers[i-1], base, m, powers[i], t);
+         CppCore::umulmod(powers[i-1], a, m, powers[i], t);
 
       // Find the position of the highest bit in exp
       // Round up to multiple of k
-      constexpr auto NUMBITS = sizeof(UINT) * 8U;
-      const auto LZB = CppCore::lzcnt(exp);
       const auto HIDX = NUMBITS - LZB;
       const auto HIDX_K = ((HIDX + K - 1U) / K) * K;
 
       // Process k bits at a time from left to right (MSB to LSB)
       for (int pos = HIDX_K - K; pos >= 0; pos -= K) {
 
-         // Square result k times (except for the first iteration)
-         if (pos < HIDX_K - K) {
-            for (size_t i = 0; i < K; i++) {
+         if (pos < HIDX_K - K)
+            for (size_t i = 0; i < K; i++)
                CppCore::umulmod(r, r, m, r, t);
-            }
-         }
          const uint32_t N = MIN(K, NUMBITS-pos);
-         const uint32_t CHUNK = CppCore::getbits32(exp, pos, N);
+         const uint32_t CHUNK = CppCore::getbits32(b, pos, N);
          CppCore::umulmod(r, powers[CHUNK], m, r, t);
       }
    }
@@ -3906,10 +3901,10 @@ namespace CppCore
    /// a^b mod m
    /// </summary>
    template<typename UINT, uint32_t K = 4U>
-   INLINE static void upowmod_kary(UINT& a, const UINT& b, const UINT& m, UINT& r)
+   INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
       CPPCORE_ALIGN_OPTIM(UINT) t[3];
-      CppCore::upowmod_kary<UINT, K>(a, b, m, r, t);
+      CppCore::upowmod<UINT, K>(a, b, m, r, t);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

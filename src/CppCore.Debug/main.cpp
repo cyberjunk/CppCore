@@ -2,7 +2,7 @@
 #include <CppCore/Math/Util.h>
 #include <CppCore/Random.h>
 #include <CppCore/Math/BigInt.h>
-#include <CppCore/Math/Primes.h>
+//#include <CppCore/Math/Primes.h>
 #include <CppCore/Stopwatch.h>
 
 using namespace CppCore;
@@ -90,10 +90,20 @@ int main()
    std::cout << tr << std::endl;*/
 
 
+   /*CppCore::clear(a1);
+   CppCore::clear(b);
+   CppCore::clear(m);
+   for (size_t i = 0; i < N; i++)
+   {
+      *(uint32_t*)&a1[i] = (uint32_t)prng.next();
+      *(uint32_t*)&b[i] = (uint32_t)prng.next();
+      *(uint32_t*)&m[i] = (uint32_t)prng.next();
+   }*/
 
    prng.fill(a1);
    prng.fill(b);
    prng.fill(m);
+
    CppCore::clone(a2, a1);
 
    uint64_t t = __rdtsc();
@@ -102,13 +112,13 @@ int main()
       /*if (i % 1024 == 0) {
          std::cout << i << std::endl;
       }*/
-      CppCore::upowmod(a1[i], b[i], m[i], r1[i]);
-      CppCore::upowmod_kary<UINTX, 5U>(a2[i], b[i], m[i], r2[i]);
-      if (!CppCore::equal(r1[i], r2[i])) {
+      //CppCore::upowmod_single(a1[i], b[i], m[i], r1[i]);
+      CppCore::upowmod<UINTX, 4U>(a2[i], b[i], m[i], r2[i]);
+      /*if (!CppCore::equal(r1[i], r2[i])) {
          std::cout << a1[i] << "^" << b[i] << " % " << m[i] << " = " << r1[i] << std::endl;
          std::cout << a2[i] << "^" << b[i] << " % " << m[i] << " = " << r2[i] << std::endl;
          return 1;
-      }
+      }*/
    }
    t = __rdtsc() - t;
    std::cout << t << std::endl;
@@ -116,7 +126,7 @@ int main()
    UINTX r = 0;
    for (size_t i = 0; i < N; i++)
    {
-      r += r1[i];
+      r += r2[i];
    }
    std::cout << r << std::endl;
 
