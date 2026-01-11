@@ -378,6 +378,8 @@ int main()
    TEST(CppCore::Test::Math::Util::umulmod64,       "umulmod64:        ", std::endl);
    TEST(CppCore::Test::Math::Util::upowmod32,       "upowmod32:        ", std::endl);
    TEST(CppCore::Test::Math::Util::upowmod64,       "upowmod64:        ", std::endl);
+   TEST(CppCore::Test::Math::Util::upowmod<2>,      "upowmod128:       ", std::endl);
+   TEST(CppCore::Test::Math::Util::upowmod<4>,      "upowmod256:       ", std::endl);
    TEST(CppCore::Test::Math::Util::upow32,          "upow32:           ", std::endl);
    TEST(CppCore::Test::Math::Util::upow64,          "upow64:           ", std::endl);
    TEST(CppCore::Test::Math::Util::udivmod32,       "udivmod32:        ", std::endl);

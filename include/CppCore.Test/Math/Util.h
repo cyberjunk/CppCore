@@ -894,6 +894,24 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
+      template<size_t N64=2>
+      INLINE static bool upowmod()
+      {
+         uint64_t a1[N64]; uint64_t b1[N64]; uint64_t m1[N64]; uint64_t r1[N64];
+         uint64_t a2[N64]; uint64_t b2[N64]; uint64_t m2[N64]; uint64_t r2[N64];
+         CppCore::Random::Default64 prng;
+         for (size_t i = 0; i < 100; i++) {
+            prng.fill(a1); CppCore::clone(a2, a1);
+            prng.fill(b1); CppCore::clone(b2, b1);
+            prng.fill(m1); CppCore::clone(m2, m1);
+            CppCore::upowmod_single(a1, b1, m1, r1);
+            CppCore::upowmod(a2, b2, m2, r2);
+            if (!CppCore::equal(r1, r2))
+               return false;
+         }
+         return true;
+      }
+
       INLINE static bool upow32()
       {
          for (uint32_t base = 0; base < 20; base++)
@@ -1553,6 +1571,8 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(UMULMOD64)        { Assert::AreEqual(true, CppCore::Test::Math::Util::umulmod64()); }
       TEST_METHOD(UPOWMOD32)        { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod32()); }
       TEST_METHOD(UPOWMOD64)        { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod64()); }
+      TEST_METHOD(UPOWMOD128)       { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod<2>()); }
+      TEST_METHOD(UPOWMOD256)       { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod<4>()); }
       TEST_METHOD(UPOW32)           { Assert::AreEqual(true, CppCore::Test::Math::Util::upow32()); }
       TEST_METHOD(UPOW64)           { Assert::AreEqual(true, CppCore::Test::Math::Util::upow64()); }
       TEST_METHOD(UDIVMOD32)        { Assert::AreEqual(true, CppCore::Test::Math::Util::udivmod32()); }
