@@ -106,6 +106,27 @@ namespace CppCore
    }
 
    /// <summary>
+   /// Extracts up to 32 bits from an integer that's a multiple of 32 bit.
+   /// </summary>
+   template<typename UINT>
+   static INLINE uint32_t getbits32(const UINT& v, const uint32_t i, const uint32_t n)
+   {
+      static_assert(sizeof(UINT) % 4 == 0);
+      assert(i+n <= sizeof(UINT) * 8);
+      assert(n <= 32);
+      static constexpr size_t N32 = sizeof(UINT) / 4;
+      const uint32_t* p = (uint32_t*)&v;
+      const uint32_t idx = i >> 5;
+      const uint32_t off = i & 0x1F;
+      uint32_t r = p[idx];
+      if (off)
+         r = (idx+1 < N32) ? CppCore::shrd32(r, p[idx+1], off) : r >> off;
+      if (n < 32)
+         r &= (1U << n) - 1U;
+      return r;
+   }
+
+   /// <summary>
    /// Returns in lowbits the n bits starting at index i from 64-bit integer v.
    /// Undefined return for i >= 64 (use i AND 0x3F to map cyclic).
    /// Uses BMI1 if enabled.
@@ -130,6 +151,27 @@ namespace CppCore
    #else
       return (v & mask) >> CppCore::tzcnt64(mask);
    #endif
+   }
+
+   /// <summary>
+   /// Extracts up to 64 bits from an integer that's a multiple of 64 bit.
+   /// </summary>
+   template<typename UINT>
+   static INLINE uint64_t getbits64(const UINT& v, const uint32_t i, const uint32_t n)
+   {
+      static_assert(sizeof(UINT) % 8 == 0);
+      assert(i+n <= sizeof(UINT) * 8);
+      assert(n <= 64);
+      static constexpr size_t N64 = sizeof(UINT) / 8;
+      const uint64_t* p = (uint64_t*)&v;
+      const uint32_t idx = i >> 6;
+      const uint32_t off = i & 0x3F;
+      uint64_t r = p[idx];
+      if (off)
+         r = (idx+1 < N64) ? CppCore::shrd64(r, p[idx+1], off) : r >> off;
+      if (n < 64)
+         r &= (1ULL << n) - 1ULL;
+      return r;
    }
 
    /// <summary>
@@ -2768,7 +2810,6 @@ namespace CppCore
             bj = *bp++;
             ap = (uint32_t*)&a;
             rp = &((uint32_t*)&r)[j];
-            CPPCORE_UNROLL
             for (size_t i = 0; i < NA && i+j < NR; i++, ap++, rp++)
             {
                CppCore::umul64(*ap, bj, tl, th);
@@ -3781,7 +3822,7 @@ namespace CppCore
    /// a^b mod m
    /// </summary>
    template<typename UINT>
-   INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
+   INLINE static void upowmod_single(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
    {
       assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
@@ -3807,10 +3848,63 @@ namespace CppCore
    /// a^b mod m
    /// </summary>
    template<typename UINT>
-   INLINE static void upowmod(UINT& a, const UINT& b, const UINT& m, UINT& r)
+   INLINE static void upowmod_single(UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
       CPPCORE_ALIGN_OPTIM(UINT) t[3];
-      CppCore::upowmod(a, b, m, r, t);
+      CppCore::upowmod_single(a, b, m, r, t);
+   }
+
+   /// <summary>
+   /// a^b mod m
+   /// </summary>
+   template<typename UINT, uint32_t K = 4U>
+   INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
+   {
+      assert((&a != &r) && (&b != &r) && (&m != &r));
+      assert(!CppCore::testzero(m));
+      CppCore::clear(r);
+      constexpr auto NUMBITS = sizeof(UINT)*8U;
+      const auto LZB = CppCore::lzcnt(b);
+      if (LZB == NUMBITS) CPPCORE_UNLIKELY {
+         if (NUMBITS-CppCore::lzcnt(m) != 1U) CPPCORE_LIKELY
+            *(uint32_t*)&r = 1U;
+         return;
+      }
+      *(uint32_t*)&r = 1U;
+
+      // Precompute powers: base^0, base^1, ..., base^(2^k - 1)
+      constexpr size_t TABLE_SIZE = 1U << K;
+      CPPCORE_ALIGN_OPTIM(UINT) powers[TABLE_SIZE];
+      CppCore::clear(powers[0]); *(uint32_t*)&powers[0] = 1U;
+      CppCore::clone(powers[1], a);
+      for (size_t i = 2; i < TABLE_SIZE; i++)
+         CppCore::umulmod(powers[i-1], a, m, powers[i], t);
+
+      // Find the position of the highest bit in exp
+      // Round up to multiple of k
+      const auto HIDX = NUMBITS - LZB;
+      const auto HIDX_K = ((HIDX + K - 1U) / K) * K;
+
+      // Process k bits at a time from left to right (MSB to LSB)
+      for (int pos = HIDX_K - K; pos >= 0; pos -= K) {
+
+         if (pos < HIDX_K - K)
+            for (size_t i = 0; i < K; i++)
+               CppCore::umulmod(r, r, m, r, t);
+         const uint32_t N = MIN(K, NUMBITS-pos);
+         const uint32_t CHUNK = CppCore::getbits32(b, pos, N);
+         CppCore::umulmod(r, powers[CHUNK], m, r, t);
+      }
+   }
+
+   /// <summary>
+   /// a^b mod m
+   /// </summary>
+   template<typename UINT, uint32_t K = 4U>
+   INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r)
+   {
+      CPPCORE_ALIGN_OPTIM(UINT) t[3];
+      CppCore::upowmod<UINT, K>(a, b, m, r, t);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

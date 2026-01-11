@@ -24,7 +24,17 @@ namespace CppCore { namespace Test { namespace Math
             CppCore::getbits32(0x00000011U, 0x000000FFU) == 0x00000011U &&
             CppCore::getbits32(0x0000FF00U, 0x000000FFU) == 0x00000000U &&
             CppCore::getbits32(0xFFFFFFFFU, 0xFFFFFFFFU) == 0xFFFFFFFFU;
-         return a && b;
+         if (!a || !b)
+            return false;
+         uint32_t r[2];
+         r[1] = 0x00000000U; r[0] = 0x00000000U; if (CppCore::getbits32(r,  0, 32) != 0x00000000U) return false;
+         r[1] = 0x00000001U; r[0] = 0x80000000U; if (CppCore::getbits32(r, 31,  2) != 0x00000003U) return false;
+         r[1] = 0x0000FF01U; r[0] = 0x80FF0000U; if (CppCore::getbits32(r, 31,  2) != 0x00000003U) return false;
+         r[1] = 0x80000000U; r[0] = 0x00000000U; if (CppCore::getbits32(r, 63,  1) != 0x00000001U) return false;
+         r[1] = 0xFFFFFFFFU; r[0] = 0xFFFFFFFFU; if (CppCore::getbits32(r, 16, 32) != 0xFFFFFFFFU) return false;
+         r[1] = 0x00000000U; r[0] = 0xFFFFFFFFU; if (CppCore::getbits32(r,  0, 32) != 0xFFFFFFFFU) return false;
+         r[1] = 0xFFFFFFFFU; r[0] = 0x00000000U; if (CppCore::getbits32(r, 32, 32) != 0xFFFFFFFFU) return false;
+         return true;
       }
 
       INLINE static bool getbits64()
@@ -41,7 +51,17 @@ namespace CppCore { namespace Test { namespace Math
             CppCore::getbits64(0x0000000000000011ULL, 0x00000000000000FFULL) == 0x0000000000000011ULL &&
             CppCore::getbits64(0x000000000000FF00ULL, 0x00000000000000FFULL) == 0x0000000000000000ULL &&
             CppCore::getbits64(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL) == 0xFFFFFFFFFFFFFFFFULL;
-         return a && b;
+         if (!a || !b)
+            return false;
+         uint64_t r[2];
+         r[1]=0x0000000000000000ULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 0,  64) != 0x0000000000000000ULL) return false;
+         r[1]=0x0000000000000001ULL; r[0]= 0x8000000000000000ULL; if (CppCore::getbits64(r, 63,  2) != 0x0000000000000003ULL) return false;
+         r[1]=0x000000000000FF01ULL; r[0]= 0x80FF000000000000ULL; if (CppCore::getbits64(r, 63,  2) != 0x0000000000000003ULL) return false;
+         r[1]=0x8000000000000000ULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 127, 1) != 0x0000000000000001ULL) return false;
+         r[1]=0x00000000FFFFFFFFULL; r[0]= 0xFFFFFFFF00000000ULL; if (CppCore::getbits64(r, 32, 64) != 0xFFFFFFFFFFFFFFFFULL) return false;
+         r[1]=0x0000000000000000ULL; r[0]= 0xFFFFFFFFFFFFFFFFULL; if (CppCore::getbits64(r, 0,  64) != 0xFFFFFFFFFFFFFFFFULL) return false;
+         r[1]=0xFFFFFFFFFFFFFFFFULL; r[0]= 0x0000000000000000ULL; if (CppCore::getbits64(r, 64, 64) != 0xFFFFFFFFFFFFFFFFULL) return false;
+         return true;
       }
 
       INLINE static bool setbit32()
@@ -874,6 +894,24 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
+      template<size_t N64=2>
+      INLINE static bool upowmod()
+      {
+         uint64_t a1[N64]; uint64_t b1[N64]; uint64_t m1[N64]; uint64_t r1[N64];
+         uint64_t a2[N64]; uint64_t b2[N64]; uint64_t m2[N64]; uint64_t r2[N64];
+         CppCore::Random::Default64 prng;
+         for (size_t i = 0; i < 100; i++) {
+            prng.fill(a1); CppCore::clone(a2, a1);
+            prng.fill(b1); CppCore::clone(b2, b1);
+            prng.fill(m1); CppCore::clone(m2, m1);
+            CppCore::upowmod_single(a1, b1, m1, r1);
+            CppCore::upowmod(a2, b2, m2, r2);
+            if (!CppCore::equal(r1, r2))
+               return false;
+         }
+         return true;
+      }
+
       INLINE static bool upow32()
       {
          for (uint32_t base = 0; base < 20; base++)
@@ -1533,6 +1571,8 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(UMULMOD64)        { Assert::AreEqual(true, CppCore::Test::Math::Util::umulmod64()); }
       TEST_METHOD(UPOWMOD32)        { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod32()); }
       TEST_METHOD(UPOWMOD64)        { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod64()); }
+      TEST_METHOD(UPOWMOD128)       { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod<2>()); }
+      TEST_METHOD(UPOWMOD256)       { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod<4>()); }
       TEST_METHOD(UPOW32)           { Assert::AreEqual(true, CppCore::Test::Math::Util::upow32()); }
       TEST_METHOD(UPOW64)           { Assert::AreEqual(true, CppCore::Test::Math::Util::upow64()); }
       TEST_METHOD(UDIVMOD32)        { Assert::AreEqual(true, CppCore::Test::Math::Util::udivmod32()); }
