@@ -1573,7 +1573,6 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(UPOWMOD64)        { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod64()); }
       TEST_METHOD(UPOWMOD128)       { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod<2>()); }
       TEST_METHOD(UPOWMOD256)       { Assert::AreEqual(true, CppCore::Test::Math::Util::upowmod<4>()); }
-
       TEST_METHOD(UPOW32)           { Assert::AreEqual(true, CppCore::Test::Math::Util::upow32()); }
       TEST_METHOD(UPOW64)           { Assert::AreEqual(true, CppCore::Test::Math::Util::upow64()); }
       TEST_METHOD(UDIVMOD32)        { Assert::AreEqual(true, CppCore::Test::Math::Util::udivmod32()); }
