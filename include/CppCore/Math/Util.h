@@ -740,13 +740,15 @@ namespace CppCore
       static_assert(sizeof(UINT3) % 4 == 0);
       constexpr size_t MAXSIZE = MAX(sizeof(UINT1), sizeof(UINT2));
       constexpr size_t MINSIZE = MIN(sizeof(UINT1), sizeof(UINT2));
-      static_assert(sizeof(UINT3) == MAXSIZE);
+      static_assert(sizeof(UINT3) >= MAXSIZE);
    #if defined(CPPCORE_CPU_64BIT)
       if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0 && sizeof(UINT3) % 8 == 0)
       {
          constexpr size_t NUINT1 = sizeof(UINT1) / 8;
          constexpr size_t NUINT2 = sizeof(UINT2) / 8;
+         constexpr size_t NUINT3 = sizeof(UINT3) / 8;
          constexpr size_t NMIN = MINSIZE / 8;
+         constexpr size_t NMAX = MAXSIZE / 8;
          uint64_t* px = (uint64_t*)&x;
          uint64_t* py = (uint64_t*)&y;
          uint64_t* pz = (uint64_t*)&z;
@@ -758,6 +760,12 @@ namespace CppCore
          if constexpr (sizeof(UINT1) < sizeof(UINT2))
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry64(0ULL, py[i], pz[i], c);
+         if constexpr (sizeof(UINT3) > MAXSIZE)
+         {
+            pz[NMAX] = c; c = 0;
+            for (size_t i = NMAX+1; i < NUINT3; i++)
+               pz[i] = 0ULL;
+         }
       }
       else if
    #else
@@ -767,7 +775,9 @@ namespace CppCore
       {
          constexpr size_t NUINT1 = sizeof(UINT1) / 4;
          constexpr size_t NUINT2 = sizeof(UINT2) / 4;
+         constexpr size_t NUINT3 = sizeof(UINT3) / 4;
          constexpr size_t NMIN = MINSIZE / 4;
+         constexpr size_t NMAX = MAXSIZE / 4;
          uint32_t* px = (uint32_t*)&x;
          uint32_t* py = (uint32_t*)&y;
          uint32_t* pz = (uint32_t*)&z;
@@ -779,6 +789,12 @@ namespace CppCore
          if constexpr (sizeof(UINT1) < sizeof(UINT2))
             for (size_t i = NMIN; i < NUINT2; i++)
                CppCore::addcarry32(0U, py[i], pz[i], c);
+         if constexpr (sizeof(UINT3) > MAXSIZE)
+         {
+            pz[NMAX] = c; c = 0;
+            for (size_t i = NMAX+1; i < NUINT3; i++)
+               pz[i] = 0U;
+         }
       }
       else if constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::addcarry<size_t, UINT2, UINT3>((size_t)x, y, z, c); }
       else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::addcarry<UINT1, size_t, UINT3>(x, (size_t)y, z, c); }
