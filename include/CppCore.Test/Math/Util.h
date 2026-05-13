@@ -376,6 +376,29 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
+      INLINE static bool addcarry()
+      {
+         uint8_t  c;
+         uint64_t a1[1]; uint64_t b1[1]; uint64_t r1[1];
+         uint64_t a2[2]; uint64_t b2[2]; uint64_t r2[2];
+         uint64_t a3[3]; uint64_t b3[3]; uint64_t r3[3];
+         uint64_t a4[4]; uint64_t b4[4]; uint64_t r4[4];
+
+         a2[0] = 0xFFFFFFFFFFFFFFFFULL; a2[1] = 0xFFFFFFFFFFFFFFFFULL;
+         b2[0] = 0x0000000000000001ULL; b2[1] = 0x0000000000000000ULL;
+         c = 0; CppCore::addcarry(a2, b2, r2, c); if (c != 0x01 || r2[0] != 0x0000000000000000ULL || r2[1] != 0x0000000000000000ULL) return false;
+
+         a1[0] = 0xFFFFFFFFFFFFFFFFULL;
+         b2[0] = 0x0000000000000001ULL; b2[1] = 0xFF00000000000000ULL;
+         c = 0; CppCore::addcarry(a1, b2, r2, c); if (c != 0x00 || r2[0] != 0x0000000000000000ULL || r2[1] != 0xFF00000000000001ULL) return false;
+
+         a2[0] = 0xFFFFFFFFFFFFFFFFULL; a2[1] = 0xFFFFFFFFFFFFFFFFULL;
+         b2[0] = 0x0000000000000001ULL; b2[1] = 0x0000000000000000ULL;
+         c = 0; CppCore::addcarry(a2, b2, r4, c); if (c != 0x00 || r4[0] != 0x0000000000000000ULL || r4[1] != 0x0000000000000000ULL || r4[2] != 0x0000000000000001ULL || r4[3] != 0x0000000000000000ULL) return false;
+
+         return true;
+      }
+
       INLINE static bool subborrow8()
       {
          uint8_t r; uint8_t c;
@@ -1552,6 +1575,7 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(ADDCARRY16)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry16()); }
       TEST_METHOD(ADDCARRY32)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry32()); }
       TEST_METHOD(ADDCARRY64)       { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry64()); }
+      TEST_METHOD(ADDCARRY)         { Assert::AreEqual(true, CppCore::Test::Math::Util::addcarry()); }
       TEST_METHOD(SUBBORROW8)       { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow8()); }
       TEST_METHOD(SUBBORROW16)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow16()); }
       TEST_METHOD(SUBBORROW32)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow32()); }
