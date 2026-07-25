@@ -2944,6 +2944,8 @@ namespace CppCore
          for (size_t k = 0; k < NR; ++k)
             R[k] = 0;
 
+         uint64_t tl, th;
+
          for (size_t i = 0; i < NA; ++i)
          {
             // smallest column this row can touch is i+(i+1) = 2i+1; once that's
@@ -2959,8 +2961,6 @@ namespace CppCore
                size_t idx = i + j;
                if (idx >= NR)
                   break;
-
-               uint64_t tl, th;
 
                CppCore::umul128(A[i], A[j], tl, th);
                uint8_t c1 = 0;
@@ -2985,30 +2985,20 @@ namespace CppCore
             }*/
          }
 
-         // double the triangular sum in one sweep (single carry chain)
+         // double the triangular sum
          uint8_t carry = 0;
          for (size_t k = 0; k < NR; ++k)
             CppCore::addcarry64(R[k], R[k], R[k], carry);
 
-         // ---- pass 3: diagonal terms a[i]*a[i]; positions (2i,2i+1,2i+2,...)
-         // never overlap between consecutive i (unlike pass 1's rows), so a
-         // simple 1-bit carry chain is exact here ----
-
+         // add diagonal terms
          carry = 0;
-         for (size_t i = 0; i < NA; ++i)
+         //size_t idx = 0;
+         for (size_t i=0, idx=0; i<NA && idx<NR; i++, idx+=2)
          {
-            size_t idx = 2 * i;
-            if (idx >= NR)
-               break;
-
-            uint64_t lo, hi;
-
-            CppCore::umul128(A[i], A[i], lo, hi);
-
-            CppCore::addcarry64(R[idx], lo, R[idx], carry);
-
+            CppCore::umul128(A[i], A[i], tl, th);
+            CppCore::addcarry64(R[idx], tl, R[idx], carry);
             if (idx + 1 < NR)
-               CppCore::addcarry64(R[idx + 1], hi, R[idx + 1], carry);
+               CppCore::addcarry64(R[idx + 1], th, R[idx + 1], carry);
          }
          if (NR > 2 * NA)
             CppCore::addcarry64(R[2 * NA], 0, R[2 * NA], carry);
