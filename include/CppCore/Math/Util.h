@@ -2946,15 +2946,9 @@ namespace CppCore
 
          uint64_t tl, th;
 
-         for (size_t i = 0; i < NA; ++i)
+         for (size_t i = 0; i < NA && 2*i+1 < NR; i++)
          {
-            // smallest column this row can touch is i+(i+1) = 2i+1; once that's
-            // out of range, this and every later row contribute nothing
-            if (2 * i + 1 >= NR)
-               break;
-
-            uint64_t k = 0;   // full 64-bit inter-term carry for this row
-
+            uint64_t k = 0;
             for (size_t j = i+1; j < NA; j++)
             {
                size_t idx = i + j;
