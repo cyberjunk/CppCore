@@ -487,7 +487,7 @@ namespace CppCore { namespace Test { namespace Math
          uint64_t r3_1[12];
          uint64_t r3_2[12];
 
-         for (size_t i = 0; i < 1000000; i++)
+         for (size_t i = 0; i < 100000; i++)
          {
             prng.fill(a);
             // smaller

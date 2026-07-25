@@ -2954,9 +2954,8 @@ namespace CppCore
                break;
 
             uint64_t k = 0;   // full 64-bit inter-term carry for this row
-            size_t   j = i + 1;
 
-            for (; j < NA; ++j)
+            for (size_t j = i+1; j < NA; j++)
             {
                size_t idx = i + j;
                if (idx >= NR)
@@ -2987,8 +2986,8 @@ namespace CppCore
 
          // double the triangular sum
          uint8_t carry = 0;
-         for (size_t k = 0; k < NR; ++k)
-            CppCore::addcarry64(R[k], R[k], R[k], carry);
+         for (size_t i = 0; i < NR; i++)
+            CppCore::addcarry64(R[i], R[i], R[i], carry);
 
          // add diagonal terms
          carry = 0;
