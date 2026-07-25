@@ -483,7 +483,7 @@ namespace CppCore { namespace Test { namespace Math
          uint64_t r2_1[8];
          uint64_t r2_2[8];
 
-         for (size_t i = 0; i < 100; i++)
+         for (size_t i = 0; i < 10000000; i++)
          {
             prng.fill(a);
 

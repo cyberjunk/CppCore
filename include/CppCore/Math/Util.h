@@ -2960,18 +2960,14 @@ namespace CppCore
                   break;
 
                uint64_t tl, th;
-               umul128(A[i], A[j], tl, th);
 
-               // fold in the carry from the previous term (its "hi") first
-               //uint64_t combined;
+               CppCore::umul128(A[i], A[j], tl, th);
                uint8_t c1 = 0;
+               CppCore::addcarry64(tl, k, tl, c1);
+               CppCore::addcarry64(th, 0, th, c1);
                uint8_t c2 = 0;
-               addcarry64(tl, k, tl, c1);
-               addcarry64(th, 0, k, c1);
-
-               // then accumulate into the destination limb
-               addcarry64(tl, R[idx], R[idx], c2);
-               addcarry64(k, 0, k, c2);
+               CppCore::addcarry64(tl, R[idx], R[idx], c2);
+               CppCore::addcarry64(th, 0, k, c2);
             }
 
             // loop ran to completion (never broke early) => the pending carry64
