@@ -2944,41 +2944,37 @@ namespace CppCore
          for (size_t k = 0; k < NR; ++k)
             R[k] = 0;
 
-         uint64_t tl, th;
-
+         uint64_t tl, th, k;
+         uint8_t c;
          // calculate one triangle
          for (size_t i = 0; i < NA && 2*i+1 < NR; i++)
          {
-            uint64_t k = 0;
-            for (size_t j = i+1; j < NA; j++)
+            k = 0ULL;
+            for (size_t j = i+1; j < NA && i+j < NR; j++)
             {
-               size_t idx = i + j;
-               if (idx >= NR)
-                  break;
-
                CppCore::umul128(A[i], A[j], tl, th);
-               uint8_t c1 = 0;
-               CppCore::addcarry64(tl, R[idx], tl, c1);
-               CppCore::addcarry64(th, 0ULL, th, c1);
-               uint8_t c2 = 0;
-               CppCore::addcarry64(tl, k, R[idx], c2);
-               CppCore::addcarry64(th, 0ULL, k, c2);
+               c = 0;
+               CppCore::addcarry64(tl, R[i+j], tl, c);
+               CppCore::addcarry64(th, 0ULL, th, c);
+               c = 0;
+               CppCore::addcarry64(tl, k, R[i+j], c);
+               CppCore::addcarry64(th, 0ULL, k, c);
             }
             if (i+NA < NR)
                R[i+NA] = k;
          }
          // double the triangular sum
-         uint8_t carry = 0;
+         c = 0;
          for (size_t i = 0; i < NR; i++)
-            CppCore::addcarry64(R[i], R[i], R[i], carry);
+            CppCore::addcarry64(R[i], R[i], R[i], c);
          // add diagonal terms
-         carry = 0;
+         c = 0;
          for (size_t i=0, j=0; i<NA && j<NR; i++, j+=2)
          {
             CppCore::umul128(A[i], A[i], tl, th);
-            CppCore::addcarry64(R[j], tl, R[j], carry);
+            CppCore::addcarry64(R[j], tl, R[j], c);
             if (j+1 < NR)
-               CppCore::addcarry64(R[j+1], th, R[j+1], carry);
+               CppCore::addcarry64(R[j+1], th, R[j+1], c);
          }
       }
    #endif
