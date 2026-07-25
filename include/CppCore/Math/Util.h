@@ -2946,6 +2946,7 @@ namespace CppCore
 
          uint64_t tl, th;
 
+         // calculate one triangle
          for (size_t i = 0; i < NA && 2*i+1 < NR; i++)
          {
             uint64_t k = 0;
@@ -2963,26 +2964,13 @@ namespace CppCore
                CppCore::addcarry64(tl, k, R[idx], c2);
                CppCore::addcarry64(th, 0ULL, k, c2);
             }
-
-            // loop ran to completion (never broke early) => the pending carry64
-            // (this row's last term's "hi", effectively) lands at i+NA
             if (i+NA < NR)
                R[i+NA] = k;
-
-            /*if (j == NA && i + NA < NR)
-            {
-               uint8_t carry = 0;
-               addcarry64(R[i + NA], k, R[i + NA], carry);
-               for (size_t k = i + NA + 1; k < NR; ++k)
-                  addcarry64(R[k], 0, R[k], carry);
-            }*/
          }
-
          // double the triangular sum
          uint8_t carry = 0;
          for (size_t i = 0; i < NR; i++)
             CppCore::addcarry64(R[i], R[i], R[i], carry);
-
          // add diagonal terms
          carry = 0;
          for (size_t i=0, j=0; i<NA && j<NR; i++, j+=2)
@@ -2992,8 +2980,6 @@ namespace CppCore
             if (j+1 < NR)
                CppCore::addcarry64(R[j+1], th, R[j+1], carry);
          }
-         //if (NR > 2 * NA)
-         //   CppCore::addcarry64(R[2 * NA], 0, R[2 * NA], carry);
       }
    #endif
       else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0)
