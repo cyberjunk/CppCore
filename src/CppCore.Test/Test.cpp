@@ -365,6 +365,7 @@ int main()
    TEST(CppCore::Test::Math::Util::subborrow32,     "subborrow32:      ", std::endl);
    TEST(CppCore::Test::Math::Util::subborrow64,     "subborrow64:      ", std::endl);
    TEST(CppCore::Test::Math::Util::mul128,          "mul128:           ", std::endl);
+   TEST(CppCore::Test::Math::Util::usquare,         "usquare:          ", std::endl);
    TEST(CppCore::Test::Math::Util::overflowadd16,   "overflowadd16:    ", std::endl);
    TEST(CppCore::Test::Math::Util::overflowadd32,   "overflowadd32:    ", std::endl);
    TEST(CppCore::Test::Math::Util::overflowadd64,   "overflowadd64:    ", std::endl);

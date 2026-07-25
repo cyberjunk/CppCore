@@ -473,6 +473,34 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
+      INLINE static bool usquare()
+      {
+         CppCore::Random::Default64 prng;
+
+         uint64_t a[4];
+         uint64_t r1_1[4];
+         uint64_t r1_2[4];
+         uint64_t r2_1[8];
+         uint64_t r2_2[8];
+
+         for (size_t i = 0; i < 100; i++)
+         {
+            prng.fill(a);
+
+            CppCore::umul(a, a, r1_1);
+            CppCore::usquare(a, r1_2);
+            if (!CppCore::equal(r1_1, r1_2))
+               return false;
+
+            CppCore::umul(a, a, r2_1);
+            CppCore::usquare(a, r2_2);
+            if (!CppCore::equal(r2_1, r2_2))
+               return false;
+
+         }
+         return true;
+      }
+
       INLINE static bool overflowadd16()
       {
          uint16_t ru;
@@ -1581,6 +1609,7 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(SUBBORROW32)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow32()); }
       TEST_METHOD(SUBBORROW64)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow64()); }
       TEST_METHOD(MUL128)           { Assert::AreEqual(true, CppCore::Test::Math::Util::mul128()); }
+      TEST_METHOD(USQUARE)          { Assert::AreEqual(true, CppCore::Test::Math::Util::usquare()); }
       TEST_METHOD(OVERFLOWADD16)    { Assert::AreEqual(true, CppCore::Test::Math::Util::overflowadd16()); }
       TEST_METHOD(OVERFLOWADD32)    { Assert::AreEqual(true, CppCore::Test::Math::Util::overflowadd32()); }
       TEST_METHOD(OVERFLOWADD64)    { Assert::AreEqual(true, CppCore::Test::Math::Util::overflowadd64()); }
