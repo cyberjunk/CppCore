@@ -63,6 +63,7 @@ void  cppcore_free (void* ptr)         { CPPCORE_ALIGNED_FREE(ptr); }
   void name ## _add   (void* a, void* b, void* r)         { CppCore::uadd(*(cname*)a, *(cname*)b, *(cname*)r);}            \
   void name ## _sub   (void* a, void* b, void* r)         { CppCore::usub(*(cname*)a, *(cname*)b, *(cname*)r);}            \
   void name ## _mul   (void* a, void* b, void* r)         { CppCore::umul(*(cname*)a, *(cname*)b, *(cname*)r);}            \
+  void name ## _square(void* a, void* r)                  { CppCore::usquare(*(cname*)a, *(cname*)r);}                     \
   void name ## _divmod(void* a, void* b, void* q, void* r){ CppCore::udivmod(*(cname*)q,*(cname*)r,*(cname*)a,*(cname*)b);}\
   void name ## _mulmod(void* a, void* b, void* m, void* r){ CppCore::umulmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}\
   void name ## _powmod(void* a, void* b, void* m, void* r){ CppCore::upowmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}\

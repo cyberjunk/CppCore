@@ -19,6 +19,7 @@
   CPPCORE_EXPORT void name ## _add   (void* a, void* b, void* r);          \
   CPPCORE_EXPORT void name ## _sub   (void* a, void* b, void* r);          \
   CPPCORE_EXPORT void name ## _mul   (void* a, void* b, void* r);          \
+  CPPCORE_EXPORT void name ## _square(void* a, void* r);                   \
   CPPCORE_EXPORT void name ## _divmod(void* a, void* b, void* q, void* r); \
   CPPCORE_EXPORT void name ## _mulmod(void* a, void* b, void* m, void* r); \
   CPPCORE_EXPORT void name ## _powmod(void* a, void* b, void* m, void* r); \

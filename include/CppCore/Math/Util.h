@@ -2950,7 +2950,7 @@ namespace CppCore
             if (2 * i + 1 >= NR)
                break;
 
-            uint64_t carry64 = 0;   // full 64-bit inter-term carry for this row
+            uint64_t k = 0;   // full 64-bit inter-term carry for this row
             size_t   j = i + 1;
 
             for (; j < NA; ++j)
@@ -2959,20 +2959,19 @@ namespace CppCore
                if (idx >= NR)
                   break;
 
-               uint64_t lo, hi;
-               umul128(A[i], A[j], lo, hi);
+               uint64_t tl, th;
+               umul128(A[i], A[j], tl, th);
 
                // fold in the carry from the previous term (its "hi") first
-               uint64_t combined;
+               //uint64_t combined;
                uint8_t c1 = 0;
                uint8_t c2 = 0;
-               addcarry64(lo, carry64, combined, c1);
+               addcarry64(tl, k, tl, c1);
+               addcarry64(th, 0, k, c1);
 
                // then accumulate into the destination limb
-               addcarry64(R[idx], combined, R[idx], c2);
-
-               // hi <= 2^64-2 always, so this plain add never overflows 64 bits
-               carry64 = hi + static_cast<uint64_t>(c1) + static_cast<uint64_t>(c2);
+               addcarry64(tl, R[idx], R[idx], c2);
+               addcarry64(k, 0, k, c2);
             }
 
             // loop ran to completion (never broke early) => the pending carry64
@@ -2980,7 +2979,7 @@ namespace CppCore
             if (j == NA && i + NA < NR)
             {
                uint8_t carry = 0;
-               addcarry64(R[i + NA], carry64, R[i + NA], carry);
+               addcarry64(R[i + NA], k, R[i + NA], carry);
                for (size_t k = i + NA + 1; k < NR; ++k)
                   addcarry64(R[k], 0, R[k], carry);
             }
