@@ -2992,13 +2992,12 @@ namespace CppCore
 
          // add diagonal terms
          carry = 0;
-         //size_t idx = 0;
-         for (size_t i=0, idx=0; i<NA && idx<NR; i++, idx+=2)
+         for (size_t i=0, j=0; i<NA && j<NR; i++, j+=2)
          {
             CppCore::umul128(A[i], A[i], tl, th);
-            CppCore::addcarry64(R[idx], tl, R[idx], carry);
-            if (idx + 1 < NR)
-               CppCore::addcarry64(R[idx + 1], th, R[idx + 1], carry);
+            CppCore::addcarry64(R[j], tl, R[j], carry);
+            if (j+1 < NR)
+               CppCore::addcarry64(R[j+1], th, R[j+1], carry);
          }
          if (NR > 2 * NA)
             CppCore::addcarry64(R[2 * NA], 0, R[2 * NA], carry);

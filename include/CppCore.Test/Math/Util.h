@@ -478,25 +478,38 @@ namespace CppCore { namespace Test { namespace Math
          CppCore::Random::Default64 prng;
 
          uint64_t a[4];
+         uint64_t r0_1[2];
+         uint64_t r0_2[2];
          uint64_t r1_1[4];
          uint64_t r1_2[4];
          uint64_t r2_1[8];
          uint64_t r2_2[8];
+         uint64_t r3_1[12];
+         uint64_t r3_2[12];
 
-         for (size_t i = 0; i < 10000000; i++)
+         for (size_t i = 0; i < 1000000; i++)
          {
             prng.fill(a);
-
+            // smaller
+            CppCore::umul(a, a, r0_1);
+            CppCore::usquare(a, r0_2);
+            if (!CppCore::equal(r0_1, r0_2))
+               return false;
+            // same size
             CppCore::umul(a, a, r1_1);
             CppCore::usquare(a, r1_2);
             if (!CppCore::equal(r1_1, r1_2))
                return false;
-
+            // full wide mul
             CppCore::umul(a, a, r2_1);
             CppCore::usquare(a, r2_2);
             if (!CppCore::equal(r2_1, r2_2))
                return false;
-
+            // zero padded
+            CppCore::umul(a, a, r3_1);
+            CppCore::usquare(a, r3_2);
+            if (!CppCore::equal(r3_1, r3_2))
+               return false;
          }
          return true;
       }
