@@ -2999,8 +2999,8 @@ namespace CppCore
             if (j+1 < NR)
                CppCore::addcarry64(R[j+1], th, R[j+1], carry);
          }
-         if (NR > 2 * NA)
-            CppCore::addcarry64(R[2 * NA], 0, R[2 * NA], carry);
+         //if (NR > 2 * NA)
+         //   CppCore::addcarry64(R[2 * NA], 0, R[2 * NA], carry);
       }
    #endif
       else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0)
