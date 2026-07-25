@@ -2936,13 +2936,14 @@ namespace CppCore
          // 64-Bit CPU and Multiples of 64-Bit
          constexpr size_t NA = sizeof(UINT1) / 8;
          constexpr size_t NR = sizeof(UINT2) / 8;
+         assert((void*)&a != (void*)&r);
 
-         // limbs assumed little-endian in memory (word 0 = least significant)
          const uint64_t* A = reinterpret_cast<const uint64_t*>(&a);
          uint64_t* R = reinterpret_cast<uint64_t*>(&r);
 
          for (size_t k = 0; k < NR; ++k)
             R[k] = 0;
+
          for (size_t i = 0; i < NA; ++i)
          {
             // smallest column this row can touch is i+(i+1) = 2i+1; once that's
@@ -2972,47 +2973,45 @@ namespace CppCore
 
             // loop ran to completion (never broke early) => the pending carry64
             // (this row's last term's "hi", effectively) lands at i+NA
-            if (j == NA && i + NA < NR)
+            if (i+NA < NR)
+               R[i+NA] = k;
+
+            /*if (j == NA && i + NA < NR)
             {
                uint8_t carry = 0;
                addcarry64(R[i + NA], k, R[i + NA], carry);
                for (size_t k = i + NA + 1; k < NR; ++k)
                   addcarry64(R[k], 0, R[k], carry);
-            }
+            }*/
          }
 
-         // ---- pass 2: double the triangular sum in one sweep (single carry chain) ----
-         {
-            uint8_t carry = 0;
-            for (size_t k = 0; k < NR; ++k)
-               addcarry64(R[k], R[k], R[k], carry);
-         }
+         // double the triangular sum in one sweep (single carry chain)
+         uint8_t carry = 0;
+         for (size_t k = 0; k < NR; ++k)
+            CppCore::addcarry64(R[k], R[k], R[k], carry);
 
          // ---- pass 3: diagonal terms a[i]*a[i]; positions (2i,2i+1,2i+2,...)
          // never overlap between consecutive i (unlike pass 1's rows), so a
          // simple 1-bit carry chain is exact here ----
+
+         carry = 0;
+         for (size_t i = 0; i < NA; ++i)
          {
-            uint8_t carry = 0;
-            size_t  i = 0;
+            size_t idx = 2 * i;
+            if (idx >= NR)
+               break;
 
-            for (; i < NA; ++i)
-            {
-               size_t idx = 2 * i;
-               if (idx >= NR)
-                  break;
+            uint64_t lo, hi;
 
-               uint64_t lo, hi;
-               umul128(A[i], A[i], lo, hi);
+            CppCore::umul128(A[i], A[i], lo, hi);
 
-               addcarry64(R[idx], lo, R[idx], carry);
+            CppCore::addcarry64(R[idx], lo, R[idx], carry);
 
-               if (idx + 1 < NR)
-                  addcarry64(R[idx + 1], hi, R[idx + 1], carry);
-            }
-
-            if (NR > 2 * NA)
-               addcarry64(R[2 * NA], 0, R[2 * NA], carry);
+            if (idx + 1 < NR)
+               CppCore::addcarry64(R[idx + 1], hi, R[idx + 1], carry);
          }
+         if (NR > 2 * NA)
+            CppCore::addcarry64(R[2 * NA], 0, R[2 * NA], carry);
       }
    #endif
       else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0)
