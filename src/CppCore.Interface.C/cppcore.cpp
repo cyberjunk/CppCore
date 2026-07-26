@@ -57,17 +57,18 @@ void  cppcore_free (void* ptr)         { CPPCORE_ALIGNED_FREE(ptr); }
 #include <CppCore/Math/Util.h>
 #include <CppCore/Block.h>
 
-#define CPPCORE_UINT_IMPLEMENTATION(name, cname)                                                                           \
-  void name ## _shl   (void* a, unsigned int b, void* r)  { CppCore::shl(*(cname*)r,  *(cname*)a, b);}                     \
-  void name ## _shr   (void* a, unsigned int b, void* r)  { CppCore::shr(*(cname*)r,  *(cname*)a, b);}                     \
-  void name ## _add   (void* a, void* b, void* r)         { CppCore::uadd(*(cname*)a, *(cname*)b, *(cname*)r);}            \
-  void name ## _sub   (void* a, void* b, void* r)         { CppCore::usub(*(cname*)a, *(cname*)b, *(cname*)r);}            \
-  void name ## _mul   (void* a, void* b, void* r)         { CppCore::umul(*(cname*)a, *(cname*)b, *(cname*)r);}            \
-  void name ## _square(void* a, void* r)                  { CppCore::usquare(*(cname*)a, *(cname*)r);}                     \
-  void name ## _divmod(void* a, void* b, void* q, void* r){ CppCore::udivmod(*(cname*)q,*(cname*)r,*(cname*)a,*(cname*)b);}\
-  void name ## _mulmod(void* a, void* b, void* m, void* r){ CppCore::umulmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}\
-  void name ## _powmod(void* a, void* b, void* m, void* r){ CppCore::upowmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}\
-  void name ## _gcd   (void* a, void* b, void* r)         { CppCore::gcd(*(cname*)a, *(cname*)b, *(cname*)r);}
+#define CPPCORE_UINT_IMPLEMENTATION(name, cname)                                                                              \
+  void name ## _shl      (void* a, unsigned int b, void* r)  { CppCore::shl(*(cname*)r,  *(cname*)a, b);}                     \
+  void name ## _shr      (void* a, unsigned int b, void* r)  { CppCore::shr(*(cname*)r,  *(cname*)a, b);}                     \
+  void name ## _add      (void* a, void* b, void* r)         { CppCore::uadd(*(cname*)a, *(cname*)b, *(cname*)r);}            \
+  void name ## _sub      (void* a, void* b, void* r)         { CppCore::usub(*(cname*)a, *(cname*)b, *(cname*)r);}            \
+  void name ## _mul      (void* a, void* b, void* r)         { CppCore::umul(*(cname*)a, *(cname*)b, *(cname*)r);}            \
+  void name ## _square   (void* a, void* r)                  { CppCore::usquare(*(cname*)a, *(cname*)r);}                     \
+  void name ## _divmod   (void* a, void* b, void* q, void* r){ CppCore::udivmod(*(cname*)q,*(cname*)r,*(cname*)a,*(cname*)b);}\
+  void name ## _mulmod   (void* a, void* b, void* m, void* r){ CppCore::umulmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}\
+  void name ## _squaremod(void* a, void* m, void* r)         { CppCore::usquaremod(*(cname*)a,*(cname*)m,*(cname*)r);}        \
+  void name ## _powmod   (void* a, void* b, void* m, void* r){ CppCore::upowmod(*(cname*)a,*(cname*)b,*(cname*)m,*(cname*)r);}\
+  void name ## _gcd      (void* a, void* b, void* r)         { CppCore::gcd(*(cname*)a, *(cname*)b, *(cname*)r);}
 
 CPPCORE_UINT_IMPLEMENTATION(cppcore_uint32,       std::uint32_t)
 CPPCORE_UINT_IMPLEMENTATION(cppcore_uint64,       std::uint64_t)
