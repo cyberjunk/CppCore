@@ -493,6 +493,15 @@ namespace CppCore { namespace Test { namespace Math
 
       INLINE static bool usquare()
       {
+         uint64_t a[4]  = { 0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL };
+         uint64_t r1[9] = { 0x0000000000000001ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,
+                            0xFFFFFFFFFFFFFFFEULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,
+                            0x0000000000000000ULL };
+         uint64_t r2[9];
+         CppCore::usquare(a, r2);
+         if (!CppCore::equal(r1, r2))
+            return false;
+
          return
             usquare_template<4, 2>()  &&
             usquare_template<4, 4>()  &&
