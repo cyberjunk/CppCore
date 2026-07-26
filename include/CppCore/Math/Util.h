@@ -2951,7 +2951,10 @@ namespace CppCore
             rp[i] = 0ULL;
          // calculate one triangle
          rp[0] = 0ULL;
-         CppCore::umul128(ap[0], ap[1], rp[1], k);
+         if (NA > 1 && NR > 1)
+            CppCore::umul128(ap[0], ap[1], rp[1], k);
+         else
+            k = 0ULL;
          for (size_t j = 2; j < MIN(NA,NR); j++)
          {
             CppCore::umul128(ap[0], ap[j], tl, th);
@@ -3006,7 +3009,10 @@ namespace CppCore
             rp[i] = 0U;
          // calculate one triangle
          rp[0] = 0U;
-         CppCore::umul64(ap[0], ap[1], rp[1], k);
+         if (NA > 1 && NR > 1)
+            CppCore::umul64(ap[0], ap[1], rp[1], k);
+         else
+            k = 0U;
          for (size_t j = 2; j < MIN(NA,NR); j++)
          {
             CppCore::umul64(ap[0], ap[j], tl, th);
