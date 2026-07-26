@@ -2941,11 +2941,11 @@ namespace CppCore
          uint64_t* rp = (uint64_t*)&r;
          uint64_t  tl, th, k;
          uint8_t   c;
-         // TODO: only clear starting at 2NA, write the others before reading
-         for (size_t i = 0; i < NR; i++)
-            rp[i] = 0;
+         rp[0] = 0ULL;
+         for (size_t i = NA+NA; i < NR; i++)
+            rp[i] = 0ULL;
          // calculate one triangle
-         /*k = 0ULL;
+         k = 0ULL;
          for (size_t j = 1; j < NA && j < NR; j++)
          {
             CppCore::umul128(ap[0], ap[j], tl, th);
@@ -2954,8 +2954,8 @@ namespace CppCore
             CppCore::addcarry64(th, 0ULL, k, c);
          }
          if constexpr (NA < NR)
-            rp[NA] = k;*/
-         for (size_t i = 0; i < NA && 2*i+1 < NR; i++)
+            rp[NA] = k;
+         for (size_t i = 1; i < NA && 2*i+1 < NR; i++)
          {
             k = 0ULL;
             for (size_t j = i+1; j < NA && i+j < NR; j++)
