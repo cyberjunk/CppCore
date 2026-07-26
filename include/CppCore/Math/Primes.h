@@ -130,8 +130,7 @@ namespace CppCore
             return true;
          for (uint32_t i = 1U; i < s; i++)
          {
-            //TODO: usquaremod
-            CppCore::umulmod(r, r, n, r, m);
+            CppCore::usquaremod(r, n, r, m);
             if (r <= 1U) return false;
             if (r == t)  return true;
          }
@@ -314,7 +313,7 @@ namespace CppCore
          UINTX2 mem[2];
          for (uint32_t i = 2U; i < ith; i++)
          {
-            CppCore::umul(s, s, r);
+            CppCore::usquare(s, r);
             CppCore::usub(r, (size_t)2U, r);
             CppCore::umod(s, r, n, mem);
          }
@@ -418,7 +417,7 @@ namespace CppCore
 
          // perfect square root test
          CppCore::isqrt(n, t);
-         CppCore::umul(t, t, d);
+         CppCore::usquare(t, d);
          if (CppCore::equal(n, d))
             return Primes::NotPrime;
 

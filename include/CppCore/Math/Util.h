@@ -2951,7 +2951,10 @@ namespace CppCore
             rp[i] = 0ULL;
          // calculate one triangle
          rp[0] = 0ULL;
-         CppCore::umul128(ap[0], ap[1], rp[1], k);
+         if (NA > 1 && NR > 1)
+            CppCore::umul128(ap[0], ap[1], rp[1], k);
+         else
+            k = 0ULL;
          for (size_t j = 2; j < MIN(NA,NR); j++)
          {
             CppCore::umul128(ap[0], ap[j], tl, th);
@@ -3006,7 +3009,10 @@ namespace CppCore
             rp[i] = 0U;
          // calculate one triangle
          rp[0] = 0U;
-         CppCore::umul64(ap[0], ap[1], rp[1], k);
+         if (NA > 1 && NR > 1)
+            CppCore::umul64(ap[0], ap[1], rp[1], k);
+         else
+            k = 0U;
          for (size_t j = 2; j < MIN(NA,NR); j++)
          {
             CppCore::umul64(ap[0], ap[j], tl, th);
@@ -3981,6 +3987,87 @@ namespace CppCore
 #endif
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // SQUAREMOD
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// a*a mod m. For any sized integers that are multiples of 32-bit.
+   /// </summary>
+   template<typename UINT>
+   INLINE static void usquaremod(const UINT& a, const UINT& m, UINT& r, UINT p[3])
+   {
+      struct UINTX2 { UINT x[2]; };
+      CppCore::usquare<UINT, UINTX2>(a, *(UINTX2*)p);
+      CppCore::umod<UINTX2, UINT>(r, *(UINTX2*)p, m, (UINTX2*)p);
+   }
+
+   /// <summary>
+   ///  a*a mod m. For any sized integers that are multiples of 32-bit.
+   /// </summary>
+   template<typename UINT>
+   INLINE static void usquaremod(const UINT& a, const UINT& m, UINT& r)
+   {
+      CPPCORE_ALIGN_OPTIM(UINT) p[3];
+      CppCore::usquaremod(a, m, r, p);
+   }
+
+   /// <summary>
+   /// Template Specialization for 16-Bit Unsigned.
+   /// </summary>
+   template<> INLINE void usquaremod(const uint16_t& a, const uint16_t& m, uint16_t& r, uint16_t p[3])
+   {
+      CppCore::umulmod16(a, a, m, r); 
+   }
+
+   /// <summary>
+   /// Template Specialization for 16-Bit Unsigned.
+   /// </summary>
+   template<> INLINE void usquaremod(const uint16_t& a, const uint16_t& m, uint16_t& r)
+   {
+      CppCore::umulmod16(a, a, m, r); 
+   }
+
+   /// <summary>
+   /// Template Specialization for 32-Bit Unsigned.
+   /// </summary>
+   template<> INLINE void usquaremod(const uint32_t& a, const uint32_t& m, uint32_t& r, uint32_t p[3])
+   {
+      CppCore::umulmod32(a, a, m, r);
+   }
+
+   /// <summary>
+   /// Template Specialization for 32-Bit Unsigned.
+   /// </summary>
+   template<> INLINE void usquaremod(const uint32_t& a, const uint32_t& m, uint32_t& r)
+   {
+      CppCore::umulmod32(a, a, m, r);
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-Bit Unsigned.
+   /// </summary>
+   template<> INLINE void usquaremod(const uint64_t& a, const uint64_t& m, uint64_t& r, uint64_t p[3])
+   {
+   #if defined(CPPCORE_CPU_X64)
+      CppCore::umulmod64(a, a, m, r);
+   #else
+      CppCore::umulmod(a, a, m, r);
+   #endif
+   }
+
+   /// <summary>
+   /// Template Specialization for 64-Bit Unsigned.
+   /// </summary>
+   template<> INLINE void usquaremod(const uint64_t& a, const uint64_t& m, uint64_t& r)
+   {
+   #if defined(CPPCORE_CPU_X64)
+      CppCore::umulmod64(a, a, m, r);
+   #else
+      CppCore::umulmod(a, a, m, r);
+   #endif
+   }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // POWMOD
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    
@@ -4006,7 +4093,7 @@ namespace CppCore
       {
          if (CppCore::bittest(b, i))
             CppCore::umulmod(r, a, m, r, t);
-         CppCore::umulmod(a, a, m, a, t); //TODO: usquaremod
+         CppCore::usquaremod(a, m, a, t);
       }
    }
 
@@ -4053,10 +4140,9 @@ namespace CppCore
 
       // Process k bits at a time from left to right (MSB to LSB)
       for (int pos = HIDX_K - K; pos >= 0; pos -= K) {
-
          if (pos < HIDX_K - K)
             for (size_t i = 0; i < K; i++)
-               CppCore::umulmod(r, r, m, r, t);
+               CppCore::usquaremod(r, m, r, t);
          const uint32_t N = MIN(K, NUMBITS-pos);
          const uint32_t CHUNK = CppCore::getbits32(b, pos, N);
          CppCore::umulmod(r, powers[CHUNK], m, r, t);

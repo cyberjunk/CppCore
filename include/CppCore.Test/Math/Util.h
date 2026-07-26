@@ -493,16 +493,41 @@ namespace CppCore { namespace Test { namespace Math
 
       INLINE static bool usquare()
       {
-         uint64_t a[4]  = { 0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL };
-         uint64_t r1[9] = { 0x0000000000000001ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,
+         uint64_t a1[4]  = { 0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL };
+         uint64_t r1_1[9] = { 0x0000000000000001ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,
                             0xFFFFFFFFFFFFFFFEULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,
                             0x0000000000000000ULL };
-         uint64_t r2[9];
-         CppCore::usquare(a, r2);
-         if (!CppCore::equal(r1, r2))
+         uint64_t r1_2[9];
+         CppCore::usquare(a1, r1_2);
+         if (!CppCore::equal(r1_1, r1_2))
+            return false;
+
+         uint64_t a2 = 2;
+         uint64_t r2_1[2] = { 0x000000000004ULL, 0x0000000000000000ULL };
+         uint64_t r2_2[2];
+         CppCore::usquare(a2, r2_2);
+         if (!CppCore::equal(r2_1, r2_2))
+            return false;
+
+         uint64_t a3[2] = { 0x000000000002ULL, 0x0000000000000000ULL };
+         uint64_t r3_1  = 0x000000000004ULL;
+         uint64_t r3_2;
+         CppCore::usquare(a3, r3_2);
+         if (!CppCore::equal(r3_1, r3_2))
+            return false;
+
+         uint64_t a4 = 2;
+         uint64_t r4_1 = 4;
+         uint64_t r4_2;
+         CppCore::usquare(a4, r4_2);
+         if (!CppCore::equal(r4_1, r4_2))
             return false;
 
          return
+            usquare_template<1, 1>()  &&
+            usquare_template<1, 2>()  &&
+            usquare_template<1, 3>()  &&
+            usquare_template<2, 1>()  &&
             usquare_template<4, 2>()  &&
             usquare_template<4, 4>()  &&
             usquare_template<4, 8>()  &&

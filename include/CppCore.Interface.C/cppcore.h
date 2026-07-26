@@ -13,17 +13,18 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // macro for large integer arithmetic function declarations
-#define CPPCORE_UINT_DECLARATION(name)                                     \
-  CPPCORE_EXPORT void name ## _shl   (void* a, unsigned int b, void* r);   \
-  CPPCORE_EXPORT void name ## _shr   (void* a, unsigned int b, void* r);   \
-  CPPCORE_EXPORT void name ## _add   (void* a, void* b, void* r);          \
-  CPPCORE_EXPORT void name ## _sub   (void* a, void* b, void* r);          \
-  CPPCORE_EXPORT void name ## _mul   (void* a, void* b, void* r);          \
-  CPPCORE_EXPORT void name ## _square(void* a, void* r);                   \
-  CPPCORE_EXPORT void name ## _divmod(void* a, void* b, void* q, void* r); \
-  CPPCORE_EXPORT void name ## _mulmod(void* a, void* b, void* m, void* r); \
-  CPPCORE_EXPORT void name ## _powmod(void* a, void* b, void* m, void* r); \
-  CPPCORE_EXPORT void name ## _gcd   (void* a, void* b, void* r);
+#define CPPCORE_UINT_DECLARATION(name)                                        \
+  CPPCORE_EXPORT void name ## _shl      (void* a, unsigned int b, void* r);   \
+  CPPCORE_EXPORT void name ## _shr      (void* a, unsigned int b, void* r);   \
+  CPPCORE_EXPORT void name ## _add      (void* a, void* b, void* r);          \
+  CPPCORE_EXPORT void name ## _sub      (void* a, void* b, void* r);          \
+  CPPCORE_EXPORT void name ## _mul      (void* a, void* b, void* r);          \
+  CPPCORE_EXPORT void name ## _square   (void* a, void* r);                   \
+  CPPCORE_EXPORT void name ## _divmod   (void* a, void* b, void* q, void* r); \
+  CPPCORE_EXPORT void name ## _mulmod   (void* a, void* b, void* m, void* r); \
+  CPPCORE_EXPORT void name ## _squaremod(void* a, void* m, void* r);          \
+  CPPCORE_EXPORT void name ## _powmod   (void* a, void* b, void* m, void* r); \
+  CPPCORE_EXPORT void name ## _gcd      (void* a, void* b, void* r);
 
 // macro for basex function declarations
 #define CPPCORE_BASEX_DECLARATION(size)                                             \
