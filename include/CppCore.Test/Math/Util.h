@@ -473,6 +473,45 @@ namespace CppCore { namespace Test { namespace Math
          return true;
       }
 
+      template<size_t NA, size_t NR, size_t I=1000>
+      INLINE static bool usquare_template()
+      {
+         CppCore::Random::Default64 prng;
+         uint64_t a[NA];
+         uint64_t r1[NR];
+         uint64_t r2[NR];
+         for (size_t i = 0; i < I; i++)
+         {
+            prng.fill(a);
+            CppCore::umul(a, a, r1);
+            CppCore::usquare(a, r2);
+            if (!CppCore::equal(r1, r2))
+               return false;
+         }
+         return true;
+      }
+
+      INLINE static bool usquare()
+      {
+         uint64_t a[4]  = { 0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL };
+         uint64_t r1[9] = { 0x0000000000000001ULL,0x0000000000000000ULL,0x0000000000000000ULL,0x0000000000000000ULL,
+                            0xFFFFFFFFFFFFFFFEULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,0xFFFFFFFFFFFFFFFFULL,
+                            0x0000000000000000ULL };
+         uint64_t r2[9];
+         CppCore::usquare(a, r2);
+         if (!CppCore::equal(r1, r2))
+            return false;
+
+         return
+            usquare_template<4, 2>()  &&
+            usquare_template<4, 4>()  &&
+            usquare_template<4, 8>()  &&
+            usquare_template<4, 10>() &&
+            usquare_template<3, 2>()  &&
+            usquare_template<3, 3>()  &&
+            usquare_template<3, 4>();
+      }
+
       INLINE static bool overflowadd16()
       {
          uint16_t ru;
@@ -1581,6 +1620,7 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(SUBBORROW32)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow32()); }
       TEST_METHOD(SUBBORROW64)      { Assert::AreEqual(true, CppCore::Test::Math::Util::subborrow64()); }
       TEST_METHOD(MUL128)           { Assert::AreEqual(true, CppCore::Test::Math::Util::mul128()); }
+      TEST_METHOD(USQUARE)          { Assert::AreEqual(true, CppCore::Test::Math::Util::usquare()); }
       TEST_METHOD(OVERFLOWADD16)    { Assert::AreEqual(true, CppCore::Test::Math::Util::overflowadd16()); }
       TEST_METHOD(OVERFLOWADD32)    { Assert::AreEqual(true, CppCore::Test::Math::Util::overflowadd32()); }
       TEST_METHOD(OVERFLOWADD64)    { Assert::AreEqual(true, CppCore::Test::Math::Util::overflowadd64()); }

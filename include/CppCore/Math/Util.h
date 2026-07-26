@@ -2717,6 +2717,7 @@ namespace CppCore
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void umul(const UINT1& a, const UINT2& b, UINT3& r)
    {
+      static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0 && sizeof(UINT3) != 0);
       if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::umul((size_t)a, b, r); }
       else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::umul(a, (size_t)b, r); }
       else if constexpr (sizeof(UINT3) < sizeof(size_t)) 
@@ -2896,6 +2897,155 @@ namespace CppCore
    template<> INLINE void umul(const uint64_t& a, const uint64_t& b, uint64_t& r)
    {
       r = a * b;
+   }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // SQUARING
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   /// <summary>
+   /// Simple Squaring (a*a=r) in O((n*n)/2) automatically selecting 64-Bit or 32-Bit operations and chunks.
+   /// Calculates all bits of r, performing a full wide multiplication if sizeof(r) larger-equal sizeof(a)+sizeof(a).
+   /// This exploits the fact that a large number of pairwise products (triangles) are identical when squaring.
+   /// </summary>
+   template<typename UINT1, typename UINT2>
+   INLINE static void usquare(const UINT1& a, UINT2& r)
+   {
+      static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0);
+      if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::umul((size_t)a, (size_t)a, r); }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t)) 
+      { 
+         size_t t; 
+         CppCore::usquare(a, t); 
+         CppCore::clone(r, *(UINT2*)&t); 
+      }
+      else if constexpr (sizeof(UINT1) % sizeof(size_t) != 0)
+      {
+         Padded<UINT1> t(a);
+         CppCore::usquare(t, r);
+      }
+      else if constexpr (sizeof(UINT2) % sizeof(size_t) != 0)
+      {
+         Padded<UINT2> t;
+         CppCore::usquare(a, t);
+         CppCore::clone(r, t.v);
+      }
+   #if defined(CPPCORE_CPU_64BIT)
+      else if constexpr (sizeof(UINT1) == 16 && sizeof(UINT2) == 16)
+      {
+         uint64_t* ap = (uint64_t*)&a;
+         uint64_t* rp = (uint64_t*)&r;
+         CppCore::umul128(ap[0], ap[1], ap[0], ap[1], rp[0], rp[1]);
+      }
+      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0)
+      {
+         // 64-Bit CPU and Multiples of 64-Bit
+         constexpr size_t NA = sizeof(UINT1) / 8;
+         constexpr size_t NR = sizeof(UINT2) / 8;
+         assert((void*)&a != (void*)&r);
+         uint64_t* ap = (uint64_t*)&a;
+         uint64_t* rp = (uint64_t*)&r;
+         uint64_t  tl, th, k;
+         uint8_t   c;
+         for (size_t i = NA+NA; i < NR; i++)
+            rp[i] = 0ULL;
+         // calculate one triangle
+         rp[0] = 0ULL;
+         CppCore::umul128(ap[0], ap[1], rp[1], k);
+         for (size_t j = 2; j < MIN(NA,NR); j++)
+         {
+            CppCore::umul128(ap[0], ap[j], tl, th);
+            c = 0;
+            CppCore::addcarry64(tl, k, rp[j], c);
+            CppCore::addcarry64(th, 0ULL, k, c);
+         }
+         if constexpr (NA < NR)
+            rp[NA] = k;
+         for (size_t i = 1; i < NA && 2*i+1 < NR; i++)
+         {
+            k = 0ULL;
+            for (size_t j = i+1; j < NA && i+j < NR; j++)
+            {
+               CppCore::umul128(ap[i], ap[j], tl, th);
+               c = 0;
+               CppCore::addcarry64(tl, rp[i+j], tl, c);
+               CppCore::addcarry64(th, 0ULL, th, c);
+               c = 0;
+               CppCore::addcarry64(tl, k, rp[i+j], c);
+               CppCore::addcarry64(th, 0ULL, k, c);
+            }
+            if (i+NA < NR)
+               rp[i+NA] = k;
+         }
+         // double the triangular sum
+         c = 0;
+         for (size_t i = 0; i < MIN(NA+NA,NR); i++)
+            CppCore::addcarry64(rp[i], rp[i], rp[i], c);
+         // add diagonal terms
+         c = 0;
+         for (size_t i=0, j=0; i<NA && j<NR; i++, j+=2)
+         {
+            CppCore::umul128(ap[i], ap[i], tl, th);
+            CppCore::addcarry64(rp[j], tl, rp[j], c);
+            if (j+1 < NR)
+               CppCore::addcarry64(rp[j+1], th, rp[j+1], c);
+         }
+      }
+   #endif
+      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0)
+      {
+         // 32-Bit CPU or only Multiples of 32-Bit
+         constexpr size_t NA = sizeof(UINT1) / 4;
+         constexpr size_t NR = sizeof(UINT2) / 4;
+         assert((void*)&a != (void*)&r);
+         uint32_t* ap = (uint32_t*)&a;
+         uint32_t* rp = (uint32_t*)&r;
+         uint32_t  tl, th, k;
+         uint8_t   c;
+         for (size_t i = NA+NA; i < NR; i++)
+            rp[i] = 0U;
+         // calculate one triangle
+         rp[0] = 0U;
+         CppCore::umul64(ap[0], ap[1], rp[1], k);
+         for (size_t j = 2; j < MIN(NA,NR); j++)
+         {
+            CppCore::umul64(ap[0], ap[j], tl, th);
+            c = 0;
+            CppCore::addcarry32(tl, k, rp[j], c);
+            CppCore::addcarry32(th, 0ULL, k, c);
+         }
+         if constexpr (NA < NR)
+            rp[NA] = k;
+         for (size_t i = 1; i < NA && 2*i+1 < NR; i++)
+         {
+            k = 0ULL;
+            for (size_t j = i+1; j < NA && i+j < NR; j++)
+            {
+               CppCore::umul64(ap[i], ap[j], tl, th);
+               c = 0;
+               CppCore::addcarry32(tl, rp[i+j], tl, c);
+               CppCore::addcarry32(th, 0ULL, th, c);
+               c = 0;
+               CppCore::addcarry32(tl, k, rp[i+j], c);
+               CppCore::addcarry32(th, 0ULL, k, c);
+            }
+            if (i+NA < NR)
+               rp[i+NA] = k;
+         }
+         // double the triangular sum
+         c = 0;
+         for (size_t i = 0; i < MIN(NA+NA,NR); i++)
+            CppCore::addcarry32(rp[i], rp[i], rp[i], c);
+         // add diagonal terms
+         c = 0;
+         for (size_t i=0, j=0; i<NA && j<NR; i++, j+=2)
+         {
+            CppCore::umul64(ap[i], ap[i], tl, th);
+            CppCore::addcarry32(rp[j], tl, rp[j], c);
+            if (j+1 < NR)
+               CppCore::addcarry32(rp[j+1], th, rp[j+1], c);
+         }
+      }
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
