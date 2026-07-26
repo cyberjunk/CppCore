@@ -2717,6 +2717,7 @@ namespace CppCore
    template<typename UINT1, typename UINT2, typename UINT3>
    INLINE static void umul(const UINT1& a, const UINT2& b, UINT3& r)
    {
+      static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0 && sizeof(UINT3) != 0);
       if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::umul((size_t)a, b, r); }
       else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::umul(a, (size_t)b, r); }
       else if constexpr (sizeof(UINT3) < sizeof(size_t)) 
@@ -2898,14 +2899,19 @@ namespace CppCore
       r = a * b;
    }
 
-
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // SQUARING
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
-   /// 
+   /// Simple Squaring (a*a=r) in O((n*n)/2) automatically selecting 64-Bit or 32-Bit operations and chunks.
+   /// Calculates all bits of r, performing a full wide multiplication if sizeof(r) larger-equal sizeof(a)+sizeof(a).
+   /// This exploits the fact that a large number of pairwise products (triangles) are identical when squaring.
    /// </summary>
    template<typename UINT1, typename UINT2>
    INLINE static void usquare(const UINT1& a, UINT2& r)
    {
+      static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0);
       if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::umul((size_t)a, (size_t)a, r); }
       else if constexpr (sizeof(UINT2) < sizeof(size_t)) 
       { 
