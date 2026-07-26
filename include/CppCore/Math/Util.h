@@ -2937,44 +2937,42 @@ namespace CppCore
          constexpr size_t NA = sizeof(UINT1) / 8;
          constexpr size_t NR = sizeof(UINT2) / 8;
          assert((void*)&a != (void*)&r);
-
-         const uint64_t* A = reinterpret_cast<const uint64_t*>(&a);
-         uint64_t* R = reinterpret_cast<uint64_t*>(&r);
-
+         uint64_t* ap = (uint64_t*)&a;
+         uint64_t* rp = (uint64_t*)&r;
+         uint64_t  tl, th, k;
+         uint8_t   c;
+         // TODO: only clear starting at 2NA, write the others before reading
          for (size_t k = 0; k < NR; ++k)
-            R[k] = 0;
-
-         uint64_t tl, th, k;
-         uint8_t c;
+            rp[k] = 0;
          // calculate one triangle
          for (size_t i = 0; i < NA && 2*i+1 < NR; i++)
          {
             k = 0ULL;
             for (size_t j = i+1; j < NA && i+j < NR; j++)
             {
-               CppCore::umul128(A[i], A[j], tl, th);
+               CppCore::umul128(ap[i], ap[j], tl, th);
                c = 0;
-               CppCore::addcarry64(tl, R[i+j], tl, c);
+               CppCore::addcarry64(tl, rp[i+j], tl, c);
                CppCore::addcarry64(th, 0ULL, th, c);
                c = 0;
-               CppCore::addcarry64(tl, k, R[i+j], c);
+               CppCore::addcarry64(tl, k, rp[i+j], c);
                CppCore::addcarry64(th, 0ULL, k, c);
             }
             if (i+NA < NR)
-               R[i+NA] = k;
+               rp[i+NA] = k;
          }
          // double the triangular sum
-         c = 0;
+         c = 0; //TODO: This doesn't need to go beyond 2NA?
          for (size_t i = 0; i < NR; i++)
-            CppCore::addcarry64(R[i], R[i], R[i], c);
+            CppCore::addcarry64(rp[i], rp[i], rp[i], c);
          // add diagonal terms
          c = 0;
          for (size_t i=0, j=0; i<NA && j<NR; i++, j+=2)
          {
-            CppCore::umul128(A[i], A[i], tl, th);
-            CppCore::addcarry64(R[j], tl, R[j], c);
+            CppCore::umul128(ap[i], ap[i], tl, th);
+            CppCore::addcarry64(rp[j], tl, rp[j], c);
             if (j+1 < NR)
-               CppCore::addcarry64(R[j+1], th, R[j+1], c);
+               CppCore::addcarry64(rp[j+1], th, rp[j+1], c);
          }
       }
    #endif
