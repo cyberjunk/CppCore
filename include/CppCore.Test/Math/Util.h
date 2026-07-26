@@ -524,6 +524,10 @@ namespace CppCore { namespace Test { namespace Math
             return false;
 
          return
+            usquare_template<1, 1>()  &&
+            usquare_template<1, 2>()  &&
+            usquare_template<1, 3>()  &&
+            usquare_template<2, 1>()  &&
             usquare_template<4, 2>()  &&
             usquare_template<4, 4>()  &&
             usquare_template<4, 8>()  &&
