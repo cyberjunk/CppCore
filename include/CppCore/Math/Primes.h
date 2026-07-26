@@ -130,8 +130,7 @@ namespace CppCore
             return true;
          for (uint32_t i = 1U; i < s; i++)
          {
-            //TODO: usquaremod
-            CppCore::umulmod(r, r, n, r, m);
+            CppCore::usquaremod(r, n, r, m);
             if (r <= 1U) return false;
             if (r == t)  return true;
          }
