@@ -2952,7 +2952,7 @@ namespace CppCore
             rp[i] = 0ULL;
          // calculate one triangle
          k = 0ULL;
-         for (size_t j = 1; j < NA && j < NR; j++)
+         for (size_t j = 1; j < MIN(NA,NR); j++)
          {
             CppCore::umul128(ap[0], ap[j], tl, th);
             c = 0;
@@ -2978,8 +2978,8 @@ namespace CppCore
                rp[i+NA] = k;
          }
          // double the triangular sum
-         c = 0; //TODO: This doesn't need to go beyond 2NA?
-         for (size_t i = 0; i < NR; i++)
+         c = 0;
+         for (size_t i = 0; i < MIN(NA+NA,NR); i++)
             CppCore::addcarry64(rp[i], rp[i], rp[i], c);
          // add diagonal terms
          c = 0;
