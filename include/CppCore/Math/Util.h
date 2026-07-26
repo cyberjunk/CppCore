@@ -2947,12 +2947,12 @@ namespace CppCore
          uint64_t* rp = (uint64_t*)&r;
          uint64_t  tl, th, k;
          uint8_t   c;
-         rp[0] = 0ULL;
          for (size_t i = NA+NA; i < NR; i++)
             rp[i] = 0ULL;
          // calculate one triangle
-         k = 0ULL;
-         for (size_t j = 1; j < MIN(NA,NR); j++)
+         rp[0] = 0ULL;
+         CppCore::umul128(ap[0], ap[1], rp[1], k);
+         for (size_t j = 2; j < MIN(NA,NR); j++)
          {
             CppCore::umul128(ap[0], ap[j], tl, th);
             c = 0;
@@ -2997,9 +2997,6 @@ namespace CppCore
          assert(false);
       }
    }
-
-
-
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // UNSIGNED DIVISION+MODULO BY CONSTANTS
