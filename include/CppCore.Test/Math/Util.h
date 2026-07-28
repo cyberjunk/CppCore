@@ -1269,7 +1269,6 @@ namespace CppCore { namespace Test { namespace Math
          CppCore::Random::Default32 rnd;
          UINT1     u, q1, q2;
          UINT2     v, r1, r2;
-         UINT1     mem[2];
          uint16_t  un[N16UINT1+1];
          uint16_t  vn[N16UINT2];
          uint32_t* up = (uint32_t*)&u;
@@ -1289,7 +1288,7 @@ namespace CppCore { namespace Test { namespace Math
             CppCore::udivmod((uint16_t*)&q1, (uint16_t*)&r1, (uint16_t*)&u, (uint16_t*)&v, N16UINT1, N16UINT2, vn, N16UINT2, un, N16UINT1+1);
 
             // the optimized one
-            CppCore::umod<UINT1, UINT2>(r2, u, v, mem);
+            CppCore::umod(r2, u, v);
 
             // compare
             if (::memcmp(&r1, &r2, sizeof(UINT2)) != 0)

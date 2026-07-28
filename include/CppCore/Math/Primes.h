@@ -310,12 +310,11 @@ namespace CppCore
          struct UINTX2 { UINT x[2]; };
          UINT   s(4U);
          UINTX2 r;
-         UINTX2 mem[2];
          for (uint32_t i = 2U; i < ith; i++)
          {
             CppCore::usquare(s, r);
             CppCore::usub(r, (size_t)2U, r);
-            CppCore::umod(s, r, n, mem);
+            CppCore::umod(s, r, n);
          }
          return CppCore::testzero(s);
       }
