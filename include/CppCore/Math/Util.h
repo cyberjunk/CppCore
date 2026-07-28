@@ -4321,7 +4321,6 @@ namespace CppCore
    INLINE static void gcd(const UINT& x, const UINT& y, UINT& r)
    {
       CPPCORE_ALIGN_OPTIM(UINT) b, t;
-      CPPCORE_ALIGN_OPTIM(UINT) un[2];
 
       if (CppCore::testzero(x))
          CppCore::clone(r, y);
@@ -4332,7 +4331,7 @@ namespace CppCore
          CppCore::clone(b, y);
          while (!CppCore::testzero(b))
          {
-            CppCore::umod<UINT, UINT>(t, r, b, un);
+            CppCore::umod(t, r, b);
             CppCore::clone(r, b);
             CppCore::clone(b, t);
          }
