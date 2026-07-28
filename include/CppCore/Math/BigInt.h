@@ -1974,8 +1974,7 @@ namespace CppCore
          /// </summary>
          INLINE static void mod(const TC& a, const TC& b, TC& r)
          {
-            TC mem[2];
-            CppCore::umod(r, a, b, mem);
+            CppCore::umod(r, a, b);
          }
 
       #if defined(CPPCORE_CPU_X64)
@@ -3244,22 +3243,6 @@ namespace CppCore
       CppCore::umul128(a.d.l, a.d.h, b.d.l, b.d.h, r.d.l, r.d.h);
    }
 
-#if defined(CPPCORE_CPU_X64)
-   template<> INLINE void umod(uint64_t& r, const uint128_tg& u, const uint64_t& v, uint128_tg& mem)
-   {
-      r = CppCore::umod128_64x(u.d.i64, v, uint128_tg::N64);
-   }
-#endif
-
-   template<> INLINE void umod(uint32_t& r, const uint128_tg& u, const uint32_t& v, uint128_tg& mem)
-   {
-   #if defined(CPPCORE_CPU_X64)
-      r = (uint32_t)CppCore::umod128_64x(u.d.i64, (uint64_t)v, uint128_tg::N64);
-   #else
-      r = CppCore::umod64_32x(u.d.i32, v, uint128_tg::N32);
-   #endif
-   }
-
    /// <summary>
    /// Unsigned 128-Bit Integer (SIMD/Optimized)
    /// </summary>
@@ -3299,22 +3282,6 @@ namespace CppCore
    template<> INLINE void umul(const uint128_ts& a, const uint128_ts& b, uint128_ts& r)
    {
       CppCore::umul128(a.d.l, a.d.h, b.d.l, b.d.h, r.d.l, r.d.h);
-   }
-
-#if defined(CPPCORE_CPU_X64)
-   template<> INLINE void umod(uint64_t& r, const uint128_ts& u, const uint64_t& v, uint128_ts& mem)
-   {
-      r = CppCore::umod128_64x(u.d.i64, v, uint128_ts::N64);
-   }
-#endif
-
-   template<> INLINE void umod(uint32_t& r, const uint128_ts& u, const uint32_t& v, uint128_ts& mem)
-   {
-   #if defined(CPPCORE_CPU_X64)
-      r = (uint32_t)CppCore::umod128_64x(u.d.i64, (uint64_t)v, uint128_ts::N64);
-   #else
-      r = CppCore::umod64_32x(u.d.i32, v, uint128_ts::N32);
-   #endif
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

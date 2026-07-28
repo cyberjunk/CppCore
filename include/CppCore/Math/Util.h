@@ -3493,23 +3493,56 @@ namespace CppCore
 #endif
 
    /// <summary>
-   /// Modulo for any sized Integers that are multiples of 32-Bit.
+   /// Modulo for any sized unsigned integers.
    /// Based on Knuth's Algorithm in Hacker's Delight. (r=u%v)
    /// </summary>
    template<typename UINT1, typename UINT2, typename MEM>
    INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v, MEM& mem)
    {
-      assert(&r != &v);
-      static_assert(sizeof(UINT1) % 4 == 0);
-      static_assert(sizeof(UINT2) % 4 == 0);
-      static_assert(sizeof(UINT1) >= sizeof(UINT2));
-      static_assert(alignof(MEM) >= alignof(UINT1));
-      static_assert(alignof(MEM) >= alignof(UINT2));
+      static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0 && sizeof(MEM) != 0);
+      if constexpr (sizeof(UINT1) < sizeof(size_t))
+      { 
+         CppCore::umod(r, (size_t)u, v, mem);
+      }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t))
+      {
+         size_t tr;
+         CppCore::umod(tr, u, (size_t)v, mem);
+         CppCore::clone(r, *(UINT2*)&tr);
+      }
+      else if constexpr (sizeof(UINT1) % sizeof(size_t) != 0)
+      {
+         Padded<UINT1> tu(u);
+         CppCore::umod(r, tu, v, mem);
+      }
+      else if constexpr (sizeof(UINT2) % sizeof(size_t) != 0)
+      {
+         Padded<UINT2> tv(v);
+         Padded<UINT2> tr;
+         CppCore::umod(tr, u, tv, mem);
+         CppCore::clone(r, tr.v);
+      }
    #if defined(CPPCORE_CPU_X64)
-      if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0)
+      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) == 8)
+      {
+         constexpr uint32_t N64 = sizeof(UINT1) / 8;
+         *(uint64_t*)&r = CppCore::umod128_64x((uint64_t*)&u, v, N64);
+      }
+   #endif
+      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) == 4)
+      {
+         constexpr uint32_t N32 = sizeof(UINT1) / 4;
+         *(uint32_t*)&r = CppCore::umod64_32x((uint32_t*)&u, v, N32);
+      }
+   #if defined(CPPCORE_CPU_X64)
+      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0)
       {
          // using 64-bit chunks
+         assert(&r != &v);
          static_assert(sizeof(MEM) >= sizeof(UINT1) + 8U);
+         static_assert(sizeof(UINT1) >= sizeof(UINT2));
+         static_assert(alignof(MEM) >= alignof(UINT1));
+         static_assert(alignof(MEM) >= alignof(UINT2));
          constexpr uint32_t M = sizeof(UINT1) / 8;
          constexpr uint32_t N = sizeof(UINT2) / 8;
          uint64_t* rp  = (uint64_t*)&r;
@@ -3605,7 +3638,11 @@ namespace CppCore
    #endif
       {
          // using 32-bit chunks
+         assert(&r != &v);
          static_assert(sizeof(MEM) >= sizeof(UINT1) + 4U);
+         static_assert(sizeof(UINT1) >= sizeof(UINT2));
+         static_assert(alignof(MEM) >= alignof(UINT1));
+         static_assert(alignof(MEM) >= alignof(UINT2));
          constexpr uint32_t M = sizeof(UINT1) / 4;
          constexpr uint32_t N = sizeof(UINT2) / 4;
          uint32_t* rp  = (uint32_t*)&r;
@@ -3707,6 +3744,30 @@ namespace CppCore
    {
       alignas(MAX(alignof(UINT1), alignof(UINT2))) Padded<UINT1> mem;
       CppCore::umod(r, u, v, mem);
+   }
+
+   /// <summary>
+   /// 32%32=32
+   /// </summary>
+   template<> INLINE void umod(uint32_t& r, const uint32_t& u, const uint32_t& v)
+   {
+      r = u % v;
+   }
+
+   /// <summary>
+   /// 64%64=64
+   /// </summary>
+   template<> INLINE void umod(uint64_t& r, const uint64_t& u, const uint64_t& v)
+   {
+      r = u % v;
+   }
+
+   /// <summary>
+   /// 64%32=32
+   /// </summary>
+   template<> INLINE void umod(uint32_t& r, const uint64_t& u, const uint32_t& v)
+   {
+      r = u % v;
    }
 
    /// <summary>
@@ -3856,30 +3917,6 @@ namespace CppCore
          }
          CppCore::clone(r, *(UINT2*)mem);
       }
-   }
-
-   /// <summary>
-   /// 32%32=32
-   /// </summary>
-   template<> INLINE void umod(uint32_t& r, const uint32_t& u, const uint32_t& v, uint32_t& mem)
-   {
-      r = u % v;
-   }
-
-   /// <summary>
-   /// 64%64=64
-   /// </summary>
-   template<> INLINE void umod(uint64_t& r, const uint64_t& u, const uint64_t& v, uint64_t& mem)
-   {
-      r = u % v;
-   }
-
-   /// <summary>
-   /// 64%32=32
-   /// </summary>
-   template<> INLINE void umod(uint32_t& r, const uint64_t& u, const uint32_t& v, uint64_t& mem)
-   {
-      r = u % v;
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
