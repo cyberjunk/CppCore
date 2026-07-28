@@ -3742,7 +3742,11 @@ namespace CppCore
    template<typename UINT1, typename UINT2>
    INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v)
    {
-      alignas(MAX(alignof(UINT1), alignof(UINT2))) Padded<UINT1> mem;
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), alignof(UINT2)))) MEM { 
+         Padded<UINT1> x;
+         size_t p;
+      };
+      MEM mem;
       CppCore::umod(r, u, v, mem);
    }
 
