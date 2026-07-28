@@ -3496,23 +3496,26 @@ namespace CppCore
    /// Modulo for any sized Integers that are multiples of 32-Bit.
    /// Based on Knuth's Algorithm in Hacker's Delight. (r=u%v)
    /// </summary>
-   template<typename UINT1, typename UINT2>
-   INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v, UINT1 mem[2])
+   template<typename UINT1, typename UINT2, typename MEM>
+   INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v, MEM& mem)
    {
       assert(&r != &v);
       static_assert(sizeof(UINT1) % 4 == 0);
       static_assert(sizeof(UINT2) % 4 == 0);
       static_assert(sizeof(UINT1) >= sizeof(UINT2));
+      static_assert(alignof(MEM) >= alignof(UINT1));
+      static_assert(alignof(MEM) >= alignof(UINT2));
    #if defined(CPPCORE_CPU_X64)
       if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0)
       {
          // using 64-bit chunks
+         static_assert(sizeof(MEM) >= sizeof(UINT1) + 8U);
          constexpr uint32_t M = sizeof(UINT1) / 8;
          constexpr uint32_t N = sizeof(UINT2) / 8;
          uint64_t* rp  = (uint64_t*)&r;
          uint64_t* up  = (uint64_t*)&u;
          uint64_t* vp  = (uint64_t*)&v;
-         uint64_t* unp = (uint64_t*)mem;
+         uint64_t* unp = (uint64_t*)&mem;
          uint64_t* vno;
          uint64_t* vne;
          uint32_t  n = N;
@@ -3537,7 +3540,7 @@ namespace CppCore
          else {
             vno = vp;
             vne = &vp[n];
-            CppCore::clone(mem[0], u);
+            CppCore::clone(*(UINT1*)&mem, u);
             unp[M] = 0U;
          }
          const auto VNN1 = vno[n-1];
@@ -3596,18 +3599,19 @@ namespace CppCore
                *unpj = kl;
          }
          if (S) { CppCore::shr64x(unp, rp, n, S); }
-         else   { CppCore::clone(r, *(UINT2*)mem); }
+         else   { CppCore::clone(r, *(UINT2*)&mem); }
       }
       else
    #endif
       {
          // using 32-bit chunks
+         static_assert(sizeof(MEM) >= sizeof(UINT1) + 4U);
          constexpr uint32_t M = sizeof(UINT1) / 4;
          constexpr uint32_t N = sizeof(UINT2) / 4;
          uint32_t* rp  = (uint32_t*)&r;
          uint32_t* up  = (uint32_t*)&u;
          uint32_t* vp  = (uint32_t*)&v;
-         uint32_t* unp = (uint32_t*)mem;
+         uint32_t* unp = (uint32_t*)&mem;
          uint32_t* vno;
          uint32_t* vne;
          uint32_t  n = N;
@@ -3632,7 +3636,7 @@ namespace CppCore
          else {
             vno = vp;
             vne = &vp[n];
-            CppCore::clone(mem[0], u);
+            CppCore::clone(*(UINT1*)&mem, u);
             unp[M] = 0U;
          }
          const auto VNN1 = vno[n-1];
@@ -3691,7 +3695,7 @@ namespace CppCore
                *unpj = kl;
          }
          if (S) { CppCore::shr32x(unp, rp, n, S); }
-         else   { CppCore::clone(r, *(UINT2*)mem); }
+         else   { CppCore::clone(r, *(UINT2*)&mem); }
       }
    }
 
@@ -3701,7 +3705,7 @@ namespace CppCore
    template<typename UINT1, typename UINT2>
    INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v)
    {
-      CPPCORE_ALIGN_OPTIM(UINT1) mem[2];
+      alignas(MAX(alignof(UINT1), alignof(UINT2))) Padded<UINT1> mem;
       CppCore::umod(r, u, v, mem);
    }
 
@@ -3857,7 +3861,7 @@ namespace CppCore
    /// <summary>
    /// 32%32=32
    /// </summary>
-   template<> INLINE void umod(uint32_t& r, const uint32_t& u, const uint32_t& v, uint32_t mem[2])
+   template<> INLINE void umod(uint32_t& r, const uint32_t& u, const uint32_t& v, uint32_t& mem)
    {
       r = u % v;
    }
@@ -3865,7 +3869,7 @@ namespace CppCore
    /// <summary>
    /// 64%64=64
    /// </summary>
-   template<> INLINE void umod(uint64_t& r, const uint64_t& u, const uint64_t& v, uint64_t mem[2])
+   template<> INLINE void umod(uint64_t& r, const uint64_t& u, const uint64_t& v, uint64_t& mem)
    {
       r = u % v;
    }
@@ -3873,7 +3877,7 @@ namespace CppCore
    /// <summary>
    /// 64%32=32
    /// </summary>
-   template<> INLINE void umod(uint32_t& r, const uint64_t& u, const uint32_t& v, uint64_t mem[2])
+   template<> INLINE void umod(uint32_t& r, const uint64_t& u, const uint32_t& v, uint64_t& mem)
    {
       r = u % v;
    }
@@ -3889,8 +3893,9 @@ namespace CppCore
    INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, UINT p[3])
    {
       struct UINTX2 { UINT x[2]; };
+      struct UINTX3 { UINT x[3]; };
       CppCore::umul<UINT, UINT, UINTX2>(a, b, *(UINTX2*)p);
-      CppCore::umod<UINTX2, UINT>(r, *(UINTX2*)p, m, (UINTX2*)p);
+      CppCore::umod<UINTX2, UINT, UINTX3>(r, *(UINTX2*)p, m, *(UINTX3*)p);
    }
 
    /// <summary>
@@ -3997,8 +4002,9 @@ namespace CppCore
    INLINE static void usquaremod(const UINT& a, const UINT& m, UINT& r, UINT p[3])
    {
       struct UINTX2 { UINT x[2]; };
+      struct UINTX3 { UINT x[3]; };
       CppCore::usquare<UINT, UINTX2>(a, *(UINTX2*)p);
-      CppCore::umod<UINTX2, UINT>(r, *(UINTX2*)p, m, (UINTX2*)p);
+      CppCore::umod<UINTX2, UINT>(r, *(UINTX2*)p, m, *(UINTX3*)p);
    }
 
    /// <summary>

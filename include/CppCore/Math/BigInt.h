@@ -3245,13 +3245,13 @@ namespace CppCore
    }
 
 #if defined(CPPCORE_CPU_X64)
-   template<> INLINE void umod(uint64_t& r, const uint128_tg& u, const uint64_t& v, uint128_tg mem[3])
+   template<> INLINE void umod(uint64_t& r, const uint128_tg& u, const uint64_t& v, uint128_tg& mem)
    {
       r = CppCore::umod128_64x(u.d.i64, v, uint128_tg::N64);
    }
 #endif
 
-   template<> INLINE void umod(uint32_t& r, const uint128_tg& u, const uint32_t& v, uint128_tg mem[3])
+   template<> INLINE void umod(uint32_t& r, const uint128_tg& u, const uint32_t& v, uint128_tg& mem)
    {
    #if defined(CPPCORE_CPU_X64)
       r = (uint32_t)CppCore::umod128_64x(u.d.i64, (uint64_t)v, uint128_tg::N64);
@@ -3302,13 +3302,13 @@ namespace CppCore
    }
 
 #if defined(CPPCORE_CPU_X64)
-   template<> INLINE void umod(uint64_t& r, const uint128_ts& u, const uint64_t& v, uint128_ts mem[3])
+   template<> INLINE void umod(uint64_t& r, const uint128_ts& u, const uint64_t& v, uint128_ts& mem)
    {
       r = CppCore::umod128_64x(u.d.i64, v, uint128_ts::N64);
    }
 #endif
 
-   template<> INLINE void umod(uint32_t& r, const uint128_ts& u, const uint32_t& v, uint128_ts mem[3])
+   template<> INLINE void umod(uint32_t& r, const uint128_ts& u, const uint32_t& v, uint128_ts& mem)
    {
    #if defined(CPPCORE_CPU_X64)
       r = (uint32_t)CppCore::umod128_64x(u.d.i64, (uint64_t)v, uint128_ts::N64);
