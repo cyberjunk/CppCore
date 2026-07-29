@@ -3930,23 +3930,28 @@ namespace CppCore
    /// <summary>
    /// a*b mod m. For any sized integers that are multiples of 32-bit.
    /// </summary>
-   template<typename UINT>
-   INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, UINT p[3])
+   template<typename UINT1, typename UINT2, typename UINT3, typename MEM>
+   INLINE static void umulmod(const UINT1& a, const UINT2& b, const UINT3& m, UINT3& r, MEM& mem)
    {
-      struct UINTX2 { UINT x[2]; };
-      struct UINTX3 { UINT x[3]; };
-      CppCore::umul<UINT, UINT, UINTX2>(a, b, *(UINTX2*)p);
-      CppCore::umod<UINTX2, UINT, UINTX3>(r, *(UINTX2*)p, m, *(UINTX3*)p);
+      static_assert(sizeof(MEM) >= sizeof(Padded<UINT1>) + sizeof(Padded<UINT2>) + sizeof(size_t));
+      struct UINTX2 { UINT1 a; UINT2 b; };
+      CppCore::umul(a, b, *(UINTX2*)&mem);
+      CppCore::umod(r, *(UINTX2*)&mem, m, mem);
    }
 
    /// <summary>
    ///  a*b mod m. For any sized integers that are multiples of 32-bit.
    /// </summary>
-   template<typename UINT>
-   INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r)
+   template<typename UINT1, typename UINT2, typename UINT3>
+   INLINE static void umulmod(const UINT1& a, const UINT2& b, const UINT3& m, UINT3& r)
    {
-      CPPCORE_ALIGN_OPTIM(UINT) p[3];
-      CppCore::umulmod(a, b, m, r, p);
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), MAX(alignof(UINT2), alignof(UINT3))))) MEM {
+         Padded<UINT1> a;
+         Padded<UINT2> b;
+         size_t p;
+      };
+      MEM mem;
+      CppCore::umulmod(a, b, m, r, mem);
    }
 
    /// <summary>
@@ -3955,14 +3960,6 @@ namespace CppCore
    INLINE static void umulmod16(const uint16_t& a, const uint16_t& b, const uint16_t& m, uint16_t& r)
    {
       r = ((uint32_t)a * (uint32_t)b) % m;
-   }
-
-   /// <summary>
-   /// Template Specialization for 16-Bit Unsigned.
-   /// </summary>
-   template<> INLINE void umulmod(const uint16_t& a, const uint16_t& b, const uint16_t& m, uint16_t& r, uint16_t p[3])
-   {
-      CppCore::umulmod16(a, b, m, r); 
    }
 
    /// <summary>
@@ -3984,14 +3981,6 @@ namespace CppCore
    /// <summary>
    /// Template Specialization for 32-Bit Unsigned.
    /// </summary>
-   template<> INLINE void umulmod(const uint32_t& a, const uint32_t& b, const uint32_t& m, uint32_t& r, uint32_t p[3])
-   {
-      CppCore::umulmod32(a, b, m, r);
-   }
-
-   /// <summary>
-   /// Template Specialization for 32-Bit Unsigned.
-   /// </summary>
    template<> INLINE void umulmod(const uint32_t& a, const uint32_t& b, const uint32_t& m, uint32_t& r)
    {
       CppCore::umulmod32(a, b, m, r);
@@ -4005,14 +3994,6 @@ namespace CppCore
    {
       CppCore::umul128(a, b, a, b);
       CppCore::udivmod128_64((b < m) ? b : b % m, a, m, a, r);
-   }
-
-   /// <summary>
-   /// Template Specialization for 64-Bit Unsigned.
-   /// </summary>
-   template<> INLINE void umulmod(const uint64_t& a, const uint64_t& b, const uint64_t& m, uint64_t& r, uint64_t p[3])
-   {
-      CppCore::umulmod64(a, b, m, r);
    }
 
    /// <summary>
@@ -4039,31 +4020,28 @@ namespace CppCore
    /// <summary>
    /// a*a mod m. For any sized integers that are multiples of 32-bit.
    /// </summary>
-   template<typename UINT>
-   INLINE static void usquaremod(const UINT& a, const UINT& m, UINT& r, UINT p[3])
+   template<typename UINT1, typename UINT2, typename MEM>
+   INLINE static void usquaremod(const UINT1& a, const UINT2& m, UINT2& r, MEM& mem)
    {
-      struct UINTX2 { UINT x[2]; };
-      struct UINTX3 { UINT x[3]; };
-      CppCore::usquare<UINT, UINTX2>(a, *(UINTX2*)p);
-      CppCore::umod<UINTX2, UINT>(r, *(UINTX2*)p, m, *(UINTX3*)p);
+      static_assert(sizeof(MEM) >= sizeof(Padded<UINT1>) + sizeof(Padded<UINT1>) + sizeof(size_t));
+      struct UINTX2 { UINT1 a1; UINT1 a2; };
+      CppCore::usquare(a, *(UINTX2*)&mem);
+      CppCore::umod(r, *(UINTX2*)&mem, m, mem);
    }
 
    /// <summary>
    ///  a*a mod m. For any sized integers that are multiples of 32-bit.
    /// </summary>
-   template<typename UINT>
-   INLINE static void usquaremod(const UINT& a, const UINT& m, UINT& r)
+   template<typename UINT1, typename UINT2>
+   INLINE static void usquaremod(const UINT1& a, const UINT2& m, UINT2& r)
    {
-      CPPCORE_ALIGN_OPTIM(UINT) p[3];
-      CppCore::usquaremod(a, m, r, p);
-   }
-
-   /// <summary>
-   /// Template Specialization for 16-Bit Unsigned.
-   /// </summary>
-   template<> INLINE void usquaremod(const uint16_t& a, const uint16_t& m, uint16_t& r, uint16_t p[3])
-   {
-      CppCore::umulmod16(a, a, m, r); 
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), alignof(UINT2)))) MEM {
+         Padded<UINT1> a1;
+         Padded<UINT1> a2;
+         size_t p;
+      };
+      MEM mem;
+      CppCore::usquaremod(a, m, r, mem);
    }
 
    /// <summary>
@@ -4077,29 +4055,9 @@ namespace CppCore
    /// <summary>
    /// Template Specialization for 32-Bit Unsigned.
    /// </summary>
-   template<> INLINE void usquaremod(const uint32_t& a, const uint32_t& m, uint32_t& r, uint32_t p[3])
-   {
-      CppCore::umulmod32(a, a, m, r);
-   }
-
-   /// <summary>
-   /// Template Specialization for 32-Bit Unsigned.
-   /// </summary>
    template<> INLINE void usquaremod(const uint32_t& a, const uint32_t& m, uint32_t& r)
    {
       CppCore::umulmod32(a, a, m, r);
-   }
-
-   /// <summary>
-   /// Template Specialization for 64-Bit Unsigned.
-   /// </summary>
-   template<> INLINE void usquaremod(const uint64_t& a, const uint64_t& m, uint64_t& r, uint64_t p[3])
-   {
-   #if defined(CPPCORE_CPU_X64)
-      CppCore::umulmod64(a, a, m, r);
-   #else
-      CppCore::umulmod(a, a, m, r);
-   #endif
    }
 
    /// <summary>
@@ -4121,8 +4079,8 @@ namespace CppCore
    /// <summary>
    /// a^b mod m
    /// </summary>
-   template<typename UINT>
-   INLINE static void upowmod_single(UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
+   template<typename UINT, typename MEM>
+   INLINE static void upowmod_single(UINT& a, const UINT& b, const UINT& m, UINT& r, MEM& mem)
    {
       assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
@@ -4139,8 +4097,8 @@ namespace CppCore
       for (uint32_t i = 0; i < HIDX; i++)
       {
          if (CppCore::bittest(b, i))
-            CppCore::umulmod(r, a, m, r, t);
-         CppCore::usquaremod(a, m, a, t);
+            CppCore::umulmod(r, a, m, r, mem);
+         CppCore::usquaremod(a, m, a, mem);
       }
    }
 
@@ -4150,15 +4108,20 @@ namespace CppCore
    template<typename UINT>
    INLINE static void upowmod_single(UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
-      CPPCORE_ALIGN_OPTIM(UINT) t[3];
-      CppCore::upowmod_single(a, b, m, r, t);
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) MEM {
+         Padded<UINT> a;
+         Padded<UINT> b;
+         size_t p;
+      };
+      MEM mem;
+      CppCore::upowmod_single(a, b, m, r, mem);
    }
 
    /// <summary>
    /// a^b mod m
    /// </summary>
-   template<typename UINT, uint32_t K = 4U>
-   INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, UINT t[3])
+   template<typename UINT, typename MEM, uint32_t K = 4U>
+   INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, MEM& mem)
    {
       assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
@@ -4174,11 +4137,12 @@ namespace CppCore
 
       // Precompute powers: base^0, base^1, ..., base^(2^k - 1)
       constexpr size_t TABLE_SIZE = 1U << K;
+      //TODO: This should use MEM so it can be moved to heap if needed
       CPPCORE_ALIGN_OPTIM(UINT) powers[TABLE_SIZE];
       CppCore::clear(powers[0]); *(uint32_t*)&powers[0] = 1U;
       CppCore::clone(powers[1], a);
       for (size_t i = 2; i < TABLE_SIZE; i++)
-         CppCore::umulmod(powers[i-1], a, m, powers[i], t);
+         CppCore::umulmod(powers[i-1], a, m, powers[i], mem);
 
       // Find the position of the highest bit in exp
       // Round up to multiple of k
@@ -4189,10 +4153,10 @@ namespace CppCore
       for (int pos = HIDX_K - K; pos >= 0; pos -= K) {
          if (pos < HIDX_K - K)
             for (size_t i = 0; i < K; i++)
-               CppCore::usquaremod(r, m, r, t);
+               CppCore::usquaremod(r, m, r, mem);
          const uint32_t N = MIN(K, NUMBITS-pos);
          const uint32_t CHUNK = CppCore::getbits32(b, pos, N);
-         CppCore::umulmod(r, powers[CHUNK], m, r, t);
+         CppCore::umulmod(r, powers[CHUNK], m, r, mem);
       }
    }
 
@@ -4202,8 +4166,13 @@ namespace CppCore
    template<typename UINT, uint32_t K = 4U>
    INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r)
    {
-      CPPCORE_ALIGN_OPTIM(UINT) t[3];
-      CppCore::upowmod<UINT, K>(a, b, m, r, t);
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) MEM {
+         Padded<UINT> a;
+         Padded<UINT> b;
+         size_t p;
+      };
+      MEM mem;
+      CppCore::upowmod<UINT, MEM, K>(a, b, m, r, mem);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -121,16 +121,16 @@ namespace CppCore
       /// <summary>
       /// SPRP with precalculated t, s and d and work memory m
       /// </summary>
-      template<typename UINT>
-      INLINE static bool sprp(const UINT& n, const UINT& a, const UINT& t, const uint32_t& s, const UINT& d, UINT& r, UINT m[3])
+      template<typename UINT, typename MEM>
+      INLINE static bool sprp(const UINT& n, const UINT& a, const UINT& t, const uint32_t& s, const UINT& d, UINT& r, MEM& mem)
       {
          assert(a != 1U);
-         CppCore::upowmod(a, d, n, r, m);
+         CppCore::upowmod(a, d, n, r, mem);
          if ((r == 1U) | (r == t)) 
             return true;
          for (uint32_t i = 1U; i < s; i++)
          {
-            CppCore::usquaremod(r, n, r, m);
+            CppCore::usquaremod(r, n, r, mem);
             if (r <= 1U) return false;
             if (r == t)  return true;
          }
@@ -144,10 +144,15 @@ namespace CppCore
       INLINE static bool sprp(const UINT& n, UINT a)
       {
          UINT t, d, r;
-         UINT m[3];
          uint32_t s;
+         struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) MEM {
+            Padded<UINT> a;
+            Padded<UINT> b;
+            size_t p;
+         };
+         MEM mem;
          sprp_tsd(n, t, s, d);
-         return sprp(n, a, t, s, d, r, m);
+         return sprp(n, a, t, s, d, r, mem);
       }
 
       /// <summary>
@@ -329,16 +334,15 @@ namespace CppCore
       template<typename UINT>
       struct CPPCORE_ALIGN64 Memory
       {
-         union {
-            struct {
-               UINT t;
-               UINT d;
-               UINT a;
-               UINT r;
-               UINT m[3];
-            };
-            UINT mem[7];
-         };
+         UINT t;
+         UINT d;
+         UINT a;
+         UINT r;
+         struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) {
+            Padded<UINT> a;
+            Padded<UINT> b;
+            size_t c;
+         } m;
          uint32_t s;
       public:
          INLINE Memory() { }
@@ -371,7 +375,7 @@ namespace CppCore
          UINT&     d = mem.d; // d constant, see below
          UINT&     a = mem.a; // base a to test
          UINT&     r = mem.r; // temporary result
-         UINT*     m = mem.m; // work memory
+         auto&     m = mem.m; // work memory
 
          // calculate constants
          // t = n-1
