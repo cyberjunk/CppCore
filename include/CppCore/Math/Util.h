@@ -3930,11 +3930,11 @@ namespace CppCore
    /// <summary>
    /// a*b mod m. For any sized integers that are multiples of 32-bit.
    /// </summary>
-   template<typename UINT, typename MEM>
-   INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, MEM& mem)
+   template<typename UINT1, typename UINT2, typename UINT3, typename MEM>
+   INLINE static void umulmod(const UINT1& a, const UINT2& b, const UINT3& m, UINT3& r, MEM& mem)
    {
-      static_assert(sizeof(MEM) >= sizeof(Padded<UINT>) + sizeof(Padded<UINT>) + sizeof(size_t));
-      struct UINTX2 { UINT a; UINT b; };
+      static_assert(sizeof(MEM) >= sizeof(Padded<UINT1>) + sizeof(Padded<UINT2>) + sizeof(size_t));
+      struct UINTX2 { UINT1 a; UINT2 b; };
       CppCore::umul(a, b, *(UINTX2*)&mem);
       CppCore::umod(r, *(UINTX2*)&mem, m, mem);
    }
@@ -3942,12 +3942,12 @@ namespace CppCore
    /// <summary>
    ///  a*b mod m. For any sized integers that are multiples of 32-bit.
    /// </summary>
-   template<typename UINT>
-   INLINE static void umulmod(const UINT& a, const UINT& b, const UINT& m, UINT& r)
+   template<typename UINT1, typename UINT2, typename UINT3>
+   INLINE static void umulmod(const UINT1& a, const UINT2& b, const UINT3& m, UINT3& r)
    {
-      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) MEM {
-         Padded<UINT> a;
-         Padded<UINT> b;
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), MAX(alignof(UINT2), alignof(UINT3))))) MEM {
+         Padded<UINT1> a;
+         Padded<UINT2> b;
          size_t p;
       };
       MEM mem;
@@ -4020,11 +4020,11 @@ namespace CppCore
    /// <summary>
    /// a*a mod m. For any sized integers that are multiples of 32-bit.
    /// </summary>
-   template<typename UINT, typename MEM>
-   INLINE static void usquaremod(const UINT& a, const UINT& m, UINT& r, MEM& mem)
+   template<typename UINT1, typename UINT2, typename MEM>
+   INLINE static void usquaremod(const UINT1& a, const UINT2& m, UINT2& r, MEM& mem)
    {
-      static_assert(sizeof(MEM) >= sizeof(Padded<UINT>) + sizeof(Padded<UINT>) + sizeof(size_t));
-      struct UINTX2 { UINT a1; UINT a2; };
+      static_assert(sizeof(MEM) >= sizeof(Padded<UINT1>) + sizeof(Padded<UINT1>) + sizeof(size_t));
+      struct UINTX2 { UINT1 a1; UINT1 a2; };
       CppCore::usquare(a, *(UINTX2*)&mem);
       CppCore::umod(r, *(UINTX2*)&mem, m, mem);
    }
@@ -4032,12 +4032,12 @@ namespace CppCore
    /// <summary>
    ///  a*a mod m. For any sized integers that are multiples of 32-bit.
    /// </summary>
-   template<typename UINT>
-   INLINE static void usquaremod(const UINT& a, const UINT& m, UINT& r)
+   template<typename UINT1, typename UINT2>
+   INLINE static void usquaremod(const UINT1& a, const UINT2& m, UINT2& r)
    {
-      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) MEM {
-         Padded<UINT> a1;
-         Padded<UINT> a2;
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), alignof(UINT2)))) MEM {
+         Padded<UINT1> a1;
+         Padded<UINT1> a2;
          size_t p;
       };
       MEM mem;
@@ -4137,6 +4137,7 @@ namespace CppCore
 
       // Precompute powers: base^0, base^1, ..., base^(2^k - 1)
       constexpr size_t TABLE_SIZE = 1U << K;
+      //TODO: This should use MEM so it can be moved to heap if needed
       CPPCORE_ALIGN_OPTIM(UINT) powers[TABLE_SIZE];
       CppCore::clear(powers[0]); *(uint32_t*)&powers[0] = 1U;
       CppCore::clone(powers[1], a);
