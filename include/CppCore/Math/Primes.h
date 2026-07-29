@@ -334,17 +334,15 @@ namespace CppCore
       template<typename UINT>
       struct CPPCORE_ALIGN64 Memory
       {
-         struct {
-            UINT t;
-            UINT d;
-            UINT a;
-            UINT r;
-            struct {
-               Padded<UINT> a;
-               Padded<UINT> b;
-               size_t c;
-            } m;
-         };
+         UINT t;
+         UINT d;
+         UINT a;
+         UINT r;
+         struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) {
+            Padded<UINT> a;
+            Padded<UINT> b;
+            size_t c;
+         } m;
          uint32_t s;
       public:
          INLINE Memory() { }
