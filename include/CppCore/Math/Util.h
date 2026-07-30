@@ -3538,9 +3538,10 @@ namespace CppCore
       else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0)
       {
          // using 64-bit chunks
-         assert(&r != &v);
+         assert((void*)&r != (void*)&v);
+         assert((void*)&r != (void*)&u);
          static_assert(sizeof(MEM) >= sizeof(UINT1) + 8U);
-         static_assert(sizeof(UINT1) >= sizeof(UINT2));
+         static_assert(sizeof(MEM) >= sizeof(UINT2));
          static_assert(alignof(MEM) >= alignof(UINT1));
          static_assert(alignof(MEM) >= alignof(UINT2));
          constexpr uint32_t M = sizeof(UINT1) / 8;
@@ -3552,23 +3553,30 @@ namespace CppCore
          uint64_t* vno;
          uint64_t* vne;
          uint32_t  n = N;
+         uint32_t  m = M;
+         CppCore::clear(r);
          while (n != 0U && vp[n-1] == 0U)
             n--;
          if (n == 0U)
             return;
+         while (m != 0U && up[m-1] == 0U)
+            m--;
+         if (n > m) {
+            if constexpr (M >= N) CppCore::clone(r, *(UINT2*)&u);
+            else CppCore::clone(*(UINT1*)&r, u);
+            return;
+         }
          if (n == 1U) {
-            CppCore::clear(r);
-            *rp = CppCore::umod128_64x(up, *vp, M);
+            *rp = CppCore::umod128_64x(up, *vp, m);
             return;
          }
          const auto S((uint8_t)CppCore::lzcnt(vp[n-1]));
          if (S) {
-            CppCore::clear(r);
             CppCore::shl64x(vp, rp, n, S);
             vno = rp;
             vne = &rp[n];
-            unp[M] = up[M-1] >> (64U-S);
-            CppCore::shl64x(up, unp, M, S);
+            unp[m] = up[m-1] >> (64U-S);
+            CppCore::shl64x(up, unp, m, S);
          }
          else {
             vno = vp;
@@ -3578,7 +3586,7 @@ namespace CppCore
          }
          const auto VNN1 = vno[n-1];
          const auto VNN2 = vno[n-2];
-         for (uint32_t j = M-n; j != UINT32_MAX; j--)
+         for (uint32_t j = m-n; j != UINT32_MAX; j--)
          {
             auto* unpjo = &unp[j];
             auto* unpj = unpjo;
@@ -3632,15 +3640,19 @@ namespace CppCore
                *unpj = kl;
          }
          if (S) { CppCore::shr64x(unp, rp, n, S); }
-         else   { CppCore::clone(r, *(UINT2*)&mem); }
+         else {
+            if constexpr (M >= N) CppCore::clone(r, *(UINT2*)&mem);
+            else CppCore::clone(*(UINT1*)&r, *(UINT1*)&mem);
+         }
       }
       else
    #endif
       {
          // using 32-bit chunks
-         assert(&r != &v);
+         assert((void*)&r != (void*)&v);
+         assert((void*)&r != (void*)&u);
          static_assert(sizeof(MEM) >= sizeof(UINT1) + 4U);
-         static_assert(sizeof(UINT1) >= sizeof(UINT2));
+         static_assert(sizeof(MEM) >= sizeof(UINT2));
          static_assert(alignof(MEM) >= alignof(UINT1));
          static_assert(alignof(MEM) >= alignof(UINT2));
          constexpr uint32_t M = sizeof(UINT1) / 4;
@@ -3652,23 +3664,30 @@ namespace CppCore
          uint32_t* vno;
          uint32_t* vne;
          uint32_t  n = N;
+         uint32_t  m = M;
+         CppCore::clear(r);
          while (n != 0U && vp[n-1] == 0U)
             n--;
          if (n == 0U)
             return;
+         while (m != 0U && up[m-1] == 0U)
+            m--;
+         if (n > m) {
+            if constexpr (M >= N) CppCore::clone(r, *(UINT2*)&u);
+            else CppCore::clone(*(UINT1*)&r, u);
+            return;
+         }
          if (n == 1U) {
-            CppCore::clear(r);
-            *rp = CppCore::umod64_32x(up, *vp, M);
+            *rp = CppCore::umod64_32x(up, *vp, m);
             return;
          }
          const auto S((uint8_t)CppCore::lzcnt(vp[n-1]));
          if (S) {
-            CppCore::clear(r);
             CppCore::shl32x(vp, rp, n, S);
             vno = rp;
             vne = &rp[n];
-            unp[M] = up[M-1] >> (32U-S);
-            CppCore::shl32x(up, unp, M, S);
+            unp[m] = up[m-1] >> (32U-S);
+            CppCore::shl32x(up, unp, m, S);
          }
          else {
             vno = vp;
@@ -3678,7 +3697,7 @@ namespace CppCore
          }
          const auto VNN1 = vno[n-1];
          const auto VNN2 = vno[n-2];
-         for (uint32_t j = M-n; j != UINT32_MAX; j--)
+         for (uint32_t j = m-n; j != UINT32_MAX; j--)
          {
             auto* unpjo = &unp[j];
             auto* unpj = unpjo;
@@ -3732,7 +3751,10 @@ namespace CppCore
                *unpj = kl;
          }
          if (S) { CppCore::shr32x(unp, rp, n, S); }
-         else   { CppCore::clone(r, *(UINT2*)&mem); }
+         else {
+            if constexpr (M >= N) CppCore::clone(r, *(UINT2*)&mem);
+            else CppCore::clone(*(UINT1*)&r, *(UINT1*)&mem);
+         }
       }
    }
 
