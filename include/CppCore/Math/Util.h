@@ -3496,19 +3496,23 @@ namespace CppCore
    /// Modulo for any sized unsigned integers.
    /// Based on Knuth's Algorithm in Hacker's Delight. (r=u%v)
    /// </summary>
-   template<typename UINT1, typename UINT2, typename MEM>
-   INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v, MEM& mem)
+   template<typename UINT1, typename UINT2, typename UINT3, typename MEM>
+   INLINE static void umod(UINT3& r, const UINT1& u, const UINT2& v, MEM& mem)
    {
-      static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0 && sizeof(MEM) != 0);
+      static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0 && sizeof(UINT3) != 0 && sizeof(MEM) != 0);
       if constexpr (sizeof(UINT1) < sizeof(size_t))
       { 
          CppCore::umod(r, (size_t)u, v, mem);
       }
       else if constexpr (sizeof(UINT2) < sizeof(size_t))
       {
+         CppCore::umod(r, u, (size_t)v, mem);
+      }
+      else if constexpr (sizeof(UINT3) < sizeof(size_t))
+      {
          size_t tr;
-         CppCore::umod(tr, u, (size_t)v, mem);
-         CppCore::clone(r, *(UINT2*)&tr);
+         CppCore::umod(tr, u, v, mem);
+         CppCore::clone(r, *(UINT3*)&tr);
       }
       else if constexpr (sizeof(UINT1) % sizeof(size_t) != 0)
       {
@@ -3518,8 +3522,12 @@ namespace CppCore
       else if constexpr (sizeof(UINT2) % sizeof(size_t) != 0)
       {
          Padded<UINT2> tv(v);
-         Padded<UINT2> tr;
-         CppCore::umod(tr, u, tv, mem);
+         CppCore::umod(r, u, tv, mem);
+      }
+      else if constexpr (sizeof(UINT3) % sizeof(size_t) != 0)
+      {
+         Padded<UINT3> tr;
+         CppCore::umod(tr, u, v, mem);
          CppCore::clone(r, tr.v);
       }
    #if defined(CPPCORE_CPU_X64)
@@ -3540,10 +3548,11 @@ namespace CppCore
          // using 64-bit chunks
          assert((void*)&r != (void*)&v);
          assert((void*)&r != (void*)&u);
+         static_assert(sizeof(UINT3) >= MIN(sizeof(UINT1), sizeof(UINT2)));
          static_assert(sizeof(MEM) >= sizeof(UINT1) + 8U);
-         static_assert(sizeof(MEM) >= sizeof(UINT2));
          static_assert(alignof(MEM) >= alignof(UINT1));
          static_assert(alignof(MEM) >= alignof(UINT2));
+         static_assert(alignof(MEM) >= alignof(UINT3));
          constexpr uint32_t M = sizeof(UINT1) / 8;
          constexpr uint32_t N = sizeof(UINT2) / 8;
          uint64_t* rp  = (uint64_t*)&r;
@@ -3562,7 +3571,8 @@ namespace CppCore
          while (m != 0U && up[m-1] == 0U)
             m--;
          if (n > m) {
-            if constexpr (M >= N) CppCore::clone(r, *(UINT2*)&u);
+            if constexpr (sizeof(UINT3) <= sizeof(UINT1))
+               CppCore::clone(r, *(UINT3*)&u);
             else CppCore::clone(*(UINT1*)&r, u);
             return;
          }
@@ -3641,7 +3651,8 @@ namespace CppCore
          }
          if (S) { CppCore::shr64x(unp, rp, n, S); }
          else {
-            if constexpr (M >= N) CppCore::clone(r, *(UINT2*)&mem);
+            if constexpr (sizeof(UINT3) <= sizeof(UINT1))
+               CppCore::clone(r, *(UINT3*)&mem);
             else CppCore::clone(*(UINT1*)&r, *(UINT1*)&mem);
          }
       }
@@ -3651,10 +3662,11 @@ namespace CppCore
          // using 32-bit chunks
          assert((void*)&r != (void*)&v);
          assert((void*)&r != (void*)&u);
+         static_assert(sizeof(UINT3) >= MIN(sizeof(UINT1), sizeof(UINT2)));
          static_assert(sizeof(MEM) >= sizeof(UINT1) + 4U);
-         static_assert(sizeof(MEM) >= sizeof(UINT2));
          static_assert(alignof(MEM) >= alignof(UINT1));
          static_assert(alignof(MEM) >= alignof(UINT2));
+         static_assert(alignof(MEM) >= alignof(UINT3));
          constexpr uint32_t M = sizeof(UINT1) / 4;
          constexpr uint32_t N = sizeof(UINT2) / 4;
          uint32_t* rp  = (uint32_t*)&r;
@@ -3673,7 +3685,8 @@ namespace CppCore
          while (m != 0U && up[m-1] == 0U)
             m--;
          if (n > m) {
-            if constexpr (M >= N) CppCore::clone(r, *(UINT2*)&u);
+            if constexpr (sizeof(UINT3) <= sizeof(UINT1))
+               CppCore::clone(r, *(UINT3*)&u);
             else CppCore::clone(*(UINT1*)&r, u);
             return;
          }
@@ -3752,7 +3765,8 @@ namespace CppCore
          }
          if (S) { CppCore::shr32x(unp, rp, n, S); }
          else {
-            if constexpr (M >= N) CppCore::clone(r, *(UINT2*)&mem);
+            if constexpr (sizeof(UINT3) <= sizeof(UINT1))
+               CppCore::clone(r, *(UINT3*)&mem);
             else CppCore::clone(*(UINT1*)&r, *(UINT1*)&mem);
          }
       }
@@ -3761,10 +3775,10 @@ namespace CppCore
    /// <summary>
    /// Like other variant but using temporary stack memory
    /// </summary>
-   template<typename UINT1, typename UINT2>
-   INLINE static void umod(UINT2& r, const UINT1& u, const UINT2& v)
+   template<typename UINT1, typename UINT2, typename UINT3>
+   INLINE static void umod(UINT3& r, const UINT1& u, const UINT2& v)
    {
-      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), alignof(UINT2)))) MEM { 
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), MAX(alignof(UINT2), alignof(UINT3))))) MEM { 
          Padded<UINT1> x;
          size_t p;
       };
@@ -3792,6 +3806,14 @@ namespace CppCore
    /// 64%32=32
    /// </summary>
    template<> INLINE void umod(uint32_t& r, const uint64_t& u, const uint32_t& v)
+   {
+      r = u % v;
+   }
+
+   /// <summary>
+   /// 64%32=64
+   /// </summary>
+   template<> INLINE void umod(uint64_t& r, const uint64_t& u, const uint32_t& v)
    {
       r = u % v;
    }
