@@ -3531,7 +3531,7 @@ namespace CppCore
          CppCore::umod(r, u, tv, mem);
       }
    #if defined(CPPCORE_CPU_X64)
-      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) == 8 && sizeof(UINT3) >= 8)
+      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) == 8 && sizeof(UINT3) % 8 == 0)
       {
          if constexpr (sizeof(UINT3) > 8)
             CppCore::clear(r);
@@ -3539,7 +3539,7 @@ namespace CppCore
          *(uint64_t*)&r = CppCore::umod128_64x((uint64_t*)&u, v, N64);
       }
    #endif
-      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) == 4 && sizeof(UINT3) >= 4)
+      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) == 4 && sizeof(UINT3) % 4 == 0)
       {
          if constexpr (sizeof(UINT3) > 4)
             CppCore::clear(r);
@@ -3547,7 +3547,7 @@ namespace CppCore
          *(uint32_t*)&r = CppCore::umod64_32x((uint32_t*)&u, v, N32);
       }
    #if defined(CPPCORE_CPU_X64)
-      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0)
+      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) % 8 == 0 && sizeof(UINT3) % 8 == 0)
       {
          // using 64-bit chunks
          assert((void*)&r != (void*)&v);
@@ -3660,8 +3660,8 @@ namespace CppCore
             else CppCore::clone(*(UINT1*)&r, *(UINT1*)&mem);
          }
       }
-      else
    #endif
+      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) % 4 == 0 && sizeof(UINT3) % 4 == 0)
       {
          // using 32-bit chunks
          assert((void*)&r != (void*)&v);
@@ -3774,6 +3774,7 @@ namespace CppCore
             else CppCore::clone(*(UINT1*)&r, *(UINT1*)&mem);
          }
       }
+      else assert(false);
    }
 
    /// <summary>
