@@ -3531,14 +3531,18 @@ namespace CppCore
          CppCore::clone(r, tr.v);
       }
    #if defined(CPPCORE_CPU_X64)
-      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) == 8)
+      else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) == 8 && sizeof(UINT3) >= 8)
       {
+         if constexpr (sizeof(UINT3) > 8)
+            CppCore::clear(r);
          constexpr uint32_t N64 = sizeof(UINT1) / 8;
          *(uint64_t*)&r = CppCore::umod128_64x((uint64_t*)&u, v, N64);
       }
    #endif
-      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) == 4)
+      else if constexpr (sizeof(UINT1) % 4 == 0 && sizeof(UINT2) == 4 && sizeof(UINT3) >= 4)
       {
+         if constexpr (sizeof(UINT3) > 4)
+            CppCore::clear(r);
          constexpr uint32_t N32 = sizeof(UINT1) / 4;
          *(uint32_t*)&r = CppCore::umod64_32x((uint32_t*)&u, v, N32);
       }
