@@ -3500,7 +3500,13 @@ namespace CppCore
    INLINE static void umod(UINT3& r, const UINT1& u, const UINT2& v, MEM& mem)
    {
       static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0 && sizeof(UINT3) != 0 && sizeof(MEM) != 0);
-      if constexpr (sizeof(UINT1) < sizeof(size_t))
+      if constexpr (sizeof(UINT3) < sizeof(size_t))
+      {
+         size_t tr;
+         CppCore::umod(tr, u, v, mem);
+         CppCore::clone(r, *(UINT3*)&tr);
+      }
+      else if constexpr (sizeof(UINT1) < sizeof(size_t))
       { 
          CppCore::umod(r, (size_t)u, v, mem);
       }
@@ -3508,11 +3514,11 @@ namespace CppCore
       {
          CppCore::umod(r, u, (size_t)v, mem);
       }
-      else if constexpr (sizeof(UINT3) < sizeof(size_t))
+      else if constexpr (sizeof(UINT3) % sizeof(size_t) != 0)
       {
-         size_t tr;
+         Padded<UINT3> tr;
          CppCore::umod(tr, u, v, mem);
-         CppCore::clone(r, *(UINT3*)&tr);
+         CppCore::clone(r, tr.v);
       }
       else if constexpr (sizeof(UINT1) % sizeof(size_t) != 0)
       {
@@ -3523,12 +3529,6 @@ namespace CppCore
       {
          Padded<UINT2> tv(v);
          CppCore::umod(r, u, tv, mem);
-      }
-      else if constexpr (sizeof(UINT3) % sizeof(size_t) != 0)
-      {
-         Padded<UINT3> tr;
-         CppCore::umod(tr, u, v, mem);
-         CppCore::clone(r, tr.v);
       }
    #if defined(CPPCORE_CPU_X64)
       else if constexpr (sizeof(UINT1) % 8 == 0 && sizeof(UINT2) == 8 && sizeof(UINT3) >= 8)
