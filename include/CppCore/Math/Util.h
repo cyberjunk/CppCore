@@ -2718,8 +2718,18 @@ namespace CppCore
    INLINE static void umul(const UINT1& a, const UINT2& b, UINT3& r)
    {
       static_assert(sizeof(UINT1) != 0 && sizeof(UINT2) != 0 && sizeof(UINT3) != 0);
-      if      constexpr (sizeof(UINT1) < sizeof(size_t)) { CppCore::umul((size_t)a, b, r); }
-      else if constexpr (sizeof(UINT2) < sizeof(size_t)) { CppCore::umul(a, (size_t)b, r); }
+      if constexpr (sizeof(UINT1) < sizeof(size_t))
+      {
+         size_t t = 0;
+         CppCore::clone(*(UINT1*)&t, a);
+         CppCore::umul(t, b, r);
+      }
+      else if constexpr (sizeof(UINT2) < sizeof(size_t))
+      {
+         size_t t = 0;
+         CppCore::clone(*(UINT2*)&t, b);
+         CppCore::umul(a, t, r);
+      }
       else if constexpr (sizeof(UINT3) < sizeof(size_t)) 
       { 
          size_t t; 
@@ -4131,6 +4141,7 @@ namespace CppCore
    template<typename UINT, typename MEM>
    INLINE static void upowmod_single(UINT& a, const UINT& b, const UINT& m, UINT& r, MEM& mem)
    {
+      static_assert(sizeof(UINT) >= sizeof(uint32_t));
       assert((&a != &r) && (&b != &r) && (&m != &r));
       assert(!CppCore::testzero(m));
       CppCore::clear(r);
@@ -4169,13 +4180,18 @@ namespace CppCore
    /// <summary>
    /// a^b mod m
    /// </summary>
-   template<typename UINT, typename MEM, uint32_t K = 4U>
-   INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r, MEM& mem)
+   template<typename UINT1, typename UINT2, typename UINT3, typename MEM, uint32_t K = 4U>
+   INLINE static void upowmod(const UINT1& a, const UINT2& b, const UINT3& m, UINT3& r, MEM& mem)
    {
-      assert((&a != &r) && (&b != &r) && (&m != &r));
+      static_assert(sizeof(UINT3) >= sizeof(uint32_t));
+      static_assert(K >= 2);
+      assert((void*)&a != (void*)&r);
+      assert((void*)&b != (void*)&r);
+      assert((void*)&m != (void*)&r);
       assert(!CppCore::testzero(m));
+
       CppCore::clear(r);
-      constexpr auto NUMBITS = sizeof(UINT)*8U;
+      constexpr auto NUMBITS = sizeof(UINT2)*8U;
       const auto LZB = CppCore::lzcnt(b);
       if (LZB == NUMBITS) CPPCORE_UNLIKELY {
          if (NUMBITS-CppCore::lzcnt(m) != 1U) CPPCORE_LIKELY
@@ -4185,12 +4201,19 @@ namespace CppCore
       *(uint32_t*)&r = 1U;
 
       // Precompute powers: base^0, base^1, ..., base^(2^k - 1)
+      union POWERS {
+         uint32_t v32;
+         UINT1 a;
+         UINT3 m;
+         INLINE POWERS() {}
+      };
       constexpr size_t TABLE_SIZE = 1U << K;
-      //TODO: This should use MEM so it can be moved to heap if needed
-      CPPCORE_ALIGN_OPTIM(UINT) powers[TABLE_SIZE];
-      CppCore::clear(powers[0]); *(uint32_t*)&powers[0] = 1U;
-      CppCore::clone(powers[1], a);
-      for (size_t i = 2; i < TABLE_SIZE; i++)
+      // TODO: This should use MEM so it can be moved to heap if needed
+      CPPCORE_ALIGN_OPTIM(POWERS) powers[TABLE_SIZE];
+      CppCore::clear(powers[0]); powers[0].v32 = 1U;               // [0] = 1
+      CppCore::clear(powers[1]); CppCore::clone(powers[1].a, a);   // [1] = a
+      CppCore::usquaremod(a, m, powers[2], mem);                   // [2] = a*a
+      for (size_t i = 3; i < TABLE_SIZE; i++)                      // [n] = a^n
          CppCore::umulmod(powers[i-1], a, m, powers[i], mem);
 
       // Find the position of the highest bit in exp
@@ -4205,23 +4228,29 @@ namespace CppCore
                CppCore::usquaremod(r, m, r, mem);
          const uint32_t N = MIN(K, NUMBITS-pos);
          const uint32_t CHUNK = CppCore::getbits32(b, pos, N);
-         CppCore::umulmod(r, powers[CHUNK], m, r, mem);
+         if (CHUNK)
+            CppCore::umulmod(r, powers[CHUNK], m, r, mem);
       }
    }
 
    /// <summary>
    /// a^b mod m
    /// </summary>
-   template<typename UINT, uint32_t K = 4U>
-   INLINE static void upowmod(const UINT& a, const UINT& b, const UINT& m, UINT& r)
+   template<typename UINT1, typename UINT2, typename UINT3, uint32_t K = 4U>
+   INLINE static void upowmod(const UINT1& a, const UINT2& b, const UINT3& m, UINT3& r)
    {
-      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) MEM {
-         Padded<UINT> a;
-         Padded<UINT> b;
+      union MAXOF {
+         UINT1 a;
+         UINT3 mr;
+         INLINE MAXOF() {}
+      };
+      struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), alignof(UINT3)))) MEM {
+         Padded<MAXOF> a;
+         Padded<MAXOF> b;
          size_t p;
       };
       MEM mem;
-      CppCore::upowmod<UINT, MEM, K>(a, b, m, r, mem);
+      CppCore::upowmod<UINT1, UINT2, UINT3, MEM, K>(a, b, m, r, mem);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

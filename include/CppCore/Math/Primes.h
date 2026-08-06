@@ -121,8 +121,8 @@ namespace CppCore
       /// <summary>
       /// SPRP with precalculated t, s and d and work memory m
       /// </summary>
-      template<typename UINT, typename MEM>
-      INLINE static bool sprp(const UINT& n, const UINT& a, const UINT& t, const uint32_t& s, const UINT& d, UINT& r, MEM& mem)
+      template<typename UINT1, typename UINT2, typename MEM>
+      INLINE static bool sprp(const UINT1& n, const UINT2& a, const UINT1& t, const uint32_t& s, const UINT1& d, UINT1& r, MEM& mem)
       {
          assert(a != 1U);
          CppCore::upowmod(a, d, n, r, mem);
@@ -141,7 +141,7 @@ namespace CppCore
       /// SPRP
       /// </summary>
       template<typename UINT>
-      INLINE static bool sprp(const UINT& n, UINT a)
+      INLINE static bool sprp(const UINT& n, const UINT& a)
       {
          UINT t, d, r;
          uint32_t s;
@@ -334,10 +334,10 @@ namespace CppCore
       template<typename UINT>
       struct CPPCORE_ALIGN64 Memory
       {
-         UINT t;
-         UINT d;
-         UINT a;
-         UINT r;
+         UINT   t;
+         UINT   d;
+         size_t a;
+         UINT   r;
          struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) {
             Padded<UINT> a;
             Padded<UINT> b;
@@ -373,7 +373,7 @@ namespace CppCore
          uint32_t& s = mem.s; // s constant, see below 
          UINT&     t = mem.t; // t constant, see below
          UINT&     d = mem.d; // d constant, see below
-         UINT&     a = mem.a; // base a to test
+         size_t&   a = mem.a; // base a to test
          UINT&     r = mem.r; // temporary result
          auto&     m = mem.m; // work memory
 
