@@ -140,14 +140,19 @@ namespace CppCore
       /// <summary>
       /// SPRP
       /// </summary>
-      template<typename UINT>
-      INLINE static bool sprp(const UINT& n, const UINT& a)
+      template<typename UINT1, typename UINT2>
+      INLINE static bool sprp(const UINT1& n, const UINT2& a)
       {
-         UINT t, d, r;
+         UINT1 t, d, r;
          uint32_t s;
-         struct alignas(MAX(alignof(size_t), MAX(alignof(UINT), alignof(UINT)))) MEM {
-            Padded<UINT> a;
-            Padded<UINT> b;
+         union MAXOF {
+            UINT1 a;
+            UINT2 mr;
+            INLINE MAXOF() {}
+         };
+         struct alignas(MAX(alignof(size_t), MAX(alignof(UINT1), alignof(UINT2)))) MEM {
+            Padded<MAXOF> a;
+            Padded<MAXOF> b;
             size_t p;
          };
          MEM mem;
@@ -265,26 +270,26 @@ namespace CppCore
          constexpr uint64_t C5 =     341550071728321ULL;
          constexpr uint64_t C6 = 3825123056546413051ULL;
          const uint16_t X  = isprime_trial(n);
-         if (X == 0U)                return false;
-         if (X == 1U)                return true;
-         if (!sprp(n,(uint64_t)2U))  return false;
-         if (!sprp(n,(uint64_t)3U))  return false;
-         if (!sprp(n,(uint64_t)5U))  return false;
-         if (n < C1)                 return true;
-         if (!sprp(n,(uint64_t)7U))  return false;
-         if (n < C2)                 return true;
-         if (!sprp(n,(uint64_t)11U)) return false;
-         if (n< C3)                  return true;
-         if (!sprp(n,(uint64_t)13U)) return false;
-         if (n< C4)                  return true;
-         if (!sprp(n,(uint64_t)17U)) return false;
-         if (n < C5)                 return true;
-         if (!sprp(n,(uint64_t)19U)) return false;
-         if (!sprp(n,(uint64_t)23U)) return false;
-         if (n < C6)                 return true;
-         if (!sprp(n,(uint64_t)29U)) return false;
-         if (!sprp(n,(uint64_t)31U)) return false;
-         if (!sprp(n,(uint64_t)37U)) return false;
+         if (X == 0U)              return false;
+         if (X == 1U)              return true;
+         if (!sprp(n,(size_t)2U))  return false;
+         if (!sprp(n,(size_t)3U))  return false;
+         if (!sprp(n,(size_t)5U))  return false;
+         if (n < C1)               return true;
+         if (!sprp(n,(size_t)7U))  return false;
+         if (n < C2)               return true;
+         if (!sprp(n,(size_t)11U)) return false;
+         if (n< C3)                return true;
+         if (!sprp(n,(size_t)13U)) return false;
+         if (n< C4)                return true;
+         if (!sprp(n,(size_t)17U)) return false;
+         if (n < C5)               return true;
+         if (!sprp(n,(size_t)19U)) return false;
+         if (!sprp(n,(size_t)23U)) return false;
+         if (n < C6)               return true;
+         if (!sprp(n,(size_t)29U)) return false;
+         if (!sprp(n,(size_t)31U)) return false;
+         if (!sprp(n,(size_t)37U)) return false;
          return true;
       }
 
