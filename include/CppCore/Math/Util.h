@@ -4224,8 +4224,310 @@ namespace CppCore
       CppCore::upowmod<UINT, MEM, K>(a, b, m, r, mem);
    }
 
-   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   // MERSENNE NUMBERS (2^i)-1
+    //////////////////////////////////////////////////////////////////////////////////////
+    // MONTGOMERY BASED POWMOD ("_ai") - uses Montgomery REDC (no division) for the
+    // modular exponentiation loop. Results are identical to upowmod, faster in practice.
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    /// <summary>
+    /// Raw 64-Bit word wide multiplication: r = a*b for N-word a and b, writing 2N words to r.
+    /// </summary>
+    INLINE static void umul_ai_words(const uint64_t* a, const uint64_t* b, uint64_t* r, const uint32_t N)
+    {
+       uint64_t tl, th, bj, k;
+       uint8_t  c;
+       bj = b[0];
+       CppCore::umul128(a[0], bj, r[0], k);
+       for (uint32_t i = 1; i < N; i++)
+       {
+          CppCore::umul128(a[i], bj, tl, th);
+          c = 0;
+          CppCore::addcarry64(tl, k, r[i], c);
+          CppCore::addcarry64(th, 0ULL, k, c);
+       }
+       r[N] = k;
+       for (uint32_t j = 1; j < N; j++)
+       {
+          k  = 0ULL;
+          bj = b[j];
+          for (uint32_t i = 0; i < N; i++)
+          {
+             CppCore::umul128(a[i], bj, tl, th);
+             c = 0;
+             CppCore::addcarry64(tl, r[i+j], tl, c);
+             CppCore::addcarry64(th, 0ULL, th, c);
+             c = 0;
+             CppCore::addcarry64(tl, k, r[i+j], c);
+             CppCore::addcarry64(th, 0ULL, k, c);
+          }
+          r[N+j] = k;
+       }
+    }
+
+    /// <summary>
+    /// Computes np = -m^{-1} mod 2^64 for an odd 64-Bit word m0 (Newton-Raphson, 6 iterations).
+    /// </summary>
+    INLINE static uint64_t mont_nprime(const uint64_t m0)
+    {
+       uint64_t x = m0;
+       x *= 2ULL - m0 * x;
+       x *= 2ULL - m0 * x;
+       x *= 2ULL - m0 * x;
+       x *= 2ULL - m0 * x;
+       x *= 2ULL - m0 * x;
+       x *= 2ULL - m0 * x;
+       return -x;
+    }
+
+    /// <summary>
+    /// Montgomery Reduction (REDC). Given t (2N words, t < R*m) computes (t*R^{-1}) mod m in place.
+    /// The N-word result is left in t[N..N+N-1]. m is N words (odd), np = -m^{-1} mod 2^64.
+    /// </summary>
+    INLINE static void mont_redc(uint64_t* t, const uint64_t* m, const uint32_t N, const uint64_t np)
+    {
+      uint8_t result_ov = 0U;
+       for (uint32_t i = 0; i < N; i++)
+       {
+          const uint64_t mi = t[i] * np;   // mi*m[0] == -t[i] (mod 2^64)
+          uint64_t carry = 0ULL;
+          uint8_t  big   = 0U;
+          for (uint32_t j = 0; j < N; j++)
+          {
+             uint64_t lo, hi;
+             CppCore::umul128(mi, m[j], lo, hi);
+             uint8_t  ov = 0U;
+             uint64_t s  = t[i+j] + lo;
+             ov  = (uint8_t)(s < lo);
+             uint64_t s0 = s;
+             s += carry;
+             ov += (uint8_t)((s < s0) | (s < carry));
+             s0 = s;
+             s += big;
+             ov += (uint8_t)((s < s0) | (s < big));
+             t[i+j] = s;
+             carry = hi + ov;
+             big = (uint8_t)(carry < hi);
+          }
+          uint64_t s  = t[i+N] + carry;
+          uint8_t  ov1 = (uint8_t)(s < carry);
+          uint64_t s2 = s + big;
+          uint8_t  ov2 = (uint8_t)((s2 < s) | (s2 < big));
+          t[i+N] = s2;
+          uint8_t tov = (uint8_t)(ov1 | ov2);
+          if (tov)
+          {
+             if (i == N-1)
+                result_ov = 1U;
+             else
+             {
+                // propagate overflow to next word
+                uint32_t k = i + N + 1;
+                while (k < 2*N)
+                {
+                   t[k]++;
+                   if (t[k] != 0ULL) break;
+                   k++;
+                }
+             }
+          }
+       }
+       // result is t[N..N+N-1]; REDC guarantees it is < 2*m, so subtract m once if >= m
+       if (result_ov)
+       {
+          // result is t[N..2N-1] + 2^(64N), definitely >= m; subtract m (the high word wraps)
+          uint8_t borrow = 0U;
+          for (uint32_t j = 0; j < N; j++)
+          {
+             const uint64_t x = t[N+j];
+             const uint64_t d = x - m[j];
+             const uint8_t b1 = (x < m[j]) ? 1U : 0U;
+             t[N+j] = d - borrow;
+             borrow = (uint8_t)(b1 | (d < borrow));
+          }
+       }
+       else
+       {
+          uint8_t geq = 1;
+          for (int32_t j = (int32_t)N-1; j >= 0; j--)
+          {
+             if (t[N+j] != m[j])
+             {
+                geq = (t[N+j] > m[j]) ? 1 : 0;
+                break;
+             }
+          }
+          if (geq)
+          {
+             uint8_t borrow = 0U;
+             for (uint32_t j = 0; j < N; j++)
+             {
+                const uint64_t x = t[N+j];
+                const uint64_t d = x - m[j];
+                const uint8_t b1 = (x < m[j]) ? 1U : 0U;
+                t[N+j] = d - borrow;
+                borrow = (uint8_t)(b1 | (d < borrow));
+             }
+          }
+       }
+    }
+
+    /// <summary>
+    /// a^b mod m. Same steps as upowmod but using the faster "_ai" kernels: an odd modulus is
+    /// reduced with Montgomery arithmetic (REDC, no division), an even modulus falls back to upowmod.
+    /// r is written in normal (non-Montgomery) form.
+    /// </summary>
+    template<typename UINT, typename MEM, uint32_t K = 4U>
+    INLINE static void upowmod_ai(const UINT& a, const UINT& b, const UINT& m, UINT& r, MEM& mem)
+    {
+       assert((&a != &r) && (&b != &r) && (&m != &r));
+       assert(!CppCore::testzero(m));
+       CppCore::clear(r);
+       constexpr uint32_t NUMBITS = sizeof(UINT) * 8U;
+       const uint32_t LZB = CppCore::lzcnt(b);
+       if (LZB == NUMBITS) CPPCORE_UNLIKELY {
+          if (NUMBITS - CppCore::lzcnt(m) != 1U) CPPCORE_LIKELY
+             *(uint32_t*)&r = 1U;
+          return;
+       }
+
+       if constexpr (sizeof(UINT) < 8)
+       {
+          // 32-Bit native windowed exponentiation
+          const uint32_t ma = (uint32_t)m;
+          const uint32_t aa = (uint32_t)a;
+          const uint32_t bb = (uint32_t)b;
+          constexpr uint32_t TABLE = 1U << K;
+          uint32_t powers[TABLE];
+          powers[0] = 1U;
+          powers[1] = (aa % ma);
+          for (uint32_t i = 2U; i < TABLE; i++)
+             powers[i] = (uint32_t)(((uint64_t)powers[i-1U] * (uint64_t)aa) % (uint64_t)ma);
+          uint32_t ra = 1U;
+          const uint32_t HIDX   = NUMBITS - LZB;
+          const uint32_t HIDX_K = ((HIDX + K - 1U) / K) * K;
+          for (int32_t pos = (int32_t)HIDX_K - (int32_t)K; pos >= 0; pos -= (int32_t)K)
+          {
+             if (pos < (int32_t)HIDX_K - (int32_t)K)
+                for (uint32_t i = 0; i < K; i++)
+                   ra = (uint32_t)(((uint64_t)ra * (uint64_t)ra) % (uint64_t)ma);
+             const uint32_t N = MIN(K, NUMBITS - (uint32_t)pos);
+             const uint32_t CHUNK = CppCore::getbits32(bb, (uint32_t)pos, N);
+             ra = (uint32_t)(((uint64_t)ra * (uint64_t)powers[CHUNK]) % (uint64_t)ma);
+          }
+          *(uint32_t*)&r = ra;
+          return;
+       }
+
+       const uint32_t N    = (uint32_t)(sizeof(UINT) / 8);
+       const uint64_t* mw  = (const uint64_t*)&m;
+       const uint64_t* aw  = (const uint64_t*)&a;
+       const uint64_t* bw  = (const uint64_t*)&b;
+       const uint32_t HIDX = NUMBITS - LZB;
+
+       // Montgomery requires an odd modulus; fall back to the general kernel for even moduli.
+       if ((mw[0] & 1ULL) == 0ULL) CPPCORE_UNLIKELY {
+          CppCore::upowmod<UINT, MEM, K>(a, b, m, r, mem);
+          return;
+       }
+
+       const uint64_t np = CppCore::mont_nprime(mw[0]);
+       uint64_t* tw     = (uint64_t*)&mem;        // 2N-word scratch (work memory)
+
+       // rmodm = R mod m (R = 2^(N*64))
+       UINT rmodm;
+       uint64_t* rm = (uint64_t*)&rmodm;
+       if (mw[N-1] >> 63)
+       {
+          uint8_t carry = 1;
+          for (uint32_t j = 0; j < N; j++)
+          {
+             const uint64_t x = ~mw[j] + carry;
+             carry = (x < carry) ? 1 : 0;
+             rm[j] = x;
+          }
+       }
+       else
+       {
+          for (uint32_t j = 0; j < N; j++) rm[j] = 0ULL;
+          rm[0] = 1ULL;
+          const uint32_t W = N * 64U;
+          for (uint32_t i = 0; i < W; i++)
+          {
+             uint8_t carry = 0;
+             for (uint32_t j = 0; j < N; j++)
+             {
+                const uint64_t x = rm[j];
+                rm[j] = (x << 1) | carry;
+                carry = (uint8_t)(x >> 63);
+             }
+             uint8_t geq = 1;
+             for (int32_t j = (int32_t)N-1; j >= 0; j--)
+             {
+                if (rm[j] != mw[j]) { geq = (rm[j] > mw[j]) ? 1 : 0; break; }
+             }
+             if (geq)
+             {
+                uint64_t borrow = 0ULL;
+                for (uint32_t j = 0; j < N; j++)
+                {
+                   const uint64_t x = rm[j];
+                   const uint64_t d = x - mw[j] - borrow;
+                   borrow = (x < mw[j] + borrow) ? 1ULL : 0ULL;
+                   rm[j] = d;
+                }
+             }
+          }
+       }
+
+       // a_m = a*R mod m = (a * (R mod m)) mod m
+       UINT a_m;
+        CppCore::umulmod(a, rmodm, m, a_m);
+       uint64_t* am = (uint64_t*)&a_m;
+
+        // window table in Montgomery form: powers[0]=1, powers[i]=a^i
+        constexpr uint32_t TABLE = 1U << K;
+        uint64_t pw[TABLE * N];
+        for (uint32_t j = 0; j < N; j++) pw[j] = rm[j];          // powers[0] = 1_m
+        for (uint32_t j = 0; j < N; j++) pw[N+j] = am[j];        // powers[1] = a_m
+        for (uint32_t i = 2U; i < TABLE; i++)
+        {
+           CppCore::umul_ai_words(pw+(i-1U)*N, am, tw, N);
+           CppCore::mont_redc(tw, mw, N, np);
+           for (uint32_t j = 0; j < N; j++) pw[i*N+j] = tw[N+j];
+        }
+
+       // running result r_m = 1_m
+       UINT r_m;
+       uint64_t* rwm = (uint64_t*)&r_m;
+       for (uint32_t j = 0; j < N; j++) rwm[j] = rm[j];
+
+       const uint32_t HIDX_K = ((HIDX + K - 1U) / K) * K;
+       for (int32_t pos = (int32_t)HIDX_K - (int32_t)K; pos >= 0; pos -= (int32_t)K)
+       {
+          if (pos < (int32_t)HIDX_K - (int32_t)K)
+             for (uint32_t i = 0; i < K; i++)
+             {
+                CppCore::umul_ai_words(rwm, rwm, tw, N);
+                CppCore::mont_redc(tw, mw, N, np);
+                for (uint32_t j = 0; j < N; j++) rwm[j] = tw[N+j];
+             }
+          const uint32_t NN = MIN(K, NUMBITS - (uint32_t)pos);
+          const uint32_t CHUNK = CppCore::getbits32(b, (uint32_t)pos, NN);
+          CppCore::umul_ai_words(rwm, pw+CHUNK*N, tw, N);
+          CppCore::mont_redc(tw, mw, N, np);
+          for (uint32_t j = 0; j < N; j++) rwm[j] = tw[N+j];
+       }
+
+       // convert r_m (Montgomery) to normal form: r = r_m * R^{-1} mod m = REDC(r_m)
+       for (uint32_t j = 0; j < N; j++) tw[j] = rwm[j];
+       for (uint32_t j = N; j < 2*N; j++) tw[j] = 0ULL;
+       CppCore::mont_redc(tw, mw, N, np);
+       uint64_t* rw = (uint64_t*)&r;
+       for (uint32_t j = 0; j < N; j++) rw[j] = tw[N+j];
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // MERSENNE NUMBERS (2^i)-1
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    /// <summary>
