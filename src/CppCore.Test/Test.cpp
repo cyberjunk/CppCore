@@ -520,9 +520,12 @@ int main()
    TEST(CppCore::Test::Math::Primes::isprime32,                  "isprime32:               ", std::endl);
    TEST(CppCore::Test::Math::Primes::isprime64,                  "isprime64:               ", std::endl);
    TEST(CppCore::Test::Math::Primes::isprime128,                 "isprime128:              ", std::endl);
-   TEST(CppCore::Test::Math::Primes::ismersenneprime32,          "ismersenneprime32:       ", std::endl);
-   TEST(CppCore::Test::Math::Primes::ismersenneprime64,          "ismersenneprime64:       ", std::endl);
-   TEST(CppCore::Test::Math::Primes::ismersenneprime128,         "ismersenneprime128:      ", std::endl);
+    TEST(CppCore::Test::Math::Primes::ismersenneprime32,          "ismersenneprime32:       ", std::endl);
+    TEST(CppCore::Test::Math::Primes::ismersenneprime64,          "ismersenneprime64:       ", std::endl);
+    TEST(CppCore::Test::Math::Primes::ismersenneprime128,         "ismersenneprime128:      ", std::endl);
+    TEST(CppCore::Test::Math::Primes::isprime_ai32,               "isprime_ai32:            ", std::endl);
+    TEST(CppCore::Test::Math::Primes::isprime_ai64,               "isprime_ai64:            ", std::endl);
+    TEST(CppCore::Test::Math::Primes::isprime_ai128,              "isprime_ai128:           ", std::endl);
 
    std::cout << "-------------------------------" << std::endl;
    std::cout << "         CppCore::Random       " << std::endl;

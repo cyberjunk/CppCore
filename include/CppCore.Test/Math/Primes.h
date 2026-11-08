@@ -279,27 +279,137 @@ namespace CppCore { namespace Test { namespace Math
             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint64_t>(64U))  == false;   // 2^64-1 = no mersenne prime
       }
 
-      INLINE static bool ismersenneprime128()
-      {
-         return
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(0U))   == false && // 0 = no mersenne prime
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(1U))   == false && // 1 = no mersenne prime
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(2U))   == true  && // 2^2-1 = 1st mersenne prime
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(3U))   == true  && // 2^3-1 = 2nd mersenne prime
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(5U))   == true  && // 2^5-1 = 3rd mersenne prime
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(7U))   == true  && // ..
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(13U))  == true  && // ..
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(17U))  == true  && // ..
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(19U))  == true  && // ..
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(31U))  == true  && // ..
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(40U))  == false && // 2^40-1 = no mersenne prime
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(61U))  == true  && // ..
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(89U))  == true  && // ..
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(107U)) == true  && // ..
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(127U)) == true  && // 12th mersenne prime (largest 128)
-            CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(128U)) == false;   // 2^128-1 = no mersenne prime
-      }
-   };
+       INLINE static bool ismersenneprime128()
+       {
+          return
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(0U))   == false && // 0 = no mersenne prime
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(1U))   == false && // 1 = no mersenne prime
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(2U))   == true  && // 2^2-1 = 1st mersenne prime
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(3U))   == true  && // 2^3-1 = 2nd mersenne prime
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(5U))   == true  && // 2^5-1 = 3rd mersenne prime
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(7U))   == true  && // ..
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(13U))  == true  && // ..
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(17U))  == true  && // ..
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(19U))  == true  && // ..
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(31U))  == true  && // ..
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(40U))  == false && // 2^40-1 = no mersenne prime
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(61U))  == true  && // ..
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(89U))  == true  && // ..
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(107U)) == true  && // ..
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(127U)) == true  && // 12th mersenne prime (largest 128)
+             CppCore::Primes::ismersenneprime(CppCore::getmersenne<uint128_t>(128U)) == false;   // 2^128-1 = no mersenne prime
+       }
+
+       INLINE static bool isprime_ai32()
+       {
+          const bool t1 =
+             CppCore::Primes::isprime_ai((uint32_t)0U, false) == CppCore::Primes::NotPrime &&
+             CppCore::Primes::isprime_ai((uint32_t)1U, false) == CppCore::Primes::NotPrime &&
+             CppCore::Primes::isprime_ai((uint32_t)2U, false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai((uint32_t)3U, false) == CppCore::Primes::Prime;
+          if (!t1)
+             return false;
+
+          for (size_t i = 0; i < CppCore::Primes::NUMODDPRIMES; i++)
+             if (CppCore::Primes::isprime_ai((uint32_t)CppCore::Primes::ODDPRIMES[i], false) != CppCore::Primes::Prime)
+                return false;
+
+          const bool t2 =
+             CppCore::Primes::isprime_ai(20771U, false)                  == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(40487U, false)                  == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(2481757U, false)                == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(CppCore::Primes::MAX32S, false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(CppCore::Primes::MAX32U, false) == CppCore::Primes::Prime;
+          if (!t2)
+             return false;
+
+          for (size_t i = 0; i < NUMCOMPOSITES32; i++)
+             if (CppCore::Primes::isprime_ai(COMPOSITES32[i], false) != CppCore::Primes::NotPrime)
+                return false;
+
+          return true;
+       }
+
+       INLINE static bool isprime_ai64()
+       {
+          const bool t1 =
+             CppCore::Primes::isprime_ai((uint64_t)0ULL, false) == CppCore::Primes::NotPrime &&
+             CppCore::Primes::isprime_ai((uint64_t)1ULL, false) == CppCore::Primes::NotPrime &&
+             CppCore::Primes::isprime_ai((uint64_t)2ULL, false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai((uint64_t)3ULL, false) == CppCore::Primes::Prime;
+          if (!t1)
+             return false;
+
+          for (size_t i = 0; i < CppCore::Primes::NUMODDPRIMES; i++)
+             if (CppCore::Primes::isprime_ai((uint64_t)CppCore::Primes::ODDPRIMES[i], false) != CppCore::Primes::Prime)
+                return false;
+
+          const bool t2 =
+             CppCore::Primes::isprime_ai((uint64_t)20771ULL, false)                == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai((uint64_t)40487ULL, false)                == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai((uint64_t)2481757ULL, false)              == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai((uint64_t)CppCore::Primes::MAX32S, false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai((uint64_t)CppCore::Primes::MAX32U, false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai((uint64_t)CppCore::Primes::MAX64S, false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai((uint64_t)CppCore::Primes::MAX64U, false) == CppCore::Primes::Prime;
+          if (!t2)
+             return false;
+
+          for (size_t i = 0; i < NUMCOMPOSITES32; i++)
+             if (CppCore::Primes::isprime_ai((uint64_t)COMPOSITES32[i], false) != CppCore::Primes::NotPrime)
+                return false;
+
+          for (size_t i = 0; i < NUMCOMPOSITES64; i++)
+             if (CppCore::Primes::isprime_ai(COMPOSITES64[i], false) != CppCore::Primes::NotPrime)
+                return false;
+
+          return true;
+       }
+
+       INLINE static bool isprime_ai128()
+       {
+          const bool t1 =
+             CppCore::Primes::isprime_ai(uint128_t(0ULL), false) == CppCore::Primes::NotPrime &&
+             CppCore::Primes::isprime_ai(uint128_t(1ULL), false) == CppCore::Primes::NotPrime &&
+             CppCore::Primes::isprime_ai(uint128_t(2ULL), false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(uint128_t(3ULL), false) == CppCore::Primes::Prime;
+          if (!t1)
+             return false;
+
+          for (size_t i = 0; i < CppCore::Primes::NUMODDPRIMES; i++)
+             if (CppCore::Primes::isprime_ai(uint128_t((uint64_t)CppCore::Primes::ODDPRIMES[i]), false) != CppCore::Primes::Prime)
+                return false;
+
+          const bool t2 =
+             CppCore::Primes::isprime_ai(uint128_t(20771ULL), false)                          == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(uint128_t(40487ULL), false)                          == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(uint128_t(2481757ULL), false)                        == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(uint128_t((uint64_t)CppCore::Primes::MAX32S), false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(uint128_t((uint64_t)CppCore::Primes::MAX32U), false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(uint128_t((uint64_t)CppCore::Primes::MAX64S), false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(uint128_t((uint64_t)CppCore::Primes::MAX64U), false) == CppCore::Primes::Prime &&
+             CppCore::Primes::isprime_ai(uint128_t(CppCore::Primes::SMALL128), false)         == CppCore::Primes::Prime;
+          if (!t2)
+             return false;
+
+          const bool t3 =
+             CppCore::Primes::isprime_ai(uint128_t(CppCore::Primes::MERSENNE128), false) == CppCore::Primes::Prime;
+          if (!t3)
+             return false;
+
+          const bool t4 =
+             CppCore::Primes::isprime_ai(uint128_t(CppCore::Primes::LARGE128), false) == CppCore::Primes::LikelyPrime;
+          if (!t4)
+             return false;
+
+          const bool t5 =
+             CppCore::Primes::isprime_ai(uint128_t(CppCore::Primes::MAX64U) * uint128_t(CppCore::Primes::MAX64U), false) == CppCore::Primes::NotPrime;
+          if (!t5)
+             return false;
+
+          return true;
+       }
+    };
 }}}
 
 #if defined(CPPCORE_COMPILER_MSVC)
@@ -317,9 +427,12 @@ namespace CppCore { namespace Test { namespace VS { namespace Math {
       TEST_METHOD(ISPRIME32)          { Assert::AreEqual(true, CppCore::Test::Math::Primes::isprime32()); }
       TEST_METHOD(ISPRIME64)          { Assert::AreEqual(true, CppCore::Test::Math::Primes::isprime64()); }
       TEST_METHOD(ISPRIME128)         { Assert::AreEqual(true, CppCore::Test::Math::Primes::isprime128()); }
-      TEST_METHOD(ISMERSENNEPRIME32)  { Assert::AreEqual(true, CppCore::Test::Math::Primes::ismersenneprime32()); }
-      TEST_METHOD(ISMERSENNEPRIME64)  { Assert::AreEqual(true, CppCore::Test::Math::Primes::ismersenneprime64()); }
-      TEST_METHOD(ISMERSENNEPRIME128) { Assert::AreEqual(true, CppCore::Test::Math::Primes::ismersenneprime128()); }
-   };
+       TEST_METHOD(ISMERSENNEPRIME32)  { Assert::AreEqual(true, CppCore::Test::Math::Primes::ismersenneprime32()); }
+       TEST_METHOD(ISMERSENNEPRIME64)  { Assert::AreEqual(true, CppCore::Test::Math::Primes::ismersenneprime64()); }
+       TEST_METHOD(ISMERSENNEPRIME128) { Assert::AreEqual(true, CppCore::Test::Math::Primes::ismersenneprime128()); }
+       TEST_METHOD(ISPRIME_AI32)       { Assert::AreEqual(true, CppCore::Test::Math::Primes::isprime_ai32()); }
+       TEST_METHOD(ISPRIME_AI64)       { Assert::AreEqual(true, CppCore::Test::Math::Primes::isprime_ai64()); }
+       TEST_METHOD(ISPRIME_AI128)      { Assert::AreEqual(true, CppCore::Test::Math::Primes::isprime_ai128()); }
+    };
 }}}}
 #endif
